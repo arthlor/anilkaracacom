@@ -1,0 +1,134 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const articles = await getCollection('articles', ({ data }) => !data.draft);
+const sortedArticles = articles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Get unique categories
+const categories = [...new Set(articles.map(a => a.data.category))];
+---
+
+<MainLayout title="Articles" description="Data journalism, tutorials, and insights on technology and storytelling">
+  <!-- Hero -->
+  <section class="pt-32 pb-16 bg-gradient-to-b from-surface/50 to-background">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-4xl sm:text-5xl font-display font-bold mb-4">
+        <span class="text-gradient">Articles</span>
+      </h1>
+      <p class="text-xl text-text-muted max-w-2xl">
+        Data journalism pieces, tutorials, and insights on technology and storytelling.
+      </p>
+    </div>
+  </section>
+
+  <!-- Category Filter -->
+  <section class="py-8 border-b border-primary/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap gap-2">
+        <button 
+          data-category="all" 
+          class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-primary text-background"
+        >
+          All
+        </button>
+        {categories.map((category) => (
+          <button 
+            data-category={category}
+            class="filter-btn px-4 py-2 rounded-lg text-sm font-medium text-text-muted hover:bg-surface-elevated transition-colors"
+          >
+            {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Articles Grid -->
+  <section class="py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {sortedArticles.length === 0 ? (
+        <div class="text-center py-16">
+          <p class="text-text-muted text-lg">No articles yet. Check back soon!</p>
+        </div>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="articles-grid">
+          {sortedArticles.map((article) => (
+            <article 
+              class="article-card glass glow-border rounded-xl overflow-hidden hover:scale-[1.02] transition-all duration-300"
+              data-category={article.data.category}
+            >
+              <a href={`/articles/${article.slug}`} class="block">
+                <div class="aspect-video bg-surface-elevated relative overflow-hidden">
+                  {article.data.heroImage ? (
+                    <img 
+                      src={article.data.heroImage} 
+                      alt={article.data.title}
+                      class="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <span class="text-4xl">📝</span>
+                    </div>
+                  )}
+                  {article.data.featured && (
+                    <span class="absolute top-3 right-3 px-2 py-1 bg-primary/90 text-background text-xs font-semibold rounded-full">
+                      Featured
+                    </span>
+                  )}
+                </div>
+                <div class="p-6">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full capitalize">
+                      {article.data.category.replace('-', ' ')}
+                    </span>
+                    <time class="text-xs text-text-muted">
+                      {article.data.pubDate.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })}
+                    </time>
+                  </div>
+                  <h2 class="text-lg font-display font-bold text-primary hover:text-primary-light transition-colors mb-2">
+                    {article.data.title}
+                  </h2>
+                  <p class="text-text-muted text-sm line-clamp-2">
+                    {article.data.description}
+                  </p>
+                </div>
+              </a>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</MainLayout>
+
+<script>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const articleCards = document.querySelectorAll('.article-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Update active button
+      filterBtns.forEach(b => {
+        b.classList.remove('bg-primary', 'text-background');
+        b.classList.add('text-text-muted');
+      });
+      btn.classList.add('bg-primary', 'text-background');
+      btn.classList.remove('text-text-muted');
+
+      // Filter articles
+      const category = btn.dataset.category;
+      articleCards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

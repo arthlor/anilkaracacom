@@ -1,0 +1,80 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Import fonts */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-background text-text font-body;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  @apply font-display font-bold;
+}
+
+/* Links */
+a {
+  @apply text-primary hover:text-primary-light transition-colors duration-200;
+}
+
+/* Code blocks */
+code {
+  @apply font-mono bg-surface-elevated px-1.5 py-0.5 rounded text-sm;
+}
+
+pre {
+  @apply font-mono bg-surface-elevated p-4 rounded-lg overflow-x-auto;
+}
+
+/* Selection */
+::selection {
+  @apply bg-primary/30 text-accent;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-surface;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary;
+}
+
+/* Custom utilities */
+.text-gradient {
+  @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+}
+
+.glass {
+  @apply bg-surface/80 backdrop-blur-lg border border-primary/10;
+}
+
+.glow-border {
+  @apply border border-primary/30 shadow-[0_0_15px_rgba(20,184,166,0.2)];
+}

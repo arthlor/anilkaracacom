@@ -1,0 +1,162 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Contact" description="Get in touch with Anıl Karaca">
+  <section class="pt-32 pb-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl sm:text-5xl font-display font-bold mb-4">
+          <span class="text-gradient">Get in Touch</span>
+        </h1>
+        <p class="text-xl text-text-muted max-w-2xl mx-auto">
+          Have a project in mind? Want to collaborate on a data story? 
+          I'd love to hear from you.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Contact Form -->
+        <div class="glass glow-border rounded-xl p-8">
+          <h2 class="text-xl font-display font-bold text-primary mb-6">Send a Message</h2>
+          <form 
+            name="contact" 
+            method="POST" 
+            data-netlify="true"
+            class="space-y-6"
+          >
+            <input type="hidden" name="form-name" value="contact" />
+            
+            <div>
+              <label for="name" class="block text-sm font-medium text-text-muted mb-2">
+                Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                class="w-full px-4 py-3 bg-surface-elevated border border-primary/20 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none text-text transition-colors"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div>
+              <label for="email" class="block text-sm font-medium text-text-muted mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full px-4 py-3 bg-surface-elevated border border-primary/20 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none text-text transition-colors"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div>
+              <label for="subject" class="block text-sm font-medium text-text-muted mb-2">
+                Subject
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                required
+                class="w-full px-4 py-3 bg-surface-elevated border border-primary/20 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none text-text transition-colors"
+                placeholder="What's this about?"
+              />
+            </div>
+
+            <div>
+              <label for="message" class="block text-sm font-medium text-text-muted mb-2">
+                Message
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                required
+                class="w-full px-4 py-3 bg-surface-elevated border border-primary/20 rounded-lg focus:border-primary focus:ring-1 focus:ring-primary outline-none text-text transition-colors resize-none"
+                placeholder="Tell me about your project..."
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full px-6 py-3 bg-primary text-background font-semibold rounded-lg hover:bg-primary-light transition-all hover:scale-[1.02]"
+            >
+              Send Message
+            </button>
+          </form>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="space-y-6">
+          <div class="glass glow-border rounded-xl p-8">
+            <h2 class="text-xl font-display font-bold text-primary mb-6">Other Ways to Reach Me</h2>
+            <div class="space-y-4">
+              <a 
+                href="mailto:hello@anilkaraca.com"
+                class="flex items-center gap-4 p-4 rounded-lg hover:bg-surface-elevated transition-colors group"
+              >
+                <div class="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                  <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-sm text-text-muted">Email</div>
+                  <div class="text-text font-medium">hello@anilkaraca.com</div>
+                </div>
+              </a>
+
+              <a 
+                href="https://www.linkedin.com/in/anil-karaca/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-4 p-4 rounded-lg hover:bg-surface-elevated transition-colors group"
+              >
+                <div class="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                  <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-sm text-text-muted">LinkedIn</div>
+                  <div class="text-text font-medium">@anil-karaca</div>
+                </div>
+              </a>
+
+              <a 
+                href="https://x.com/anilkaraca17"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-4 p-4 rounded-lg hover:bg-surface-elevated transition-colors group"
+              >
+                <div class="p-3 bg-primary/10 rounded-lg group-hover:bg-primary/20 transition-colors">
+                  <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                </div>
+                <div>
+                  <div class="text-sm text-text-muted">Twitter</div>
+                  <div class="text-text font-medium">@anilkaraca17</div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div class="glass glow-border rounded-xl p-8">
+            <h3 class="text-lg font-display font-bold text-primary mb-4">Response Time</h3>
+            <p class="text-text-muted">
+              I typically respond within 24-48 hours. For urgent matters, 
+              please reach out via Twitter or LinkedIn.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</MainLayout>

@@ -1,0 +1,197 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const skills = [
+  { name: 'Data Journalism', description: '5+ years turning complex datasets into compelling stories', icon: '📊' },
+  { name: 'Data Visualization', description: 'D3.js, Plotly, Matplotlib, Flourish - interactive charts & dashboards', icon: '📈' },
+  { name: 'Web Development', description: 'React, Next.js, Node.js, Astro - modern responsive websites', icon: '💻' },
+  { name: 'Python', description: 'Pandas, NumPy, SciPy - automation and data analysis', icon: '🐍' },
+  { name: 'Video Production', description: 'Social media content and cinematic productions', icon: '🎬' },
+  { name: 'Drone Pilot', description: 'Certified remote pilot for aerial surveys and shoots', icon: '🚁' },
+];
+
+const projects = [
+  {
+    title: 'Parliament Analysis',
+    description: 'Interactive analysis of the Turkish Parliament\'s legislative work',
+    image: '/images/projects/parliament.jpg',
+    link: 'https://arthlor.github.io/TBMM-Onerge-Analizi/',
+    tags: ['D3.js', 'React', 'Data Viz'],
+  },
+  {
+    title: 'Crackdown on CHP',
+    description: 'Data journalism project on political persecution in Turkey',
+    image: '/images/projects/chp-crackdown.jpg',
+    link: 'https://arthlor.github.io/Yargi-Kiskacinda-Demokrasi/',
+    tags: ['Data Journalism', 'Interactive'],
+  },
+  {
+    title: 'Attack on Özgür Özel',
+    description: 'Landing page story on the attack against CHP Leader',
+    image: '/images/projects/ozgur-ozel.jpg',
+    link: 'https://anilkaraca.com/ozgur-ozele-saldiri/',
+    tags: ['Storytelling', 'Web Design'],
+  },
+];
+---
+
+<MainLayout title="Home" description="Anıl Karaca - Data Journalist, Web Developer, and Multimedia Creator">
+  <!-- Hero Section -->
+  <section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-br from-background via-surface to-background"></div>
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-secondary/10 rounded-full blur-3xl"></div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-display font-bold mb-6 animate-fade-in">
+        <span class="text-gradient">Anıl Karaca</span>
+      </h1>
+      <p class="text-xl sm:text-2xl text-text-muted max-w-3xl mx-auto mb-8 animate-slide-up">
+        Data Journalist • Web Developer • Multimedia Creator
+      </p>
+      <p class="text-lg text-text-muted/70 max-w-2xl mx-auto mb-12">
+        Transforming data into compelling stories. Building digital experiences that inform and inspire.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
+        <a href="/projects" class="px-8 py-3 bg-primary text-background font-semibold rounded-lg hover:bg-primary-light transition-all hover:scale-105 shadow-lg shadow-primary/25">
+          View Projects
+        </a>
+        <a href="/contact" class="px-8 py-3 glass glow-border rounded-lg font-semibold hover:bg-surface-elevated transition-all">
+          Get in Touch
+        </a>
+      </div>
+    </div>
+    
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+      <svg class="w-6 h-6 text-text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section class="py-24 bg-surface/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-display font-bold text-center mb-4">
+        <span class="text-gradient">Skills & Expertise</span>
+      </h2>
+      <p class="text-text-muted text-center mb-12 max-w-2xl mx-auto">
+        A diverse toolkit for telling stories through data, code, and media
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {skills.map((skill) => (
+          <div class="glass glow-border rounded-xl p-6 hover:bg-surface-elevated transition-all group">
+            <span class="text-4xl mb-4 block group-hover:scale-110 transition-transform">{skill.icon}</span>
+            <h3 class="text-xl font-display font-bold text-primary mb-2">{skill.name}</h3>
+            <p class="text-text-muted text-sm">{skill.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Projects Section -->
+  <section class="py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-display font-bold text-center mb-4">
+        <span class="text-gradient">Featured Projects</span>
+      </h2>
+      <p class="text-text-muted text-center mb-12 max-w-2xl mx-auto">
+        Interactive data stories and digital journalism projects
+      </p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map((project) => (
+          <a 
+            href={project.link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="group glass glow-border rounded-xl overflow-hidden hover:scale-[1.02] transition-all"
+          >
+            <div class="aspect-video bg-surface-elevated relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                <span class="text-4xl">📊</span>
+              </div>
+            </div>
+            <div class="p-6">
+              <h3 class="text-lg font-display font-bold text-primary group-hover:text-primary-light transition-colors mb-2">
+                {project.title}
+              </h3>
+              <p class="text-text-muted text-sm mb-4">{project.description}</p>
+              <div class="flex flex-wrap gap-2">
+                {project.tags.map((tag) => (
+                  <span class="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+      
+      <div class="text-center mt-12">
+        <a href="/projects" class="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors">
+          View all projects
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- App Showcase -->
+  <section class="py-24 bg-surface/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="glass glow-border rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
+        <div class="flex-1">
+          <span class="text-sm text-primary font-medium uppercase tracking-wider">My App</span>
+          <h2 class="text-3xl sm:text-4xl font-display font-bold mt-2 mb-4">
+            Yeşer
+          </h2>
+          <p class="text-text-muted mb-6">
+            A gratitude journal app that helps you develop a mindfulness practice. 
+            Simple journaling, PDF export, streak tracking, and gentle reminders.
+          </p>
+          <a 
+            href="https://apps.apple.com/us/app/ye%C5%9Fer/id6747253728" 
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-semibold rounded-lg hover:bg-primary-light transition-all"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Download on App Store
+          </a>
+        </div>
+        <div class="w-48 h-48 bg-gradient-to-br from-primary/20 to-secondary/20 rounded-3xl flex items-center justify-center">
+          <span class="text-6xl">🌱</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl sm:text-4xl font-display font-bold mb-4">
+        Let's Work Together
+      </h2>
+      <p class="text-text-muted mb-8 max-w-2xl mx-auto">
+        Have a data story to tell? Need an interactive visualization? 
+        I'd love to hear about your project.
+      </p>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3 bg-primary text-background font-semibold rounded-lg hover:bg-primary-light transition-all hover:scale-105 shadow-lg shadow-primary/25">
+        Get in Touch
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </a>
+    </div>
+  </section>
+</MainLayout>

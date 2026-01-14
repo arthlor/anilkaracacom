@@ -1,0 +1,111 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  return articles.map((article) => ({
+    params: { slug: article.slug },
+    props: article,
+  }));
+}
+
+type Props = CollectionEntry<'articles'>;
+
+const article = Astro.props;
+const { Content } = await article.render();
+
+const formattedDate = article.data.pubDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout 
+  title={article.data.title} 
+  description={article.data.description}
+  image={article.data.heroImage}
+>
+  <Header />
+  
+  <article class="pt-32 pb-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <header class="mb-12">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-sm px-3 py-1 bg-primary/10 text-primary rounded-full capitalize">
+            {article.data.category.replace('-', ' ')}
+          </span>
+          <time class="text-sm text-text-muted">
+            {formattedDate}
+          </time>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-gradient mb-6">
+          {article.data.title}
+        </h1>
+        <p class="text-xl text-text-muted">
+          {article.data.description}
+        </p>
+      </header>
+
+      <!-- Hero Image -->
+      {article.data.heroImage && (
+        <div class="mb-12 rounded-xl overflow-hidden glow-border">
+          <img 
+            src={article.data.heroImage} 
+            alt={article.data.title}
+            class="w-full"
+          />
+        </div>
+      )}
+
+      <!-- Content -->
+      <div class="prose prose-invert prose-lg max-w-none
+        prose-headings:font-display prose-headings:text-text
+        prose-h2:text-2xl prose-h2:mt-12 prose-h2:mb-4
+        prose-h3:text-xl prose-h3:mt-8 prose-h3:mb-3
+        prose-p:text-text-muted prose-p:leading-relaxed
+        prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary-light
+        prose-strong:text-text
+        prose-code:bg-surface-elevated prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+        prose-pre:bg-surface-elevated prose-pre:rounded-xl
+        prose-blockquote:border-primary prose-blockquote:bg-surface/50 prose-blockquote:rounded-r-lg prose-blockquote:py-2
+        prose-img:rounded-xl
+        prose-li:text-text-muted
+      ">
+        <Content />
+      </div>
+
+      <!-- Tags -->
+      {article.data.tags.length > 0 && (
+        <div class="mt-12 pt-8 border-t border-primary/10">
+          <div class="flex flex-wrap gap-2">
+            {article.data.tags.map((tag) => (
+              <span class="text-sm px-3 py-1 bg-surface-elevated text-text-muted rounded-full">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <!-- Back Link -->
+      <div class="mt-12">
+        <a 
+          href="/articles"
+          class="inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Articles
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <Footer />
+</BaseLayout>
