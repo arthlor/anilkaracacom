@@ -14,7 +14,16 @@ const skills = [
 const timeline = [
   { year: '2024', title: 'App Developer', description: 'Built Yeşer and ChoreUs apps with React Native' },
   { year: '2023', title: 'Data Journalist', description: 'Parliament Analysis and political data projects' },
-  { year: '2019', title: 'Started Career', description: 'Began data journalism journey' },
+  { year: '2019', title: 'Senior Digital Journalist', description: 'Advanced data journalism and video production' },
+  { year: '2014', title: 'Started Career', description: 'Began journey as a digital journalist' },
+];
+
+const workplaces = [
+  { name: 'İzmir Büyükşehir Belediyesi', logo: '/images/workplaces/izmir-bsb.svg' },
+  { name: 'İzbeton', logo: '/images/workplaces/izbeton.svg' },
+  { name: 'BirGün', logo: '/images/workplaces/birgun.svg' },
+  { name: 'dokuz8 HABER', logo: '/images/workplaces/dokuz8.svg' },
+  { name: "Ege'de SönSöz", logo: '/images/workplaces/sonsoz.svg' },
 ];
 ---
 
@@ -45,7 +54,7 @@ const timeline = [
             Anıl Karaca
           </h1>
           <p class="text-xl text-text-muted max-w-2xl mb-8 leading-relaxed">
-            I'm a data journalist and developer with over 5 years of experience 
+            I'm a data journalist and developer with over 10 years of experience 
             transforming complex datasets into compelling stories and building 
             mobile applications that solve real problems.
           </p>
@@ -69,6 +78,33 @@ const timeline = [
     </div>
   </section>
 
+  <!-- Career / Workplaces -->
+  <section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-surface/30 to-background"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Experience</span>
+        <h2 class="text-3xl sm:text-4xl font-display font-bold">
+          Where I've Worked
+        </h2>
+        <p class="text-text-muted mt-4 max-w-2xl mx-auto">
+          10+ years of experience across journalism, government communications, and tech
+        </p>
+      </div>
+      
+      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16">
+        {workplaces.map((workplace) => (
+          <div class="group flex flex-col items-center gap-3 opacity-60 hover:opacity-100 transition-opacity duration-300">
+            <div class="h-16 md:h-20 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-300">
+              <span class="text-xl md:text-2xl font-bold text-text-muted group-hover:text-primary transition-colors">{workplace.name}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Bio -->
   <section class="py-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -76,10 +112,15 @@ const timeline = [
         <h2 class="text-2xl font-display font-bold text-primary mb-6">My Story</h2>
         <div class="space-y-4 text-text-muted leading-relaxed">
           <p>
-            With a background in journalism and a passion for technology, I specialize in 
-            turning raw data into meaningful narratives. My work spans from interactive 
-            web applications to data visualizations that help audiences understand 
-            complex topics at a glance.
+            My journey in digital journalism began in <strong class="text-text">2014</strong>, 
+            when I started working with various news organizations and media outlets. Over the years, 
+            I've had the privilege to work with organizations like <strong class="text-text">BirGün</strong>, 
+            <strong class="text-text">dokuz8 HABER</strong>, and <strong class="text-text">Ege'de SönSöz</strong>.
+          </p>
+          <p>
+            I also contributed to public communications at <strong class="text-text">İzmir Büyükşehir Belediyesi</strong> 
+            and <strong class="text-text">İzbeton</strong>, where I produced documentary films and 
+            digital content that reached millions of viewers.
           </p>
           <p>
             In recent years, I've expanded into mobile app development, creating apps like 
