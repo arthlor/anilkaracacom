@@ -1,5 +1,5 @@
 {
-  "extends": "astro/tsconfigs/strict",
+  "extends": "astro/tsconfigs/strictest",
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
@@ -9,6 +9,8 @@
       "@components/*": ["src/components/*"],
       "@layouts/*": ["src/layouts/*"],
       "@styles/*": ["src/styles/*"]
-    }
-  }
+    },
+    "strictNullChecks": true
+  },
+  "include": ["src/**/*", ".astro/types.d.ts"]
 }
