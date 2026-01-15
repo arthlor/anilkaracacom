@@ -1,0 +1,74 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+  category: string;
+  maxItems?: number;
+}
+
+const { currentSlug, category, maxItems = 3 } = Astro.props;
+
+// Get all articles in the same category, excluding current
+const allArticles = await getCollection('articles');
+const relatedArticles = allArticles
+  .filter(article => article.slug !== currentSlug && article.data.category === category)
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, maxItems);
+
+// If not enough in same category, fill with recent articles
+if (relatedArticles.length < maxItems) {
+  const remaining = allArticles
+    .filter(article => 
+      article.slug !== currentSlug && 
+      !relatedArticles.some(r => r.slug === article.slug)
+    )
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+    .slice(0, maxItems - relatedArticles.length);
+  relatedArticles.push(...remaining);
+}
+
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+---
+
+{relatedArticles.length > 0 && (
+  <section class="mt-20 pt-12 border-t border-primary/10">
+    <h2 class="text-2xl font-display font-bold text-foreground mb-8">Related Articles</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {relatedArticles.map((article) => (
+        <a 
+          href={`/articles/${article.slug}`}
+          class="group block bg-card rounded-xl overflow-hidden border border-primary/10 hover:border-gold/30 transition-all duration-300 hover:shadow-lg hover:shadow-gold/5"
+        >
+          {article.data.heroImage && (
+            <div class="aspect-video overflow-hidden">
+              <img 
+                src={article.data.heroImage} 
+                alt={article.data.title}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          )}
+          <div class="p-5">
+            <span class="text-xs font-medium px-2 py-1 bg-gold/10 text-gold rounded-full capitalize">
+              {article.data.category.replace('-', ' ')}
+            </span>
+            <h3 class="mt-3 text-lg font-display font-semibold text-foreground group-hover:text-gold transition-colors line-clamp-2">
+              {article.data.title}
+            </h3>
+            <time class="mt-2 text-sm text-muted-foreground block">
+              {formatDate(article.data.pubDate)}
+            </time>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+)}

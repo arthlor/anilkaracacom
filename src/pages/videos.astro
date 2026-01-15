@@ -4,7 +4,7 @@ import Icon from '../components/Icon.astro';
 
 const featuredVideo = {
   title: "Ekmeğimizi Büyütüyoruz, Adil Bölüşüyoruz",
-  description: "A documentary about İzmir Büyükşehir Belediyesi's Acil Çözüm Ekibi and their mission to distribute the city's welfare fairly and equally.",
+  description: "A documentary about İzmir Büyükşehir Belediyesi's Acil Çözüm Ekibi and their mission to distribute the city's welfare fairly and equally. Shot, edited, and produced entirely by myself — a solo production from start to finish.",
   videoId: "iZtaIuGnjzU",
   type: "Documentary"
 };
@@ -26,7 +26,7 @@ const videos = [
       <h1 class="text-4xl sm:text-5xl font-display font-bold mb-4">
         <span class="text-gradient">Videos</span>
       </h1>
-      <p class="text-xl text-text-muted max-w-2xl">
+      <p class="text-xl text-muted-foreground max-w-2xl">
         Documentaries, personal vlogs, and behind-the-scenes looks at my work.
       </p>
     </div>
@@ -40,7 +40,7 @@ const videos = [
         <h2 class="text-3xl sm:text-4xl font-display font-bold">Documentary</h2>
       </div>
       
-      <div class="glass glow-border rounded-3xl overflow-hidden max-w-5xl mx-auto">
+      <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-3xl overflow-hidden max-w-5xl mx-auto">
         <div class="aspect-video">
           <iframe
             src={`https://www.youtube.com/embed/${featuredVideo.videoId}`}
@@ -57,10 +57,10 @@ const videos = [
               {featuredVideo.type}
             </span>
           </div>
-          <h2 class="text-2xl font-display font-bold text-text mb-3">
+          <h2 class="text-2xl font-display font-bold text-foreground mb-3">
             {featuredVideo.title}
           </h2>
-          <p class="text-text-muted leading-relaxed">
+          <p class="text-muted-foreground leading-relaxed">
             {featuredVideo.description}
           </p>
         </div>
@@ -78,7 +78,7 @@ const videos = [
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         {videos.map((video) => (
-          <div class="glass glow-border rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300">
+          <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300">
             <div class="aspect-video">
               <iframe
                 src={`https://www.youtube.com/embed/${video.videoId}`}
@@ -95,10 +95,10 @@ const videos = [
                   {video.type}
                 </span>
               </div>
-              <h3 class="text-lg font-display font-bold text-text mb-2">
+              <h3 class="text-lg font-display font-bold text-foreground mb-2">
                 {video.title}
               </h3>
-              <p class="text-text-muted text-sm">
+              <p class="text-muted-foreground text-sm">
                 {video.description}
               </p>
             </div>

@@ -2,6 +2,144 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+@layer base {
+  :root {
+    /* ===========================================
+       REFINED COLOR PALETTE - Editorial Dark Theme
+       =========================================== */
+
+    /* Core backgrounds - deeper, more sophisticated */
+    --background: 210 25% 5%;
+    --foreground: 200 20% 92%;
+
+    /* Card surfaces with subtle elevation */
+    --card: 210 22% 8%;
+    --card-foreground: 200 20% 92%;
+
+    --popover: 210 22% 10%;
+    --popover-foreground: 200 20% 92%;
+
+    /* Primary - refined teal, less saturated for sophistication */
+    --primary: 170 65% 42%;
+    --primary-foreground: 210 25% 6%;
+
+    /* Secondary - complementary cyan */
+    --secondary: 190 75% 48%;
+    --secondary-foreground: 210 25% 6%;
+
+    /* Muted colors for subtle elements */
+    --muted: 210 18% 18%;
+    --muted-foreground: 210 15% 55%;
+
+    /* Accent - warm gold, refined */
+    --accent: 45 80% 52%;
+    --accent-foreground: 210 25% 8%;
+
+    /* Destructive states */
+    --destructive: 0 65% 45%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* UI elements */
+    --border: 210 18% 18%;
+    --input: 210 18% 15%;
+    --ring: 170 65% 42%;
+
+    /* Radius */
+    --radius: 0.625rem;
+
+    /* ===========================================
+       TYPOGRAPHY SCALE - Responsive with clamp()
+       =========================================== */
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Fluid type scale */
+    --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
+    --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.875rem);
+    --text-base: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
+    --text-lg: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    --text-xl: clamp(1.15rem, 1.05rem + 0.5vw, 1.25rem);
+    --text-2xl: clamp(1.4rem, 1.2rem + 1vw, 1.5rem);
+    --text-3xl: clamp(1.75rem, 1.5rem + 1.25vw, 2rem);
+    --text-4xl: clamp(2.25rem, 1.75rem + 2.5vw, 3rem);
+    --text-5xl: clamp(2.75rem, 2rem + 3.75vw, 4rem);
+
+    /* Line heights */
+    --leading-none: 1;
+    --leading-tight: 1.15;
+    --leading-snug: 1.35;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.65;
+    --leading-loose: 1.85;
+
+    /* Letter spacing */
+    --tracking-tighter: -0.04em;
+    --tracking-tight: -0.02em;
+    --tracking-normal: 0;
+    --tracking-wide: 0.02em;
+    --tracking-wider: 0.04em;
+
+    /* ===========================================
+       SPACING SCALE
+       =========================================== */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.5rem;
+    --space-6: 2rem;
+    --space-7: 2.5rem;
+    --space-8: 3rem;
+    --space-9: 4rem;
+    --space-10: 6rem;
+
+    /* ===========================================
+       SHADOWS - Refined for dark theme
+       =========================================== */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.35);
+    --shadow-glow: 0 0 20px hsl(var(--primary) / 0.25);
+    --shadow-glow-lg: 0 0 40px hsl(var(--primary) / 0.3);
+
+    /* ===========================================
+       TRANSITIONS
+       =========================================== */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 400ms ease;
+    --transition-bounce: 400ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+}
+
+/* Infinite scroll animation for marquee */
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 1rem));
+  }
+}
+
+.animate-scroll {
+  animation: scroll var(--animation-duration, 40s) linear infinite;
+  animation-direction: var(--animation-direction, forwards);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
 /* Import fonts */
 @import '@fontsource/inter/400.css';
 @import '@fontsource/inter/500.css';
@@ -25,22 +163,27 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   @apply font-display font-bold;
 }
 
 /* Links */
 a {
-  @apply text-primary hover:text-primary-light transition-colors duration-200;
+  @apply text-primary hover:brightness-110 transition-colors duration-200;
 }
 
 /* Code blocks */
 code {
-  @apply font-mono bg-surface-elevated px-1.5 py-0.5 rounded text-sm;
+  @apply font-mono bg-muted px-1.5 py-0.5 rounded text-sm;
 }
 
 pre {
-  @apply font-mono bg-surface-elevated p-4 rounded-lg overflow-x-auto;
+  @apply font-mono bg-muted p-4 rounded-lg overflow-x-auto;
 }
 
 /* Selection */
@@ -76,5 +219,248 @@ pre {
 }
 
 .glow-border {
-  @apply border border-primary/30 shadow-[0_0_15px_rgba(20,184,166,0.2)];
+  @apply border border-primary/30;
+  box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
+}
+
+/* ===========================================
+   PREMIUM ARTICLE TYPOGRAPHY & LAYOUT
+   =========================================== */
+
+/* Article Content Container */
+.article-content {
+  @apply max-w-[680px] mx-auto;
+}
+
+/* Enhanced Prose Styling */
+.prose-article {
+  /* Base Typography */
+  font-size: 1.125rem;
+  /* 18px */
+  line-height: 1.85;
+  letter-spacing: -0.01em;
+}
+
+.prose-article p {
+  @apply mb-7 text-text-muted;
+}
+
+/* First paragraph special styling */
+.prose-article>p:first-of-type {
+  @apply text-lg text-text leading-relaxed;
+}
+
+/* Drop Cap for first letter */
+.prose-article.with-dropcap>p:first-of-type::first-letter {
+  @apply float-left text-6xl font-display font-bold text-[#edbd21] mr-3 mt-1;
+  line-height: 0.85;
+}
+
+/* Headings with better hierarchy */
+.prose-article h2 {
+  @apply font-display font-bold text-text text-3xl mt-16 mb-6 pb-3;
+  border-bottom: 2px solid hsl(var(--primary) / 0.2);
+}
+
+.prose-article h3 {
+  @apply font-display font-semibold text-text text-2xl mt-12 mb-4;
+}
+
+.prose-article h4 {
+  @apply font-display font-semibold text-text text-xl mt-8 mb-3;
+}
+
+/* Links */
+.prose-article a {
+  @apply text-[#edbd21] underline decoration-[#edbd21]/30 underline-offset-2 hover:decoration-[#edbd21] hover:text-[#f5d54a] transition-all duration-200;
+}
+
+/* Strong/Bold text */
+.prose-article strong {
+  @apply font-semibold text-text;
+}
+
+/* Emphasis */
+.prose-article em {
+  @apply text-text-muted italic;
+}
+
+/* Lists with custom styling */
+.prose-article ul {
+  @apply my-6 ml-0 pl-0 space-y-3;
+  list-style: none;
+}
+
+.prose-article ul li {
+  @apply relative pl-6 text-text-muted;
+}
+
+.prose-article ul li::before {
+  content: '';
+  @apply absolute left-0 top-[0.6em] w-2 h-2 rounded-full bg-[#edbd21]/60;
+}
+
+.prose-article ol {
+  @apply my-6 ml-0 pl-6 space-y-3;
+  counter-reset: item;
+  list-style: none;
+}
+
+.prose-article ol li {
+  @apply relative text-text-muted;
+  counter-increment: item;
+}
+
+.prose-article ol li::before {
+  content: counter(item) '.';
+  @apply absolute -left-6 font-semibold text-[#edbd21];
+}
+
+/* Blockquotes */
+.prose-article blockquote {
+  @apply my-8 pl-6 py-4 pr-4 border-l-4 border-[#edbd21] bg-surface/50 rounded-r-lg italic text-text-muted;
+}
+
+.prose-article blockquote p {
+  @apply mb-0;
+}
+
+/* Horizontal Rules / Section Dividers */
+.prose-article hr {
+  @apply my-16 border-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent;
+}
+
+/* Images */
+.prose-article img {
+  @apply rounded-xl my-8 shadow-lg;
+}
+
+/* ===========================================
+   CODE BLOCKS - ENHANCED STYLING
+   =========================================== */
+
+.prose-article pre {
+  @apply my-8 p-0 bg-transparent overflow-visible;
+}
+
+.prose-article pre>code {
+  @apply block p-5 bg-surface-elevated rounded-xl overflow-x-auto text-sm leading-relaxed;
+  border: 1px solid hsl(var(--primary) / 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.prose-article :not(pre)>code {
+  @apply font-mono bg-surface-elevated px-2 py-1 rounded text-sm text-[#edbd21];
+  border: 1px solid hsl(var(--primary) / 0.1);
+}
+
+/* Code block with filename header */
+.code-block-wrapper {
+  @apply my-8 rounded-xl overflow-hidden;
+  border: 1px solid hsl(var(--primary) / 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.code-block-header {
+  @apply flex items-center justify-between px-4 py-2 bg-surface text-text-muted text-sm font-mono;
+  border-bottom: 1px solid hsl(var(--primary) / 0.1);
+}
+
+.code-block-header .filename {
+  @apply flex items-center gap-2;
+}
+
+.code-block-header .copy-btn {
+  @apply px-2 py-1 text-xs bg-surface-elevated rounded hover:bg-primary/20 transition-colors;
+}
+
+/* ===========================================
+   VISUALIZATION CONTAINERS
+   =========================================== */
+
+.prose-article iframe {
+  @apply w-full rounded-xl;
+  border: 1px solid hsl(var(--primary) / 0.15);
+}
+
+.visualization-container {
+  @apply my-12 -mx-4 sm:mx-0;
+}
+
+.visualization-wrapper {
+  @apply bg-surface/30 backdrop-blur-sm border border-primary/10 rounded-2xl p-4 sm:p-6;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.visualization-wrapper iframe {
+  @apply rounded-xl w-full;
+}
+
+.visualization-caption {
+  @apply text-sm text-text-muted text-center mt-4 italic;
+}
+
+/* ===========================================
+   READING PROGRESS BAR
+   =========================================== */
+
+.reading-progress {
+  @apply fixed top-0 left-0 h-1 bg-gradient-to-r from-primary to-[#edbd21] z-50;
+  transform-origin: left;
+  transition: transform 0.1s ease-out;
+}
+
+/* ===========================================
+   ARTICLE LEAD/INTRO PARAGRAPH
+   =========================================== */
+
+.article-lead {
+  @apply text-xl text-text leading-relaxed mb-12 pb-8;
+  border-bottom: 1px solid hsl(var(--primary) / 0.15);
+}
+
+/* ===========================================
+   ARTICLE META & TAGS
+   =========================================== */
+
+.article-tag {
+  @apply text-sm px-4 py-1.5 bg-surface-elevated text-text-muted rounded-full hover:bg-[#edbd21]/10 hover:text-[#edbd21] transition-all duration-200 cursor-default;
+  border: 1px solid hsl(var(--primary) / 0.1);
+}
+
+.article-tag:hover {
+  border-color: hsl(var(--ring) / 0.3);
+}
+
+/* ===========================================
+   TIP/NOTE CALLOUTS
+   =========================================== */
+
+.callout {
+  @apply my-8 p-5 rounded-xl;
+  border-left: 4px solid;
+}
+
+.callout-tip {
+  @apply bg-primary/5 border-primary;
+}
+
+.callout-note {
+  @apply bg-[#edbd21]/5 border-[#edbd21];
+}
+
+.callout-warning {
+  @apply bg-orange-500/5 border-orange-500;
+}
+
+.callout-title {
+  @apply font-semibold text-text mb-2 flex items-center gap-2;
+}
+
+.callout-content {
+  @apply text-text-muted;
+}
+
+.callout-content p:last-child {
+  @apply mb-0;
 }

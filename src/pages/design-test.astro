@@ -1,0 +1,42 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { CaretRight, Heart } from '@phosphor-icons/react';
+import { cn } from '../lib/utils';
+---
+
+<MainLayout title="Design System Test">
+  <div class="container mx-auto p-8 space-y-8">
+    <h1 class="text-4xl font-bold">Design System Integration Test</h1>
+    
+    <section class="space-y-4">
+      <h2 class="text-2xl font-semibold">1. Phosphor Icons</h2>
+      <div class="flex gap-4 text-3xl">
+        <CaretRight weight="bold" />
+        <Heart weight="fill" className="text-red-500" />
+        <Heart weight="duotone" className="text-pink-500" />
+      </div>
+      <p class="text-sm text-muted-foreground">Note: Phosphor Icons generally need `client:load` or similar if fully interactive, but strictly rendering SVGs works in SSR/SSG if configured correctly. Since they are React components, they might default to static HTML in Astro.</p>
+    </section>
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-semibold">2. Shadcn Theming & cn() Utility</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class={cn("rounded-lg border bg-card text-card-foreground shadow-sm p-6")}>
+          <h3 class="text-lg font-semibold mb-2">Default Card</h3>
+          <p class="text-muted-foreground">This uses the default card variables.</p>
+        </div>
+        
+        <div class={cn("rounded-lg border bg-card text-card-foreground shadow-sm p-6", "bg-primary text-primary-foreground border-primary")}>
+          <h3 class="text-lg font-semibold mb-2">Primary Card</h3>
+          <p>This uses the primary color variables verified with cn().</p>
+        </div>
+
+        <div class={cn("rounded-lg border bg-card text-card-foreground shadow-sm p-6", "bg-destructive text-destructive-foreground")}>
+           <h3 class="text-lg font-semibold mb-2">Destructive Card</h3>
+           <p>Testing destructive colors.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</MainLayout>

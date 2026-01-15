@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import Icon from '../components/Icon.astro';
+import { BentoGrid, BentoCard } from '../components/ui/BentoGrid';
 
 const skills = [
   { 
@@ -42,6 +43,7 @@ const apps = [
     description: 'A mindfulness app that helps you develop a gratitude practice. Simple journaling, streak tracking, and gentle reminders.',
     appStoreUrl: 'https://apps.apple.com/us/app/ye%C5%9Fer/id6747253728',
     icon: '🌱',
+    image: '/images/projects/yesericon.png',
     color: 'from-emerald-500/20 to-teal-500/20',
   },
   {
@@ -50,6 +52,7 @@ const apps = [
     description: 'Turn household chores into a fun game. Compete with family members, earn points, and make cleaning enjoyable.',
     appStoreUrl: 'https://apps.apple.com/us/app/choreus-gamify-boring-chores/id6755533194',
     icon: '🏠',
+    image: '/images/projects/choreusicon.png',
     color: 'from-violet-500/20 to-purple-500/20',
   },
 ];
@@ -60,18 +63,21 @@ const projects = [
     description: 'Interactive analysis of the Turkish Parliament\'s legislative work',
     link: 'https://arthlor.github.io/TBMM-Onerge-Analizi/',
     tags: ['D3.js', 'React', 'Data Viz'],
+    image: '/images/Screenshot-6.png',
   },
   {
     title: 'Crackdown on CHP',
     description: 'Data journalism project on political persecution in Turkey',
     link: 'https://arthlor.github.io/Yargi-Kiskacinda-Demokrasi/',
     tags: ['Data Journalism', 'Interactive'],
+    image: '/images/Screenshot-2025-07-10T145239.014.png',
   },
   {
     title: 'Attack on Özgür Özel',
     description: 'Landing page story on the attack against CHP Leader',
-    link: 'https://anilkaraca.com/ozgur-ozele-saldiri/',
+    link: '/ozgur-ozele-saldiri',
     tags: ['Storytelling', 'Web Design'],
+    image: '/images/ozgurozel.png',
   },
 ];
 ---
@@ -80,42 +86,42 @@ const projects = [
   <!-- Hero Section -->
   <section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
     <!-- Background Effects -->
-    <div class="absolute inset-0 bg-gradient-to-br from-background via-surface to-background"></div>
-    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] animate-pulse"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/5 rounded-full blur-[100px] animate-pulse delay-1000"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-background via-card/30 to-background"></div>
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] animate-pulse-soft"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/8 rounded-full blur-[100px] animate-pulse-soft delay-1000"></div>
     
     <!-- Grid Pattern Overlay -->
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#14b8a608_1px,transparent_1px),linear-gradient(to_bottom,#14b8a608_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--primary)/0.04)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--primary)/0.04)_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
     
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-elevated border border-primary/20 mb-8 animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-card/80 backdrop-blur-sm border border-primary/20 mb-8 animate-fade-in">
         <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
-        <span class="text-sm text-text-muted">Available for projects</span>
+        <span class="text-sm text-muted-foreground">Available for projects</span>
       </div>
       
       <h1 class="text-5xl sm:text-6xl lg:text-7xl font-display font-bold mb-6 animate-fade-in">
         <span class="text-gradient">Anıl Karaca</span>
       </h1>
       
-      <p class="text-xl sm:text-2xl text-text-muted max-w-3xl mx-auto mb-4 animate-slide-up">
+      <p class="text-xl sm:text-2xl text-muted-foreground max-w-3xl mx-auto mb-4 animate-slide-up">
         Data Journalist • Developer • Multimedia Creator
       </p>
       
-      <p class="text-lg text-text-muted/70 max-w-2xl mx-auto mb-12 animate-slide-up">
+      <p class="text-lg text-muted-foreground/80 max-w-2xl mx-auto mb-12 animate-slide-up">
         Transforming data into compelling stories. Building digital experiences that inform and inspire.
       </p>
       
       <div class="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
         <a 
           href="/projects" 
-          class="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-background font-semibold rounded-xl hover:bg-primary-light transition-all duration-300 hover:scale-105 shadow-lg shadow-primary/25"
+          class="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:brightness-110 transition-all duration-300 hover:scale-[1.03] shadow-lg shadow-primary/25"
         >
           View Projects
           <Icon name="arrow-right" size={18} class="group-hover:translate-x-1 transition-transform" />
         </a>
         <a 
           href="/contact" 
-          class="inline-flex items-center gap-2 px-8 py-4 glass glow-border rounded-xl font-semibold hover:bg-surface-elevated transition-all duration-300"
+          class="inline-flex items-center gap-2 px-8 py-4 bg-card/80 backdrop-blur-sm border border-border hover:border-primary/40 rounded-xl font-semibold hover:bg-card transition-all duration-300"
         >
           Get in Touch
         </a>
@@ -124,7 +130,7 @@ const projects = [
     
     <!-- Scroll Indicator -->
     <div class="absolute bottom-8 left-1/2 -translate-x-1/2">
-      <div class="flex flex-col items-center gap-2 text-text-muted/50">
+      <div class="flex flex-col items-center gap-2 text-muted-foreground/50">
         <span class="text-xs uppercase tracking-widest">Scroll</span>
         <Icon name="arrow-down" size={20} class="animate-bounce" />
       </div>
@@ -132,35 +138,38 @@ const projects = [
   </section>
 
   <!-- Skills Section -->
-  <section class="py-32 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-surface/50 via-background to-background"></div>
+  <section class="py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-card/50 via-background to-background"></div>
     
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Expertise</span>
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-6">
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10">
+        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-2 block">Expertise</span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-display font-bold mb-3">
           Skills & Technologies
         </h2>
-        <p class="text-text-muted max-w-2xl mx-auto text-lg">
+        <p class="text-muted-foreground max-w-xl mx-auto text-base">
           A diverse toolkit for telling stories through data, code, and media
         </p>
       </div>
       
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {skills.map((skill, i) => (
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5">
+        {skills.map((skill) => (
           <div 
-            class="group glass glow-border rounded-2xl p-8 hover:bg-surface-elevated transition-all duration-500 hover:-translate-y-1"
-            style={`animation-delay: ${i * 100}ms`}
+            class="group flex flex-col justify-start rounded-lg border border-border bg-card p-3 transition-all duration-200 hover:border-primary/30 hover:bg-card/80"
           >
-            <div class="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:scale-110 transition-all duration-300">
-              <Icon name={skill.icon} size={28} class="text-primary" />
+            <div class="flex items-start gap-2.5">
+              <div class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary">
+                <Icon name={skill.icon} size={16} class="text-primary" />
+              </div>
+              <div class="min-w-0">
+                <h3 class="font-display text-sm font-semibold tracking-tight text-foreground leading-tight">
+                  {skill.name}
+                </h3>
+                <p class="text-xs leading-snug text-muted-foreground mt-0.5 line-clamp-2">
+                  {skill.description}
+                </p>
+              </div>
             </div>
-            <h3 class="text-xl font-display font-bold text-text mb-3 group-hover:text-primary transition-colors">
-              {skill.name}
-            </h3>
-            <p class="text-text-muted text-sm leading-relaxed">
-              {skill.description}
-            </p>
           </div>
         ))}
       </div>
@@ -179,7 +188,7 @@ const projects = [
         </div>
         <a 
           href="/projects" 
-          class="mt-6 md:mt-0 group inline-flex items-center gap-2 text-primary hover:text-primary-light transition-colors"
+          class="mt-6 md:mt-0 group inline-flex items-center gap-2 text-primary hover:brightness-110 transition-all"
         >
           View all projects
           <Icon name="arrow-right" size={18} class="group-hover:translate-x-1 transition-transform" />
@@ -195,20 +204,30 @@ const projects = [
             class="group glass rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-500 border border-primary/10 hover:border-primary/30"
             style={`animation-delay: ${i * 100}ms`}
           >
-            <div class="aspect-[16/10] bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-              <div class="absolute inset-0 flex items-center justify-center">
-                <Icon name="chart" size={64} class="text-primary/30 group-hover:scale-110 transition-transform duration-500" />
-              </div>
-              <div class="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Icon name="external-link" size={24} class="text-primary" />
+            <div class="aspect-[16/10] bg-primary/5 relative overflow-hidden">
+              {project.image ? (
+                <img 
+                  src={project.image} 
+                  alt={project.title} 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                  <Icon name="chart" size={64} class="text-primary/30 group-hover:scale-110 transition-transform duration-500" />
+                </div>
+              )}
+              <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+              <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                <div class="bg-background/80 backdrop-blur-sm p-2 rounded-full shadow-lg">
+                  <Icon name="external-link" size={20} class="text-primary" />
+                </div>
               </div>
             </div>
             <div class="p-6">
-              <h3 class="text-lg font-display font-bold text-text group-hover:text-primary transition-colors mb-2">
+              <h3 class="text-lg font-display font-bold text-foreground group-hover:text-primary transition-colors mb-2">
                 {project.title}
               </h3>
-              <p class="text-text-muted text-sm mb-4 line-clamp-2">
+              <p class="text-muted-foreground text-sm mb-4 line-clamp-2">
                 {project.description}
               </p>
               <div class="flex flex-wrap gap-2">
@@ -227,7 +246,7 @@ const projects = [
 
   <!-- Apps Showcase -->
   <section class="py-32 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-background via-surface/30 to-background"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background"></div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -235,29 +254,33 @@ const projects = [
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-6">
           Apps I've Built
         </h2>
-        <p class="text-text-muted max-w-2xl mx-auto text-lg">
+        <p class="text-muted-foreground max-w-2xl mx-auto text-lg">
           Creating mobile experiences with React Native and AI-assisted development
         </p>
       </div>
       
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         {apps.map((app) => (
-          <div class={`glass glow-border rounded-3xl p-8 bg-gradient-to-br ${app.color}`}>
+        <div class={`relative bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 bg-gradient-to-br ${app.color}`}>
             <div class="flex items-start gap-6">
-              <div class="text-5xl">{app.icon}</div>
+              {app.image ? (
+                <img src={app.image} alt={app.name} class="w-20 h-20 rounded-2xl shadow-lg object-cover" />
+              ) : (
+                <div class="text-5xl">{app.icon}</div>
+              )}
               <div class="flex-1">
                 <span class="text-xs text-primary font-medium uppercase tracking-wider">{app.tagline}</span>
-                <h3 class="text-2xl font-display font-bold text-text mt-1 mb-3">
+                <h3 class="text-2xl font-display font-bold text-foreground mt-1 mb-3">
                   {app.name}
                 </h3>
-                <p class="text-text-muted text-sm leading-relaxed mb-6">
+                <p class="text-muted-foreground text-sm leading-relaxed mb-6">
                   {app.description}
                 </p>
                 <a 
                   href={app.appStoreUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-text text-background font-semibold rounded-xl hover:bg-text/90 transition-all text-sm"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 bg-foreground text-background font-semibold rounded-xl hover:opacity-90 transition-all text-sm"
                 >
                   <Icon name="apple" size={18} />
                   App Store
@@ -273,17 +296,17 @@ const projects = [
   <!-- CTA Section -->
   <section class="py-32 relative">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="glass glow-border rounded-3xl p-12 md:p-16 bg-gradient-to-br from-primary/5 to-secondary/5">
+      <div class="relative bg-card/80 backdrop-blur-sm border border-border rounded-3xl p-12 md:p-16 bg-gradient-to-br from-primary/5 to-secondary/5">
         <h2 class="text-3xl sm:text-4xl lg:text-5xl font-display font-bold mb-6">
           Let's Work Together
         </h2>
-        <p class="text-text-muted mb-10 max-w-2xl mx-auto text-lg">
+        <p class="text-muted-foreground mb-10 max-w-2xl mx-auto text-lg">
           Have a data story to tell? Need an interactive visualization or mobile app? 
           I'd love to hear about your project.
         </p>
         <a 
           href="/contact" 
-          class="group inline-flex items-center gap-2 px-10 py-4 bg-primary text-background font-semibold rounded-xl hover:bg-primary-light transition-all duration-300 hover:scale-105 shadow-lg shadow-primary/25"
+          class="group inline-flex items-center gap-2 px-10 py-4 bg-primary text-primary-foreground font-semibold rounded-xl hover:brightness-110 transition-all duration-300 hover:scale-[1.03] shadow-lg shadow-primary/25"
         >
           Start a Conversation
           <Icon name="arrow-right" size={18} class="group-hover:translate-x-1 transition-transform" />

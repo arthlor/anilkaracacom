@@ -1,0 +1,55 @@
+---
+title: "İnteraktif | İzmir'in yaş analizi"
+description: "İzmir'in 30 ilçesinde hangi yaş grubunda kaç kişinin yaşadığını ortaya koyan interaktif bubble chart görselleştirmesi."
+pubDate: 2024-02-10
+heroImage: "/images/articles/izmir-yas-analizi-2025.webp"
+tags: ["izmir", "demografik", "veri-analizi", "python", "plotly"]
+category: "data-journalism"
+featured: false
+draft: false
+---
+
+Yeni çalışmamda İzmir'in yaş istatistiklerini biraz incelemek istedim.
+
+[**İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda yer alan**](https://acikveri.bizizmir.com/tr/dataset/izmir-ilceleri-yas-grubuna-gore-nufus-bilgileri) 2023 tarihli veriseti, İzmir'in 30 ilçesinde hangi yaş grubunda kaç kişinin yaşadığını ortaya koyuyor. Bu verileri interaktif bir **["bubble chart"](https://eksisozluk.com/bubble-chart--7413098)** ile görselleştirmeye karar verdim.
+
+Görselleştirme için Python'u kullandım ve interaktif bubble chart'ı oluşturmak için [**Plot.ly kütüphanesinden**](https://plotly.com/) faydalandım.
+
+Grafik, belirli yaş grupları ile İzmir'in ilçelerini kıyaslıyor. Her bir kabarcık, seçili ilçe ve yaş grubu kesişimindeki kadın ve erkek sayısını gösteriyor.
+
+*(Grafiği daha rahat bir şekilde deneyimlemek için mobil cihazlarınızı yatay konuma getirmenizi ya da bilgisayar ekranından incelemenizi tavsiye ederim.)*
+
+<iframe 
+  src="/uploads/2024/03/interactive_chart.html" 
+  width="100%" 
+  height="600" 
+  style="border: none; border-radius: 8px;"
+  title="İzmir Yaş Analizi Bubble Chart"
+></iframe>
+
+Peki bu grafik bize ne anlatıyor, biraz yorumlayalım...
+
+#### **Cinsiyet Farkları**
+
+- Veri setinin tamamında, erkek ve kadın nüfusu arasında neredeyse eşit bir dağılım var, ancak kadınların (%50.41) biraz daha fazla olduğu görülüyor.
+
+#### **Yaş Grubu Analizi**
+
+- Verisetindeki yaş gruplarının dağılımı, İzmir'in ilçelerinin demografik profilini gösteriyor. Genç yaş gruplarında (0-4, 5-9, 10-14), erkeklerin biraz daha fazla olduğu görülüyor, bu da İzmir'de genç bir erkek nüfusunun olduğunu işaret ediyor. Yaşlı yaş gruplarında ise (65-69, 70-74 ve üzeri), kadınların oranı artıyor, bu da kadınların daha uzun yaşama eğiliminde olduğunu ve yaşlanan bir kadın nüfusunun varlığına işaret ediyor.
+- Erkeklerin en büyük yüzdesi genç yaş gruplarında bulunurken, yaş ilerledikçe bu oran azalıyor. Kadınlarda ise yaş ilerledikçe oranın arttığı ve özellikle 90+ kategorisinde (%71.61) kadın oranının belirgin bir şekilde yükseldiği görülüyor.
+
+#### **Demografik İçgörüler**
+
+- Yaş grupları analizi, nüfusun genç bir tabana sahip olduğunu gösteriyor. Ancak, yaşlı nüfusun arttığı ve özellikle kadınların yaşlı yaş gruplarında daha fazla olduğu görülüyor.
+- İlçeler arasında önemli bir genç nüfus varlığı, eğitim ve rekreasyon hizmetlerine yönelik potansiyel ihtiyaçları gösterirken, yaşlı nüfusun varlığı ise sağlık, sosyal destek ve yaşlı hizmetlerinin önemini vurguluyor.
+
+## Sonuç
+
+Bu çalışma;
+
+- Nüfusun yaş grupları ve ilçeler arasındaki dağılımını gösterir ve böylece kentsel planlamanın, sosyal hizmetlerin, sağlık hizmetlerinin ve eğitim ihtiyaçlarının yetkili kurumlarca belirlenmesinde faydalı olabilir. Böylece İzmir'in çeşitli ihtiyaçlarını karşılamak için kaynakların etkili bir şekilde dağıtılmasında rol oynayabilir.
+- Etkili politika oluşturma ve planlama için demografik eğilimlerin ve dağılımların anlaşılmasının önemini vurgular. Elde edilen içgörüler, yerel yönetimler, STK'lar ve hizmet sağlayıcılarının, farklı nüfus kesimlerinin özel ihtiyaçlarına yönelik stratejilerini uyarlamalarına yardımcı olabilir, böylece İzmir genelinde yüksek bir yaşam kalitesi ve adil hizmet erişimi sağlanabilir.
+
+---
+
+*Kaynak: [İzmir Büyükşehir Belediyesi Açık Veri Portalı](https://acikveri.bizizmir.com/tr/dataset/izmir-ilceleri-yas-grubuna-gore-nufus-bilgileri)*

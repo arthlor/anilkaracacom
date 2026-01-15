@@ -1,0 +1,72 @@
+---
+title: "İzmir İlçelerinde En Çok Hangi Memleketten İnsan Yaşıyor?"
+description: "İzmir'in hangi ilçesinde en çok hangi memleketten insan yaşıyor? Harita ve analizle İzmir'deki memleket dağılımını keşfedin."
+pubDate: 2024-01-20
+heroImage: "/images/articles/izmir-memleket-dagilimi-2025.jpg"
+tags: ["izmir", "demografik", "veri-analizi", "python", "folium", "harita"]
+category: "data-journalism"
+featured: false
+draft: false
+---
+
+İzmir, birçok farklı memleketten insanı barındıran büyük bir şehir. Türkiye'de memleket önemlidir, ilk tanışılan insana hemen memleketi sorulur. İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda dolaşırken, tam da bu konuya dair bir veriseti keşfettim. En son 2023'te güncellenen veriseti, İzmir'in hangi ilçesinde en çok hangi memleketten insan yaşadığına dair hazırlanmış.
+
+Ben de 2500+ satırlık bu verisetini, incelemesi daha kolay olsun diye görselleştirmek istedim.
+
+### Veriseti İncelemesi ve Harita Görselleştirmesi
+
+Bu çalışma için Python Folium kütüphanesini kullanarak bir harita hazırladım. 2019'da kendi çabalarımla (çok keskin ayrımlara sahip olmasa da) İzmir'in 30 ilçesini içeren bir GeoJSON çalışması yapmıştım, onu da haritaya entegre ederek ilçe sınırlarını belirledim.
+
+Daha sonra çeşitli HTML ve CSS düzenlemeleriyle, ilçelerin çeşitli noktalarını işaretleyerek, bu noktalara tıklandığında o ilçede en çok hangi memleketten insan yaşadığını göstermek istedim. Bunu da Python'u verisetimle eşleştirerek, istediğimi gösterecek bir fonksiyon ile sağladım. Bu fonksiyon, tıkladığınız ilçedeki ilk 10 memleketi size gösteriyor.
+
+<iframe 
+  src="/uploads/2024/02/izmir_interactive_map.html" 
+  width="1200" 
+  height="600" 
+  style="border: none; border-radius: 8px;"
+  title="İzmir Memleket Haritası"
+></iframe>
+
+## VERİ ANALİZİ
+
+### İzmir'deki Memleket Dağılımı
+
+#### En Çok Bulunan Memleketler
+
+- **İzmir:** 1 milyon 673 bin 171 kişi
+- **Manisa:** 207 bin 730 kişi
+- **Mardin:** 177 bin 546 kişi
+- **Erzurum:** 154 bin 668 kişi
+- **Konya:** 130 bin 028 kişi
+
+#### En Az Bulunan Memleketler
+
+- **Karabük:** 4 bin 202 kişi
+- **Hakkari:** 3 bin 602 kişi
+- **Düzce:** 3 bin 478 kişi
+- **Bartın:** 2 bin 831 kişi
+- **Yalova:** 1 bin 503 kişi
+
+<iframe 
+  src="/uploads/2024/02/plotly_chart.html" 
+  width="100%" 
+  height="500" 
+  style="border: none; border-radius: 8px;"
+  title="Memleket Kıyaslaması Grafiği"
+></iframe>
+
+*(Bu grafiği telefonunuzu yatay hale getirerek daha verimli inceleyebilirsiniz.)*
+
+### İlçelere Göre Memleket Kıyaslaması
+
+İlçelerdeki memleket kıyaslamalarına baktığımızda, aynı şehirden veya bölgeden insanların birbirine yakın yaşamayı tercih ettiğini görüyoruz. Bunun nedeni, ilçelerdeki yerleşik toplulukların, kültürel benzerliklerin veya yeni gelenleri destekleyen sosyal ağların varlığı olabilir.
+
+Türkiye siyasetinde memleketçiliğin bir gerçek olduğunu hatırlarsak, bu çalışma aynı zamanda yerel seçim için çalışmalar yürüten adayların faydalanabileceği bir kaynak olarak da görülebilir.
+
+### Verisetinin Eksikleri ve Analiz Notları
+
+Verisetinin bazı kısımlarında eksik rakamlar vardı, bu yüzden numerik veriye sahip olmayan hücreleri görselleştirme dışında tuttum. Bu sebeple, rakamlar %100 gerçekliği yansıtmayabilir, fakat bu hatalı hücre sayısı, genel bir fikir edinmeyi engelleyici miktarda değildi.
+
+Verisetinin ham haline [**buradan**](#) ulaşabilirsiniz.
+
+Şu ara sadece İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda dolanıyorum, eğer görselleştirmesinin ve analizinin hoş olduğunu düşündüğünüz bir veriseti ya da bir kaynak varsa, üzerine çalışmak isterim. [**Twitter hesabımdan**](https://twitter.com/anilkaraca17) bu konu hakkında bana ulaşabilirsiniz.

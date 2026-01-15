@@ -1,0 +1,258 @@
+---
+title: "İnteraktif | İzmir'in trafik kazası raporu"
+description: "İzmir, artan trafik yoğunluğuyla günden güne yaşanması zor bir metropol haline geliyor. 17 bin satırlık verisetini analiz ettim."
+pubDate: 2024-12-15
+heroImage: "/images/articles/izmir-trafik-kazasi-2025.png"
+tags: ["izmir", "trafik", "veri-analizi", "python", "plotly"]
+category: "data-journalism"
+featured: true
+draft: false
+---
+
+İzmir, artan trafik yoğunluğuyla günden güne yaşanması zor bir metropol haline geliyor. Ana arterler artık trafik yükünü taşımada yetersiz kalıyor, en ufak bir kaza trafiği dakikalarca kilitleyebiliyor.
+
+Bu sorun artarak devam ederken, İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda yer alan, İzmir Ulaşım Merkezi tarafından kayıt altına alınan kaza türleri ve arıza türlerine ait konum, kaldırılma sürelerini içeren veri seti ile bir veri analizi çalışması hazırladım. Çalışma İzmir'deki kazaların hangi saatlerde, hangi istikamette, hangi sıklıkta olduğunu ve yıllara göre değişimi irdeliyor. **17 bin satırdan** oluşan ve **iki yılı aşkın bir süreyi kapsayan** verisetini, elimden geldiğince anlamlı bir şekilde görselleştirmeye çalıştım.
+
+Veri analizi, kentte yaşanan kazaların hangi günlerde, saatlerde ve mevsimlerde yoğunlaştığını ortaya koyuyor. İzmir'in kaza verilerinde öne çıkan bulgular ve en riskli saatler şöyle:
+
+## **En Yoğun Gün: Cuma**
+
+[**2021 Aralık ayından bugüne incelenen verilere**](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri) göre, **Cuma günü** haftanın en fazla kazanın yaşandığı gün olarak öne çıkıyor. **3,090 kazayla** zirvede yer alan Cuma gününü sırasıyla Pazartesi (**3,047 kaza**) ve Salı (**2,823 kaza**) takip ediyor. Çalışma günlerinde yaşanan bu yoğunluk, özellikle iş giriş ve çıkış saatlerinde trafik sıkışıklığının kazalara yol açabileceğine işaret ediyor.
+
+**Hafta Sonu Dikkat Çekiyor:** Cumartesi ve Pazar günleri ise nispeten daha düşük kaza sayısına sahip olsa da, hafta sonu yaşanan kazalar eğlence, alışveriş ve sosyal aktiviteler nedeniyle farklı saatlere yayılabiliyor. **Cumartesi günü 1,755** ve **Pazar günü 1,028** kazayla hafta sonları daha düşük bir yoğunluk sergiliyor.
+
+*Grafikleri daha iyi incelemek için mobil cihazlarınızı yatay konumda kullanmanızı öneririm.*
+
+<iframe 
+  src="/uploads/2024/11/yillik_kaza_sikligi_top_caddeler_responsive.html" 
+  width="100%" 
+  height="800" 
+  style="border: none; border-radius: 8px;"
+  title="Yıllık Kaza Sıklığı - En Riskli Caddeler"
+></iframe>
+
+## **En Tehlikeli Saatler: Sabah ve Akşam Yoğunluğu**
+
+Kazaların saatlik analizine baktığımızda, özellikle **08:00-10:00** ve **17:00-19:00** saatleri arasında ciddi bir yoğunluk gözlemleniyor. Bu saat aralıkları, iş giriş ve çıkış saatlerine denk gelerek trafik kazalarının sıklığını artırıyor. Sabah yoğunluğunda yaşanan kazalar, sürücülerin aceleci davranışı ve yoğun trafikle birleştiğinde riski artırırken, akşam saatlerindeki kazalar ise günün yorgunluğuyla ilişkilendirilebilir.
+
+**Gece Saatlerinde Düşüş:** Gece saatlerinde, özellikle **23:00-05:00** aralığında kaza sayısında belirgin bir düşüş gözlemleniyor. Bu saatlerde daha az trafiğin olması, kaza oranını düşüren bir faktör olarak öne çıkıyor
+
+## **Kış Aylarında Artan Kaza Sayıları**
+
+Kaza verileri aylara göre analiz edildiğinde, **Aralık, Ocak ve Şubat** aylarında kaza sayılarında artış gözlemleniyor. Kış aylarında yaşanan artış, olumsuz hava koşullarıyla ilişkilendirilebilir. Bu dönemde meydana gelen kazalar, buzlanma ve yağmur gibi faktörlerden kaynaklanırken, bu durum sürücülerin kış aylarında daha dikkatli olması gerektiğini gösteriyor.
+
+**Yaz Aylarında Düşüş:** Yaz aylarında ise kaza sayılarında düşüş gözlemleniyor. Özellikle **Haziran ve Temmuz** aylarında kaza sayısının azalması, tatil dönemlerinin trafik yoğunluğunu şehir merkezinden uzaklaştırmasıyla açıklanabilir.
+
+<iframe 
+  src="/uploads/2024/11/kaza_turleri_yillik_sirali_tooltip_corrected_responsive.html" 
+  width="100%" 
+  height="800" 
+  style="border: none; border-radius: 8px;"
+  title="Yıllara Göre Kaza Türleri Dağılımı"
+></iframe>
+
+## **Müdahale Süreleri**
+
+Verilerde kazalara müdahale süreleri incelendiğinde, olaylara ortalama müdahale süresinin **15-30 dakika** arasında olduğu gözlemleniyor. Özellikle yoğun saatlerde müdahale sürelerinin uzadığı, bu durumun olay yerine ulaşım zorluğuyla ilişkili olabileceği düşünülüyor.
+
+**Trafik Kazalarına Daha Hızlı Müdahale Gerekiyor:** Trafik kazalarına daha hızlı müdahale edilmesi gerektiğini gösteren veriler, iş giriş ve çıkış saatlerinde kaza riskinin arttığı saatlerde daha fazla ekibin görevlendirilmesi ihtiyacını ortaya koyuyor.
+
+## **Kazaların Coğrafi Dağılımı ve Riskli Alanlar**
+
+Eğer kaza verileri coğrafi olarak incelenirse, kentin belirli bölgelerinde yoğun kazaların gerçekleştiği görülebilir. Ana yollar, büyük kavşaklar ve inşaat alanlarının bulunduğu bölgelerde daha fazla kaza yaşanıyor. Bu tür bölgelerde ek güvenlik önlemleri alınması, trafik akışının daha güvenli hale getirilmesi ve hız sınırlarının düşürülmesi gibi adımlar, kaza oranlarının azaltılmasına katkı sağlayabilir.
+
+<iframe 
+  src="/uploads/2024/11/olay_hacmi_isi_haritasi_cividis_responsive.html" 
+  width="100%" 
+  height="500" 
+  style="border: none; border-radius: 8px;"
+  title="Olay Hacmi Isı Haritası"
+></iframe>
+
+## **Kazaların Yıllara Göre Artışı**
+
+Yıllık kaza sayısındaki değişimleri incelediğimizde, son birkaç yılda trafik yoğunluğunun artmasıyla birlikte kaza sayısında da genel bir artış gözlemleniyor. Özellikle yeni yol projeleri, büyük inşaat alanları ve kentleşmenin artması, kaza oranlarını artıran faktörlerden biri olarak öne çıkıyor.
+
+2023 yılı verilerine göre kaza sayısının bir önceki yıla oranla **%10 oranında arttığı**, bu artışın özellikle iş merkezlerinin çevresinde ve ana arterlerde yoğunlaştığı görülüyor. Bu durum, şehir planlamasında güvenlik önlemlerine daha fazla önem verilmesi gerektiğini gösteriyor.
+
+## **Sonuç**
+
+Kazaların gün ve saat bazında analiz edilmesi, kaynakların daha etkin kullanılmasını ve riskli saatlerde daha fazla ekibin görevlendirilmesini gerektiriyor. Ayrıca, kazaların coğrafi yoğunluk bölgelerine yönelik iyileştirmeler yapılması, kaza riskini azaltabilir. Mevsimsel riskler göz önüne alındığında, kış aylarında sürücülerin daha dikkatli olmaları ve güvenlik önlemlerinin artırılması gerektiği anlaşılmaktadır.
+
+**Kaynak Dağıtımının İyileştirilmesi:** Yoğun kazaların yaşandığı saat ve günlerde ek güvenlik önlemleri ve daha fazla ekip görevlendirilmesi, müdahale süresini kısaltarak kaza sonrası etkilerin hafifletilmesine katkı sağlayabilir.
+
+**Mevsimsel Güvenlik Önlemleri:** Kış aylarında artan kaza oranlarına yönelik farkındalık kampanyaları ve ek güvenlik önlemleri, hava koşullarına bağlı riskleri azaltmada etkili olabilir.
+
+## **Grafikler Nasıl Hazırlandı?**
+
+Bu veri görselleştirme çalışmasında, İzmir'deki trafik kazalarına dair çeşitli verileri analiz ederek, gün ve saat bazında kazaların yıllık dağılımını etkili bir şekilde görselleştirdim. Bu görselleştirme sürecinde, kaza verilerini inceleyerek farklı kırılımlar oluşturmayı ve sonuçları anlaşılır bir şekilde sunmayı amaçladım. Görselleştirmeler için ChatGPT yardımıyla Python'u kullandım. Verisetine üstte de linklediğim gibi [**İzmir Büyükşehir Belediyesi Açık Veri Portalı'ndan**](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri) ulaşılabilir.
+
+#### 1. Verilerin Hazırlanması ve Düzenlenmesi
+
+İlk olarak, ham veri setini yükleyerek işlemeye başladım. Veri setinde yer alan **TARİH** sütununu gün ve yıl bilgisi için, **KAZA ZAMANI** sütununu ise saat bilgisi için kullandım. Bu sütunları tarih ve saat formatına dönüştürdüm.
+
+```python
+data['TARİH'] = pd.to_datetime(data['TARİH'], errors='coerce')
+data['KAZA ZAMANI'] = pd.to_datetime(data['KAZA ZAMANI'], format='%H:%M:%S', errors='coerce')
+```
+
+- **Yıl** bilgisini, TARİH sütunundan elde ettim.
+- **Gün** bilgisini, Python'un Türkçe dil desteği ile gün isimlerine dönüştürdüm.
+- **Saat** bilgisini ise KAZA ZAMANI sütunundan çıkararak kazaların hangi saatlerde yoğunlaştığını gözlemleyebilmek için bir sütun oluşturdum.
+
+#### 2. Türkçe Gün İsimlerinin Normalleştirilmesi
+
+Veri setindeki bazı gün adlarının Türkçe karakterlerle uyumlu olmadığını gördüm. Bu nedenle, gün isimlerini doğru Türkçe karakterlerle eşleştirerek normalleştirdim.
+
+```python
+turkish_day_map = {
+    "Pazartesi": "Pazartesi",
+    "Salý": "Salı",
+    "Çarþamba": "Çarşamba",
+    "Perþembe": "Perşembe",
+    "Cuma": "Cuma",
+    "Cumartesi": "Cumartesi",
+    "Pazar": "Pazar"
+}
+data['Gün'] = data['Gün'].replace(turkish_day_map)
+```
+
+#### 3. Tüm Gün ve Saat Kombinasyonlarını Oluşturma
+
+Görselleştirme sürecinde eksik gün-saat verilerini tamamlamak amacıyla, tüm yıl, gün ve saat kombinasyonlarını içeren bir multi-indeks DataFrame oluşturarak eksik verileri **0** değeri ile doldurdum. Bu sayede, tüm yıl-gün-saat kombinasyonları görselleştirmeye dahil edildi.
+
+```python
+full_index = pd.MultiIndex.from_product(
+    [data['Yıl'].unique(), day_order, hour_range],
+    names=['Yıl', 'Gün', 'Saat']
+)
+full_data = pd.DataFrame(index=full_index).reset_index()
+incident_counts = pd.merge(full_data, incident_counts, on=['Yıl', 'Gün', 'Saat'], how='left').fillna(0)
+```
+
+#### 4. Yıllık Gün ve Saat Bazında Kaza Dağılımı Isı Haritasının Oluşturulması
+
+Tüm yılları, günleri ve saatleri kapsayan veri setini hazırladıktan sonra, **Plotly** kütüphanesini kullanarak ısı haritası oluşturdum. **Cividis** renk şeması, veri yoğunluğunu daha iyi yansıtabilmesi için tercih edildi. Bu renk şeması, daha koyu renklerin daha yüksek yoğunlukları, daha açık renklerin ise düşük yoğunlukları göstermesini sağladı.
+
+```python
+fig = px.density_heatmap(
+    incident_counts,
+    x='Saat',
+    y='Gün',
+    z='Olay Sayısı',
+    facet_col='Yıl',
+    title="Yıla Göre Gün ve Saat Bazında Olay Hacmi Isı Haritası",
+    labels={'Saat': 'Saat', 'Gün': 'Gün', 'Olay Sayısı': 'Olay Sayısı'},
+    color_continuous_scale='Cividis',
+    text_auto=True
+)
+```
+
+#### 5. Görselleştirme Ayarlarının Optimize Edilmesi
+
+Son olarak, görselleştirmeyi mobil cihazlarda da rahat okunabilir hale getirmek için çeşitli ayarlar yaptım:
+
+- **Renk Skalası**: Renk skalası efsanesini grafiklerin altına yerleştirerek mobil cihazlarda daha iyi bir deneyim sağlandı.
+- **Otomatik Boyutlandırma**: Grafik boyutunun ekrana uyum sağlaması için autosize=True parametresi kullanıldı.
+- **Etiket Ayarları**: Yıl bilgilerini belirgin hale getirmek için grafik başlık ve etiketlerinde yazı boyutunu ve font tipini artırdım.
+
+```python
+fig.update_layout(
+    coloraxis_colorbar=dict(
+        title="Olay Sayısı",
+        orientation="h",
+        yanchor="bottom",
+        y=-0.4,
+        xanchor="center",
+        x=0.5
+    ),
+    autosize=True,
+    margin=dict(t=80, l=60, r=60, b=100)
+)
+```
+
+Bu adımlar sayesinde, İzmir'deki trafik kazalarının yıllara göre gün ve saat bazında yoğunluğunu etkili bir şekilde görselleştirmiş oldum. Hazırlanan ısı haritası, kullanıcıların hangi saatlerde ve günlerde daha fazla kaza meydana geldiğini kolayca analiz etmesine olanak tanıyarak veri odaklı karar süreçlerine katkı sağlayacak şekilde düzenlendi.
+
+### Örnek Python Script
+
+Öğrenmek isteyenler için, grafiklerden birinin tam Python script'i şu şekilde:
+
+```python
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.express as px
+
+# Load the dataset
+data = pd.read_excel('izbb-kaza-ariza-verileri.xlsx')
+
+# Extract the year for yearly grouping
+data['Year'] = pd.to_datetime(data['TARİH']).dt.year
+
+# Group data by year and incident type
+incident_type_by_year = data.groupby(['Year', 'TÜR']).size().unstack(fill_value=0)
+
+# Prepare a color palette
+color_sequence = px.colors.qualitative.Pastel1
+
+# Generate unified hover text for each year with sorted incident types
+hover_texts = []
+for year, row in incident_type_by_year.iterrows():
+    sorted_incidents = row.sort_values(ascending=False)
+    hover_text = f"<b>{year}</b><br>"
+    for incident_type, count in sorted_incidents.items():
+        hover_text += f"{incident_type}: {count} olay<br>"
+    hover_texts.append(hover_text)
+
+# Create the interactive stacked bar chart without individual hover info
+fig = go.Figure()
+
+for idx, incident_type in enumerate(incident_type_by_year.columns):
+    fig.add_trace(go.Bar(
+        x=incident_type_by_year.index,
+        y=incident_type_by_year[incident_type],
+        name=incident_type,
+        marker_color=color_sequence[idx % len(color_sequence)],
+        hoverinfo="skip"
+    ))
+
+# Add a dummy scatter trace for unified hover text
+fig.add_trace(go.Scatter(
+    x=incident_type_by_year.index,
+    y=[0] * len(incident_type_by_year),
+    mode='markers',
+    marker=dict(opacity=0),
+    hoverinfo='text',
+    hovertext=hover_texts,
+    showlegend=False
+))
+
+# Update layout for readability and mobile responsiveness
+fig.update_layout(
+    barmode='stack',
+    title="Yıllara Göre Kaza Türleri Dağılımı",
+    xaxis=dict(title="Yıl", tickmode="linear", dtick=1, title_font=dict(size=14)),
+    yaxis=dict(title="Olay Sayısı", title_font=dict(size=14)),
+    legend=dict(
+        orientation="h",
+        yanchor="top",
+        y=-0.25,
+        xanchor="center",
+        x=0.5,
+        font=dict(size=10)
+    ),
+    hovermode="x unified",
+    template='plotly_white',
+    title_x=0.5,
+    title_font=dict(size=18),
+    margin=dict(t=50, b=100, l=50, r=50),
+    autosize=True,
+    hoverlabel=dict(bgcolor="white", font_size=12, font_family="Arial"),
+)
+
+# Save the responsive chart as HTML
+fig.write_html("kaza_turleri_yillik_sirali_tooltip_corrected_responsive.html")
+```
+
+---
+
+*Kaynak: [İzmir Büyükşehir Belediyesi Açık Veri Portalı](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri)*

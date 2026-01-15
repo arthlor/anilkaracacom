@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Özgür Özel'e Yönelik Saldırı | 5-7 Mayıs 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --red: #e63946;
+            --dark-blue: #1d3557;
+            --light: #f1faee;
+            --light-blue: #a8dadc;
+            --medium-blue: #457b9d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--dark-blue), var(--medium-blue));
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            position: relative;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--red);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+        
+        section {
+            margin-bottom: 3rem;
+            background: white;
+            border-radius: 8px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e9ecef;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        h2 {
+            color: var(--dark-blue);
+            margin-bottom: 1.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--light-blue);
+            font-size: 1.8rem;
+        }
+        
+        /* Timeline Styles */
+        .timeline {
+            position: relative;
+            padding-left: 60px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--light-blue);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.5s ease;
+        }
+        
+        .timeline-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -45px;
+            top: 5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--red);
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--red);
+            z-index: 1;
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: var(--red);
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+        
+        .timeline-content {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--medium-blue);
+        }
+        
+        /* Quotes Section */
+        .quotes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .quote {
+            background: var(--light);
+            padding: 1.8rem;
+            border-left: 4px solid var(--red);
+            margin-bottom: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .quote:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quote::before {
+            content: '"';
+            position: absolute;
+            font-size: 5rem;
+            color: var(--light-blue);
+            top: -20px;
+            left: 10px;
+            line-height: 1;
+            opacity: 0.2;
+            font-family: Georgia, serif;
+        }
+        
+        .quote-text {
+            position: relative;
+            z-index: 1;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .quote-author {
+            text-align: right;
+            font-style: italic;
+            margin-top: 1rem;
+            color: var(--medium-blue);
+            font-weight: 500;
+        }
+        
+        /* Social Media Reactions */
+        .reactions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .tweet {
+            background: white;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .tweet:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-color: var(--light-blue);
+        }
+        
+        .tweet-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .tweet-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 1rem;
+            background: var(--light-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .tweet-user {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .tweet-handle {
+            color: #657786;
+            font-size: 0.95rem;
+        }
+        
+        .tweet-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .tweet-stats {
+            display: flex;
+            color: #657786;
+            font-size: 0.95rem;
+        }
+        
+        .tweet-stat {
+            margin-right: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tweet-stat svg {
+            margin-right: 0.3rem;
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        /* Key Facts */
+        .key-facts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .fact-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--red);
+        }
+        
+        .fact-title {
+            color: var(--dark-blue);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Conclusion Section */
+        .conclusion {
+            background: linear-gradient(135deg, var(--dark-blue), var(--medium-blue));
+            color: white;
+            padding: 3rem 2.5rem;
+            border-radius: 8px;
+            margin-top: 3rem;
+        }
+        
+        .conclusion h2 {
+            color: white;
+            border-bottom: 2px solid var(--light-blue);
+        }
+        
+        .conclusion p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            background: var(--dark-blue);
+            color: white;
+            margin-top: 3rem;
+        }
+        
+        footer p {
+            opacity: 0.8;
+            font-size: 0.95rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                padding: 3rem 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .container {
+                padding: 0 1.5rem 3rem;
+            }
+            
+            section {
+                padding: 1.8rem;
+            }
+            
+            h2 {
+                font-size: 1.6rem;
+            }
+            
+            .timeline {
+                padding-left: 40px;
+            }
+            
+            .timeline-item::before {
+                left: -35px;
+                width: 20px;
+                height: 20px;
+            }
+            
+            .quote {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                padding: 2.5rem 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .timeline {
+                padding-left: 30px;
+            }
+            
+            .timeline-item::before {
+                left: -30px;
+            }
+            
+            .quotes-container,
+            .reactions,
+            .key-facts {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Navigation Menu */
+        .nav-container {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(29, 53, 87, 0.95);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a:focus {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--red);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+        }
+        
+        /* Security Section */
+        .security-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .security-item {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--medium-blue);
+        }
+        
+        .security-item h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .security-item ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .security-item li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .claim {
+            background: #f7f7f7;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .claim h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .response {
+            background: #f7f7f7;
+            padding: 1rem;
+            border-radius: 6px;
+        }
+        
+        .response h4 {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Media Section */
+        .media-highlights {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .highlight {
+            background: var(--light);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--medium-blue);
+        }
+        
+        .media-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+        
+        .media-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .media-content {
+            margin-left: 60px;
+        }
+        
+        .media-content h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Tweet Embed Styles */
+        .tweet-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+        
+        .tweet-column {
+            flex: 1;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        
+        .tweet-embed {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .tweet-column {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <nav>
+            <div class="nav-links">
+                <a href="#overview">Olay Özeti</a>
+                <a href="#timeline">Kronolojik Gelişim</a>
+                <a href="#statements">Açıklamalar</a>
+                <a href="#reactions">Tepkiler</a>
+            </div>
+        </nav>
+    </div>
+    
+    <header>
+        <h1>Özgür Özel'e Yönelik Saldırı</h1>
+        <p class="subtitle">5-7 Mayıs 2025 | Kronolojik Gelişmeler, Resmi Açıklamalar ve Kamuoyu Tepkileri</p>
+    </header>
+    
+    <div class="container">
+        <section id="overview">
+            <h2>Olay Özeti</h2>
+            <p>4 Mayıs 2025 günü, TBMM Başkanvekili Sırrı Süreyya Önder'in cenaze töreninden çıkarken CHP Genel Başkanı Özgür Özel'e 66 yaşındaki Selçuk Tengioğlu tarafından yumruklu saldırı düzenlendi. Saldırganın daha önce iki çocuğunu öldürdüğü ve 2020'de şartlı tahliye olduğu ortaya çıktı. Olay, Türkiye siyasi gündemini derinden etkiledi ve güvenlik önlemleri ile ceza infaz sistemi hakkında tartışmaları alevlendirdi.</p>
+            
+            <div class="key-facts">
+                <div class="fact-card">
+                    <div class="fact-title">Saldırı Tarihi</div>
+                    <p>4 Mayıs 2025</p>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-title">Saldırgan</div>
+                    <p>Selçuk Tengioğlu (66 yaşında)</p>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-title">Tutuklama</div>
+                    <p>6 Mayıs 2025</p>
+                </div>
+                <div class="fact-card">
+                    <div class="fact-title">Suç</div>
+                    <p>Kamu görevlisini kasten yaralama</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="timeline">
+            <h2>Kronolojik Gelişim</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">4 Mayıs 2025</div>
+                    <div class="timeline-content">
+                        <p>TBMM Başkanvekili Sırrı Süreyya Önder'in cenaze töreninden çıkarken CHP Genel Başkanı Özgür Özel'e 66 yaşındaki Selçuk Tengioğlu tarafından yumruklu saldırı düzenlendi.</p>
+                        <p>Saldırgan, kısa sürede kavgayı görüntüleyen güvenlik ve korumalar tarafından etkisiz hale getirildi.</p>
+                        <p>Kimlik tespiti: Selçuk Tengioğlu (66 yaşında)</p>
+                        <p>Özel'in saldırı sonrası ilk müdahalesi yapıldı ve sağlık durumu iyi olarak açıklandı.</p>
+                        <p>Olayın hemen ardından İstanbul Emniyet Müdürlüğü harekete geçerek soruşturmayı başlattı.</p>
+                        <p>Polis, şüphelinin Beyoğlu'nda kaldığı iki ruhsatsız apart oteli mühürleyip işletmecilerle soruşturmaya devam etti.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">5 Mayıs 2025</div>
+                    <div class="timeline-content">
+                        <p>Polis şüpheli Tengioğlu'nu Asayiş Şube'de sorgulamaya devam etti.</p>
+                        <p>İstanbul Cumhuriyet Başsavcılığı tarafından soruşturma kapsamında şüphelinin HTS kayıtları ve finansal hareketlerine ilişkin BTK ve MASAK raporları istendi.</p>
+                        <p>Güvenlik kameraları incelendi.</p>
+                        <p>Milliyet Gazetesi'nin haberine göre, Tengioğlu ifadesinde saldırının önceden planlanmış olmadığını, Özel'i gördüğü anda sinirlerine hakim olamadığını öne sürdü.</p>
+                        <p>Savcılık sevk yazısı ve CCTV kayıtları, saldırganın törenden önce Özel'i takip ettiği ve tören alanı çıkışında beklediğini ortaya koydu.</p>
+                        <p>Emniyet Genel Müdürlüğü, Özel'in korunmasında herhangi bir zafiyet bulunup bulunmadığının araştırıldığı için iki müfettiş görevlendirdi.</p>
+                        <p>Saldırgan hakkında "kişiyi kamu görevi nedeniyle kasten yaralama" suçlamasıyla tutuklama talep edildi ve sorgu izni bir gün uzatıldı.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">6 Mayıs 2025</div>
+                    <div class="timeline-content">
+                        <p>Sulh Ceza Hakimliği'nde yapılan duruşmada Tengioğlu'nun tutuklanmasına karar verildi.</p>
+                        <p>Mahkeme, şüphelinin kamu görevlisi konumundaki bir kişiye karşı fiili saldırı gerçekleştirdiğini ve delillerin toplandığını belirterek kaçma şüphesiyle tutuklama gerekçelerini sıraladı.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">7 Mayıs 2025</div>
+                    <div class="timeline-content">
+                        <p>Soruşturma sürüyor; MASAK ve BTK'dan rapor istendi, saldırganın örgüt bağlantısı araştırıldı.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="statements">
+            <h2>Resmi Açıklamalar</h2>
+            <div class="quotes-container">
+                <div class="quote">
+                    <div class="quote-text">
+                        CHP Genel Başkanı Sayın Özgür Özel'e yönelik gerçekleştirilen fiziki saldırıyı şiddetle kınıyorum. Saldırgan gözaltına alınmıştır.
+                    </div>
+                    <div class="quote-author">- İçişleri Bakanı Ali Yerlikaya</div>
+                </div>
+                
+                <div class="quote">
+                    <div class="quote-text">
+                        Saldırgan 2004'te iki çocuğunu öldürdüğü için müebbet hapis cezası almış ve 2020'de şartlı tahliye edilmiştir. Yeni yasalarla aynı suç işleseydi en az 36 yıl yatması öngörülüyordu.
+                    </div>
+                    <div class="quote-author">- Adalet Bakanı Yılmaz Tunç</div>
+                </div>
+                
+                <div class="quote">
+                    <div class="quote-text">
+                        Bu çirkin bir menfur eylem. Demokratik siyasetin değerlerine aykırı bu saldırıyı şiddetle kınıyorum.
+                    </div>
+                    <div class="quote-author">- Cumhurbaşkanı Recep Tayyip Erdoğan</div>
+                </div>
+                
+                <div class="quote">
+                    <div class="quote-text">
+                        Bu saldırı demokrasimize ve milletimize yöneliktir. Şiddet siyaseti ve toplumu zehirler.
+                    </div>
+                    <div class="quote-author">- CHP Genel Başkanı Kemal Kılıçdaroğlu</div>
+                </div>
+                
+                <div class="quote">
+                    <div class="quote-text">
+                        Bu menfur saldırı herkese açık yazılmış mektuptur. Suçun üstüne gidilmelidir.
+                    </div>
+                    <div class="quote-author">- CHP Genel Başkanı Özgür Özel</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="security">
+            <h2>Güvenlik Önlemleri ve Yargı Süreci</h2>
+            <div class="security-grid">
+                <div class="security-item">
+                    <h3><i class="fas fa-shield-alt"></i> Koruma Tedbirleri</h3>
+                    <p>Emniyet Genel Müdürlüğü, Özel'in korunmasında herhangi bir zafiyet bulunup bulunmadığının araştırıldığı için iki müfettiş görevlendirdi. İnceleme kapsamında:</p>
+                    <ul>
+                        <li>Protokol koruma prosedürleri gözden geçirildi</li>
+                        <li>Olay anındaki güvenlik kamera kayıtları analiz edildi</li>
+                        <li>Koruma personelinin eylem planları değerlendirildi</li>
+                    </ul>
+                </div>
+                
+                <div class="security-item">
+                    <h3><i class="fas fa-car-crash"></i> Protokol Alanı Tartışması</h3>
+                    <div class="claim">
+                        <h4>CHP'nin İddiası:</h4>
+                        <p>"Özel'in aracının protokol alanına alınmaması ciddi bir güvenlik zaafiyetidir. Bu kasti bir engelleme olabilir."</p>
+                    </div>
+                    <div class="response">
+                        <h4>Resmi Açıklama:</h4>
+                        <p>İstanbul Valiliği ve Emniyet Müdürlüğü, trafik yoğunluğu ve alan darlığı nedeniyle araç alınamadığını, koruma ekibinin gerekli önlemleri aldığını bildirdi.</p>
+                    </div>
+                </div>
+                
+                <div class="security-item">
+                    <h3><i class="fas fa-search"></i> Soruşturma Detayları</h3>
+                    <p>İstanbul Cumhuriyet Başsavcılığı'nın talimatıyla:</p>
+                    <ul>
+                        <li>Şüphelinin son 6 aylık telefon kayıtları (HTS) incelendi</li>
+                        <li>Bankacılık işlemleri ve para hareketleri (MASAK) analiz edildi</li>
+                        <li>Son 1 yıldaki seyahat kayıtları kontrol edildi</li>
+                    </ul>
+                    <p>İstanbul Asayiş Şube Müdürlüğü'nün ön bulgularına göre, saldırganın herhangi bir terör örgütü veya illegal yapılanma ile bağlantısı tespit edilemedi.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="media">
+            <h2>Medya Yansımaları ve Analizler</h2>
+            <div class="media-highlights">
+                <div class="highlight">
+                    <div class="media-logo"><img src="images/agos-logo.png" alt="Agos"></div>
+                    <div class="media-content">
+                        <h3>Agos: Tarihsel Bağlantı</h3>
+                        <p>Gazete, Tengioğlu'nun 2005 yılında Hrant Dink cinayetinin azmettiricisi Yasin Hayal ile Bayrampaşa Cezaevi'nde aynı koğuşta kaldığını belgeledi. İkili arasındaki ilişkinin boyutları araştırıldı.</p>
+                    </div>
+                </div>
+                
+                <div class="highlight">
+                    <div class="media-logo"><img src="images/cumhuriyet-logo.png" alt="Cumhuriyet"></div>
+                    <div class="media-content">
+                        <h3>Cumhuriyet: Derin Devlet İzleri</h3>
+                        <p>Gazete, saldırganın 2010'larda "derin devlet" söylemleriyle tanındığını ve çeşitli aşırı sağ gruplarla bağlantılarının olduğunu yazdı.</p>
+                    </div>
+                </div>
+                
+                <div class="highlight">
+                    <div class="media-logo"><img src="images/hurriyet-logo.png" alt="Hürriyet"></div>
+                    <div class="media-content">
+                        <h3>Hürriyet: Güvenlik Eleştirisi</h3>
+                        <p>"Saldırganın elini kolunu sallayarak alana girmesi ve korumaların geç müdahalesi ciddi sorgulanmalı" başlığıyla çıkan haberde, protokol güvenliğindeki eksikler vurgulandı.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="reactions">
+            <h2>Kamuoyu ve Sosyal Medya Tepkileri</h2>
+            
+            <div class="tweet-container">
+                <div class="tweet-column">
+                    <div class="tweet-embed">
+                        <blockquote class="twitter-tweet">
+                            <a href="https://x.com/alicanuludag/status/1919669061450965284"></a>
+                        </blockquote>
+                    </div>
+                </div>
+                
+                <div class="tweet-column">
+                    <div class="tweet-embed">
+                        <blockquote class="twitter-tweet">
+                            <a href="https://x.com/DEMGenelMerkezi/status/1918967230215176378"></a>
+                        </blockquote>
+                    </div>
+                </div>
+                
+                <div class="tweet-column">
+                    <div class="tweet-embed">
+                        <blockquote class="twitter-tweet">
+                            <a href="https://x.com/mert__firat/status/1918993895330906458"></a>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </section>
+        
+        <section class="conclusion">
+            <h2>Eleştirel Değerlendirme</h2>
+            <p>Bu menfur olay, Türkiye'de siyaset üzerindeki şiddet gölgesinin geldiği noktayı gösterdi. Saldırganın geçmişte işlediği ağır suçlara rağmen 2020'de tahliye edilmiş olması, ceza infaz sistemine yönelik eleştirileri yoğunlaştırdı. Resmi açıklamalardaki çelişkiler toplumun güvenini sarstı: Koruma düzenlemeleri ve makam aracı iddialarındaki tutarsızlık, yetkililere yönelik eleştirilere yol açtı. Sonuç olarak, bu saldırı hem ülke çapında demokratik siyasetin gerginliğini yansıtan hem de adalet sisteminin güvenilirliğine dair tartışmaları yeniden alevlendiren bir vaka olarak değerlendirildi.</p>
+        </section>
+    </div>
+    
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 | Tüm Hakları Saklıdır | Kaynaklar: Resmi haber ajansları ve gazeteler</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('section, .timeline-item').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

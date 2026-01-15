@@ -18,7 +18,7 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
       <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6">
         Projects
       </h1>
-      <p class="text-xl text-text-muted max-w-2xl">
+      <p class="text-xl text-muted-foreground max-w-2xl">
         Interactive data stories, visualizations, and case studies built with modern web technologies.
       </p>
     </div>
@@ -36,32 +36,40 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
             class="group glass rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-500 border border-primary/10 hover:border-primary/30"
             style={`animation-delay: ${i * 100}ms`}
           >
-            <div class="aspect-[16/10] bg-gradient-to-br from-primary/10 to-secondary/10 relative overflow-hidden">
-              <div class="absolute inset-0 flex items-center justify-center">
-                <Icon name="project" size={64} class="text-primary/30 group-hover:scale-110 transition-transform duration-500" />
-              </div>
+            <div class="aspect-[16/10] bg-primary/5 relative overflow-hidden">
+              {project.data.heroImage ? (
+                <img 
+                  src={project.data.heroImage} 
+                  alt={project.data.title} 
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
+                  <Icon name="project" size={64} class="text-primary/30 group-hover:scale-110 transition-transform duration-500" />
+                </div>
+              )}
               {project.data.featured && (
-                <span class="absolute top-4 left-4 px-3 py-1.5 bg-primary text-background text-xs font-bold rounded-full uppercase tracking-wider">
+                <span class="absolute top-4 left-4 px-3 py-1.5 bg-primary text-background text-xs font-bold rounded-full uppercase tracking-wider z-10">
                   Featured
                 </span>
               )}
-              <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+              <div class="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg">
                   <Icon name="external-link" size={18} class="text-background" />
                 </div>
               </div>
             </div>
             
             <div class="p-6">
-              <h2 class="text-xl font-display font-bold text-text group-hover:text-primary transition-colors mb-3">
+              <h2 class="text-xl font-display font-bold text-foreground group-hover:text-primary transition-colors mb-3">
                 {project.data.title}
               </h2>
-              <p class="text-text-muted text-sm mb-5 line-clamp-2 leading-relaxed">
+              <p class="text-muted-foreground text-sm mb-5 line-clamp-2 leading-relaxed">
                 {project.data.description}
               </p>
               <div class="flex flex-wrap gap-2">
                 {project.data.technologies.slice(0, 3).map((tech) => (
-                  <span class="text-xs px-3 py-1.5 bg-surface-elevated text-text-muted rounded-lg">
+                  <span class="text-xs px-3 py-1.5 bg-popover text-muted-foreground rounded-lg">
                     {tech}
                   </span>
                 ))}

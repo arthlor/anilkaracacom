@@ -1,6 +1,7 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import Icon from '../components/Icon.astro';
+import { InfiniteMovingCards } from '../components/ui/InfiniteMovingCards';
 
 const skills = [
   { category: 'Data & Analysis', items: ['Python', 'Pandas', 'NumPy', 'SciPy', 'SQL'], icon: 'python' },
@@ -12,18 +13,18 @@ const skills = [
 ];
 
 const timeline = [
-  { year: '2024', title: 'App Developer', description: 'Built Yeşer and ChoreUs apps with React Native' },
-  { year: '2023', title: 'Data Journalist', description: 'Parliament Analysis and political data projects' },
-  { year: '2019', title: 'Senior Digital Journalist', description: 'Advanced data journalism and video production' },
-  { year: '2014', title: 'Started Career', description: 'Began journey as a digital journalist' },
+  { year: '2025 - Continuing', title: 'App Developer & Data Journalist', description: 'Building mobile apps with React Native and creating data-driven stories' },
+  { year: '2024', title: 'Communications Advisor', description: 'Strategic communications and digital content production for local metropolitan municipality.' },
+  { year: '2019', title: 'Senior Digital Journalist', description: 'Advanced data journalism, video production, and newsroom leadership' },
+  { year: '2014', title: 'Started Career', description: 'Began professional journey as a digital journalist and reporter' },
 ];
 
 const workplaces = [
-  { name: 'İzmir Büyükşehir Belediyesi', logo: '/images/workplaces/izmir-bsb.svg' },
-  { name: 'İzbeton', logo: '/images/workplaces/izbeton.svg' },
-  { name: 'BirGün', logo: '/images/workplaces/birgun.svg' },
-  { name: 'dokuz8 HABER', logo: '/images/workplaces/dokuz8.svg' },
-  { name: "Ege'de SönSöz", logo: '/images/workplaces/sonsoz.svg' },
+  { name: 'İzmir Büyükşehir Belediyesi', logo: '/images/workplaces/izmir-bsb.png', url: 'https://www.izmir.bel.tr/' },
+  { name: 'İzbeton', logo: '/images/workplaces/izbeton.png', url: 'https://www.izbeton.com.tr/' },
+  { name: 'BirGün', logo: '/images/workplaces/birgun.png', url: 'https://www.birgun.net/' },
+  { name: 'dokuz8 HABER', logo: '/images/workplaces/dokuz8.png', url: 'https://www.dokuz8haber.net/' },
+  { name: "Ege'de SönSöz", logo: '/images/workplaces/sonsoz.png', url: 'https://www.egedesonsoz.com/' },
 ];
 ---
 
@@ -38,8 +39,8 @@ const workplaces = [
         <!-- Avatar -->
         <div class="flex-shrink-0">
           <div class="relative">
-            <div class="w-56 h-56 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center glow-border rotate-3 hover:rotate-0 transition-transform duration-500">
-              <span class="text-8xl">👨‍💻</span>
+            <div class="w-56 h-56 rounded-3xl overflow-hidden glow-border rotate-3 hover:rotate-0 transition-transform duration-500">
+              <img src="/images/anil-karaca.jpg" alt="Anıl Karaca" class="w-full h-full object-cover" />
             </div>
             <div class="absolute -bottom-3 -right-3 px-4 py-2 bg-primary text-background rounded-xl text-sm font-semibold shadow-lg">
               Open to work
@@ -53,14 +54,15 @@ const workplaces = [
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6">
             Anıl Karaca
           </h1>
-          <p class="text-xl text-text-muted max-w-2xl mb-8 leading-relaxed">
+          <p class="text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
             I'm a data journalist and developer with over 10 years of experience 
             transforming complex datasets into compelling stories and building 
             mobile applications that solve real problems.
           </p>
           <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
             <a 
-              href="/Anil_Karaca_CV.pdf"
+              href="/anilkaraca-cv.pdf"
+              download="Anil_Karaca_CV.pdf"
               class="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-semibold rounded-xl hover:bg-primary-light transition-all"
             >
               <Icon name="download" size={20} />
@@ -68,7 +70,7 @@ const workplaces = [
             </a>
             <a 
               href="/contact"
-              class="inline-flex items-center gap-2 px-6 py-3 glass glow-border rounded-xl font-semibold hover:bg-surface-elevated transition-all"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl font-semibold hover:bg-popover transition-all"
             >
               Contact Me
             </a>
@@ -88,44 +90,42 @@ const workplaces = [
         <h2 class="text-3xl sm:text-4xl font-display font-bold">
           Where I've Worked
         </h2>
-        <p class="text-text-muted mt-4 max-w-2xl mx-auto">
-          10+ years of experience across journalism, government communications, and tech
+        <p class="text-muted-foreground mt-4 max-w-2xl mx-auto">
+          10+ years of experience across journalism, municipality communications, and tech
         </p>
       </div>
       
-      <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12 lg:gap-16">
-        {workplaces.map((workplace) => (
-          <div class="group flex flex-col items-center gap-3 opacity-60 hover:opacity-100 transition-opacity duration-300">
-            <div class="h-16 md:h-20 flex items-center justify-center grayscale group-hover:grayscale-0 transition-all duration-300">
-              <span class="text-xl md:text-2xl font-bold text-text-muted group-hover:text-primary transition-colors">{workplace.name}</span>
-            </div>
-          </div>
-        ))}
-      </div>
+      <InfiniteMovingCards 
+        client:load
+        items={workplaces.map(w => ({ name: w.name, image: w.logo, link: w.url }))}
+        speed="slow"
+        pauseOnHover={true}
+        className="mx-auto"
+      />
     </div>
   </section>
 
   <!-- Bio -->
   <section class="py-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="glass glow-border rounded-3xl p-8 md:p-12">
+      <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-3xl p-8 md:p-12">
         <h2 class="text-2xl font-display font-bold text-primary mb-6">My Story</h2>
-        <div class="space-y-4 text-text-muted leading-relaxed">
+        <div class="space-y-4 text-muted-foreground leading-relaxed">
           <p>
-            My journey in digital journalism began in <strong class="text-text">2014</strong>, 
+            My journey in digital journalism began in <strong class="text-foreground">2014</strong>, 
             when I started working with various news organizations and media outlets. Over the years, 
-            I've had the privilege to work with organizations like <strong class="text-text">BirGün</strong>, 
-            <strong class="text-text">dokuz8 HABER</strong>, and <strong class="text-text">Ege'de SönSöz</strong>.
+            I've had the privilege to work with organizations like <strong class="text-foreground">BirGün</strong>, 
+            <strong class="text-foreground">dokuz8 HABER</strong>, and <strong class="text-foreground">Ege'de SönSöz</strong>.
           </p>
           <p>
-            I also contributed to public communications at <strong class="text-text">İzmir Büyükşehir Belediyesi</strong> 
-            and <strong class="text-text">İzbeton</strong>, where I produced documentary films and 
+            I also contributed to public communications at <strong class="text-foreground">İzmir Büyükşehir Belediyesi</strong> 
+            and <strong class="text-foreground">İzbeton</strong>, where I produced documentary films and 
             digital content that reached millions of viewers.
           </p>
           <p>
             In recent years, I've expanded into mobile app development, creating apps like 
-            <strong class="text-text">Yeşer</strong> (a gratitude journal) and 
-            <strong class="text-text">ChoreUs</strong> (a household task gamification app) 
+            <strong class="text-foreground">Yeşer</strong> (a gratitude journal) and 
+            <strong class="text-foreground">ChoreUs</strong> (a household task gamification app) 
             using React Native and AI-assisted development tools.
           </p>
           <p>
@@ -153,18 +153,18 @@ const workplaces = [
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {skills.map((group) => (
-          <div class="glass glow-border rounded-2xl p-6 hover:bg-surface-elevated transition-all duration-300">
+          <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-2xl p-6 hover:bg-popover transition-all duration-300">
             <div class="flex items-center gap-3 mb-4">
               <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                 <Icon name={group.icon} size={22} class="text-primary" />
               </div>
-              <h3 class="text-lg font-display font-bold text-text">
+              <h3 class="text-lg font-display font-bold text-foreground">
                 {group.category}
               </h3>
             </div>
             <div class="flex flex-wrap gap-2">
               {group.items.map((skill) => (
-                <span class="text-sm px-3 py-1.5 bg-surface-elevated text-text-muted rounded-lg">
+                <span class="text-sm px-3 py-1.5 bg-popover text-muted-foreground rounded-lg">
                   {skill}
                 </span>
               ))}
@@ -176,25 +176,52 @@ const workplaces = [
   </section>
 
   <!-- Timeline -->
-  <section class="py-20">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+  <section class="py-24 relative overflow-hidden">
+    <!-- Background gradient -->
+    <div class="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
         <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Journey</span>
         <h2 class="text-3xl sm:text-4xl font-display font-bold">
           Career Timeline
         </h2>
+        <p class="text-muted-foreground mt-4 max-w-xl mx-auto">
+          A decade of storytelling, technology, and public service
+        </p>
       </div>
       
       <div class="relative">
-        <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-primary/20"></div>
+        <!-- Timeline line with gradient -->
+        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-primary/20 md:-translate-x-px"></div>
         
         {timeline.map((item, i) => (
-          <div class={`relative flex items-center mb-12 ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-            <div class="absolute left-4 md:left-1/2 w-3 h-3 bg-primary rounded-full -translate-x-1/2"></div>
-            <div class={`ml-12 md:ml-0 md:w-1/2 ${i % 2 === 0 ? 'md:pl-12' : 'md:pr-12 md:text-right'}`}>
-              <span class="text-primary font-bold">{item.year}</span>
-              <h3 class="text-lg font-display font-bold text-text mt-1">{item.title}</h3>
-              <p class="text-text-muted text-sm mt-2">{item.description}</p>
+          <div class={`relative flex items-start mb-12 last:mb-0 ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+            <!-- Timeline dot with pulse effect -->
+            <div class="absolute left-6 md:left-1/2 w-4 h-4 -translate-x-1/2 z-10">
+              <span class="absolute inset-0 bg-primary rounded-full animate-ping opacity-20"></span>
+              <span class="relative block w-full h-full bg-primary rounded-full border-4 border-background shadow-lg shadow-primary/30"></span>
+            </div>
+            
+            <!-- Content card -->
+            <div class={`ml-16 md:ml-0 md:w-[calc(50%-2rem)] ${i % 2 === 0 ? 'md:ml-auto md:pl-8' : 'md:mr-auto md:pr-8 md:text-right'}`}>
+              <div class="group relative bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
+                <!-- Year badge -->
+                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
+                  <Icon name="calendar" size={12} />
+                  {item.year}
+                </span>
+                
+                <h3 class="text-lg font-display font-bold text-foreground group-hover:text-primary transition-colors">
+                  {item.title}
+                </h3>
+                <p class="text-muted-foreground text-sm mt-2 leading-relaxed">
+                  {item.description}
+                </p>
+                
+                <!-- Decorative gradient -->
+                <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+              </div>
             </div>
           </div>
         ))}
@@ -219,7 +246,7 @@ const workplaces = [
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center gap-3 px-6 py-3 glass glow-border rounded-xl hover:bg-surface-elevated transition-all group"
+            class="flex items-center gap-3 px-6 py-3 bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl hover:bg-popover transition-all group"
           >
             <Icon name={link.icon} size={20} class="text-primary" />
             <span class="font-medium">{link.label}</span>
