@@ -1,6 +1,15 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import Icon from '../components/Icon.astro';
+import { Image } from 'astro:assets';
+
+// Import images
+import yeserIcon from '../assets/images/projects/yesericon.png';
+import choreusIcon from '../assets/images/projects/choreusicon.png';
+import parliamentImg from '../assets/images/Screenshot-6.png';
+import crackdownImg from '../assets/images/Screenshot-2025-07-10T145239.014.png';
+import ozgurOzelImg from '../assets/images/ozgurozel.png';
+
 
 
 const skills = [
@@ -43,7 +52,7 @@ const apps = [
     description: 'A mindfulness app that helps you develop a gratitude practice. Simple journaling, streak tracking, and gentle reminders.',
     appStoreUrl: 'https://apps.apple.com/us/app/ye%C5%9Fer/id6747253728',
     icon: '🌱',
-    image: '/images/projects/yesericon.png',
+    image: yeserIcon,
     color: 'from-emerald-500/20 to-teal-500/20',
   },
   {
@@ -52,7 +61,7 @@ const apps = [
     description: 'Turn household chores into a fun game. Compete with family members, earn points, and make cleaning enjoyable.',
     appStoreUrl: 'https://apps.apple.com/us/app/choreus-gamify-boring-chores/id6755533194',
     icon: '🏠',
-    image: '/images/projects/choreusicon.png',
+    image: choreusIcon,
     color: 'from-violet-500/20 to-purple-500/20',
   },
 ];
@@ -63,21 +72,21 @@ const projects = [
     description: 'Interactive analysis of the Turkish Parliament\'s legislative work',
     link: 'https://arthlor.github.io/TBMM-Onerge-Analizi/',
     tags: ['D3.js', 'React', 'Data Viz'],
-    image: '/images/Screenshot-6.png',
+    image: parliamentImg,
   },
   {
     title: 'Crackdown on CHP',
     description: 'Data journalism project on political persecution in Turkey',
     link: 'https://arthlor.github.io/Yargi-Kiskacinda-Demokrasi/',
     tags: ['Data Journalism', 'Interactive'],
-    image: '/images/Screenshot-2025-07-10T145239.014.png',
+    image: crackdownImg,
   },
   {
     title: 'Attack on Özgür Özel',
     description: 'Landing page story on the attack against CHP Leader',
     link: '/ozgur-ozele-saldiri',
     tags: ['Storytelling', 'Web Design'],
-    image: '/images/ozgurozel.png',
+    image: ozgurOzelImg,
   },
 ];
 
@@ -220,10 +229,11 @@ const personSchema = {
           >
             <div class="aspect-[16/10] bg-primary/5 relative overflow-hidden">
               {project.image ? (
-                <img 
+                <Image 
                   src={project.image} 
                   alt={project.title} 
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  width={600}
                 />
               ) : (
                 <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">
@@ -278,7 +288,7 @@ const personSchema = {
         <div class={`relative bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 bg-gradient-to-br ${app.color}`}>
             <div class="flex items-start gap-6">
               {app.image ? (
-                <img src={app.image} alt={app.name} class="w-20 h-20 rounded-2xl shadow-lg object-cover" />
+                <Image src={app.image} alt={app.name} class="w-20 h-20 rounded-2xl shadow-lg object-cover" width={80} />
               ) : (
                 <div class="text-5xl">{app.icon}</div>
               )}

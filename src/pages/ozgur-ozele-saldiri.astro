@@ -1,3 +1,9 @@
+---
+import { getImage } from "astro:assets";
+import ozgurOzelImg from "../assets/images/ozgurozel.png";
+
+const optimizedHeroBg = await getImage({src: ozgurOzelImg, format: 'webp'});
+---
 <!DOCTYPE html>
 <html lang="tr">
 
@@ -2214,7 +2220,7 @@
 <body>
     <div class="hero-section">
         <div class="hero-image"
-            style="background-image: url('/images/ozgurozel.png');">
+            style={`background-image: url('${optimizedHeroBg.src}');`}>
             <div class="hero-content">
                 <span class="hero-badge">7 Mayıs 2025</span>
                 <h1>Özgür Özel'e Saldırı</h1>
