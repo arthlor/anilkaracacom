@@ -2458,7 +2458,7 @@
                                     href="https://twitter.com/CHPMuratBakan/status/1918997924098212310?ref_src=twsrc%5Etfw">May
                                     4, 2025</a>
                             </blockquote>
-                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                            <script is:inline async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                         </div>
                         <div class="statement">
                             <blockquote class="twitter-tweet">
@@ -2471,7 +2471,7 @@
                                     href="https://twitter.com/eczozgurozel/status/1919786173775405080?ref_src=twsrc%5Etfw">May
                                     6, 2025</a>
                             </blockquote>
-                            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                            <script is:inline async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                         </div>
                     </div>
                 </div>
@@ -2764,7 +2764,7 @@
                             href="https://twitter.com/ekrem_imamoglu/status/1918970682035089623?ref_src=twsrc%5Etfw">May
                             4, 2025</a>
                     </blockquote>
-                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <script is:inline async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 </div>
 
                 <div class="tweet-column">
@@ -2776,7 +2776,7 @@
                             href="https://twitter.com/CHPMuratBakan/status/1919400966740144323?ref_src=twsrc%5Etfw">May
                             5, 2025</a>
                     </blockquote>
-                    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                    <script is:inline async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
                 </div>
 
                 <div class="tweet-column">
@@ -2818,7 +2818,7 @@
                 </div>
             </div>
 
-            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <script is:inline async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
         </section>
 
         <section class="conclusion-section" id="conclusion">
@@ -3038,7 +3038,7 @@
 
 
 
-    <script>
+    <script is:inline>
         // Intersection Observer for scroll animations
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -3059,7 +3059,12 @@
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
                 tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
+                if (tab.dataset.tab) {
+                    const targetEl = document.getElementById(tab.dataset.tab);
+                    if (targetEl) {
+                        targetEl.classList.add('active');
+                    }
+                }
             });
         });
 
@@ -3107,7 +3112,7 @@
         <i class="fas fa-arrow-up"></i>
     </a>
 
-    <script>
+    <script is:inline>
         // Intersection Observer for scroll animations
         const animationObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -3127,20 +3132,24 @@
         const backToTopButton = document.getElementById('backToTop');
 
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTopButton.classList.add('visible');
-            } else {
-                backToTopButton.classList.remove('visible');
+            if (backToTopButton) {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
             }
         });
 
-        backToTopButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+        if (backToTopButton) {
+            backToTopButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             });
-        });
+        }
 
         // Tab functionality
         const tabs = document.querySelectorAll('.tab');
@@ -3156,7 +3165,12 @@
 
                 // Add active class to clicked tab and corresponding content
                 tab.classList.add('active');
-                document.getElementById(target).classList.add('active');
+                if (target) {
+                    const targetEl = document.getElementById(target);
+                    if (targetEl) {
+                        targetEl.classList.add('active');
+                    }
+                }
             });
         });
     </script>
