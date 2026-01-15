@@ -1,0 +1,14 @@
+---
+interface Props {
+  schema: Record<string, any>;
+}
+
+const { schema } = Astro.props;
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  ...schema
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

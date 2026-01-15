@@ -25,14 +25,32 @@ const formattedDate = article.data.pubDate.toLocaleDateString('en-US', {
   day: 'numeric',
 }).toUpperCase();
 
+import JsonLd from '../../components/JsonLd.astro';
+
 const articleUrl = new URL(`/articles/${article.slug}`, Astro.site || 'https://anilkaraca.com').toString();
+const imageUrl = article.data.heroImage ? new URL(article.data.heroImage, Astro.site || 'https://anilkaraca.com').toString() : undefined;
+
+const blogPostingSchema = {
+  "@type": "BlogPosting",
+  "headline": article.data.title,
+  "description": article.data.description,
+  "datePublished": article.data.pubDate.toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": "Anıl Karaca"
+  },
+  "image": imageUrl,
+  "url": articleUrl
+};
 ---
 
 <BaseLayout 
   title={article.data.title} 
   description={article.data.description}
   image={article.data.heroImage}
+  article={true}
 >
+  <JsonLd schema={blogPostingSchema} />
   <Header />
   
   <article>

@@ -80,9 +80,23 @@ const projects = [
     image: '/images/ozgurozel.png',
   },
 ];
----
 
+import JsonLd from '../components/JsonLd.astro';
+
+const personSchema = {
+  "@type": "Person",
+  "name": "Anıl Karaca",
+  "jobTitle": "Data Journalist & Developer",
+  "url": "https://anilkaraca.com",
+  "sameAs": [
+    "https://twitter.com/anilkaraca17",
+    "https://github.com/arthlor",
+    "https://www.linkedin.com/in/anilkaraca/"
+  ]
+};
+---
 <MainLayout title="Home" description="Anıl Karaca - Data Journalist, Developer, and Multimedia Creator">
+  <JsonLd schema={personSchema} />
   <!-- Hero Section -->
   <section class="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
     <!-- Background Effects -->
