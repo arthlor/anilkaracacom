@@ -13,6 +13,14 @@ export default defineConfig({
     mdx(),
     sitemap()
   ],
+  image: {
+    // Configure image optimization
+    domains: ['anilkaraca.com'],
+    remotePatterns: [],
+    service: {
+      entrypoint: 'astro/assets/services/sharp'
+    }
+  },
   markdown: {
     shikiConfig: {
       theme: 'github-dark'

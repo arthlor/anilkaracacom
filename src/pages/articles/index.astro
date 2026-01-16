@@ -41,6 +41,9 @@ const sortedArticles = articles.sort((a, b) => b.data.pubDate.valueOf() - a.data
                       src={article.data.heroImage} 
                       alt={article.data.title}
                       class="w-full h-full object-cover"
+                      loading="lazy"
+                      width="600"
+                      height="338"
                     />
                   ) : (
                     <div class="absolute inset-0 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">

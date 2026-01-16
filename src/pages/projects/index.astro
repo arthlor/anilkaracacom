@@ -42,6 +42,9 @@ const sortedProjects = projects.sort((a, b) => a.data.order - b.data.order);
                   src={project.data.heroImage} 
                   alt={project.data.title} 
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  loading="lazy"
+                  width="600"
+                  height="375"
                 />
               ) : (
                 <div class="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/10 to-secondary/10">

@@ -108,6 +108,9 @@ export function InfiniteMovingCards({
                     src={item.image}
                     alt={item.name}
                     className="h-12 w-auto object-contain"
+                    loading="lazy"
+                    width="120"
+                    height="48"
                   />
                 ) : (
                   <span className="text-lg font-semibold text-muted-foreground">
@@ -122,6 +125,9 @@ export function InfiniteMovingCards({
                     src={item.image}
                     alt={item.name}
                     className="h-12 w-auto object-contain"
+                    loading="lazy"
+                    width="120"
+                    height="48"
                   />
                 ) : (
                   <span className="text-lg font-semibold text-muted-foreground">
