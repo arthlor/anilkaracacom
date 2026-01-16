@@ -85,19 +85,6 @@ collections:
         hint: "Supports Markdown, HTML, and iframes. Switch to 'Raw' mode to add HTML embeds and interactive visualizations."
         sanitize_preview: false
         modes: ["raw", "rich_text"]
-        buttons:
-          - bold
-          - italic
-          - code
-          - link
-          - heading-one
-          - heading-two
-          - heading-three
-          - heading-four
-          - quote
-          - code-block
-          - bulleted-list
-          - numbered-list
 
   # Projects Collection
   - name: "projects"
