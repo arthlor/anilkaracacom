@@ -2,115 +2,220 @@ backend:
   name: git-gateway
   branch: main
 
+# Media configuration
 media_folder: "public/images"
 public_folder: "/images"
 
-# Optional: Add a logo for the login page
-# logo_url: https://your-site.com/images/logo.svg
+# Site configuration
+site_url: https://anilkaraca.com
+display_url: https://anilkaraca.com
+logo_url: /images/anil-karaca.jpg
 
+# Collections
 collections:
+  # Articles Collection
   - name: "articles"
     label: "Articles"
+    label_singular: "Article"
     folder: "src/content/articles"
+    extension: "mdx"
+    format: "frontmatter"
     create: true
     slug: "{{slug}}"
+    preview_path: "articles/{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - { label: "Publish Date", name: "pubDate", widget: "datetime" }
-      - {
-          label: "Hero Image",
-          name: "heroImage",
-          widget: "image",
-          required: false,
-        }
-      - { label: "Tags", name: "tags", widget: "list", default: [] }
-      - {
-          label: "Category",
-          name: "category",
-          widget: "select",
-          options: ["data-journalism", "article", "tutorial", "news"],
-          default: "article",
-        }
-      - {
-          label: "Featured",
-          name: "featured",
-          widget: "boolean",
-          default: false,
-        }
-      - { label: "Draft", name: "draft", widget: "boolean", default: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        hint: "The main title of your article"
 
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        hint: "Brief summary (50-160 characters for SEO)"
+
+      - label: "Publish Date"
+        name: "pubDate"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+
+      - label: "Hero Image"
+        name: "heroImage"
+        widget: "image"
+        required: false
+        hint: "Main article image (recommended size: 1200x630)"
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        hint: "Add relevant tags for categorization"
+        default: []
+
+      - label: "Category"
+        name: "category"
+        widget: "select"
+        options:
+          - label: "Data Journalism"
+            value: "data-journalism"
+          - label: "Article"
+            value: "article"
+          - label: "Tutorial"
+            value: "tutorial"
+          - label: "News"
+            value: "news"
+        default: "article"
+
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        hint: "Show on homepage featured section"
+
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: false
+        hint: "Hide from public site"
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        modes: ["raw", "rich_text"]
+
+  # Projects Collection
   - name: "projects"
     label: "Projects"
+    label_singular: "Project"
     folder: "src/content/projects"
+    extension: "mdx"
+    format: "frontmatter"
     create: true
     slug: "{{slug}}"
+    preview_path: "projects/{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - { label: "Publish Date", name: "pubDate", widget: "datetime" }
-      - {
-          label: "Hero Image",
-          name: "heroImage",
-          widget: "image",
-          required: false,
-        }
-      - {
-          label: "Live URL",
-          name: "liveUrl",
-          widget: "string",
-          required: false,
-        }
-      - {
-          label: "GitHub URL",
-          name: "githubUrl",
-          widget: "string",
-          required: false,
-        }
-      - {
-          label: "Technologies",
-          name: "technologies",
-          widget: "list",
-          default: [],
-        }
-      - {
-          label: "Featured",
-          name: "featured",
-          widget: "boolean",
-          default: false,
-        }
-      - { label: "Order", name: "order", widget: "number", default: 0 }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        hint: "Project name"
 
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        hint: "Brief project description"
+
+      - label: "Publish Date"
+        name: "pubDate"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+
+      - label: "Hero Image"
+        name: "heroImage"
+        widget: "image"
+        required: false
+        hint: "Project thumbnail or screenshot"
+
+      - label: "Live URL"
+        name: "liveUrl"
+        widget: "string"
+        required: false
+        hint: "URL to the live project"
+        pattern: ["^https?://.*", "Must be a valid URL"]
+
+      - label: "GitHub URL"
+        name: "githubUrl"
+        widget: "string"
+        required: false
+        hint: "GitHub repository URL"
+        pattern: ["^https://github.com/.*", "Must be a valid GitHub URL"]
+
+      - label: "Technologies"
+        name: "technologies"
+        widget: "list"
+        hint: "Technologies used (e.g., React, D3.js, Python)"
+        default: []
+
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        hint: "Show on homepage"
+
+      - label: "Order"
+        name: "order"
+        widget: "number"
+        default: 0
+        value_type: "int"
+        min: 0
+        hint: "Display order (lower numbers appear first)"
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        hint: "Detailed project description and content"
+
+  # Videos Collection
   - name: "videos"
     label: "Videos"
+    label_singular: "Video"
     folder: "src/content/videos"
+    extension: "mdx"
+    format: "frontmatter"
     create: true
     slug: "{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "text" }
-      - { label: "Publish Date", name: "pubDate", widget: "datetime" }
-      - {
-          label: "Platform",
-          name: "platform",
-          widget: "select",
-          options: ["youtube", "vimeo"],
-          default: "youtube",
-        }
-      - { label: "Video ID", name: "videoId", widget: "string" }
-      - {
-          label: "Thumbnail",
-          name: "thumbnail",
-          widget: "image",
-          required: false,
-        }
-      - {
-          label: "Duration",
-          name: "duration",
-          widget: "string",
-          required: false,
-        }
-      - { label: "Tags", name: "tags", widget: "list", default: [] }
-      - { label: "Body", name: "body", widget: "markdown", required: false }
+      - label: "Title"
+        name: "title"
+        widget: "string"
+        hint: "Video title"
+
+      - label: "Description"
+        name: "description"
+        widget: "text"
+        hint: "Video description"
+
+      - label: "Publish Date"
+        name: "pubDate"
+        widget: "datetime"
+        format: "YYYY-MM-DD"
+        date_format: "YYYY-MM-DD"
+        time_format: false
+
+      - label: "Platform"
+        name: "platform"
+        widget: "select"
+        options: ["youtube", "vimeo"]
+        default: "youtube"
+        hint: "Video hosting platform"
+
+      - label: "Video ID"
+        name: "videoId"
+        widget: "string"
+        hint: "YouTube or Vimeo video ID (e.g., dQw4w9WgXcQ)"
+
+      - label: "Thumbnail"
+        name: "thumbnail"
+        widget: "image"
+        required: false
+        hint: "Custom thumbnail (optional, will use platform default if not provided)"
+
+      - label: "Duration"
+        name: "duration"
+        widget: "string"
+        required: false
+        hint: "Video duration (e.g., '10:30')"
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        default: []
+        hint: "Video tags for categorization"
+
+      - label: "Body"
+        name: "body"
+        widget: "markdown"
+        required: false
+        hint: "Additional content or transcript"
