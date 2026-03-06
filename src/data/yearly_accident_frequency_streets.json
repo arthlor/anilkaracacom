@@ -1,0 +1,322 @@
+[
+  {
+    "hovertemplate": "Cadde=Yeşildere Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Yeşildere Caddesi",
+    "line": {
+      "color": "#636efa",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Yeşildere Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      108,
+      956,
+      936,
+      611
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Anadolu Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Anadolu Caddesi",
+    "line": {
+      "color": "#EF553B",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Anadolu Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      66,
+      839,
+      747,
+      540
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Mürselpaşa Bulvarı<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Mürselpaşa Bulvarı",
+    "line": {
+      "color": "#00cc96",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Mürselpaşa Bulvarı",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      45,
+      733,
+      839,
+      538
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Akçay Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Akçay Caddesi",
+    "line": {
+      "color": "#ab63fa",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Akçay Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      44,
+      675,
+      805,
+      597
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Mustafa Kemal Sahil Bulvarı<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Mustafa Kemal Sahil Bulvarı",
+    "line": {
+      "color": "#FFA15A",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Mustafa Kemal Sahil Bulvarı",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      53,
+      596,
+      580,
+      382
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Ankara Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Ankara Caddesi",
+    "line": {
+      "color": "#19d3f3",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Ankara Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      48,
+      484,
+      542,
+      336
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Altınyol Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Altınyol Caddesi",
+    "line": {
+      "color": "#FF6692",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Altınyol Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      50,
+      457,
+      430,
+      249
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Yeşillik Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Yeşillik Caddesi",
+    "line": {
+      "color": "#B6E880",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Yeşillik Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      28,
+      355,
+      401,
+      284
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Şehitler Caddesi<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Şehitler Caddesi",
+    "line": {
+      "color": "#FF97FF",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Şehitler Caddesi",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      19,
+      166,
+      127,
+      73
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  },
+  {
+    "hovertemplate": "Cadde=Konak Tüneli<br>Yıl=%{x}<br>Kaza Sayısı=%{y}<extra></extra>",
+    "legendgroup": "Konak Tüneli",
+    "line": {
+      "color": "#FECB52",
+      "dash": "solid",
+      "shape": "spline"
+    },
+    "marker": {
+      "symbol": "circle",
+      "size": 8
+    },
+    "mode": "lines+markers",
+    "name": "Konak Tüneli",
+    "orientation": "v",
+    "showlegend": true,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "xaxis": "x",
+    "y": [
+      1,
+      48,
+      132,
+      60
+    ],
+    "yaxis": "y",
+    "type": "scatter"
+  }
+]

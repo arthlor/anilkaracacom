@@ -6,14 +6,15 @@ import BackToTop from '../components/BackToTop.astro';
 
 interface Props {
   title: string;
-  description?: string;
-  image?: string;
+  description?: string | undefined;
+  image?: string | undefined;
+  noindex?: boolean | undefined;
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, noindex } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image}>
+<BaseLayout title={title} description={description} image={image} noindex={noindex}>
   <Header />
   <main class="flex-1">
     <slot />
@@ -21,4 +22,3 @@ const { title, description, image } = Astro.props;
   <Footer />
   <BackToTop />
 </BaseLayout>
-

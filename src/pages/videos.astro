@@ -1,123 +1,70 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
 import Icon from '../components/Icon.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 
-const featuredVideo = {
-  title: "Ekmeğimizi Büyütüyoruz, Adil Bölüşüyoruz",
-  description: "A documentary about İzmir Büyükşehir Belediyesi's Acil Çözüm Ekibi and their mission to distribute the city's welfare fairly and equally. Shot, edited, and produced entirely by myself — a solo production from start to finish.",
-  videoId: "iZtaIuGnjzU",
-  type: "Documentary"
-};
-
-const videos = [
-  {
-    title: "Göğüs İdmanı | 40 Kilo Verme Süreci",
-    description: "Personal journey: chest workout routine, 40kg weight loss transformation, and thoughts on mind-body awareness",
-    videoId: "WE7QgT38FCE",
-    type: "Personal"
-  },
-];
+const videos: CollectionEntry<'videos'>[] = await getCollection('videos');
+const featuredVideo = videos.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())[0];
 ---
 
-<MainLayout title="Videos" description="Video productions, documentaries, and personal content by Anıl Karaca">
-  <!-- Hero -->
-  <section class="pt-32 pb-16 bg-gradient-to-b from-surface/50 to-background">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h1 class="text-4xl sm:text-5xl font-display font-bold mb-4">
-        <span class="text-gradient">Videos</span>
+<MainLayout title="Supporting Video Work" description="Supporting documentary and visual storytelling work by Anil Karaca.">
+  <section class="relative overflow-hidden pt-28 pb-18">
+    <div class="absolute inset-0 bg-gradient-to-b from-card/35 to-background"></div>
+
+    <div class="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Supporting work</span>
+      <h1 class="mt-4 text-5xl font-display font-bold tracking-tight sm:text-6xl">
+        Video is supporting proof of my storytelling process, not a separate hiring lane.
       </h1>
-      <p class="text-xl text-muted-foreground max-w-2xl">
-        Documentaries, personal vlogs, and behind-the-scenes looks at my work.
+      <p class="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+        I keep this page available because documentary and visual communication work strengthens the journalism side of
+        the portfolio. It is included as supporting context rather than the main career story.
       </p>
     </div>
   </section>
 
-  <!-- Featured Documentary -->
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Featured</span>
-        <h2 class="text-3xl sm:text-4xl font-display font-bold">Documentary</h2>
-      </div>
-      
-      <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-3xl overflow-hidden max-w-5xl mx-auto">
-        <div class="aspect-video">
-          <iframe
-            src={`https://www.youtube.com/embed/${featuredVideo.videoId}`}
-            title={featuredVideo.title}
-            class="w-full h-full"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="p-8">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="px-3 py-1 bg-primary/10 text-primary text-sm font-medium rounded-full">
-              {featuredVideo.type}
-            </span>
-          </div>
-          <h2 class="text-2xl font-display font-bold text-foreground mb-3">
-            {featuredVideo.title}
-          </h2>
-          <p class="text-muted-foreground leading-relaxed">
-            {featuredVideo.description}
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- More Videos -->
-  <section class="py-16">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">More</span>
-        <h2 class="text-3xl sm:text-4xl font-display font-bold">Personal Channel</h2>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        {videos.map((video) => (
-          <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl overflow-hidden hover:scale-[1.02] transition-transform duration-300">
+  {featuredVideo && (
+    <section class="pb-24 pt-10">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+          <div class="overflow-hidden rounded-[2rem] border border-border bg-card/80 backdrop-blur-sm">
             <div class="aspect-video">
               <iframe
-                src={`https://www.youtube.com/embed/${video.videoId}`}
-                title={video.title}
-                class="w-full h-full"
-                frameborder="0"
+                src={`https://www.youtube.com/embed/${featuredVideo.data.videoId}`}
+                title={featuredVideo.data.title}
+                class="h-full w-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowfullscreen
               ></iframe>
             </div>
-            <div class="p-6">
-              <div class="flex items-center gap-3 mb-3">
-                <span class="px-2.5 py-1 bg-secondary/10 text-secondary text-xs font-medium rounded-full">
-                  {video.type}
-                </span>
-              </div>
-              <h3 class="text-lg font-display font-bold text-foreground mb-2">
-                {video.title}
-              </h3>
-              <p class="text-muted-foreground text-sm">
-                {video.description}
-              </p>
-            </div>
           </div>
-        ))}
-      </div>
 
-      <div class="text-center mt-16">
-        <a 
-          href="https://www.youtube.com/@anil.karaca"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-background font-semibold rounded-xl hover:bg-primary-light transition-all hover:scale-[1.02]"
-        >
-          <Icon name="youtube" size={24} />
-          Subscribe on YouTube
-          <Icon name="arrow-right" size={18} class="group-hover:translate-x-1 transition-transform" />
-        </a>
+          <div class="rounded-[2rem] border border-border bg-card/80 p-8 backdrop-blur-sm">
+            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <Icon name="video" size={24} />
+            </div>
+            <span class="mt-6 block text-xs font-semibold uppercase tracking-[0.18em] text-primary">Documentary</span>
+            <h2 class="mt-3 text-3xl font-display font-bold text-foreground">{featuredVideo.data.title}</h2>
+            <p class="mt-4 text-sm leading-relaxed text-muted-foreground">{featuredVideo.data.description}</p>
+
+            <div class="mt-6 rounded-2xl border border-border/70 bg-background/50 p-4 text-sm leading-relaxed text-muted-foreground">
+              This work supports the portfolio by showing narrative pacing, visual communication, and the ability to
+              deliver a complete story package outside standard article formats.
+            </div>
+
+            <a
+              href={`https://www.youtube.com/watch?v=${featuredVideo.data.videoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+            >
+              Watch on YouTube
+              <Icon name="external-link" size={16} />
+            </a>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 </MainLayout>

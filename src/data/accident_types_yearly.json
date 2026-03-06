@@ -1,0 +1,569 @@
+[
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(251,180,174)"
+    },
+    "name": "Adli Vaka",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(179,205,227)"
+    },
+    "name": "Arızalı",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      228,
+      2218,
+      2301,
+      1482
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(204,235,197)"
+    },
+    "name": "Asfalt Çalışması",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(222,203,228)"
+    },
+    "name": "Ağır Vasıta",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      2,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(254,217,166)"
+    },
+    "name": "Aşan Yükseklik",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(255,255,204)"
+    },
+    "name": "Bekleme",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      2,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(229,216,189)"
+    },
+    "name": "Futbol Maçı",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(253,218,236)"
+    },
+    "name": "Heyelan",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(242,242,242)"
+    },
+    "name": "Konteynır Devrilmesi",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(251,180,174)"
+    },
+    "name": "Maddi Hasarlı",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      223,
+      2768,
+      2903,
+      1938
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(179,205,227)"
+    },
+    "name": "Patlak Lastik",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      4,
+      61,
+      22,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(204,235,197)"
+    },
+    "name": "Perdeleme",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      3,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(222,203,228)"
+    },
+    "name": "Takla Atan",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      9,
+      2,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(254,217,166)"
+    },
+    "name": "Tramvay Kazası",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(255,255,204)"
+    },
+    "name": "Uygulama",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(229,216,189)"
+    },
+    "name": "Yakıt Bitimi",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      16,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(253,218,236)"
+    },
+    "name": "Yakıtı Biten",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      60,
+      4,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(242,242,242)"
+    },
+    "name": "Yanan Araç",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(251,180,174)"
+    },
+    "name": "Yangın",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      19,
+      20,
+      1
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(179,205,227)"
+    },
+    "name": "Yaralanmalı Kaza",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      50,
+      847,
+      873,
+      436
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(204,235,197)"
+    },
+    "name": "Yaya Yolu Çalışması",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      1,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(222,203,228)"
+    },
+    "name": "Yol Yapım",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      2,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(254,217,166)"
+    },
+    "name": "Yoğun Duman",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(255,255,204)"
+    },
+    "name": "Zincirleme Kaza",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      18,
+      275,
+      210,
+      163
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(229,216,189)"
+    },
+    "name": "Ölümlü",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      6,
+      30,
+      9
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(253,218,236)"
+    },
+    "name": "Ölümlü Kaza",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      14,
+      1,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "skip",
+    "marker": {
+      "color": "rgb(242,242,242)"
+    },
+    "name": "İzsu Çalışması",
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "type": "bar"
+  },
+  {
+    "hoverinfo": "text",
+    "hovertext": [
+      "<b>2021</b><br>Arızalı: 228 olay<br>Maddi Hasarlı: 223 olay<br>Yaralanmalı Kaza: 50 olay<br>Zincirleme Kaza: 18 olay<br>Patlak Lastik: 4 olay<br>Perdeleme: 3 olay<br>Ağır Vasıta: 2 olay<br>Bekleme: 2 olay<br>Yol Yapım: 2 olay<br>Adli Vaka: 1 olay<br>Uygulama: 1 olay<br>Yoğun Duman: 1 olay<br>Yanan Araç: 1 olay<br>Yakıt Bitimi: 1 olay<br>Tramvay Kazası: 1 olay<br>Konteynır Devrilmesi: 1 olay<br>Heyelan: 1 olay<br>Futbol Maçı: 1 olay<br>Aşan Yükseklik: 1 olay<br>Asfalt Çalışması: 1 olay<br>İzsu Çalışması: 1 olay<br>Takla Atan: 0 olay<br>Yakıtı Biten: 0 olay<br>Yangın: 0 olay<br>Yaya Yolu Çalışması: 0 olay<br>Ölümlü: 0 olay<br>Ölümlü Kaza: 0 olay<br>",
+      "<b>2022</b><br>Maddi Hasarlı: 2768 olay<br>Arızalı: 2218 olay<br>Yaralanmalı Kaza: 847 olay<br>Zincirleme Kaza: 275 olay<br>Patlak Lastik: 61 olay<br>Yakıtı Biten: 60 olay<br>Yangın: 19 olay<br>Yakıt Bitimi: 16 olay<br>Ölümlü Kaza: 14 olay<br>Takla Atan: 9 olay<br>Ölümlü: 6 olay<br>Yaya Yolu Çalışması: 1 olay<br>Adli Vaka: 0 olay<br>Yoğun Duman: 0 olay<br>Yol Yapım: 0 olay<br>Yanan Araç: 0 olay<br>Tramvay Kazası: 0 olay<br>Uygulama: 0 olay<br>Perdeleme: 0 olay<br>Konteynır Devrilmesi: 0 olay<br>Heyelan: 0 olay<br>Futbol Maçı: 0 olay<br>Bekleme: 0 olay<br>Aşan Yükseklik: 0 olay<br>Ağır Vasıta: 0 olay<br>Asfalt Çalışması: 0 olay<br>İzsu Çalışması: 0 olay<br>",
+      "<b>2023</b><br>Maddi Hasarlı: 2903 olay<br>Arızalı: 2301 olay<br>Yaralanmalı Kaza: 873 olay<br>Zincirleme Kaza: 210 olay<br>Ölümlü: 30 olay<br>Patlak Lastik: 22 olay<br>Yangın: 20 olay<br>Yakıtı Biten: 4 olay<br>Takla Atan: 2 olay<br>Ölümlü Kaza: 1 olay<br>Adli Vaka: 0 olay<br>Yoğun Duman: 0 olay<br>Yol Yapım: 0 olay<br>Yaya Yolu Çalışması: 0 olay<br>Yanan Araç: 0 olay<br>Tramvay Kazası: 0 olay<br>Yakıt Bitimi: 0 olay<br>Uygulama: 0 olay<br>Perdeleme: 0 olay<br>Konteynır Devrilmesi: 0 olay<br>Heyelan: 0 olay<br>Futbol Maçı: 0 olay<br>Bekleme: 0 olay<br>Aşan Yükseklik: 0 olay<br>Ağır Vasıta: 0 olay<br>Asfalt Çalışması: 0 olay<br>İzsu Çalışması: 0 olay<br>",
+      "<b>2024</b><br>Maddi Hasarlı: 1938 olay<br>Arızalı: 1482 olay<br>Yaralanmalı Kaza: 436 olay<br>Zincirleme Kaza: 163 olay<br>Ölümlü: 9 olay<br>Yangın: 1 olay<br>Adli Vaka: 0 olay<br>Yakıt Bitimi: 0 olay<br>Ölümlü Kaza: 0 olay<br>Yoğun Duman: 0 olay<br>Yol Yapım: 0 olay<br>Yaya Yolu Çalışması: 0 olay<br>Yanan Araç: 0 olay<br>Yakıtı Biten: 0 olay<br>Tramvay Kazası: 0 olay<br>Uygulama: 0 olay<br>Takla Atan: 0 olay<br>Perdeleme: 0 olay<br>Patlak Lastik: 0 olay<br>Konteynır Devrilmesi: 0 olay<br>Heyelan: 0 olay<br>Futbol Maçı: 0 olay<br>Bekleme: 0 olay<br>Aşan Yükseklik: 0 olay<br>Ağır Vasıta: 0 olay<br>Asfalt Çalışması: 0 olay<br>İzsu Çalışması: 0 olay<br>"
+    ],
+    "marker": {
+      "opacity": 0
+    },
+    "mode": "markers",
+    "showlegend": false,
+    "x": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "y": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "type": "scatter"
+  }
+]

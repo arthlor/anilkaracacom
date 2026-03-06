@@ -1,268 +1,149 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
 import Icon from '../components/Icon.astro';
+import ResumeLinks from '../components/ResumeLinks.astro';
 import { InfiniteMovingCards } from '../components/ui/InfiniteMovingCards';
-import { Image } from 'astro:assets';
-import profileImage from '../assets/images/anil-karaca.jpg';
-
-const skills = [
-  { category: 'Data & Analysis', items: ['Python', 'Pandas', 'NumPy', 'SciPy', 'SQL'], icon: 'python' },
-  { category: 'Visualization', items: ['D3.js', 'Plotly', 'Matplotlib', 'Flourish'], icon: 'data-viz' },
-  { category: 'Web Development', items: ['React', 'Next.js', 'Node.js', 'Astro', 'TypeScript'], icon: 'code' },
-  { category: 'Mobile Development', items: ['React Native', 'Expo', 'iOS', 'Android'], icon: 'mobile-app' },
-  { category: 'AI & Tools', items: ['Cursor', 'GitHub Copilot', 'Prompt Engineering'], icon: 'ai' },
-  { category: 'Media', items: ['Video Production', 'Drone Piloting', 'Copywriting'], icon: 'video' },
-];
-
-const timeline = [
-  { year: '2025 - Continuing', title: 'App Developer & Data Journalist', description: 'Building mobile apps with React Native and creating data-driven stories' },
-  { year: '2024', title: 'Communications Advisor', description: 'Strategic communications and digital content production for local metropolitan municipality.' },
-  { year: '2019', title: 'Senior Digital Journalist', description: 'Advanced data journalism, video production, and newsroom leadership' },
-  { year: '2014', title: 'Started Career', description: 'Began professional journey as a digital journalist and reporter' },
-];
-
-const workplaces = [
-  { name: 'İzmir Büyükşehir Belediyesi', logo: '/images/workplaces/izmir-bsb.png', url: 'https://www.izmir.bel.tr/' },
-  { name: 'İzbeton', logo: '/images/workplaces/izbeton.png', url: 'https://www.izbeton.com.tr/' },
-  { name: 'BirGün', logo: '/images/workplaces/birgun.png', url: 'https://www.birgun.net/' },
-  { name: 'dokuz8 HABER', logo: '/images/workplaces/dokuz8.png', url: 'https://www.dokuz8haber.net/' },
-  { name: "Ege'de SönSöz", logo: '/images/workplaces/sonsoz.png', url: 'https://www.egedesonsoz.com/' },
-];
+import {
+  careerTimeline,
+  credibilityHighlights,
+  workplaces,
+} from '../data/portfolio';
+import MainLayout from '../layouts/MainLayout.astro';
 ---
 
-<MainLayout title="About" description="Learn more about Anıl Karaca - Data Journalist and Developer">
-  <!-- Hero -->
-  <section class="pt-32 pb-20 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-surface/50 to-background"></div>
-    <div class="absolute top-1/3 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px]"></div>
-    
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-20">
-        <!-- Avatar -->
-        <div class="flex-shrink-0">
-          <div class="relative">
-            <div class="w-56 h-56 rounded-3xl overflow-hidden glow-border rotate-3 hover:rotate-0 transition-transform duration-500">
-              <Image 
-                src={profileImage} 
-                alt="Anıl Karaca" 
-                class="w-full h-full object-cover" 
-                width={224}
-                height={224}
-                format="webp"
-                quality={85}
-              />
-            </div>
-            <div class="absolute -bottom-3 -right-3 px-4 py-2 bg-primary text-background rounded-xl text-sm font-semibold shadow-lg">
-              Open to work
-            </div>
-          </div>
-        </div>
-        
-        <!-- Info -->
-        <div class="flex-1 text-center lg:text-left">
-          <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">About Me</span>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold mb-6">
-            Anıl Karaca
-          </h1>
-          <p class="text-xl text-muted-foreground max-w-2xl mb-8 leading-relaxed">
-            I'm a data journalist and developer with over 10 years of experience 
-            transforming complex datasets into compelling stories and building 
-            mobile applications that solve real problems.
-          </p>
-          <div class="flex flex-wrap gap-4 justify-center lg:justify-start">
-            <a 
-              href="/anilkaraca-cv.pdf"
-              download="Anil_Karaca_CV.pdf"
-              class="group inline-flex items-center gap-2 px-6 py-3 bg-primary text-background font-semibold rounded-xl hover:bg-primary-light transition-all"
-            >
-              <Icon name="download" size={20} />
-              Download CV
-            </a>
-            <a 
-              href="/contact"
-              class="inline-flex items-center gap-2 px-6 py-3 bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl font-semibold hover:bg-popover transition-all"
-            >
-              Contact Me
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+<MainLayout title="About" description="Background, experience, and credibility notes for Anil Karaca.">
+  <section class="relative overflow-hidden pt-28 pb-18">
+    <div class="absolute inset-0 bg-gradient-to-b from-card/35 to-background"></div>
+    <div class="absolute right-0 top-10 h-[420px] w-[420px] rounded-full bg-primary/10 blur-[120px]"></div>
 
-  <!-- Career / Workplaces -->
-  <section class="py-20 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-background via-surface/30 to-background"></div>
-    
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Experience</span>
-        <h2 class="text-3xl sm:text-4xl font-display font-bold">
-          Where I've Worked
-        </h2>
-        <p class="text-muted-foreground mt-4 max-w-2xl mx-auto">
-          10+ years of experience across journalism, municipality communications, and tech
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="max-w-4xl">
+        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">About</span>
+        <h1 class="mt-4 text-5xl font-display font-bold tracking-tight sm:text-6xl">
+          I built this portfolio around two hiring lanes, but the advantage is the overlap.
+        </h1>
+        <p class="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+          I have spent more than a decade working across journalism, public communication, and software delivery. That
+          mix is why I can move between story framing, analysis, interface design, and product execution without losing
+          clarity.
         </p>
-      </div>
-      
-      <InfiniteMovingCards 
-        client:load
-        items={workplaces.map(w => ({ name: w.name, image: w.logo, link: w.url }))}
-        speed="slow"
-        pauseOnHover={true}
-        className="mx-auto"
-      />
-    </div>
-  </section>
-
-  <!-- Bio -->
-  <section class="py-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-3xl p-8 md:p-12">
-        <h2 class="text-2xl font-display font-bold text-primary mb-6">My Story</h2>
-        <div class="space-y-4 text-muted-foreground leading-relaxed">
-          <p>
-            My journey in digital journalism began in <strong class="text-foreground">2014</strong>, 
-            when I started working with various news organizations and media outlets. Over the years, 
-            I've had the privilege to work with organizations like <strong class="text-foreground">BirGün</strong>, 
-            <strong class="text-foreground">dokuz8 HABER</strong>, and <strong class="text-foreground">Ege'de SönSöz</strong>.
-          </p>
-          <p>
-            I also contributed to public communications at <strong class="text-foreground">İzmir Büyükşehir Belediyesi</strong> 
-            and <strong class="text-foreground">İzbeton</strong>, where I produced documentary films and 
-            digital content that reached millions of viewers.
-          </p>
-          <p>
-            In recent years, I've expanded into mobile app development, creating apps like 
-            <strong class="text-foreground">Yeşer</strong> (a gratitude journal) and 
-            <strong class="text-foreground">ChoreUs</strong> (a household task gamification app) 
-            using React Native and AI-assisted development tools.
-          </p>
-          <p>
-            I'm particularly interested in political data analysis, social trends, and 
-            creating tools that make information more accessible. When I'm not coding 
-            or writing, you can find me flying drones or exploring new ways to 
-            visualize data.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Skills -->
-  <section class="py-20 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-background via-surface/30 to-background"></div>
-    
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Expertise</span>
-        <h2 class="text-3xl sm:text-4xl font-display font-bold">
-          Skills & Technologies
-        </h2>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {skills.map((group) => (
-          <div class="bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-2xl p-6 hover:bg-popover transition-all duration-300">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Icon name={group.icon} size={22} class="text-primary" />
-              </div>
-              <h3 class="text-lg font-display font-bold text-foreground">
-                {group.category}
-              </h3>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              {group.items.map((skill) => (
-                <span class="text-sm px-3 py-1.5 bg-popover text-muted-foreground rounded-lg">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Timeline -->
-  <section class="py-24 relative overflow-hidden">
-    <!-- Background gradient -->
-    <div class="absolute inset-0 bg-gradient-to-b from-background via-card/20 to-background"></div>
-    
-    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
-        <span class="text-primary text-sm font-medium uppercase tracking-widest mb-4 block">Journey</span>
-        <h2 class="text-3xl sm:text-4xl font-display font-bold">
-          Career Timeline
-        </h2>
-        <p class="text-muted-foreground mt-4 max-w-xl mx-auto">
-          A decade of storytelling, technology, and public service
-        </p>
-      </div>
-      
-      <div class="relative">
-        <!-- Timeline line with gradient -->
-        <div class="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-primary/20 md:-translate-x-px"></div>
-        
-        {timeline.map((item, i) => (
-          <div class={`relative flex items-start mb-12 last:mb-0 ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
-            <!-- Timeline dot with pulse effect -->
-            <div class="absolute left-6 md:left-1/2 w-4 h-4 -translate-x-1/2 z-10">
-              <span class="absolute inset-0 bg-primary rounded-full animate-ping opacity-20"></span>
-              <span class="relative block w-full h-full bg-primary rounded-full border-4 border-background shadow-lg shadow-primary/30"></span>
-            </div>
-            
-            <!-- Content card -->
-            <div class={`ml-16 md:ml-0 md:w-[calc(50%-2rem)] ${i % 2 === 0 ? 'md:ml-auto md:pl-8' : 'md:mr-auto md:pr-8 md:text-right'}`}>
-              <div class="group relative bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
-                <!-- Year badge -->
-                <span class="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">
-                  <Icon name="calendar" size={12} />
-                  {item.year}
-                </span>
-                
-                <h3 class="text-lg font-display font-bold text-foreground group-hover:text-primary transition-colors">
-                  {item.title}
-                </h3>
-                <p class="text-muted-foreground text-sm mt-2 leading-relaxed">
-                  {item.description}
-                </p>
-                
-                <!-- Decorative gradient -->
-                <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-primary/5 via-transparent to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Connect -->
-  <section class="py-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl font-display font-bold mb-8">
-        Connect With Me
-      </h2>
-      <div class="flex flex-wrap justify-center gap-4">
-        {[
-          { href: 'https://www.linkedin.com/in/anil-karaca/', icon: 'linkedin', label: 'LinkedIn' },
-          { href: 'https://x.com/anilkaraca17', icon: 'twitter', label: 'Twitter' },
-          { href: 'https://github.com/arthlor', icon: 'github', label: 'GitHub' },
-          { href: 'https://www.youtube.com/@anil.karaca', icon: 'youtube', label: 'YouTube' },
-        ].map((link) => (
-          <a 
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center gap-3 px-6 py-3 bg-card/80 backdrop-blur-sm border border-border hover:border-primary/30 rounded-xl hover:bg-popover transition-all group"
+        <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+          <a
+            href="/anilkaraca-cv.pdf"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:brightness-110"
+            data-track-event="download_master_resume"
+            data-track-label="About Resume"
           >
-            <Icon name={link.icon} size={20} class="text-primary" />
-            <span class="font-medium">{link.label}</span>
+            <Icon name="download" size={18} />
+            Download master resume
           </a>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card/80 px-7 py-4 text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/30"
+          >
+            Contact me
+            <Icon name="arrow-right" size={18} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-4 md:grid-cols-3">
+        {credibilityHighlights.map((highlight) => (
+          <div class="rounded-3xl border border-border bg-card/80 p-6 text-sm leading-relaxed text-muted-foreground backdrop-blur-sm">
+            {highlight}
+          </div>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
+        <div class="max-w-2xl">
+          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Where I have worked</span>
+          <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Newsrooms, civic institutions, and product work all shaped the same skill set.</h2>
+        </div>
+
+        <div class="mt-8">
+          <InfiniteMovingCards
+            client:load
+            items={workplaces.map((workplace) => ({
+              name: workplace.name,
+              image: workplace.logo,
+              link: workplace.url,
+            }))}
+            speed="slow"
+            pauseOnHover={true}
+            className="mx-auto"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div class="mb-10 max-w-2xl">
+        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Career arc</span>
+        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">A short timeline of how the portfolio came together</h2>
+      </div>
+
+      <div class="space-y-5">
+        {careerTimeline.map((item) => (
+          <div class="rounded-3xl border border-border bg-card/80 p-6 backdrop-blur-sm">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{item.year}</span>
+                <h3 class="mt-2 text-xl font-display font-bold text-foreground">{item.title}</h3>
+              </div>
+              <p class="max-w-2xl text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid gap-6 lg:grid-cols-2">
+        <div class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Why this portfolio is split</span>
+          <div class="mt-5 space-y-4 text-sm leading-relaxed text-muted-foreground">
+            <p>
+              Recruiters often see mixed profiles as noise. I split the site into `Data Journalism` and `Developer`
+              because those are the clearest hiring stories.
+            </p>
+            <p>
+              The split is not artificial. It reflects how I actually work: data-heavy editorial thinking on one side,
+              interface and product delivery on the other.
+            </p>
+            <p>
+              The overlap is the differentiator. I can talk to editors, product people, and engineers without needing a
+              translator in the room.
+            </p>
+          </div>
+        </div>
+
+        <div class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
+          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Best fit</span>
+          <div class="mt-5 space-y-4 text-sm leading-relaxed text-muted-foreground">
+            <p>Data journalism teams that need someone comfortable with both reporting and implementation.</p>
+            <p>Editorial product teams building tools, explainers, or civic-information experiences.</p>
+            <p>Frontend or mobile teams that value product judgment, communication, and speed.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pb-24">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <ResumeLinks />
     </div>
   </section>
 </MainLayout>

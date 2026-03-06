@@ -1,0 +1,94 @@
+[
+  {
+    "level": "Metropolitan Municipality",
+    "parties": [
+      "AKP",
+      "BBP",
+      "CHP",
+      "DEM (HDP)",
+      "MHP",
+      "SAADET",
+      "YRP",
+      "İYİ PARTİ"
+    ],
+    "changes": [
+      -3,
+      0,
+      3,
+      0,
+      -1,
+      0,
+      1,
+      0
+    ]
+  },
+  {
+    "level": "City",
+    "parties": [
+      "AKP",
+      "BBP",
+      "CHP",
+      "DEM (HDP)",
+      "MHP",
+      "SAADET",
+      "YRP",
+      "İYİ PARTİ"
+    ],
+    "changes": [
+      -12,
+      1,
+      11,
+      2,
+      -2,
+      0,
+      1,
+      1
+    ]
+  },
+  {
+    "level": "District",
+    "parties": [
+      "AKP",
+      "BBP",
+      "CHP",
+      "DEM (HDP)",
+      "MHP",
+      "SAADET",
+      "YRP",
+      "İYİ PARTİ"
+    ],
+    "changes": [
+      -179,
+      9,
+      146,
+      15,
+      -23,
+      -8,
+      39,
+      5
+    ]
+  },
+  {
+    "level": "Town",
+    "parties": [
+      "AKP",
+      "BBP",
+      "CHP",
+      "DEM (HDP)",
+      "MHP",
+      "SAADET",
+      "YRP",
+      "İYİ PARTİ"
+    ],
+    "changes": [
+      -33,
+      0,
+      10,
+      -2,
+      9,
+      -8,
+      24,
+      1
+    ]
+  }
+]

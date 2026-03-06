@@ -7,6 +7,11 @@ tags: ["turkey", "elections", "data-analysis", "politics"]
 category: "data-journalism"
 featured: true
 draft: false
+track: "data-journalism"
+language: "en"
+summaryEn: "An English-language election analysis that maps the opposition's 2024 gains across Turkey."
+role: "Election analysis, mapping, interactive reporting"
+impact: "Explains a major political shift with maps, charts, and contextual reporting."
 ---
 
 # Turkey Elections: Red Wave Conquers Anatolia
@@ -21,9 +26,13 @@ The most striking change observed in the election outcomes is the rise of the Re
 
 This shift is particularly noteworthy given Turkey's traditionally polarized political environment, where major cities play a pivotal role in setting political trends and narratives.
 
+import ElectionResultsBarChart from '../../components/mdx/charts/ElectionResultsBarChart.tsx';
+import PartyChangesChart from '../../components/mdx/charts/PartyChangesChart.tsx';
+import TurkeyElectionMap from '../../components/mdx/charts/TurkeyElectionMap.tsx';
+
 #### Last Updates Of Results
 
-<iframe src="/uploads/2024/04/figure.html" width="100%" height="400" frameborder="0"></iframe>
+<ElectionResultsBarChart client:visible />
 
 #### Stressful Results for AKP
 
@@ -41,12 +50,10 @@ Another noteworthy development is the emergence of new political forces, such as
 
 I decided to prepare some interactive graphics about the outcome of the election. In this map, there are information about which cities changed parties, which candidate got selected with how many votes, and some more details.
 
-<iframe src="/uploads/2024/04/election_changes_map.html" width="100%" height="500" frameborder="0"></iframe>
-
-I recommend using computers or large screens to experience the graphics more easily. To view them in full screen, you can click **[here](/uploads/2024/04/election_changes_map.html)** for the map, **[here](/uploads/2024/07/party_changes_2019_2024.html)** for the chart.
+<TurkeyElectionMap client:visible />
 
 In below chart, you can see which party lost how many cities, towns etc.
 
 #### Changes in Control by Party (2019 vs 2024)
 
-<iframe src="/uploads/2024/07/party_changes_2019_2024.html" width="100%" height="1000" frameborder="0"></iframe>
+<PartyChangesChart client:visible />

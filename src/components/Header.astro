@@ -1,9 +1,8 @@
 ---
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/articles', label: 'Articles' },
-  { href: '/videos', label: 'Videos' },
+  { href: '/data-journalism', label: 'Data Journalism' },
+  { href: '/developer', label: 'Developer' },
+  { href: '/projects', label: 'Selected Work' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -43,6 +42,15 @@ const currentPath = Astro.url.pathname;
         ))}
       </div>
 
+      <a
+        href="/anilkaraca-cv.pdf"
+        class="hidden md:inline-flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/15"
+        data-track-event="download_master_resume"
+        data-track-label="Header Resume"
+      >
+        Resume
+      </a>
+
       <!-- Mobile Menu Button -->
       <button
         id="mobile-menu-btn"
@@ -75,6 +83,14 @@ const currentPath = Astro.url.pathname;
             {link.label}
           </a>
         ))}
+        <a
+          href="/anilkaraca-cv.pdf"
+          class="mt-2 inline-flex items-center justify-center rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary transition-all duration-200 hover:bg-primary/15"
+          data-track-event="download_master_resume"
+          data-track-label="Mobile Resume"
+        >
+          Resume
+        </a>
       </div>
     </div>
   </nav>
@@ -121,4 +137,3 @@ const currentPath = Astro.url.pathname;
     btn?.setAttribute('aria-expanded', String(!isOpen));
   });
 </script>
-

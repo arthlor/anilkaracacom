@@ -1,21 +1,21 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import { CaretRight, Heart } from '@phosphor-icons/react';
+import Icon from '../components/Icon.astro';
 import { cn } from '../lib/utils';
 ---
 
-<MainLayout title="Design System Test">
+<MainLayout title="Design System Test" noindex={true}>
   <div class="container mx-auto p-8 space-y-8">
     <h1 class="text-4xl font-bold">Design System Integration Test</h1>
     
     <section class="space-y-4">
-      <h2 class="text-2xl font-semibold">1. Phosphor Icons</h2>
+      <h2 class="text-2xl font-semibold">1. Icon Rendering</h2>
       <div class="flex gap-4 text-3xl">
-        <CaretRight weight="bold" />
-        <Heart weight="fill" className="text-red-500" />
-        <Heart weight="duotone" className="text-pink-500" />
+        <Icon name="arrow-right" size={28} />
+        <Icon name="data-journalism" size={28} class="text-primary" />
+        <Icon name="code" size={28} class="text-secondary" />
       </div>
-      <p class="text-sm text-muted-foreground">Note: Phosphor Icons generally need `client:load` or similar if fully interactive, but strictly rendering SVGs works in SSR/SSG if configured correctly. Since they are React components, they might default to static HTML in Astro.</p>
+      <p class="text-sm text-muted-foreground">This page stays available for local visual checks but is excluded from indexing.</p>
     </section>
 
     <section class="space-y-4">

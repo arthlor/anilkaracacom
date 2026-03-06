@@ -13,6 +13,11 @@ const articles = defineCollection({
     category: z.enum(['data-journalism', 'article', 'tutorial', 'news']).default('article'),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
+    track: z.enum(['data-journalism', 'developer', 'supporting']).default('data-journalism'),
+    language: z.enum(['en', 'tr']).default('en'),
+    summaryEn: z.string().optional(),
+    role: z.string().optional(),
+    impact: z.string().optional(),
   }),
 });
 
@@ -29,6 +34,11 @@ const projects = defineCollection({
     technologies: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     order: z.number().default(0),
+    track: z.enum(['data-journalism', 'developer', 'supporting']).default('supporting'),
+    language: z.enum(['en', 'tr']).default('en'),
+    summaryEn: z.string().optional(),
+    role: z.string().optional(),
+    impact: z.string().optional(),
   }),
 });
 

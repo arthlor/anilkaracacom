@@ -6,14 +6,16 @@ interface Props {
   title: string;
   description?: string | undefined;
   image?: string | undefined;
-  article?: boolean;
+  article?: boolean | undefined;
+  noindex?: boolean | undefined;
 }
 
 const { 
   title, 
   description,
   image,
-  article
+  article,
+  noindex = false,
 } = Astro.props;
 ---
 
@@ -30,35 +32,9 @@ const {
       description={description} 
       image={image} 
       article={article}
+      noindex={noindex}
     />
-    
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script is:inline>
-      if (window.netlifyIdentity) {
-        // Redirect to admin on login
-        window.netlifyIdentity.on('init', user => {
-          if (!user) {
-            window.netlifyIdentity.on('login', () => {
-              document.location.href = '/admin/';
-            });
-          }
-        });
-        
-        // Auto-redirect confirmation/invite/recovery tokens to admin
-        // This fixes the issue where email confirmation links redirect to homepage
-        const hash = window.location.hash;
-        if (hash && (
-          hash.includes('confirmation_token') ||
-          hash.includes('invite_token') ||
-          hash.includes('recovery_token')
-        )) {
-          // Preserve the hash and redirect to admin
-          window.location.href = '/admin/' + hash;
-        }
-      }
-    </script>
 
-    <!-- Google Analytics 4 -->
     <!-- Google Analytics 4 -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-E4DHYLKXW8"></script>
     <script is:inline>
@@ -67,6 +43,24 @@ const {
       gtag('js', new Date());
 
       gtag('config', 'G-E4DHYLKXW8');
+    </script>
+    <script is:inline>
+      window.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+
+        const trigger = target.closest('[data-track-event]');
+        if (!trigger || typeof window.gtag !== 'function') return;
+
+        const { trackEvent, trackLabel, trackLocation } = trigger.dataset;
+        if (!trackEvent) return;
+
+        window.gtag('event', trackEvent, {
+          event_category: 'portfolio',
+          event_label: trackLabel || trackEvent,
+          location: trackLocation || window.location.pathname,
+        });
+      }, { capture: true });
     </script>
   </head>
   <body class="min-h-screen flex flex-col">

@@ -1,0 +1,68 @@
+---
+import Icon from './Icon.astro';
+import { resumeLinks } from '../data/portfolio';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Resume downloads',
+  description = 'Choose the version that matches the role you are considering me for.',
+} = Astro.props;
+
+const items = [
+  {
+    title: 'Master resume',
+    description: 'Broad overview across data journalism and product work.',
+    href: resumeLinks.master,
+    eventName: 'download_master_resume',
+  },
+  {
+    title: 'Data journalism resume',
+    description: 'Focused on reporting, analysis, investigations, and visual storytelling.',
+    href: resumeLinks.dataJournalism,
+    eventName: 'download_data_journalism_resume',
+  },
+  {
+    title: 'Developer resume',
+    description: 'Focused on frontend, mobile, and product delivery work.',
+    href: resumeLinks.developer,
+    eventName: 'download_developer_resume',
+  },
+];
+---
+
+<section class="rounded-3xl border border-border bg-card/80 p-6 backdrop-blur-sm md:p-8">
+  <div class="mb-6 max-w-2xl">
+    <span class="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-primary">Resume</span>
+    <h2 class="text-2xl font-display font-bold text-foreground">{title}</h2>
+    <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-3">
+    {items.map((item) => (
+      <a
+        href={item.href}
+        class="group rounded-2xl border border-border bg-background/60 p-5 transition-all duration-300 hover:border-primary/30 hover:bg-background"
+        data-track-event={item.eventName}
+        data-track-label={item.title}
+      >
+        <div class="flex items-center justify-between gap-4">
+          <div>
+            <h3 class="font-display text-lg font-bold text-foreground transition-colors group-hover:text-primary">
+              {item.title}
+            </h3>
+            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
+              {item.description}
+            </p>
+          </div>
+          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Icon name="download" size={18} />
+          </div>
+        </div>
+      </a>
+    ))}
+  </div>
+</section>

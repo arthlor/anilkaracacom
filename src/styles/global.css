@@ -1,3 +1,13 @@
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/space-grotesk/400.css';
+@import '@fontsource/space-grotesk/500.css';
+@import '@fontsource/space-grotesk/600.css';
+@import '@fontsource/space-grotesk/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
@@ -140,17 +150,6 @@
   }
 }
 
-/* Import fonts */
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/space-grotesk/400.css';
-@import '@fontsource/space-grotesk/500.css';
-@import '@fontsource/space-grotesk/600.css';
-@import '@fontsource/space-grotesk/700.css';
-@import '@fontsource/jetbrains-mono/400.css';
-
 /* Base styles */
 html {
   scroll-behavior: smooth;
@@ -229,7 +228,7 @@ pre {
 
 /* Article Content Container */
 .article-content {
-  @apply max-w-[680px] mx-auto;
+  @apply max-w-4xl mx-auto;
 }
 
 /* Enhanced Prose Styling */

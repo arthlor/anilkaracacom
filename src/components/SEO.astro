@@ -4,13 +4,15 @@ interface Props {
   description?: string | undefined;
   image?: string | undefined;
   article?: boolean | undefined;
+  noindex?: boolean | undefined;
 }
 
 const { 
   title, 
-  description = 'Anıl Karaca - Data Journalist, Web Developer, and Multimedia Creator',
+  description = 'Anil Karaca - Data journalist and developer building public-interest stories, apps, and editorial products.',
   image = '/og-image.jpg',
-  article = false
+  article = false,
+  noindex = false,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -22,6 +24,7 @@ const socialImageURL = new URL(image, Astro.site);
 <meta name="description" content={description} />
 <meta name="theme-color" content="#0a0a0a" />
 <link rel="canonical" href={canonicalURL} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Open Graph -->
 <meta property="og:type" content={article ? 'article' : 'website'} />

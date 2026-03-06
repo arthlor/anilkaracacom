@@ -1,26 +1,52 @@
 ---
-title: "Izmir's public transportation data in Coronavirus era"
-description: "In Izmir, as in other cities, there has been a significant decrease in the number of people using public transportation since the beginning of the pandemic."
-pubDate: 2020-12-01
+title: "The Long Road Back: İzmir's Public Transport Recovery Post-Pandemic"
+description: "A data-driven deep dive into how İzmir's public transportation network collapsed during COVID-19 and its steady, demographic-shifting recovery over four years."
+pubDate: 2024-03-25
 heroImage: "/images/articles/izmir-coronavirus-transport-2025.webp"
-tags: ["izmir", "covid-19", "public-transport", "data-analysis"]
+tags: ["izmir", "covid-19", "public-transport", "data-analysis", "interactive"]
 category: "data-journalism"
-featured: false
+featured: true
 draft: false
 ---
 
-In Izmir, as in other cities, there has been a significant decrease in the number of people using public transportation since the beginning of the pandemic. Those who had access to private vehicles switched to using them, and public transportation such as ferries, buses, and metros ceased to be the preferred choice.
+import UlasimRecoveryChart from '../../components/UlasimRecoveryChart';
+import UlasimDemographicsChart from '../../components/UlasimDemographicsChart';
 
-It was possible to observe this transition process from a distance. The increase in individual vehicle use led to a noticeable increase in traffic on the city's main arteries.
+The reverberations of the COVID-19 pandemic reshaped urban mobility worldwide, and İzmir was no exception. As lockdowns were enforced and remote work became the norm, the bustling arteries of the city—its buses, ferries, trains, and trams—suddenly fell quiet. 
 
-This situation can be demonstrated with data, as the Izmir Metropolitan Municipality recently launched an open data portal. Public transportation data shared by ESHOT General Directorate shows a clear decrease in the use of public transportation in Izmir, especially after the sharing of coronavirus cases in Turkey.
+Using published open data, we can now trace the exact trajectory of that silence and the slow, steady hum of recovery that followed. By analyzing over 19,000 daily public transport records from 2021 to early 2024, a clear narrative emerges: not just of *how many* people returned to public transit, but *who* returned first.
 
-You can examine the rates of Izmir residents' use of public transportation in the graph I prepared using this data.
+## The Overall Recovery: Reclaiming the Commute
 
-For this graph, I only used ESHOT buses as a sample, and the date range is from February 1, 2020, to December 1, 2020.
+In the early months of 2021, the shadow of the pandemic was still heavy. Total monthly ridership was a fraction of its pre-pandemic capacity. As vaccines rolled out and restrictions eased towards the end of 2021, we see the first significant inflection point.
 
-![Izmir residents' use of public transportation graph](/images/articles/izmir-coronavirus-graph.jpg)
+The interactive chart below tracks the monthly ridership across different transit modes. Notice the distinct seasonal dips—common in İzmir during the hot summer months as schools close and residents leave for coastal towns—and the sharp upward trend heading into 2023 and 2024.
+
+<UlasimRecoveryChart client:only="react" />
+
+*Tip: You can interact with the chart by hovering over data points, or clicking on the legend to isolate specific transport types.*
+
+Unsurprisingly, **buses (ESHOT and İZULAŞ)** remained the heavy lifters of the city’s transit network, maintaining the highest volume even during the darkest days of the pandemic. However, the rail systems—**İzban** and **Metro**—showed the steepest recovery curves as regular commuting patterns resumed. The ferry system (İzdeniz), while smaller in overall volume, mirrored this recovery, serving as a vital link across the bay.
+
+## A Demographic Shift: Who is Riding?
+
+The recovery wasn't uniform across all demographics. When we break down the ridership by fare type, we uncover the socio-economic layers of the pandemic's impact. 
+
+Full-fare paying adults (often white-collar workers) were among the slowest to return, likely due to the enduring shift towards hybrid and remote working models. Conversely, the return of students in late 2021 and early 2022 created massive spikes in overall transit use.
+
+<UlasimDemographicsChart client:only="react" />
+
+This demographic breakdown highlights a crucial reality of public infrastructure: it relies heavily on the youth and the student population. The massive upward waves representing student fares perfectly align with the academic calendar. 
+
+Furthermore, we can observe the steady presence of the "60 Years Old", "Free" and "Other" categories, representing the elderly, transit personnel, and social assistance recipients. For these groups, public transit wasn't just a choice for commuting; it remained an essential lifeline throughout the disrupted years.
+
+## Conclusion
+
+The data tells a story of resilience. While the initial drop in early 2020 was immediate and brutal, the road back was measured and inevitable. By 2024, İzmir's public transit network appears to have not only normalized but adapted to the new rhythms of a post-pandemic city.
+
+Traffic congestion in personal utility vehicles remains a challenge, as those who could afford to switch to private cars during the pandemic have proven hesitant to return. Yet, the steady incline of the charts above proves that the backbone of İzmir still moves together.
 
 ---
 
-*Source: [Izmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/)*
+*Data Source: [İzmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/)*  
+*Note: Interactive visualizations are built using Plotly.js for comprehensive data exploration.*

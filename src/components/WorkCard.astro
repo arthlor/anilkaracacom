@@ -1,0 +1,102 @@
+---
+import type { ImageMetadata } from 'astro';
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  eyebrow?: string | undefined;
+  role?: string | undefined;
+  impact?: string | undefined;
+  tags?: string[] | undefined;
+  image?: string | ImageMetadata | undefined;
+  imageAlt?: string | undefined;
+  ctaLabel?: string | undefined;
+  external?: boolean | undefined;
+}
+
+const {
+  title,
+  description,
+  href,
+  eyebrow,
+  role,
+  impact,
+  tags = [],
+  image,
+  imageAlt = title,
+  ctaLabel = 'View details',
+  external = false,
+} = Astro.props;
+
+const imageSrc = typeof image === 'string' ? image : image?.src;
+---
+
+<article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card/80 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
+  {imageSrc && (
+    <div class="aspect-[16/10] overflow-hidden border-b border-border/70 bg-popover">
+      <img
+        src={imageSrc}
+        alt={imageAlt}
+        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+        loading="lazy"
+        width="800"
+        height="500"
+      />
+    </div>
+  )}
+
+  <div class="flex flex-1 flex-col p-6">
+    {eyebrow && (
+      <p class="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+        {eyebrow}
+      </p>
+    )}
+
+    <h3 class="text-2xl font-display font-bold text-foreground transition-colors group-hover:text-primary">
+      {title}
+    </h3>
+
+    <p class="mt-3 text-sm leading-relaxed text-muted-foreground">
+      {description}
+    </p>
+
+    {(role || impact) && (
+      <div class="mt-5 space-y-3 rounded-2xl border border-border/80 bg-background/50 p-4">
+        {role && (
+          <p class="text-sm text-muted-foreground">
+            <span class="font-semibold text-foreground">Role:</span> {role}
+          </p>
+        )}
+        {impact && (
+          <p class="text-sm text-muted-foreground">
+            <span class="font-semibold text-foreground">Why it matters:</span> {impact}
+          </p>
+        )}
+      </div>
+    )}
+
+    {tags.length > 0 && (
+      <div class="mt-5 flex flex-wrap gap-2">
+        {tags.map((tag) => (
+          <span class="rounded-full bg-popover px-3 py-1.5 text-xs text-muted-foreground">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <div class="mt-6 pt-2">
+      <a
+        href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+        class="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:gap-3"
+      >
+        {ctaLabel}
+        <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-1" />
+      </a>
+    </div>
+  </div>
+</article>
