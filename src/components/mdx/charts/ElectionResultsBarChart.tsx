@@ -46,7 +46,7 @@ export default function ElectionResultsBarChart() {
     <div 
       ref={containerRef}
       className={`relative w-full rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] transition-all duration-300 flex flex-col ${
-        isFullscreen ? 'h-screen p-8' : 'h-auto min-h-[500px] p-6 mb-12 mt-4'
+        isFullscreen ? 'h-screen p-8' : 'h-[500px] p-6 mb-12 mt-4'
       }`}
     >
       <div className="flex justify-between items-start mb-6 shrink-0">
@@ -94,7 +94,7 @@ export default function ElectionResultsBarChart() {
                 </div>
 
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
+                  initial={{ height: "0%", opacity: 0 }}
                   animate={{ height: `${heightPercentage}%`, opacity: 1 }}
                   transition={{ duration: 0.8, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
                   className="w-full relative rounded-t-sm shadow-sm"
