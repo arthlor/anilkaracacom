@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gizem For Freedom</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef', 
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#881337', 
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(217, 70, 239, 0.05); 
+        }
+        
+        .checkbox-pink {
+            appearance: none;
+            background-color: #fff;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #f9a8d4;
+            border-radius: 0.35rem;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .checkbox-pink::before {
+            content: "";
+            width: 0.70rem;
+            height: 0.70rem;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+            transform: scale(0);
+            background-color: white;
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+        }
+
+        .checkbox-pink:checked {
+            background-color: #d946ef;
+            border-color: #d946ef;
+        }
+
+        .checkbox-pink:checked::before {
+            transform: scale(1);
+        }
+
+        [x-cloak] { display: none !important; }
+
+        .locked-card { 
+            opacity: 0.6;
+            filter: grayscale(80%);
+            pointer-events: none; 
+        }
+        
+        .task-row:last-child {
+            border-bottom: none !important;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-rose-50 to-fuchsia-50 min-h-screen text-stone-600 antialiased selection:bg-brand-300 selection:text-brand-900"
+      x-data="gizemApp()">
+
+    <main class="max-w-md mx-auto px-5 py-10 md:py-16 flex flex-col gap-6 min-h-screen">
+        
+        <header class="text-center space-y-2">
+            <h1 class="text-3xl font-bold text-brand-900 tracking-tight">Gizem For Freedom</h1>
+            <p class="text-stone-500 text-sm font-medium">30 Günlük Özgürlük Ritüelin</p>
+        </header>
+
+        <section class="glass-card rounded-2xl p-6 space-y-4 sticky top-4 z-10 transition-shadow shadow-md">
+            <div class="flex justify-between items-end">
+                <div>
+                    <h2 class="text-sm font-bold text-brand-900 uppercase tracking-widest">TOPLAM İLERLEME</h2>
+                    <p class="text-xs text-stone-400 mt-1"><span x-text="totalCompletedTasks"></span> / 90 Görev</p>
+                </div>
+                <div class="text-3xl font-bold tracking-tighter text-brand-500">
+                    <span x-text="progressPercentage"></span>%
+                </div>
+            </div>
+            <div class="w-full h-3 bg-brand-100 rounded-full overflow-hidden">
+                <div class="h-full bg-brand-500 transition-all duration-700 ease-out"
+                     :style="`width: ${progressPercentage}%`"></div>
+            </div>
+        </section>
+
+        <section class="space-y-4 flex-1 pb-10">
+            <template x-for="(day, index) in days" :key="day.id">
+                
+                <div class="glass-card rounded-2xl transition-all duration-300 overflow-hidden"
+                     :class="[
+                         isLocked(index) ? 'locked-card' : 'cursor-pointer hover:border-brand-300 hover:shadow-md',
+                         isDayFullyCompleted(index) ? 'bg-brand-50/60 border-brand-200' : 'bg-white/90'
+                     ]">
+                    
+                    <div class="p-4 flex items-center justify-between" 
+                         @click="if(!isLocked(index)) toggleDay(index)">
+                        <div class="flex items-center gap-4">
+                            <div class="flex flex-col items-center justify-center w-12 h-12 rounded-full font-bold shadow-sm"
+                                 :class="isDayFullyCompleted(index) ? 'bg-brand-500 text-white' : 'bg-rose-100 text-brand-900'">
+                                <span class="text-[10px] uppercase leading-none opacity-80">Gün</span>
+                                <span class="text-lg leading-none mt-0.5" x-text="day.id"></span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-brand-900" 
+                                    :class="{'line-through opacity-70': isDayFullyCompleted(index)}">
+                                    <span x-text="getCompletedTasksForDay(index)"></span> / 3 Görev
+                                </h3>
+                                <p class="text-xs font-medium text-stone-400 uppercase tracking-wider mt-0.5" 
+                                   x-text="isDayFullyCompleted(index) ? 'Tamamlandı' : 'Devam Ediyor'"></p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <template x-if="isLocked(index)">
+                                <svg class="w-5 h-5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </template>
+                            <template x-if="!isLocked(index) && !isDayFullyCompleted(index) && expandedDay !== index">
+                                <svg class="w-5 h-5 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </template>
+                            <template x-if="!isLocked(index) && !isDayFullyCompleted(index) && expandedDay === index">
+                                <svg class="w-5 h-5 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                            </template>
+                            <template x-if="isDayFullyCompleted(index)">
+                                <svg class="w-6 h-6 text-brand-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div x-show="expandedDay === index" x-collapse x-cloak>
+                        <div class="px-2 pb-4 pt-1 max-w-full">
+                            <div class="bg-white/50 rounded-xl overflow-hidden shadow-inner border border-rose-50">
+                                
+                                <template x-for="(task, taskKey) in day.tasks" :key="taskKey">
+                                    <label class="task-row p-4 flex items-start gap-4 cursor-pointer hover:bg-rose-50/50 transition-colors border-b border-brand-50"
+                                           :class="{ 'opacity-60 bg-brand-50/30': task.completed }">
+                                        <div class="mt-0.5" @click.stop="">
+                                            <input type="checkbox" class="checkbox-pink" 
+                                                   x-model="task.completed" 
+                                                   @change="toggleTaskCompletion(index)">
+                                        </div>
+                                        <div class="flex-1 space-y-1">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider"
+                                                      :class="{
+                                                          'bg-emerald-100 text-emerald-700': taskKey === 'easy',
+                                                          'bg-amber-100 text-amber-700': taskKey === 'medium',
+                                                          'bg-rose-100 text-rose-700': taskKey === 'hard'
+                                                      }"
+                                                      x-text="taskKey === 'easy' ? 'Kolay' : (taskKey === 'medium' ? 'Orta' : 'Zor')">
+                                                </span>
+                                            </div>
+                                            <p class="text-sm text-stone-600 leading-snug transition-all"
+                                               :class="{ 'line-through text-stone-400': task.completed }"
+                                               x-text="task.desc"></p>
+                                        </div>
+                                    </label>
+                                </template>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </template>
+        </section>
+
+        <div x-cloak x-show="progressPercentage === 100" 
+             class="fixed bottom-6 left-6 right-6 bg-brand-500 text-white rounded-2xl p-6 text-center shadow-2xl z-50 animate-bounce">
+            <h3 class="font-bold text-xl">30 Günlük Seri Tamamlandı! 🎉</h3>
+            <p class="text-sm text-brand-100 opacity-90 mt-2">Daha otonom, daha huzurlu ve daha özgürsün. Seninle gurur duyuyoruz Gizem!</p>
+        </div>
+
+        <footer class="mt-auto text-center pb-8">
+            <button @click="resetAll()" class="text-xs font-medium text-stone-300 hover:text-red-400 transition-colors uppercase tracking-widest focus:outline-none">
+                Tüm İlerlemeyi Sıfırla (Tehlikeli)
+            </button>
+        </footer>
+
+    </main>
+
+    <script>
+        const PRD_DATA = [
+            {
+                id: 1, tasks: {
+                    easy: { desc: "Kordon'da 15 dk yürüyüş ve 3 şükür sebebi yaz (Topraklanma)", completed: false },
+                    medium: { desc: "Gym'de hafif kardiyo / ter atma", completed: false },
+                    hard: { desc: "Kendini bir konuda eleştirdiğinde bunu fark edip eleştiriyi durdur", completed: false }
+                }
+            },
+            {
+                id: 2, tasks: {
+                    easy: { desc: "Sabah 1 bardak limonlu su ve 5 dakika derin nefes", completed: false },
+                    medium: { desc: "Öğle yemeğinde daha önce yemediğin yeni renkli bir sebze ekle", completed: false },
+                    hard: { desc: "İşle ilgili başarısızlık korkusu geldiğinde, bunun sadece bir 'his' olduğunu günlüğüne yaz", completed: false }
+                }
+            },
+            {
+                id: 3, tasks: {
+                    easy: { desc: "Çene düşürme egzersizi ile sevdiğin bir şarkıyı bedeni kasmadan mırıldan", completed: false },
+                    medium: { desc: "Üst vücut egzersizi veya reformer pilates yap", completed: false },
+                    hard: { desc: "Ailenden veya müşterinden gelen bir suçluluk hissini sadece 'gözlemle', anında tepki verme", completed: false }
+                }
+            },
+            {
+                id: 4, tasks: {
+                    easy: { desc: "Güneş ışığı altında 10 dakika kahve molası ver (Alsancak / Bostanlı)", completed: false },
+                    medium: { desc: "Gym'de ağırlık çalışması ile fiziksel gücüne odaklan", completed: false },
+                    hard: { desc: "Kendi değerini belirleyen 3 özellik yaz (İşinden ve başarılarından tamamen bağımsız)", completed: false }
+                }
+            },
+            {
+                id: 5, tasks: {
+                    easy: { desc: "Sosyal medyadan akşam 8'den sonra uzak dur (Akşam detoksu)", completed: false },
+                    medium: { desc: "İnciraltı Kent Ormanı'nda veya Kültürpark'ta kısa bir doğa yürüyüşü", completed: false },
+                    hard: { desc: "Freelance kariyerin için karlı ve otonom yeni bir uzmanlık alanı (Örn: Bilişim) düşün/araştır", completed: false }
+                }
+            },
+            {
+                id: 6, tasks: {
+                    easy: { desc: "Sadece 5 dakika boyunca '4-7-8' nefes egzersizini uygula", completed: false },
+                    medium: { desc: "Gym'de daha önce denemediğin bir aleti veya hareketi dene", completed: false },
+                    hard: { desc: "Bir müşteriye veya arkadaşına sınır çizen nazik bir 'Hayır' cümlesi kur", completed: false }
+                }
+            },
+            {
+                id: 7, tasks: {
+                    easy: { desc: "Aynada kendine gülümse ve yüksek sesle 'Ben Yeterliyim' de", completed: false },
+                    medium: { desc: "Bugün bedeni yormadan sadece esneme ve mobilite çalışması yap", completed: false },
+                    hard: { desc: "Müzik Akademisi veya uygulamalardan ilk şan/ses eğitimi araştırmanı yap", completed: false }
+                }
+            },
+            {
+                id: 8, tasks: {
+                    easy: { desc: "Kendi sevdiğin bir şarkıyı yüksek sesle söyle (Dudak titretme yap)", completed: false },
+                    medium: { desc: "Pilates/Gym rutinine core (karın) hareketleri ekle, merkezini hisset", completed: false },
+                    hard: { desc: "Geçmişten bir başarını yazıp, bunun tamamen senin başarın olduğunu şüphe etmeden kabullen", completed: false }
+                }
+            },
+            {
+                id: 9, tasks: {
+                    easy: { desc: "Favori çayını demle ve balkonda 10 dakika telefonsuz iç", completed: false },
+                    medium: { desc: "Gym'de alt vücut (leg) günü yap, yere sağlam bas", completed: false },
+                    hard: { desc: "Seni strese sokan bir senaryo için 'En kötü ne olabilir?' mantıksal analizi yap", completed: false }
+                }
+            },
+            {
+                id: 10, tasks: {
+                    easy: { desc: "Bir bardak suyuna nane/limon ekleyip ferahlığı hisset", completed: false },
+                    medium: { desc: "Sevdiğin bir müzik eşliğinde 20 dakika tempolu yürüyüş yap", completed: false },
+                    hard: { desc: "Fiyatlarını/hizmet bedelini artırmayı planladığın bir e-posta taslağı yaz (Henüz gönderme)", completed: false }
+                }
+            },
+            {
+                id: 11, tasks: {
+                    easy: { desc: "Sabah kalktığında telefona bakmadan 10 dakika pencereden dışarı bak", completed: false },
+                    medium: { desc: "Yeni bir sağlıklı/protein ağırlıklı yemek tarifi dene", completed: false },
+                    hard: { desc: "İçindeki 'Eleştirmen' sesine bir isim ver ve ona 'Güvendeyim, sana ihtiyacım yok' de", completed: false }
+                }
+            },
+            {
+                id: 12, tasks: {
+                    easy: { desc: "Evde 10 dakikalık boyun ve omuz rahatlatıcı yoga yap", completed: false },
+                    medium: { desc: "Gym'de kürek çekme makinesini veya salon bisikletini kullan", completed: false },
+                    hard: { desc: "Hata yapmaktan korktuğun bir işi bilerek 'mükemmel değil' ama 'yeterince iyi' yapıp gönder", completed: false }
+                }
+            },
+            {
+                id: 13, tasks: {
+                    easy: { desc: "Sadece o an giymek istediğin, o an seni en rahat hissettiren kıyafeti giy", completed: false },
+                    medium: { desc: "Öğünlerinden birini tamamen ekransız ve yemeğe odaklanarak ye", completed: false },
+                    hard: { desc: "8 yaşındaki Gizem'e, ondan bir şey beklemeden sadece sevdiğini söyleyen bir not yaz", completed: false }
+                }
+            },
+            {
+                id: 14, tasks: {
+                    easy: { desc: "Çiçekçiden kendine, sadece sevdiğin için bir demet çiçek al", completed: false },
+                    medium: { desc: "İzmir'de daha önce gitmediğin, konforlu bir kafede 1 saat çalış", completed: false },
+                    hard: { desc: "Ailenden gelen 'şunu yapmalısın' tarzı bir beklentiyi içinden tamamen dürüstçe reddet", completed: false }
+                }
+            },
+            {
+                id: 15, tasks: {
+                    easy: { desc: "Sevdiğin bir uçucu yağı veya parfümü koklayarak 5 dk zihnini boşalt", completed: false },
+                    medium: { desc: "Gym'de tam vücut (full body) egzersizi ile kan akışını hızlandır", completed: false },
+                    hard: { desc: "Reddedilme korkusu hissettiğinde bedendeki konumunu (göğüs, boyun) bul ve şefkat göster", completed: false }
+                }
+            },
+            {
+                id: 16, tasks: {
+                    easy: { desc: "Aynaya bakıp duruşunu dikleştir, omuzları geriye al, güç duruşu yap", completed: false },
+                    medium: { desc: "Spor sonrası vücudu şımartan uzun ve rahatlatıcı bir duş/banyo al", completed: false },
+                    hard: { desc: "LinkedIn veya portfolyonda seni rakiplerinden ayıran bir yeteneğini ön plana çıkar", completed: false }
+                }
+            },
+            {
+                id: 17, tasks: {
+                    easy: { desc: "Ses telleri için 'Ah' sesini uzatarak boğaz gerginliğini at", completed: false },
+                    medium: { desc: "Evde yoga matında 15 dakika sadece kalça açıcı esnemeler yap (Stres kalçada birikir)", completed: false },
+                    hard: { desc: "Biri seni veya işini eleştirdiğinde savunmaya geçmeden sadece 'Görüşün için teşekkürler' de", completed: false }
+                }
+            },
+            {
+                id: 18, tasks: {
+                    easy: { desc: "Sabah hava serinken balkona veya Kordon'a çıkıp temiz havayı solukla", completed: false },
+                    medium: { desc: "Kendine besleyici yeşil bir smoothie veya bol naneli bir su hazırla", completed: false },
+                    hard: { desc: "Freelance işin için potansiyel yeni bir müşteriye veya kişiye kısa bir ileti/mesaj at", completed: false }
+                }
+            },
+            {
+                id: 19, tasks: {
+                    easy: { desc: "Senin sorumluluğunda olmayan bir ev veya iş problemini 'Bu benim problemim değil' diyerek bırak", completed: false },
+                    medium: { desc: "Gym'de yüksek tempolu kardiyo ile tüm stresini makinede bırak", completed: false },
+                    hard: { desc: "Sadece çok komik bulduğun bir video izleyip kahkaha at", completed: false }
+                }
+            },
+            {
+                id: 20, tasks: {
+                    easy: { desc: "Lisede veya üniversitede dinlerken çok mutlu hissettiğin bir şarkıyı aç", completed: false },
+                    medium: { desc: "Bugün kendine 10.000 adım (veya benzer bir yürüyüş) hedefi koy ve tamamla", completed: false },
+                    hard: { desc: "Aşırı doluysan, sırf 'sınır çizebilmek' için çok da acil olmayan bir randevuyu ertele", completed: false }
+                }
+            },
+            {
+                id: 21, tasks: {
+                    easy: { desc: "Yatmadan 1 saat önce telefon ekranını sıcak renklere (Night Shift) al", completed: false },
+                    medium: { desc: "Çeşme, Alaçatı veya Urla için hava almalık plan organize et veya arabayla tura çık", completed: false },
+                    hard: { desc: "Mükemmel olsun diye beklettiğin, yapmadığın bir içeriği/işi tam şu an %80 kalitede bitir", completed: false }
+                }
+            },
+            {
+                id: 22, tasks: {
+                    easy: { desc: "Günün en ağır yemeğinden sonra 10 dakikalık sindirim yürüyüşü yap", completed: false },
+                    medium: { desc: "Ayna karşısında gövdeni dik tutarak kahraman (Power Pose) duruşunda 2 dakika bekle", completed: false },
+                    hard: { desc: "Vokal/Şan dersi için bulduğun biriyle mesajlaşarak gerçekten ilk adımı at", completed: false }
+                }
+            },
+            {
+                id: 23, tasks: {
+                    easy: { desc: "O gün için ZORUNLU sadece 3 küçük görev listele, bitince başka zorunluluğun olmadığını kabul et", completed: false },
+                    medium: { desc: "Ağırlık yerine kendi beden ağırlığınla plank, squat gibi hareketlerde sınırını test et", completed: false },
+                    hard: { desc: "Bugün KİMSEYE hiçbir konuda 'Özür dilerim' deme (Gerçekten yıkıcı bir hatan yoksa)", completed: false }
+                }
+            },
+            {
+                id: 24, tasks: {
+                    easy: { desc: "Evde yalnızken, kimse görmüyormuş gibi seni en özgür hissettiren şekilde dans et", completed: false },
+                    medium: { desc: "Vücudunda ağrıyan (boyun/sırt) noktaya sıcak kompres veya krem ile uzun masaj yap", completed: false },
+                    hard: { desc: "Geçmişten gelen, ailenin sana atfettiği 'sen böylesin' etiketini sembolik bir kağıda yazıp YIRT", completed: false }
+                }
+            },
+            {
+                id: 25, tasks: {
+                    easy: { desc: "Bugün karşılaştığın bir insana (barista, kasiyer) içinden gelerek gerçek bir iltifat et", completed: false },
+                    medium: { desc: "Daha önce pek yapmadığın yeni bir fiziksel aktivite formuna (Tenis, Yoga) göz at", completed: false },
+                    hard: { desc: "Aylık gelirini %30 artıracak (yeni kural veya yeni paket) bir ücretlendirme mantığı yaz", completed: false }
+                }
+            },
+            {
+                id: 26, tasks: {
+                    easy: { desc: "Kendine çok şık bir kupada veya kadehte, ödül niteliğinde bir şeyler hazırla", completed: false },
+                    medium: { desc: "Buhar odası, Hamam veya Termal suda toksinleri atarak vücudunu parasempatik moda geçir", completed: false },
+                    hard: { desc: "İşinde yetersizlik hissettiğinde 'Bunu yeni öğreniyorum ve hata yapma hakkım var' de", completed: false }
+                }
+            },
+            {
+                id: 27, tasks: {
+                    easy: { desc: "Sabah ilk saatini sosyal medya, WhatsApp veya e-posta açmadan geçir", completed: false },
+                    medium: { desc: "Reformer pilatese giderek nefes ve beden senkronizasyonunu hisset", completed: false },
+                    hard: { desc: "Kendi yarattığın özgürlük, dürüstlük, estetik gibi 3 değeri yaz, bunlara ne kadar sadık kaldığını not et", completed: false }
+                }
+            },
+            {
+                id: 28, tasks: {
+                    easy: { desc: "Gün batımını veya körfez manzarasını 10 dakika boyunca hiçbir şey düşünmeden izle", completed: false },
+                    medium: { desc: "20 dakika boyunca kesintisiz tempolu koşu veya yürüyüş ile nabzını tavan yaptır", completed: false },
+                    hard: { desc: "Geçen 28 günün sendede yarattığı zihinsel ferahlamayı ve sınır çizgilerini günlüğüne yaz", completed: false }
+                }
+            },
+            {
+                id: 29, tasks: {
+                    easy: { desc: "Sahip olduğun güçlü özelliklerini (empati, disiplin vb.) sesli şekilde onayla", completed: false },
+                    medium: { desc: "Sadece esneme ve Foam Roller (köpük silindir) kullanarak kasa giren stresi serbest bırak", completed: false },
+                    hard: { desc: "Hayatındaki yargılayıcı veya seni küçülten bir alışkanlığı/düşünceyi bugün SIFIRLA", completed: false }
+                }
+            },
+            {
+                id: 30, tasks: {
+                    easy: { desc: "Aynada kendine 'Korkularımı yendim ve özgürlüğümü seçtim, harikayım' de", completed: false },
+                    medium: { desc: "İzmir'de veya şehir dışında doğada güzel bir piknikle veya restoran yemeği ile 30. günü KUTLA", completed: false },
+                    hard: { desc: "Gelecek 6 ayın için sadece KENDİ kalbinin kurallarına bağlı olan, net ve heyecanlı kariyer rotanı çiz", completed: false }
+                }
+            }
+        ];
+
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('gizemApp', () => ({
+                days: [],
+                expandedDay: null, 
+                
+                init() {
+                    const saved = localStorage.getItem('gizem30Daysv2');
+                    
+                    if (saved) {
+                        try {
+                            const parsedDays = JSON.parse(saved);
+                            
+                            this.days = PRD_DATA.map(templateDay => {
+                                const savedDay = parsedDays.find(d => d.id === templateDay.id);
+                                if (savedDay) {
+                                    return {
+                                        id: templateDay.id,
+                                        tasks: {
+                                            easy: { desc: templateDay.tasks.easy.desc, completed: savedDay.tasks.easy.completed || false },
+                                            medium: { desc: templateDay.tasks.medium.desc, completed: savedDay.tasks.medium.completed || false },
+                                            hard: { desc: templateDay.tasks.hard.desc, completed: savedDay.tasks.hard.completed || false }
+                                        }
+                                    };
+                                }
+                                return JSON.parse(JSON.stringify(templateDay));
+                            });
+                        } catch(e) {
+                            this.days = JSON.parse(JSON.stringify(PRD_DATA));
+                        }
+                    } else {
+                        this.days = JSON.parse(JSON.stringify(PRD_DATA));
+                    }
+
+                    this.$nextTick(() => {
+                        for(let i=0; i < this.days.length; i++){
+                            if(!this.isLocked(i) && !this.isDayFullyCompleted(i)) {
+                                this.expandedDay = i;
+                                break;
+                            }
+                        }
+                    });
+                },
+
+                saveTasks() {
+                    localStorage.setItem('gizem30Daysv2', JSON.stringify(this.days.map(d => ({
+                        id: d.id,
+                        tasks: {
+                            easy: { completed: d.tasks.easy.completed },
+                            medium: { completed: d.tasks.medium.completed },
+                            hard: { completed: d.tasks.hard.completed }
+                        }
+                    }))));
+                },
+
+                toggleDay(index) {
+                    this.expandedDay = this.expandedDay === index ? null : index;
+                },
+
+                toggleTaskCompletion(index) {
+                    setTimeout(() => {
+                        this.saveTasks();
+                        
+                        // If day just got fully completed, collapse and open next
+                        if (this.isDayFullyCompleted(index)) {
+                           this.expandedDay = null; 
+                           if (index + 1 < this.days.length) {
+                               setTimeout(() => { this.expandedDay = index + 1; }, 400);
+                           }
+                        }
+                    }, 50);
+                },
+
+                getCompletedTasksForDay(index) {
+                    const t = this.days[index].tasks;
+                    let count = 0;
+                    if(t.easy.completed) count++;
+                    if(t.medium.completed) count++;
+                    if(t.hard.completed) count++;
+                    return count;
+                },
+
+                isDayFullyCompleted(index) {
+                    return this.getCompletedTasksForDay(index) === 3;
+                },
+
+                isLocked(index) {
+                    if (index === 0) return false; 
+                    for (let i = 0; i < index; i++) {
+                        if (!this.isDayFullyCompleted(i)) return true;
+                    }
+                    return false;
+                },
+
+                resetAll() {
+                    if(confirm("Tüm 30 günlük ilerlemeyi SIFIRLAMAK istediğine emin misin? Bu işlem geri alınamaz.")) {
+                        localStorage.removeItem('gizem30Daysv2');
+                        window.location.reload();
+                    }
+                },
+
+                get totalCompletedTasks() {
+                    let total = 0;
+                    this.days.forEach(d => {
+                        if(d.tasks.easy.completed) total++;
+                        if(d.tasks.medium.completed) total++;
+                        if(d.tasks.hard.completed) total++;
+                    });
+                    return total;
+                },
+
+                get progressPercentage() {
+                    return Math.round((this.totalCompletedTasks / 90) * 100);
+                }
+            }))
+        })
+    </script>
+</body>
+</html>
