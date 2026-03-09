@@ -63,15 +63,15 @@ const imageSrc = typeof image === 'string' ? image : image?.src;
     </p>
 
     {(role || impact) && (
-      <div class="mt-5 space-y-3 rounded-2xl border border-border/80 bg-background/50 p-4">
+      <div class="mt-5 space-y-2 border-l-2 border-primary/20 pl-4">
         {role && (
           <p class="text-sm text-muted-foreground">
-            <span class="font-semibold text-foreground">Role:</span> {role}
+            <span class="font-medium text-foreground">Role:</span> {role}
           </p>
         )}
         {impact && (
           <p class="text-sm text-muted-foreground">
-            <span class="font-semibold text-foreground">Why it matters:</span> {impact}
+            <span class="font-medium text-foreground">Impact:</span> {impact}
           </p>
         )}
       </div>

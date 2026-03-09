@@ -34,34 +34,25 @@ const items = [
 ];
 ---
 
-<section class="rounded-3xl border border-border bg-card/80 p-6 backdrop-blur-sm md:p-8">
-  <div class="mb-6 max-w-2xl">
-    <span class="mb-3 block text-xs font-semibold uppercase tracking-[0.18em] text-primary">Resume</span>
+<section class="rounded-3xl border border-border bg-card/80 p-6 backdrop-blur-sm md:flex md:items-center md:justify-between md:p-8">
+  <div class="mb-6 md:mb-0 md:max-w-xl">
+    <span class="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-primary">Resume</span>
     <h2 class="text-2xl font-display font-bold text-foreground">{title}</h2>
     <p class="mt-2 text-sm leading-relaxed text-muted-foreground">{description}</p>
   </div>
 
-  <div class="grid gap-4 md:grid-cols-3">
+  <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap md:justify-end">
     {items.map((item) => (
       <a
         href={item.href}
-        class="group rounded-2xl border border-border bg-background/60 p-5 transition-all duration-300 hover:border-primary/30 hover:bg-background"
+        class="group inline-flex items-center gap-3 rounded-2xl border border-border bg-background/60 px-5 py-3 transition-all duration-300 hover:border-primary/30 hover:bg-background"
         data-track-event={item.eventName}
         data-track-label={item.title}
       >
-        <div class="flex items-center justify-between gap-4">
-          <div>
-            <h3 class="font-display text-lg font-bold text-foreground transition-colors group-hover:text-primary">
-              {item.title}
-            </h3>
-            <p class="mt-2 text-sm leading-relaxed text-muted-foreground">
-              {item.description}
-            </p>
-          </div>
-          <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Icon name="download" size={18} />
-          </div>
-        </div>
+        <span class="font-medium text-foreground transition-colors group-hover:text-primary">
+          {item.title}
+        </span>
+        <Icon name="download" size={16} class="text-primary" />
       </a>
     ))}
   </div>

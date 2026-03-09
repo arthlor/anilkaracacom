@@ -56,12 +56,15 @@ const personSchema = {
 
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="max-w-4xl">
-        <div class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm">
-          <span class="h-2 w-2 rounded-full bg-primary"></span>
+        <div class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/80 px-4 py-2 text-sm text-muted-foreground shadow-[0_0_15px_rgba(var(--color-primary),0.1)] backdrop-blur-sm">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+          </span>
           Open to full-time roles in data journalism and product development
         </div>
 
-        <h1 class="mt-8 text-5xl font-display font-bold tracking-tight sm:text-6xl lg:text-7xl">
+        <h1 class="mt-8 text-5xl font-display font-bold tracking-tight sm:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
           I help teams explain complex systems through
           <span class="text-gradient"> reporting, code, and product thinking.</span>
         </h1>
@@ -103,7 +106,7 @@ const personSchema = {
 
         <div class="mt-12 grid gap-3 sm:grid-cols-3">
           {credibilityHighlights.map((highlight) => (
-            <div class="rounded-2xl border border-border bg-card/70 px-4 py-4 text-sm leading-relaxed text-muted-foreground backdrop-blur-sm">
+            <div class="rounded-2xl border border-border/80 bg-card/50 px-4 py-4 text-sm leading-relaxed text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-card/80 hover:text-foreground hover:shadow-lg hover:shadow-primary/5">
               {highlight}
             </div>
           ))}
@@ -119,7 +122,7 @@ const personSchema = {
         const laneEvent = lane.slug === 'data-journalism' ? 'open_data_journalism_lane' : 'open_developer_lane';
 
         return (
-          <article class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
+          <article class="flex h-full flex-col rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5">
             <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
               {lane.kicker}
             </span>
@@ -210,7 +213,7 @@ const personSchema = {
 
             <a
               href={`/${lane.slug}`}
-              class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:gap-3"
+              class="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:gap-3"
               data-track-event={laneEvent}
               data-track-label={lane.title}
             >

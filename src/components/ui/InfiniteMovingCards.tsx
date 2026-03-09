@@ -101,7 +101,7 @@ export function InfiniteMovingCards({
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center grayscale transition-all duration-300 hover:grayscale-0"
+                className="flex items-center justify-center opacity-60 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0"
               >
                 {item.image ? (
                   <img
