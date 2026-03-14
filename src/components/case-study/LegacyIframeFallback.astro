@@ -1,0 +1,17 @@
+---
+import InteractiveGraphic from '../mdx/InteractiveGraphic.astro';
+
+interface Props {
+  src: string;
+  title: string;
+  height?: string;
+  description?: string;
+}
+
+const { src, title, height = '560px', description } = Astro.props;
+---
+
+<div class="page-frame-soft space-y-4 p-4 sm:p-6">
+  {description && <p class="text-sm leading-relaxed text-muted-foreground">{description}</p>}
+  <InteractiveGraphic src={src} title={title} height={height} />
+</div>

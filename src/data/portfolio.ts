@@ -6,8 +6,6 @@ import yeserIcon from '../assets/images/projects/icon.png';
 
 export const resumeLinks = {
   master: '/anilkaraca-cv.pdf',
-  dataJournalism: '/anil-karaca-data-journalism-cv.pdf',
-  developer: '/anil-karaca-developer-cv.pdf',
 } as const;
 
 export const expertiseLanes = [
@@ -103,7 +101,7 @@ export const supportingProjectSlugs = ['attack-on-ozgur-ozel'] as const;
 export const featuredArticleSlugs = [
   'izmir-trafik-kazasi-raporu',
   'turkey-elections-red-wave',
-  'izmir-toplu-tasima',
+  'izmir-coronavirus-toplu-tasima',
 ] as const;
 
 export const workplaces = [
@@ -120,28 +118,110 @@ export const credibilityHighlights = [
   'Shipped mobile apps and interactive sites alongside newsroom and communications work',
 ] as const;
 
-export const careerTimeline = [
+export type ExperienceEntry = {
+  period: string;
+  role: string;
+  organization: string;
+  context: string;
+  summary: string;
+  highlights: string[];
+};
+
+export const experienceEntries: ExperienceEntry[] = [
   {
-    year: '2025 - Present',
-    title: 'App developer and data journalist',
-    description: 'Shipping mobile apps while continuing public-interest reporting and interactive analysis.',
+    period: '2025 - Present',
+    role: 'Independent app developer and data journalist',
+    organization: 'Self-directed work',
+    context: 'Mobile apps, interactive case studies, and public-interest reporting',
+    summary:
+      'Building consumer iOS apps while continuing reporting, data analysis, and editorial-style product work in one portfolio.',
+    highlights: [
+      'Shipped React Native and Expo apps as real App Store products',
+      'Built case studies that connect reporting, interface design, and engineering',
+      'Using independent work as proof of end-to-end product ownership',
+    ],
   },
   {
-    year: '2024',
-    title: 'Communications advisor',
-    description: 'Produced civic communications, digital content, and documentary work for municipal institutions.',
+    period: '2024',
+    role: 'Communications advisor',
+    organization: 'Izmir Metropolitan Municipality and Izbeton',
+    context: 'Civic communications, digital content, and documentary production',
+    summary:
+      'Produced public-facing communication work for municipal institutions, with a mix of editorial structure, visual communication, and delivery.',
+    highlights: [
+      'Worked inside a civic institution context with public accountability',
+      'Produced digital communication assets and documentary work',
+      'Bridged reporting instincts with message clarity and execution',
+    ],
   },
   {
+    period: '2014 - 2024',
+    role: 'Senior digital journalist',
+    organization: 'BirGun, dokuz8HABER, and Egede SonSoz',
+    context: 'Digital reporting, live publishing, and visual storytelling',
+    summary:
+      'Built a decade-long newsroom foundation across reporting, publishing, analysis, and multi-format storytelling, with a strong focus on politics, cities, and public systems.',
+    highlights: [
+      'Covered elections, civic systems, transportation, and political accountability',
+      'Worked across fast newsroom publishing and deeper analytical formats',
+      'Developed the reporting habits that now shape product and interface decisions',
+    ],
+  },
+];
+
+export type EducationEntry = {
+  institution: string;
+  degree: string;
+  period: string;
+  grade: string;
+  notes?: string;
+  skills?: string[];
+};
+
+export const educationEntries: EducationEntry[] = [
+  {
+    institution: 'Kadir Has University',
+    degree: "Master's degree, New Media",
+    period: '2017 - 2019',
+    grade: 'GPA 3.68',
+    skills: ['Data Analysis'],
+  },
+  {
+    institution: 'Ege University',
+    degree: "Bachelor's degree, Journalism",
+    period: '2011 - 2015',
+    grade: 'GPA 2.94',
+    notes: 'Activities and societies: University club of Sci-Fi and Fantasy.',
+  },
+  {
+    institution: 'University of Lodz',
+    degree: "Bachelor's degree, Journalism",
+    period: '2014',
+    grade: 'GPA 3.75',
+    notes: 'Erasmus programme.',
+  },
+];
+
+export type PublicationEntry = {
+  title: string;
+  type: string;
+  publisher: string;
+  year: string;
+  href: string;
+  summary: string;
+};
+
+export const publicationEntries: PublicationEntry[] = [
+  {
+    title: "News readers' perception of clickbait news",
+    type: "Master's thesis",
+    publisher: 'Kadir Has University',
     year: '2019',
-    title: 'Senior digital journalist',
-    description: 'Led digital storytelling, visual reporting, and multi-format newsroom work.',
+    href: 'https://hdl.handle.net/20.500.12469/2753',
+    summary:
+      'Graduate research on how online news readers perceive clickbait, combining survey data, open-ended responses, and interviews with digital news executives.',
   },
-  {
-    year: '2014',
-    title: 'Started in digital journalism',
-    description: 'Built an editorial foundation in reporting, publishing, and audience-facing storytelling.',
-  },
-] as const;
+];
 
 export const supportingVideo = {
   title: 'Ekmegimizi Buyutuyoruz, Adil Bolusuyoruz',
@@ -150,9 +230,3 @@ export const supportingVideo = {
   videoId: 'iZtaIuGnjzU',
   url: 'https://www.youtube.com/watch?v=iZtaIuGnjzU',
 };
-
-export const contactFocusAreas = [
-  'Data journalism and newsroom roles',
-  'Frontend, product, and mobile engineering roles',
-  'Editorial product and storytelling-focused teams',
-] as const;

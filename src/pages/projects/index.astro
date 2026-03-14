@@ -1,162 +1,78 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
-import Icon from '../../components/Icon.astro';
 import WorkCard from '../../components/WorkCard.astro';
 import {
-  appProjects,
-  featuredArticleSlugs,
-  supportingVideo,
-} from '../../data/portfolio';
-import { pickEntriesBySlug } from '../../lib/content';
+  getEntryHref,
+  getEntrySummary,
+  getEntryTypeLabel,
+  groupEntriesByPillar,
+  sortEntriesByFeatureAndDate,
+} from '../../lib/content';
 import MainLayout from '../../layouts/MainLayout.astro';
 
-const projects: CollectionEntry<'projects'>[] = await getCollection('projects');
-const articles: CollectionEntry<'articles'>[] = await getCollection('articles', ({ data }) => !data.draft);
+const [articles, projects] = await Promise.all([
+  getCollection('articles', ({ data }) => data.published),
+  getCollection('projects', ({ data }) => data.published),
+]);
 
-const dataJournalismProjects = projects.filter((project) => project.data.track === 'data-journalism');
-const supportingProjects = projects.filter((project) => project.data.track === 'supporting');
-const selectedArticles = pickEntriesBySlug<'articles'>(articles, featuredArticleSlugs);
-
-const articleSummary = (article: CollectionEntry<'articles'>) =>
-  article.data.summaryEn || article.data.description;
+const allEntries = sortEntriesByFeatureAndDate([...projects, ...articles]);
+const grouped = groupEntriesByPillar(allEntries).filter((section) => section.entries.length > 0);
 ---
 
-<MainLayout title="Selected Work" description="Cross-track portfolio of data journalism, app development, and supporting storytelling work.">
-  <section class="relative overflow-hidden pt-28 pb-18">
-    <div class="absolute inset-0 bg-gradient-to-b from-card/35 to-background"></div>
-
+<MainLayout
+  title="Projects"
+  description="Unified work library spanning shipped apps, investigations, and interactive case studies."
+>
+  <section class="pt-28 pb-14">
     <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Selected work</span>
-      <h1 class="mt-4 text-5xl font-display font-bold tracking-tight sm:text-6xl">
-        One library for reporting, apps, and supporting storytelling work.
-      </h1>
-      <p class="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-        This page keeps the full picture in one place. The main navigation now routes by hiring lane, but this library
-        is useful if you want to see how the work connects.
-      </p>
+      <div class="page-frame p-6 md:p-8">
+        <span class="page-kicker">All work</span>
+        <h1 class="mt-4 max-w-4xl text-5xl font-display font-bold tracking-tight text-foreground sm:text-6xl">
+          The main archive for apps, reporting, investigations, and case studies.
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+          This is the one place to review the full range of work. Everything is grouped by pillar so the connections are
+          visible without turning the rest of the site into duplicate archive pages.
+        </p>
+      </div>
     </div>
   </section>
 
-  <section class="py-16">
+  <section class="pb-24 pt-8">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Data journalism</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Investigations and interactive case studies</h2>
-      </div>
+      <div class="space-y-16">
+        {grouped.map((section) => (
+          <section>
+            <div class="mb-8">
+              <div class="page-section-head mb-0 max-w-3xl">
+                <span class="page-kicker">{section.shortTitle}</span>
+                <h2 class="mt-3 text-3xl font-display font-bold text-foreground">{section.title}</h2>
+                <p class="mt-3 text-base leading-relaxed text-muted-foreground">{section.description}</p>
+              </div>
+            </div>
 
-      <div class="grid gap-6 lg:grid-cols-3">
-        {dataJournalismProjects.map((project) => (
-          <WorkCard
-            title={project.data.title}
-            eyebrow="Case study"
-            description={project.data.summaryEn || project.data.description}
-            href={project.data.liveUrl || `/projects/${project.slug}`}
-            external={Boolean(project.data.liveUrl?.startsWith('http'))}
-            role={project.data.role}
-            impact={project.data.impact}
-            tags={project.data.technologies}
-            image={project.data.heroImage}
-            ctaLabel="Open project"
-          />
+            <div class="grid gap-6 lg:grid-cols-3">
+              {section.entries.map((entry) => (
+                <WorkCard
+                  title={entry.data.title}
+                  eyebrow={getEntryTypeLabel(entry)}
+                  meta={entry.data.pubDate.toLocaleDateString(entry.data.language === 'tr' ? 'tr-TR' : 'en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                  description={getEntrySummary(entry)}
+                  href={getEntryHref(entry)}
+                  external={false}
+                  tags={entry.collection === 'articles' ? entry.data.tags.slice(0, 3) : entry.data.techStack.slice(0, 4)}
+                  image={entry.data.heroImage}
+                  ctaLabel={entry.collection === 'projects' ? 'Open case study' : 'Read article'}
+                />
+              ))}
+            </div>
+          </section>
         ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Reporting archive</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Article-driven reporting and analysis</h2>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-3">
-        {selectedArticles.map((article) => (
-          <WorkCard
-            title={article.data.title}
-            eyebrow={article.data.language === 'tr' ? 'Reported in Turkish' : 'Reported in English'}
-            description={articleSummary(article)}
-            href={`/articles/${article.slug}`}
-            role={article.data.role}
-            impact={article.data.impact}
-            tags={article.data.tags.slice(0, 3)}
-            image={article.data.heroImage}
-            ctaLabel="Read article"
-          />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Development</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">App and product work</h2>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-3">
-        {appProjects.map((app) => (
-          <WorkCard
-            title={app.name}
-            eyebrow={app.tagline}
-            description={app.technicalSummary}
-            href={app.appStoreUrl}
-            external={true}
-            role={app.role}
-            impact={app.impact}
-            tags={app.stack}
-            image={app.image}
-            ctaLabel="View App Store listing"
-          />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="pb-24 pt-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Supporting storytelling</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Additional work that supports the core story</h2>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-        <div class="grid gap-6">
-          {supportingProjects.map((project) => (
-            <WorkCard
-              title={project.data.title}
-              eyebrow="Scrollytelling"
-              description={project.data.summaryEn || project.data.description}
-              href={project.data.liveUrl || `/projects/${project.slug}`}
-              external={Boolean(project.data.liveUrl?.startsWith('http'))}
-              role={project.data.role}
-              impact={project.data.impact}
-              tags={project.data.technologies}
-              image={project.data.heroImage}
-              ctaLabel="Open project"
-            />
-          ))}
-        </div>
-
-        <div class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
-          <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-            <Icon name="video" size={24} />
-          </div>
-          <span class="mt-6 block text-xs font-semibold uppercase tracking-[0.18em] text-primary">Documentary support</span>
-          <h3 class="mt-3 text-2xl font-display font-bold text-foreground">{supportingVideo.title}</h3>
-          <p class="mt-4 text-sm leading-relaxed text-muted-foreground">{supportingVideo.description}</p>
-          <a
-            href={supportingVideo.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary"
-          >
-            Watch documentary
-            <Icon name="external-link" size={16} />
-          </a>
-        </div>
       </div>
     </div>
   </section>

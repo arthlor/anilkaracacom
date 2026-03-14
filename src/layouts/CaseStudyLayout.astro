@@ -1,0 +1,185 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+import MainLayout from './MainLayout.astro';
+import JsonLd from '../components/JsonLd.astro';
+import CaseStudyHero from '../components/case-study/CaseStudyHero.astro';
+import RelatedContent from '../components/RelatedContent.astro';
+import { mdxComponents } from '../components/mdx/mdxComponents';
+import { buildArticleSchema, buildProjectSchema, getEntrySeo } from '../lib/seo';
+
+interface Props {
+  entry: CollectionEntry<'articles'> | CollectionEntry<'projects'>;
+  collection: 'articles' | 'projects';
+  Content: any;
+}
+
+const { entry, collection, Content } = Astro.props;
+const isTurkish = entry.data.language === 'tr';
+const seo = getEntrySeo(collection, entry);
+
+const copy = isTurkish
+  ? {
+      backLabel: collection === 'articles' ? 'Yazılara geri dön' : 'Projelere geri dön',
+      publishedLabel: 'Yayın',
+      roleLabel: 'Rol',
+      impactLabel: 'Etkisi',
+      summaryLabel: 'Kısa Özet',
+      methodologyLabel: 'Yöntem',
+      contextLabel: 'Bağlam ve Problem Alanı',
+      challengeLabel: 'Teknik Zorluk',
+      codeLabel: 'Kod ve Sistem Kanıtı',
+      conclusionLabel: 'Sonuç ve Değer',
+      narrativeLabel: 'İnteraktif Anlatı',
+    }
+  : {
+      backLabel: collection === 'articles' ? 'Back to articles' : 'Back to projects',
+      publishedLabel: 'Published',
+      roleLabel: 'Role',
+      impactLabel: 'Impact',
+      summaryLabel: 'Executive Summary',
+      methodologyLabel: 'Methodology & Stack',
+      contextLabel: 'Context & Problem Space',
+      challengeLabel: 'Technical Challenge',
+      codeLabel: 'Code & Systems Proof',
+      conclusionLabel: 'Conclusion & Value',
+      narrativeLabel: 'Interactive Narrative',
+    };
+
+const schema = collection === 'articles' ? buildArticleSchema(entry as CollectionEntry<'articles'>) : buildProjectSchema(entry as CollectionEntry<'projects'>);
+---
+
+<MainLayout
+  title={seo.title}
+  description={seo.description}
+  image={seo.image}
+  article={collection === 'articles'}
+  lang={entry.data.language}
+>
+  <JsonLd schema={schema} />
+
+  <CaseStudyHero entry={entry} collection={collection} locale={copy} />
+
+  <section class="case-study-layout">
+    <div class="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.55fr)] lg:px-8">
+      <div>
+        <div class="case-study-layout__panel case-study-layout__panel--main">
+          <div class="grid gap-8">
+            <section>
+              <p class="case-study-layout__label">{copy.contextLabel}</p>
+              <p class="case-study-layout__copy mt-4">{entry.data.context}</p>
+            </section>
+
+            {entry.data.methodology.length > 0 && (
+              <section>
+                <p class="case-study-layout__label">{copy.methodologyLabel}</p>
+                <ul class="case-study-layout__methodology mt-4">
+                  {entry.data.methodology.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            <section>
+              <p class="case-study-layout__label">{copy.narrativeLabel}</p>
+              <div class="prose-article mt-5 max-w-none">
+                <Content components={mdxComponents} />
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <RelatedContent
+          currentCollection={collection}
+          currentSlug={entry.id}
+          currentPillar={entry.data.pillar}
+          language={entry.data.language}
+          relatedContent={entry.data.relatedContent}
+        />
+      </div>
+
+      <aside class="case-study-layout__sidebar">
+        {entry.data.challenge && (
+          <div class="case-study-layout__panel">
+            <p class="case-study-layout__label">{copy.challengeLabel}</p>
+            <p class="case-study-layout__sidebar-copy">{entry.data.challenge}</p>
+          </div>
+        )}
+
+        {entry.data.codeProof && (
+          <div class="case-study-layout__panel">
+            <p class="case-study-layout__label">{copy.codeLabel}</p>
+            <p class="case-study-layout__sidebar-copy">{entry.data.codeProof}</p>
+          </div>
+        )}
+
+        <div class="case-study-layout__panel">
+          <p class="case-study-layout__label">{copy.conclusionLabel}</p>
+          <p class="case-study-layout__sidebar-copy">{entry.data.conclusion}</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .case-study-layout {
+    padding-bottom: 6.5rem;
+  }
+
+  .case-study-layout__panel {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+      rgba(255, 255, 255, 0.02);
+    padding: clamp(1.25rem, 2vw, 1.9rem);
+  }
+
+  .case-study-layout__panel--main {
+    position: relative;
+  }
+
+  .case-study-layout__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: hsl(var(--primary));
+  }
+
+  .case-study-layout__copy {
+    font-size: 1rem;
+    line-height: 1.9;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .case-study-layout__methodology {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .case-study-layout__methodology li {
+    padding: 0.95rem 1rem;
+    border-left: 1px solid rgba(122, 242, 152, 0.25);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: hsl(var(--foreground));
+  }
+
+  .case-study-layout__sidebar {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
+
+  .case-study-layout__sidebar-copy {
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: hsl(var(--muted-foreground));
+  }
+</style>

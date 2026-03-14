@@ -1,0 +1,83 @@
+---
+interface Step {
+  id: string;
+  label: string;
+  title?: string;
+  summary?: string;
+}
+
+interface Props {
+  steps: Step[];
+}
+
+const { steps } = Astro.props;
+---
+
+<section class="my-16" data-story-root>
+  <div class="sticky top-20 z-20 mb-8 overflow-x-auto border border-white/8 bg-[#111111]/92 px-3 py-3 backdrop-blur">
+    <div class="flex min-w-max gap-2" data-story-nav-root>
+      {steps.map((step, index) => (
+        <a
+          href={`#${step.id}`}
+          data-story-nav
+          data-story-target={step.id}
+          class:list={[
+            'border border-white/8 px-4 py-3 text-sm font-medium transition-colors',
+            index === 0 ? 'bg-primary text-primary-foreground' : 'bg-white/[0.03] text-muted-foreground hover:text-foreground',
+          ]}
+        >
+          {step.label}
+        </a>
+      ))}
+    </div>
+  </div>
+  <div class="space-y-10">
+    <slot />
+  </div>
+</section>
+
+<script is:inline>
+  document.querySelectorAll('[data-story-root]').forEach((root) => {
+    if (!(root instanceof HTMLElement) || root.dataset.storyBound === 'true') {
+      return;
+    }
+
+    root.dataset.storyBound = 'true';
+
+    const navLinks = Array.from(root.querySelectorAll('[data-story-nav]'));
+    const storySteps = Array.from(root.querySelectorAll('[data-story-step]'));
+
+    if (navLinks.length === 0 || storySteps.length === 0) {
+      return;
+    }
+
+    const setActive = (stepId) => {
+      navLinks.forEach((link) => {
+        if (!(link instanceof HTMLElement)) {
+          return;
+        }
+
+        const isActive = link.dataset.storyTarget === stepId;
+        link.classList.toggle('bg-primary', isActive);
+        link.classList.toggle('text-primary-foreground', isActive);
+        link.classList.toggle('bg-white/[0.03]', !isActive);
+        link.classList.toggle('text-muted-foreground', !isActive);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible) {
+          setActive(visible.target.id);
+        }
+      },
+      { threshold: [0.25, 0.45, 0.7], rootMargin: '-10% 0px -25% 0px' },
+    );
+
+    storySteps.forEach((step) => observer.observe(step));
+  });
+</script>

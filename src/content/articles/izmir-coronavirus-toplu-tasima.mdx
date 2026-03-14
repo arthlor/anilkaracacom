@@ -6,7 +6,39 @@ heroImage: "/images/articles/izmir-coronavirus-transport-2025.webp"
 tags: ["izmir", "covid-19", "public-transport", "data-analysis", "interactive"]
 category: "data-journalism"
 featured: true
+published: true
 draft: false
+track: "data-journalism"
+language: "en"
+pillar: "scientific-environmental-modeling"
+techStack: ["Python", "Plotly", "Public Data", "Astro"]
+metrics:
+  - label: "Records analyzed"
+    value: "19K+"
+    detail: "Daily public transport records across multiple transit modes."
+  - label: "Time window"
+    value: "2021-2024"
+    detail: "Four years of recovery behavior after the pandemic collapse."
+  - label: "Interactive views"
+    value: "2"
+    detail: "Ridership totals and demographic composition presented separately."
+executiveSummary: "A recovery analysis of İzmir's transit system built from four years of open data, showing not only when ridership returned but which fare groups came back first."
+context: "The pandemic radically altered urban mobility, but simple top-line ridership charts do not explain how public infrastructure recovered. This case study uses municipal transport data to show the timing, scale, and demographic shape of İzmir's recovery."
+methodology:
+  - "Pulled open municipal transport data and normalized totals by mode and fare group."
+  - "Used Plotly-based views to separate total ridership recovery from demographic composition."
+  - "Structured the narrative around inflection points instead of publishing raw trend lines."
+challenge: "The main challenge was making multi-year trend shifts legible without flattening the story into a single aggregate line. Splitting the story between mode-level recovery and fare-type recovery made the analysis more readable."
+codeProof: "The interactive charts are client-loaded so dense charting logic does not slow down the initial page render, while still allowing detailed hover inspection once the reader reaches the visual section."
+conclusion: "The project turns a broad post-pandemic question into a concrete systems story: İzmir's transit network recovered, but the pace and shape of that recovery changed depending on who depended on the system first."
+summaryEn: "A systems-focused analysis of İzmir's transit recovery that uses open data to show both ridership rebound and demographic shifts."
+role: "Data analysis, narrative framing, chart design"
+impact: "Makes a large public dataset usable for readers trying to understand how an urban system changed after disruption."
+relatedContent:
+  - collection: "articles"
+    slug: "izmir-trafik-kazasi-raporu"
+  - collection: "projects"
+    slug: "attack-on-ozgur-ozel"
 ---
 
 import UlasimRecoveryChart from '../../components/UlasimRecoveryChart';
@@ -22,7 +54,7 @@ In the early months of 2021, the shadow of the pandemic was still heavy. Total m
 
 The interactive chart below tracks the monthly ridership across different transit modes. Notice the distinct seasonal dips—common in İzmir during the hot summer months as schools close and residents leave for coastal towns—and the sharp upward trend heading into 2023 and 2024.
 
-<UlasimRecoveryChart client:only="react" />
+<UlasimRecoveryChart client:visible />
 
 *Tip: You can interact with the chart by hovering over data points, or clicking on the legend to isolate specific transport types.*
 
@@ -34,7 +66,7 @@ The recovery wasn't uniform across all demographics. When we break down the ride
 
 Full-fare paying adults (often white-collar workers) were among the slowest to return, likely due to the enduring shift towards hybrid and remote working models. Conversely, the return of students in late 2021 and early 2022 created massive spikes in overall transit use.
 
-<UlasimDemographicsChart client:only="react" />
+<UlasimDemographicsChart client:visible />
 
 This demographic breakdown highlights a crucial reality of public infrastructure: it relies heavily on the youth and the student population. The massive upward waves representing student fares perfectly align with the academic calendar. 
 

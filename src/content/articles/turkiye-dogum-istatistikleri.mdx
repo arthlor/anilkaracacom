@@ -6,8 +6,39 @@ heroImage: "/images/articles/turkiye-dogum-istatistikleri-2025.webp"
 tags: ["türkiye", "demografik", "veri-analizi", "tuik"]
 category: "data-journalism"
 featured: false
+published: true
 draft: false
+track: "data-journalism"
+language: "tr"
+pillar: "scientific-environmental-modeling"
+techStack: ["TÜİK", "Python", "Statistical Analysis", "Plotly"]
+metrics:
+  - label: "Kapsanan dönem"
+    value: "2001-2020"
+    detail: "Doğum verileri yirmi yıllık zaman aralığında incelendi."
+  - label: "Ana gösterge"
+    value: "3"
+    detail: "Kaba doğum hızı, doğurganlık ve anne yaşı birlikte yorumlandı."
+executiveSummary: "Türkiye'nin doğum verilerini yirmi yıllık perspektifle ele alan bu çalışma, doğurganlık düşüşünü ve anne yaşındaki artışı veriye dayalı bir nüfus hikâyesine dönüştürüyor."
+context: "Doğum istatistikleri kamuoyunda genellikle siyasi söylem düzeyinde tartışılıyor. Bu çalışma, TÜİK verilerini kullanarak sayıların gerçekten ne söylediğini göstermek ve '3 çocuk' politikasının karşılık bulup bulmadığını veriyle tartışmak için üretildi."
+methodology:
+  - "TÜİK'in yayımladığı doğum verileri zaman serisi olarak okunacak şekilde düzenlendi."
+  - "Birden fazla demografik gösterge aynı anlatı içinde yorumlandı."
+  - "Düşük değerlerin okunabilirliği için logaritmik ölçek tercih edildi."
+challenge: "Demografik göstergeler kamuoyunda güçlü politik çağrışımlar taşıdığı için, yorumun sayılardan kopmaması gerekiyordu. Bu nedenle çalışma doğrudan veri ritmine yaslanan sade bir anlatıyla kuruldu."
+codeProof: "Grafik yaklaşımı, düşük değerlerin de görünür kalması için logaritmik ölçek kullanıyor; böylece sadece trend değil, trendin hızındaki değişim de okunabiliyor."
+conclusion: "Bu çalışma, Türkiye'nin nüfus dinamiklerinin siyasi sloganlardan daha karmaşık olduğunu gösteriyor; veriler hem doğum oranındaki düşüşü hem de annelik yaşındaki artışı açık biçimde ortaya koyuyor."
+summaryEn: "A long-range birth statistics explainer showing how Turkey's fertility and maternal-age trends changed over two decades."
+role: "Veri yorumlama, anlatı kurma, görselleştirme"
+impact: "Demografik veriyi politik tartışmanın ötesine taşıyarak uzun dönemli eğilimi görünür kılıyor."
+relatedContent:
+  - collection: "articles"
+    slug: "izmir-yas-analizi"
+  - collection: "articles"
+    slug: "izmir-coronavirus-toplu-tasima"
 ---
+
+import LegacyIframeFallback from '../../components/case-study/LegacyIframeFallback.astro';
 
 Türkiye İstatistik Kurumu (TÜİK), 15 Mayıs'ta doğum istatistikleri verilerini açıkladı. Birçok çarpıcı verinin yer aldığı çalışmada, 2001 yılından 2020 yılına kadar Türkiye'de doğum sayılarında önemli dalgalanmalar gözleniyor. Verisetine göre, 2001 yılında yaklaşık 1.32 milyon doğum gerçekleşirken, yıllar geçtikçe anne olma yaşının arttığı ve doğum sayısının azaldığı ortaya çıkıyor.
 
@@ -26,13 +57,11 @@ Bir kadının yaşamı boyunca sahip olacağı ortalama çocuk sayısını ifade
 
 Görselleştirmede düşük sayıların okunabilirliğini artırmak için logaritmik ölçü kullandım. En iyi görsel deneyim için mobil cihazınızı yatay konuma getirmenizi ya da bilgisayardan incelemenizi öneririm.
 
-<iframe 
-  src="/uploads/2024/05/dogumchart.html" 
-  width="100%" 
-  height="600"
-  style="border: none; border-radius: 8px;"
+<LegacyIframeFallback
+  src="/uploads/2024/05/dogumchart.html"
   title="Doğum İstatistikleri Grafiği"
-></iframe>
+  height="600px"
+/>
 
 *Görselleştirmede düşük sayıların okunabilirliğini artırmak için logaritmik ölçü kullandım. En iyi görsel deneyim için mobil cihazınızı yatay konuma getirmenizi ya da bilgisayardan incelemenizi öneririm. Kaynak: TÜİK*
 

@@ -1,0 +1,50 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string | ImageMetadata;
+  alt: string;
+  class?: string;
+  width?: number;
+  height?: number;
+  sizes?: string;
+  loading?: 'eager' | 'lazy';
+}
+
+const {
+  src,
+  alt,
+  class: className = '',
+  width,
+  height,
+  sizes = '(min-width: 1024px) 50vw, 100vw',
+  loading = 'lazy',
+} = Astro.props;
+
+const isOptimizable = typeof src !== 'string';
+const fallbackSrc = typeof src === 'string' ? src : src.src;
+---
+
+{
+  isOptimizable && width && height ? (
+    <Image
+      src={src}
+      alt={alt}
+      class={className}
+      width={width!}
+      height={height!}
+      sizes={sizes}
+      loading={loading}
+    />
+  ) : (
+    <img
+      src={fallbackSrc}
+      alt={alt}
+      class={className}
+      width={width}
+      height={height}
+      loading={loading}
+    />
+  )
+}

@@ -1,6 +1,7 @@
 ---
-import '../styles/global.css';
-import SEO from '../components/SEO.astro';
+import "../styles/global.css";
+import { PUBLIC_GA_MEASUREMENT_ID } from 'astro:env/client';
+import SEO from "../components/SEO.astro";
 
 interface Props {
   title: string;
@@ -8,60 +9,74 @@ interface Props {
   image?: string | undefined;
   article?: boolean | undefined;
   noindex?: boolean | undefined;
+  lang?: string | undefined;
 }
 
-const { 
-  title, 
+const {
+  title,
   description,
   image,
   article,
   noindex = false,
+  lang = "en",
 } = Astro.props;
 ---
 
-<!DOCTYPE html>
-<html lang="en" class="dark">
+<!doctype html>
+<html lang={lang} class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    
-    <SEO 
-      title={title} 
-      description={description} 
-      image={image} 
+
+    <SEO
+      title={title}
+      description={description}
+      image={image}
       article={article}
       noindex={noindex}
     />
 
-    <!-- Google Analytics 4 -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-E4DHYLKXW8"></script>
-    <script is:inline>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    {PUBLIC_GA_MEASUREMENT_ID && (
+      <>
+        <script
+          is:inline
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA_MEASUREMENT_ID}`}></script>
+        <script define:vars={{ measurementId: PUBLIC_GA_MEASUREMENT_ID }} is:inline>
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+            dataLayer.push(arguments);
+          }
+          gtag("js", new Date());
 
-      gtag('config', 'G-E4DHYLKXW8');
-    </script>
-    <script is:inline>
-      window.addEventListener('click', (event) => {
-        const target = event.target;
-        if (!(target instanceof Element)) return;
+          gtag("config", measurementId);
+        </script>
+        <script is:inline>
+          window.addEventListener(
+            "click",
+            (event) => {
+              const target = event.target;
+              if (!(target instanceof Element)) return;
 
-        const trigger = target.closest('[data-track-event]');
-        if (!trigger || typeof window.gtag !== 'function') return;
+              const trigger = target.closest("[data-track-event]");
+              if (!trigger || typeof window.gtag !== "function") return;
 
-        const { trackEvent, trackLabel, trackLocation } = trigger.dataset;
-        if (!trackEvent) return;
+              const { trackEvent, trackLabel, trackLocation } = trigger.dataset;
+              if (!trackEvent) return;
 
-        window.gtag('event', trackEvent, {
-          event_category: 'portfolio',
-          event_label: trackLabel || trackEvent,
-          location: trackLocation || window.location.pathname,
-        });
-      }, { capture: true });
-    </script>
+              window.gtag("event", trackEvent, {
+                event_category: "portfolio",
+                event_label: trackLabel || trackEvent,
+                location: trackLocation || window.location.pathname,
+              });
+            },
+            { capture: true },
+          );
+        </script>
+      </>
+    )}
   </head>
   <body class="min-h-screen flex flex-col">
     <slot />

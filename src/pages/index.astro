@@ -1,367 +1,1621 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
-import Icon from '../components/Icon.astro';
 import JsonLd from '../components/JsonLd.astro';
-import ResumeLinks from '../components/ResumeLinks.astro';
-import WorkCard from '../components/WorkCard.astro';
-import { InfiniteMovingCards } from '../components/ui/InfiniteMovingCards';
+import { appProjects, credibilityHighlights, resumeLinks, workplaces } from '../data/portfolio';
 import {
-  appProjects,
-  credibilityHighlights,
-  dataJournalismProjectSlugs,
-  developerMethods,
-  expertiseLanes,
-  featuredArticleSlugs,
-  journalismMethods,
-  workplaces,
-} from '../data/portfolio';
-import { pickEntriesBySlug } from '../lib/content';
-import MainLayout from '../layouts/MainLayout.astro';
+  getEntryHref,
+  getEntrySummary,
+  getEntryTags,
+  sortEntriesByFeatureAndDate,
+} from '../lib/content';
+import { buildPersonSchema } from '../lib/seo';
+import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import portrait from '../assets/images/anil-karaca.jpg';
 
-const projects: CollectionEntry<'projects'>[] = await getCollection('projects');
-const articles: CollectionEntry<'articles'>[] = await getCollection('articles', ({ data }) => !data.draft);
+const projects = await getCollection('projects', ({ data }) => data.published);
+const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 4);
 
-const journalismProjects = pickEntriesBySlug<'projects'>(projects, dataJournalismProjectSlugs);
-const featuredArticles = pickEntriesBySlug<'articles'>(articles, featuredArticleSlugs);
-const leadApp = appProjects[0];
+const homeStats = [
+  {
+    value: '10+',
+    label: 'Years across journalism, civic communication, and product work',
+  },
+  {
+    value: `${workplaces.length}`,
+    label: 'Newsrooms and civic institutions represented in the profile',
+  },
+  {
+    value: `${appProjects.length}+`,
+    label: 'Shipped iOS apps released as real products',
+  },
+] as const;
 
-const articleSummary = (article: CollectionEntry<'articles'>) =>
-  article.data.summaryEn || article.data.description;
+const homeMenuLinks = [
+  { label: 'Projects', href: '/projects' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' },
+] as const;
 
-const personSchema = {
-  '@type': 'Person',
-  name: 'Anil Karaca',
-  jobTitle: 'Data Journalist and Developer',
-  url: 'https://anilkaraca.com',
-  sameAs: [
-    'https://x.com/anilkaraca17',
-    'https://github.com/arthlor',
-    'https://www.linkedin.com/in/anil-karaca/',
-  ],
-};
+const footerQuickLinks = navigationLinks.map((link) => ({
+  href: link.href,
+  label: link.label,
+}));
+
+const portfolioLinks = [
+  { label: 'Resume', href: resumeLinks.master, external: false },
+  { label: 'Articles', href: '/articles', external: false },
+  { label: 'GitHub', href: siteConfig.githubUrl, external: true },
+] as const;
+
+const socialLinkMap = new Map(
+  socialLinks.map((link) => [
+    link.label === 'X (Twitter)' ? 'X' : link.label,
+    {
+      ...link,
+      label: link.label === 'X (Twitter)' ? 'X' : link.label,
+    },
+  ]),
+);
+
+const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
+  .map((label) => socialLinkMap.get(label))
+  .filter((link): link is NonNullable<(typeof socialLinks)[number]> => Boolean(link));
+
+const repeatedWorkplaces = [...workplaces, ...workplaces];
+const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
-<MainLayout
+<BaseLayout
   title="Home"
-  description="Anil Karaca is a data journalist and developer focused on public-interest storytelling, mobile apps, and editorial product work."
-  image="/images/anil-karaca.jpg"
+  description="Framer-style homepage for Anil Karaca, blending data journalism, civic storytelling, mobile apps, and editorial product engineering."
 >
-  <JsonLd schema={personSchema} />
+  <JsonLd schema={buildPersonSchema()} />
 
-  <section class="relative overflow-hidden pt-28 pb-20">
-    <div class="absolute inset-0 bg-gradient-to-br from-background via-card/30 to-background"></div>
-    <div class="absolute left-0 top-10 h-[420px] w-[420px] rounded-full bg-primary/10 blur-[120px]"></div>
-    <div class="absolute bottom-0 right-0 h-[360px] w-[360px] rounded-full bg-secondary/10 blur-[110px]"></div>
+  <div class="portfolio-home">
+    <div class="portfolio-home__texture" aria-hidden="true"></div>
 
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="max-w-4xl">
-        <div class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/80 px-4 py-2 text-sm text-muted-foreground shadow-[0_0_15px_rgba(var(--color-primary),0.1)] backdrop-blur-sm">
-          <span class="relative flex h-2 w-2">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
-          </span>
-          Open to full-time roles in data journalism and product development
-        </div>
+    <header class="portfolio-home__nav">
+      <div class="portfolio-home__container portfolio-home__nav-inner">
+        <a href="/" class="portfolio-home__brand">{siteConfig.personName.toUpperCase()}</a>
 
-        <h1 class="mt-8 text-5xl font-display font-bold tracking-tight sm:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          I help teams explain complex systems through
-          <span class="text-gradient"> reporting, code, and product thinking.</span>
-        </h1>
-
-        <p class="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-          I work at the intersection of public-interest storytelling and software delivery. Hire me for
-          data journalism, newsroom-adjacent product work, frontend engineering, or mobile app execution.
-        </p>
-
-        <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-          <a
-            href="/data-journalism"
-            class="group inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 transition-all duration-300 hover:brightness-110"
-            data-track-event="open_data_journalism_lane"
-            data-track-label="Homepage Data Journalism"
+        <div class="portfolio-home__menu">
+          <button
+            id="home-menu-toggle"
+            class="portfolio-home__menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="home-menu"
           >
-            View Data Journalism Work
-            <Icon name="arrow-right" size={18} class="transition-transform group-hover:translate-x-1" />
-          </a>
-          <a
-            href="/developer"
-            class="group inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card/80 px-7 py-4 text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/30 hover:bg-card"
-            data-track-event="open_developer_lane"
-            data-track-label="Homepage Developer"
-          >
-            View Developer Work
-            <Icon name="arrow-right" size={18} class="transition-transform group-hover:translate-x-1" />
-          </a>
-          <a
-            href="/anilkaraca-cv.pdf"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-7 py-4 text-sm font-semibold text-primary transition-all duration-300 hover:bg-primary/15"
-            data-track-event="download_master_resume"
-            data-track-label="Homepage Resume"
-          >
-            <Icon name="download" size={18} />
-            Download Resume
-          </a>
-        </div>
+            <span>Menu</span>
+            <span class="portfolio-home__menu-dot" aria-hidden="true"></span>
+            <svg
+              class="portfolio-home__menu-icon"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.2"
+              aria-hidden="true"
+            >
+              <path d="M4 6L8 2L12 6"></path>
+              <path d="M4 10L8 14L12 10"></path>
+            </svg>
+          </button>
 
-        <div class="mt-12 grid gap-3 sm:grid-cols-3">
-          {credibilityHighlights.map((highlight) => (
-            <div class="rounded-2xl border border-border/80 bg-card/50 px-4 py-4 text-sm leading-relaxed text-muted-foreground backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:bg-card/80 hover:text-foreground hover:shadow-lg hover:shadow-primary/5">
-              {highlight}
-            </div>
-          ))}
+          <div id="home-menu" class="portfolio-home__menu-panel" data-open="false">
+            {homeMenuLinks.map((link) => (
+              <a href={link.href} class="portfolio-home__menu-link">
+                {link.label}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </header>
 
-  <section class="py-12">
-    <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:px-8 lg:grid-cols-2">
-      {expertiseLanes.map((lane) => {
-        const methods = lane.slug === 'data-journalism' ? journalismMethods : developerMethods;
-        const laneEvent = lane.slug === 'data-journalism' ? 'open_data_journalism_lane' : 'open_developer_lane';
+    <section class="portfolio-home__hero">
+      <div class="portfolio-home__container portfolio-home__hero-grid">
+        <div class="portfolio-home__hero-copy">
+          <div class="portfolio-home__eyebrow">
+            <span>Hey,</span>
+            <span class="portfolio-home__wave" aria-hidden="true">👋</span>
+            <span>I&apos;m a Data Journalist &amp; Product Developer</span>
+          </div>
 
-        return (
-          <article class="flex h-full flex-col rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm transition-all duration-300 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5">
-            <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              {lane.kicker}
-            </span>
-            <h2 class="mt-4 text-3xl font-display font-bold text-foreground">{lane.title}</h2>
-            <p class="mt-4 text-base leading-relaxed text-muted-foreground">{lane.summary}</p>
+          <h1>ANIL KARACA</h1>
+        </div>
 
-            <div class="mt-6 space-y-3">
-              {methods.map((method) => (
-                <div class="flex items-start gap-3 rounded-2xl border border-border/70 bg-background/40 px-4 py-3">
-                  <div class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Icon name={lane.slug === 'data-journalism' ? 'data-journalism' : 'code'} size={14} />
-                  </div>
-                  <p class="text-sm leading-relaxed text-muted-foreground">{method}</p>
-                </div>
-              ))}
-            </div>
+        <div class="portfolio-home__hero-side">
+          <div class="portfolio-home__scroll">
+            <span class="portfolio-home__scroll-line" aria-hidden="true"></span>
+            <span>Scroll</span>
+          </div>
 
-            <div class="mt-6 rounded-2xl border border-border/70 bg-background/50 p-4">
-              <p class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Selected proof</p>
-              <div class="mt-3 space-y-3">
-                {lane.slug === 'data-journalism' ? (
-                  <>
-                    {journalismProjects.slice(0, 2).map((project) => (
-                      <a
-                        href={project.data.liveUrl || `/projects/${project.slug}`}
-                        target={project.data.liveUrl?.startsWith('http') ? '_blank' : undefined}
-                        rel={project.data.liveUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        class="flex items-start justify-between gap-3 rounded-xl border border-transparent bg-card/60 px-4 py-3 transition-colors hover:border-primary/20"
-                      >
-                        <div>
-                          <p class="font-semibold text-foreground">{project.data.title}</p>
-                          <p class="mt-1 text-sm text-muted-foreground">
-                            {project.data.summaryEn || project.data.description}
-                          </p>
-                        </div>
-                        <Icon name="arrow-right" size={16} class="mt-1 shrink-0 text-primary" />
-                      </a>
-                    ))}
-                    {featuredArticles.slice(0, 1).map((article) => (
-                      <a
-                        href={`/articles/${article.slug}`}
-                        class="flex items-start justify-between gap-3 rounded-xl border border-transparent bg-card/60 px-4 py-3 transition-colors hover:border-primary/20"
-                      >
-                        <div>
-                          <p class="font-semibold text-foreground">{article.data.title}</p>
-                          <p class="mt-1 text-sm text-muted-foreground">{articleSummary(article)}</p>
-                        </div>
-                        <Icon name="arrow-right" size={16} class="mt-1 shrink-0 text-primary" />
-                      </a>
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    {appProjects.slice(0, 2).map((app) => (
-                      <a
-                        href={app.appStoreUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="flex items-start justify-between gap-3 rounded-xl border border-transparent bg-card/60 px-4 py-3 transition-colors hover:border-primary/20"
-                      >
-                        <div>
-                          <p class="font-semibold text-foreground">{app.name}</p>
-                          <p class="mt-1 text-sm text-muted-foreground">{app.technicalSummary}</p>
-                        </div>
-                        <Icon name="arrow-right" size={16} class="mt-1 shrink-0 text-primary" />
-                      </a>
-                    ))}
-                    {journalismProjects.slice(1, 2).map((project) => (
-                      <a
-                        href={project.data.liveUrl || `/projects/${project.slug}`}
-                        target={project.data.liveUrl?.startsWith('http') ? '_blank' : undefined}
-                        rel={project.data.liveUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        class="flex items-start justify-between gap-3 rounded-xl border border-transparent bg-card/60 px-4 py-3 transition-colors hover:border-primary/20"
-                      >
-                        <div>
-                          <p class="font-semibold text-foreground">{project.data.title}</p>
-                          <p class="mt-1 text-sm text-muted-foreground">
-                            Technical case study: interactive analysis built with React, D3.js, and a Python data workflow.
-                          </p>
-                        </div>
-                        <Icon name="arrow-right" size={16} class="mt-1 shrink-0 text-primary" />
-                      </a>
-                    ))}
-                  </>
-                )}
+          <p class="portfolio-home__hero-summary">
+            I work where public-interest reporting, civic analysis, and shipped digital product delivery overlap.
+          </p>
+
+          <div class="portfolio-home__hero-socials">
+            {footerSocialLinks.map((link) => (
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                <span aria-hidden="true">/</span>
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div class="portfolio-home__hero-contacts">
+          <div class="portfolio-home__contact-row">
+            <span class="portfolio-home__contact-key">E</span>
+            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+          </div>
+          <div class="portfolio-home__contact-row">
+            <span class="portfolio-home__contact-key">CV</span>
+            <a href={resumeLinks.master}>Download resume</a>
+          </div>
+        </div>
+
+        <div class="portfolio-home__hero-image-wrap">
+          <div class="portfolio-home__hero-glow" aria-hidden="true"></div>
+          <img
+            src={portrait.src}
+            alt="Portrait of Anil Karaca"
+            class="portfolio-home__hero-image"
+            width="680"
+            height="850"
+            loading="eager"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="portfolio-home__marquee-section">
+      <div class="portfolio-home__section-shell" id="positioning">
+        <div class="portfolio-home__container">
+          <div class="portfolio-home__positioning-grid">
+            <div>
+              <p class="portfolio-home__section-kicker">// Positioning</p>
+
+              <div class="portfolio-home__positioning-copy">
+                <h2>Reporting, product thinking, and delivery in one profile.</h2>
+                <p>
+                  The strongest work here comes from overlap, not separate lanes: journalism for framing the question,
+                  analysis for making it legible, and product execution for shipping something people can actually use.
+                </p>
+              </div>
+
+              <div class="portfolio-home__positioning-actions">
+                <a href="/projects" class="portfolio-home__button">
+                  See All Work
+                </a>
+                <a href="/about" class="portfolio-home__button portfolio-home__button--ghost">
+                  Full Profile
+                </a>
               </div>
             </div>
 
-            <a
-              href={`/${lane.slug}`}
-              class="mt-auto pt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all hover:gap-3"
-              data-track-event={laneEvent}
-              data-track-label={lane.title}
-            >
-              Explore {lane.title}
-              <Icon name="arrow-right" size={16} />
+            <div class="portfolio-home__positioning-notes">
+              {credibilityHighlights.map((highlight, index) => (
+                <article class="portfolio-home__positioning-note">
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <p>{highlight}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div class="portfolio-home__stats-grid">
+            {homeStats.map((stat) => (
+              <div class="portfolio-home__stat">
+                <div class="portfolio-home__stat-value">{stat.value}</div>
+                <p>{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="portfolio-home__section portfolio-home__section--work" id="proof">
+      <div class="portfolio-home__container">
+        <div class="portfolio-home__section-head portfolio-home__section-head--split">
+          <div>
+            <p class="portfolio-home__section-kicker">// Selected Proof</p>
+          </div>
+
+          <h2>Selected reporting, apps, and interactive systems</h2>
+
+          <div class="portfolio-home__section-mark" aria-hidden="true">
+            <span>&lt;/</span>
+            <span>&gt;</span>
+          </div>
+        </div>
+
+        <div class="portfolio-home__section-divider" aria-hidden="true">
+          <span>&lt;/</span>
+        </div>
+
+        <div class="portfolio-home__work-grid">
+          {featuredWork.map((entry) => (
+            <a href={getEntryHref(entry)} class="portfolio-home__work-card">
+              <div class="portfolio-home__work-image-frame">
+                <img
+                  src={entry.data.heroImage || portrait.src}
+                  alt={entry.data.title}
+                  class="portfolio-home__work-image"
+                  width="1120"
+                  height="820"
+                  loading="lazy"
+                />
+              </div>
+
+              <div class="portfolio-home__work-copy">
+                <h3>{entry.data.title}</h3>
+                <p>{getEntrySummary(entry)}</p>
+              </div>
+
+              <div class="portfolio-home__tag-row">
+                {getEntryTags(entry)
+                  .slice(0, 3)
+                  .map((tag) => (
+                    <span>{tag}</span>
+                  ))}
+              </div>
             </a>
-          </article>
-        );
-      })}
-    </div>
-  </section>
-
-  <section class="py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Selected proof</span>
-          <h2 class="mt-3 text-3xl font-display font-bold text-foreground sm:text-4xl">
-            The strongest cross-track work on one screen
-          </h2>
-        </div>
-        <a
-          href="/projects"
-          class="inline-flex items-center gap-2 text-sm font-semibold text-primary"
-        >
-          Browse selected work
-          <Icon name="arrow-right" size={16} />
-        </a>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-3">
-        {journalismProjects.slice(0, 1).map((project) => (
-          <WorkCard
-            title={project.data.title}
-            eyebrow="Data journalism"
-            description={project.data.summaryEn || project.data.description}
-            href={project.data.liveUrl || `/projects/${project.slug}`}
-            external={Boolean(project.data.liveUrl?.startsWith('http'))}
-            role={project.data.role}
-            impact={project.data.impact}
-            tags={project.data.technologies}
-            image={project.data.heroImage}
-            ctaLabel="View case study"
-          />
-        ))}
-
-        {journalismProjects.slice(1, 2).map((project) => (
-          <WorkCard
-            title={project.data.title}
-            eyebrow="Editorial product"
-            description="Interactive parliamentary analysis with a strong reporting angle and a deep technical implementation."
-            href={project.data.liveUrl || `/projects/${project.slug}`}
-            external={Boolean(project.data.liveUrl?.startsWith('http'))}
-            role={project.data.role}
-            impact={project.data.impact}
-            tags={project.data.technologies}
-            image={project.data.heroImage}
-            ctaLabel="Open project"
-          />
-        ))}
-
-        {leadApp && (
-          <WorkCard
-            title={leadApp.name}
-            eyebrow="Shipped app"
-            description={leadApp.technicalSummary}
-            href={leadApp.appStoreUrl}
-            external={true}
-            role={leadApp.role}
-            impact={leadApp.impact}
-            tags={leadApp.stack}
-            image={leadApp.image}
-            ctaLabel="View App Store listing"
-          />
-        )}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="rounded-3xl border border-border bg-card/70 p-8 backdrop-blur-sm">
-        <div class="max-w-2xl">
-          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Credibility</span>
-          <h2 class="mt-3 text-3xl font-display font-bold text-foreground">
-            Newsrooms, municipalities, and product work all inform how I build.
-          </h2>
-          <p class="mt-3 text-base leading-relaxed text-muted-foreground">
-            The portfolio is intentionally split into two hiring lanes, but the underlying advantage is the mix:
-            editorial judgment, analytical rigor, and actual product execution.
-          </p>
+          ))}
         </div>
 
-        <div class="mt-8">
-          <InfiniteMovingCards
-            client:load
-            items={workplaces.map((workplace) => ({
-              name: workplace.name,
-              image: workplace.logo,
-              link: workplace.url,
-            }))}
-            speed="slow"
-            pauseOnHover={true}
-            className="mx-auto"
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <ResumeLinks />
-    </div>
-  </section>
-
-  <section class="pb-24">
-    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-      <div class="rounded-[2rem] border border-primary/20 bg-gradient-to-br from-card to-background p-8 text-center shadow-xl shadow-primary/5 md:p-12">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Hiring</span>
-        <h2 class="mt-4 text-3xl font-display font-bold text-foreground sm:text-4xl">
-          Looking for someone who can report, ship, and communicate?
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          I am strongest in roles where analytical thinking, strong writing, and frontend or mobile execution need to
-          work together, not compete with each other.
-        </p>
-        <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:brightness-110"
-            data-track-event="contact_click"
-            data-track-label="Homepage Contact"
-          >
-            Talk about a role
-            <Icon name="arrow-right" size={18} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/anil-karaca/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card/80 px-7 py-4 text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/30"
-          >
-            View LinkedIn
-            <Icon name="external-link" size={18} />
+        <div class="portfolio-home__section-cta">
+          <a href="/projects" class="portfolio-home__button">
+            Open Projects
           </a>
         </div>
       </div>
-    </div>
-  </section>
-</MainLayout>
+    </section>
+
+    <section class="portfolio-home__section portfolio-home__section--proof-band">
+      <div class="portfolio-home__container">
+        <div class="portfolio-home__section-head portfolio-home__section-head--split">
+          <div>
+            <p class="portfolio-home__section-kicker">// Experience</p>
+          </div>
+
+          <h2>Newsrooms, civic institutions, and self-directed product work behind the portfolio</h2>
+
+          <div class="portfolio-home__section-mark" aria-hidden="true">
+            <span>&lt;/</span>
+            <span>&gt;</span>
+          </div>
+        </div>
+
+        <div class="portfolio-home__section-divider" aria-hidden="true">
+          <span>&lt;/</span>
+        </div>
+
+        <div class="portfolio-home__clients-band">
+          <div class="portfolio-home__clients-track">
+            {repeatedWorkplaces.map((workplace, index) => (
+              <a
+                href={workplace.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="portfolio-home__client-logo"
+              >
+                <img
+                  src={workplace.logo}
+                  alt={workplace.name}
+                  width="240"
+                  height="96"
+                  loading={index < workplaces.length ? 'eager' : 'lazy'}
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+        <div class="portfolio-home__section-cta">
+          <a href="/about" class="portfolio-home__button portfolio-home__button--ghost">
+            Open About
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="portfolio-home__footer">
+      <div class="portfolio-home__container">
+        <div class="portfolio-home__footer-cta">
+          <div class="portfolio-home__footer-cta-copy">
+            <h2>Ready to take your</h2>
+
+            <div class="portfolio-home__footer-cta-line">
+              <h2>story or product</h2>
+              <a href="/contact" class="portfolio-home__cta-orb">
+                Contact
+              </a>
+            </div>
+
+            <h2>to the next level?</h2>
+          </div>
+        </div>
+
+        <div class="portfolio-home__section-divider portfolio-home__section-divider--footer" aria-hidden="true">
+          <span>&lt;/</span>
+        </div>
+
+        <div class="portfolio-home__footer-grid">
+          <div>
+            <p class="portfolio-home__footer-title">Quick links</p>
+            <div class="portfolio-home__footer-links">
+              {footerQuickLinks.map((link) => (
+                <a href={link.href}>{link.label}</a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p class="portfolio-home__footer-title">Portfolio</p>
+            <div class="portfolio-home__footer-links">
+              {portfolioLinks.map((link) => (
+                <a
+                  href={link.href}
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p class="portfolio-home__footer-title">Social links</p>
+            <div class="portfolio-home__footer-links">
+              {footerSocialLinks.map((link) => (
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="portfolio-home__footer-bottom">
+          <div class="portfolio-home__footer-contact">
+            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+            <a href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
+              {githubDisplay}
+            </a>
+          </div>
+
+          <div class="portfolio-home__footer-links portfolio-home__footer-links--inline">
+            <a href="/projects">Projects</a>
+            <a href="/about">About</a>
+            <a href="/contact">Contact</a>
+            <a href={resumeLinks.master}>Resume</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <style>
+    .portfolio-home {
+      position: relative;
+      overflow: clip;
+      background: #111111;
+      color: #f3f1eb;
+      isolation: isolate;
+    }
+
+    .portfolio-home a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .portfolio-home__texture {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 50% 16%, rgba(122, 242, 152, 0.2), transparent 16%),
+        radial-gradient(circle at 50% 84%, rgba(122, 242, 152, 0.16), transparent 20%),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.015) 0,
+          rgba(255, 255, 255, 0.015) 1px,
+          transparent 1px,
+          transparent 64px
+        ),
+        linear-gradient(180deg, #111111 0%, #080808 100%);
+    }
+
+    .portfolio-home__container {
+      position: relative;
+      width: min(100% - 40px, 1320px);
+      margin-inline: auto;
+    }
+
+    .portfolio-home__nav {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      padding-top: 10px;
+      pointer-events: none;
+    }
+
+    .portfolio-home__nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      pointer-events: auto;
+    }
+
+    .portfolio-home__brand {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.96);
+    }
+
+    .portfolio-home__menu {
+      position: relative;
+    }
+
+    .portfolio-home__menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      border: 0;
+      border-radius: 999px;
+      background: #f7f4ef;
+      color: #111111;
+      padding: 13px 16px 13px 18px;
+      font-size: 0.82rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .portfolio-home__menu-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #8517ff;
+      transform: scale(0);
+      transition: transform 180ms ease;
+    }
+
+    .portfolio-home__menu-icon {
+      width: 16px;
+      height: 16px;
+    }
+
+    .portfolio-home__menu-toggle[aria-expanded='true'] .portfolio-home__menu-dot {
+      transform: scale(1);
+    }
+
+    .portfolio-home__menu-panel {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      min-width: 170px;
+      display: grid;
+      gap: 6px;
+      padding: 14px 12px;
+      border-radius: 14px;
+      background: #f7f4ef;
+      color: #111111;
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition:
+        opacity 180ms ease,
+        transform 180ms ease,
+        visibility 180ms ease;
+    }
+
+    .portfolio-home__menu-panel[data-open='true'] {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .portfolio-home__menu-link {
+      display: block;
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background-color 180ms ease;
+    }
+
+    .portfolio-home__menu-link:hover {
+      background: rgba(17, 17, 17, 0.08);
+    }
+
+    .portfolio-home__hero {
+      position: relative;
+      padding: 194px 0 96px;
+      background: #191818;
+    }
+
+    .portfolio-home__hero-grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-areas:
+        'copy copy'
+        'contacts side';
+      gap: 54px 96px;
+      min-height: min(1140px, calc(100svh + 150px));
+      padding-bottom: 300px;
+      align-content: end;
+    }
+
+    .portfolio-home__hero-copy {
+      grid-area: copy;
+      max-width: 1120px;
+    }
+
+    .portfolio-home__eyebrow {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: clamp(1rem, 1.4vw, 1.9rem);
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.94);
+    }
+
+    .portfolio-home__wave {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: 70% 70%;
+      animation: portfolio-home-wave 2.2s ease-in-out infinite;
+    }
+
+    .portfolio-home__hero h1 {
+      margin: 30px 0 0;
+      font-size: clamp(5rem, 12.8vw, 11.6rem);
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+      color: #7af298;
+      text-transform: uppercase;
+    }
+
+    .portfolio-home__hero-side {
+      grid-area: side;
+      align-self: end;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .portfolio-home__scroll {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .portfolio-home__scroll-line {
+      width: 1px;
+      height: 48px;
+      background: rgba(122, 242, 152, 0.4);
+    }
+
+    .portfolio-home__hero-summary {
+      margin: 0;
+      font-size: 1.18rem;
+      line-height: 1.85;
+      color: rgba(255, 255, 255, 0.84);
+    }
+
+    .portfolio-home__hero-socials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .portfolio-home__hero-socials a {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.94rem;
+      transition: color 180ms ease;
+    }
+
+    .portfolio-home__hero-socials a:hover {
+      color: #7af298;
+    }
+
+    .portfolio-home__hero-contacts {
+      grid-area: contacts;
+      align-self: end;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 320px;
+    }
+
+    .portfolio-home__contact-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .portfolio-home__contact-row a {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.92);
+      transition: color 180ms ease;
+    }
+
+    .portfolio-home__contact-row a:hover {
+      color: #7af298;
+    }
+
+    .portfolio-home__contact-key {
+      min-width: 30px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      color: rgba(255, 255, 255, 0.48);
+      text-transform: uppercase;
+    }
+
+    .portfolio-home__hero-image-wrap {
+      position: absolute;
+      left: 50%;
+      bottom: 56px;
+      width: min(100%, 565px);
+      margin-top: 0;
+      transform: translateX(-50%);
+    }
+
+    .portfolio-home__hero-glow {
+      position: absolute;
+      inset: 12% 8% 0;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(122, 242, 152, 0.34), transparent 70%);
+      filter: blur(36px);
+      transform: scale(1.58);
+    }
+
+    .portfolio-home__hero-image {
+      position: relative;
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      filter: saturate(0.95) contrast(1.08);
+      mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+    }
+
+    .portfolio-home__marquee-section {
+      position: relative;
+    }
+
+    .portfolio-home__section-shell,
+    .portfolio-home__section {
+      padding: 118px 0;
+    }
+
+    .portfolio-home__section--deep {
+      background: #111111;
+    }
+
+    .portfolio-home__section--soft {
+      background: #191818;
+    }
+
+    .portfolio-home__section--work {
+      padding: 92px 0 96px;
+    }
+
+    .portfolio-home__section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 28px;
+      margin-bottom: 24px;
+    }
+
+    .portfolio-home__section-kicker {
+      margin: 0 0 18px;
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      color: #7af298;
+    }
+
+    .portfolio-home__section-head--split {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) minmax(0, 640px) auto;
+      align-items: end;
+      gap: 24px;
+    }
+
+    .portfolio-home__section-head--split h2 {
+      text-align: left;
+      justify-self: start;
+    }
+
+    .portfolio-home__section-head h2 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(2.25rem, 4.8vw, 4rem);
+      line-height: 1.08;
+      letter-spacing: -0.05em;
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__section-mark {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-size: 1.35rem;
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .portfolio-home__section-divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 40px;
+      color: #7af298;
+      font-size: 1.25rem;
+    }
+
+    .portfolio-home__section-divider::after {
+      content: '';
+      flex: 1;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .portfolio-home__skills-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 480px);
+      gap: 54px;
+      align-items: start;
+    }
+
+    .portfolio-home__skills-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .portfolio-home__skill-group {
+      padding: 18px 0 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .portfolio-home__skill-group-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .portfolio-home__skill-group-head h2 {
+      margin: 0;
+      font-size: 1.12rem;
+      line-height: 1.2;
+      color: #ffffff;
+    }
+
+    .portfolio-home__skill-group-head span {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.92rem;
+    }
+
+    .portfolio-home__skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 0.92rem;
+    }
+
+    .portfolio-home__skills-copy {
+      padding-top: 44px;
+    }
+
+    .portfolio-home__skills-copy p {
+      margin: 0;
+      font-size: 1.14rem;
+      line-height: 1.85;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .portfolio-home__positioning-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+      gap: 54px;
+      align-items: start;
+    }
+
+    .portfolio-home__positioning-copy {
+      margin-top: 24px;
+      max-width: 720px;
+    }
+
+    .portfolio-home__positioning-copy h2 {
+      margin: 0;
+      font-size: clamp(2.2rem, 4.4vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: -0.05em;
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__positioning-copy p {
+      margin: 22px 0 0;
+      font-size: 1.08rem;
+      line-height: 1.85;
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .portfolio-home__positioning-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .portfolio-home__positioning-notes {
+      display: grid;
+      gap: 0;
+      padding-top: 44px;
+    }
+
+    .portfolio-home__positioning-note {
+      display: grid;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .portfolio-home__positioning-note span {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #7af298;
+    }
+
+    .portfolio-home__positioning-note p {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, 0.76);
+    }
+
+    .portfolio-home__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 28px;
+      min-height: 52px;
+      border: 0;
+      border-radius: 999px;
+      background: #7af298;
+      color: #111111;
+      padding: 12px 28px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: none;
+      box-shadow: 0 14px 34px rgba(122, 242, 152, 0.22);
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        filter 180ms ease;
+    }
+
+    .portfolio-home__button:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 38px rgba(122, 242, 152, 0.28);
+    }
+
+    .portfolio-home__button--ghost {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.03);
+      color: #f5f2eb;
+      box-shadow: none;
+    }
+
+    .portfolio-home__button--ghost:hover {
+      color: #7af298;
+      filter: none;
+      box-shadow: none;
+      border-color: rgba(122, 242, 152, 0.32);
+    }
+
+    .portfolio-home__stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px;
+      margin-top: 64px;
+    }
+
+    .portfolio-home__stat {
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .portfolio-home__stat-value {
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      font-weight: 700;
+      line-height: 1;
+      color: #f6f3ec;
+    }
+
+    .portfolio-home__stat p {
+      margin: 14px 0 0;
+      max-width: 340px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: #7af298;
+    }
+
+    .portfolio-home__work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 76px 62px;
+    }
+
+    .portfolio-home__work-card {
+      display: grid;
+      gap: 20px;
+    }
+
+    .portfolio-home__work-image-frame,
+    .portfolio-home__article-image-frame {
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .portfolio-home__work-image-frame {
+      aspect-ratio: 1.16 / 1;
+    }
+
+    .portfolio-home__section--work .portfolio-home__section-head {
+      margin-bottom: 16px;
+    }
+
+    .portfolio-home__section--work .portfolio-home__section-divider {
+      margin-bottom: 28px;
+    }
+
+    .portfolio-home__section--work .portfolio-home__work-grid {
+      gap: 40px 38px;
+    }
+
+    .portfolio-home__section--work .portfolio-home__work-card {
+      gap: 10px;
+    }
+
+    .portfolio-home__section--work .portfolio-home__work-image-frame {
+      aspect-ratio: 1.48 / 1;
+    }
+
+    .portfolio-home__section--work .portfolio-home__work-copy h3 {
+      font-size: 1.75rem;
+      line-height: 1.06;
+    }
+
+    .portfolio-home__section--work .portfolio-home__work-copy p {
+      margin-top: 6px;
+      font-size: 0.95rem;
+      line-height: 1.52;
+    }
+
+    .portfolio-home__section--work .portfolio-home__tag-row {
+      gap: 6px;
+    }
+
+    .portfolio-home__section--work .portfolio-home__tag-row span {
+      min-height: 30px;
+      padding: 0 12px;
+      font-size: 0.76rem;
+    }
+
+    .portfolio-home__section--work .portfolio-home__section-cta {
+      margin-top: 32px;
+    }
+
+    .portfolio-home__work-image,
+    .portfolio-home__article-image-frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 260ms ease;
+    }
+
+    .portfolio-home__work-card:hover .portfolio-home__work-image,
+    .portfolio-home__article-card:hover .portfolio-home__article-image-frame img {
+      transform: scale(1.02);
+    }
+
+    .portfolio-home__work-copy h3,
+    .portfolio-home__article-card h3,
+    .portfolio-home__process-card h3 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.15;
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__work-copy p,
+    .portfolio-home__process-card p,
+    .portfolio-home__service-body p,
+    .portfolio-home__client-card span {
+      margin: 12px 0 0;
+      font-size: 1rem;
+      line-height: 1.8;
+      color: rgba(255, 255, 255, 0.74);
+    }
+
+    .portfolio-home__tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .portfolio-home__tag-row span,
+    .portfolio-home__article-meta span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0 14px;
+      font-size: 0.82rem;
+      color: #7af298;
+    }
+
+    .portfolio-home__section-cta {
+      display: flex;
+      justify-content: center;
+      margin-top: 44px;
+    }
+
+    .portfolio-home__services {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .portfolio-home__service {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .portfolio-home__service:last-child {
+      border-bottom: 0;
+    }
+
+    .portfolio-home__service-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 26px 0;
+      background: transparent;
+      border: 0;
+      color: #f4f1ea;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .portfolio-home__service-trigger span:first-child {
+      font-size: clamp(1.25rem, 2.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.03em;
+    }
+
+    .portfolio-home__service-trigger span:last-child {
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 1rem;
+    }
+
+    .portfolio-home__service-body {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition:
+        max-height 280ms ease,
+        opacity 220ms ease,
+        padding-bottom 220ms ease;
+      padding-bottom: 0;
+    }
+
+    .portfolio-home__service.is-open .portfolio-home__service-body {
+      max-height: 220px;
+      opacity: 1;
+      padding-bottom: 28px;
+    }
+
+    .portfolio-home__process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .portfolio-home__process-card {
+      display: grid;
+      gap: 22px;
+      padding: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .portfolio-home__process-number {
+      font-size: 2.9rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__clients-band {
+      overflow: hidden;
+      padding: 8px 0 0;
+      -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .portfolio-home__clients-track {
+      display: flex;
+      align-items: center;
+      gap: 68px;
+      width: max-content;
+      white-space: nowrap;
+      animation: portfolio-home-marquee 34s linear infinite;
+    }
+
+    .portfolio-home__client-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 140px;
+      opacity: 0.72;
+      transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+    }
+
+    .portfolio-home__client-logo:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+    }
+
+    .portfolio-home__client-logo img {
+      width: auto;
+      max-width: 136px;
+      height: 40px;
+      object-fit: contain;
+      filter: grayscale(1) contrast(1.05);
+    }
+
+    .portfolio-home__section--proof-band .portfolio-home__section-head {
+      margin-bottom: 18px;
+    }
+
+    .portfolio-home__section--proof-band .portfolio-home__section-cta {
+      margin-top: 30px;
+    }
+
+    .portfolio-home__article-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .portfolio-home__article-card {
+      display: grid;
+      gap: 16px;
+    }
+
+    .portfolio-home__article-image-frame {
+      aspect-ratio: 1.16 / 1;
+    }
+
+    .portfolio-home__article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .portfolio-home__article-meta time {
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .portfolio-home__footer {
+      position: relative;
+      padding: 118px 0 40px;
+    }
+
+    .portfolio-home__footer-cta {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 376px;
+      margin-bottom: 32px;
+    }
+
+    .portfolio-home__footer-cta::before {
+      content: '';
+      position: absolute;
+      inset: 7% 26% 4%;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(122, 242, 152, 0.3), transparent 74%);
+      filter: blur(38px);
+      z-index: -1;
+    }
+
+    .portfolio-home__footer-cta-copy {
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      width: min(100%, 980px);
+    }
+
+    .portfolio-home__footer-cta-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    .portfolio-home__footer-cta h2 {
+      margin: 0;
+      max-width: none;
+      text-align: center;
+      font-size: clamp(2.7rem, 5.5vw, 4.85rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+      color: #f2efe8;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .portfolio-home__cta-orb {
+      position: static;
+      flex: 0 0 auto;
+      width: clamp(104px, 8.4vw, 126px);
+      aspect-ratio: 1 / 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: #7af298;
+      color: #111111;
+      font-size: 0.78rem;
+      font-weight: 700;
+      box-shadow: 0 18px 42px rgba(122, 242, 152, 0.28);
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        filter 180ms ease;
+    }
+
+    .portfolio-home__cta-orb:hover {
+      filter: brightness(1.03);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 46px rgba(122, 242, 152, 0.34);
+    }
+
+    .portfolio-home__section-divider--footer {
+      margin-bottom: 28px;
+    }
+
+    .portfolio-home__footer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 40px;
+      padding-bottom: 48px;
+    }
+
+    .portfolio-home__footer-title {
+      margin: 0 0 16px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #7af298;
+    }
+
+    .portfolio-home__footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .portfolio-home__footer-links a {
+      font-size: 0.92rem;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.9);
+      transition: color 180ms ease;
+    }
+
+    .portfolio-home__footer-links a:hover,
+    .portfolio-home__footer-contact a:hover {
+      color: #7af298;
+    }
+
+    .portfolio-home__footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      align-items: end;
+      padding-top: 28px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .portfolio-home__footer-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .portfolio-home__footer-contact a {
+      font-size: clamp(1.1rem, 2vw, 1.8rem);
+      font-weight: 700;
+      color: #f4f1ea;
+      transition: color 180ms ease;
+    }
+
+    .portfolio-home__footer-links--inline {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    @keyframes portfolio-home-wave {
+      0%,
+      60%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      10%,
+      30% {
+        transform: rotate(15deg);
+      }
+
+      20% {
+        transform: rotate(-10deg);
+      }
+    }
+
+    @keyframes portfolio-home-marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    @media (max-width: 1080px) {
+      .portfolio-home__hero-grid,
+      .portfolio-home__positioning-grid,
+      .portfolio-home__skills-grid,
+      .portfolio-home__footer-grid,
+      .portfolio-home__process-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .portfolio-home__hero-grid {
+        grid-template-areas:
+          'copy'
+          'side'
+          'contacts'
+          'image';
+        min-height: auto;
+        padding-bottom: 0;
+      }
+
+      .portfolio-home__hero-image-wrap {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        width: min(100%, 390px);
+        margin-top: -48px;
+        transform: none;
+      }
+
+      .portfolio-home__stats-grid,
+      .portfolio-home__clients-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .portfolio-home__work-grid,
+      .portfolio-home__article-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .portfolio-home__section-head,
+      .portfolio-home__footer-bottom {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .portfolio-home__section-head--split {
+        grid-template-columns: 1fr;
+      }
+
+      .portfolio-home__section--work .portfolio-home__work-grid {
+        gap: 38px;
+      }
+
+      .portfolio-home__footer-links--inline {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .portfolio-home__container {
+        width: min(100% - 28px, 1320px);
+      }
+
+      .portfolio-home__nav {
+        padding-top: 12px;
+      }
+
+      .portfolio-home__brand {
+        font-size: 0.78rem;
+      }
+
+      .portfolio-home__menu-toggle {
+        padding: 11px 14px 11px 16px;
+      }
+
+      .portfolio-home__hero {
+        padding-top: 138px;
+      }
+
+      .portfolio-home__hero h1 {
+        font-size: clamp(3.7rem, 21vw, 6.4rem);
+      }
+
+      .portfolio-home__hero-summary,
+      .portfolio-home__positioning-copy p,
+      .portfolio-home__skills-copy p,
+      .portfolio-home__work-copy p,
+      .portfolio-home__service-body p,
+      .portfolio-home__process-card p {
+        font-size: 0.98rem;
+      }
+
+      .portfolio-home__hero-socials {
+        gap: 12px;
+      }
+
+      .portfolio-home__hero-socials a,
+      .portfolio-home__contact-row a {
+        font-size: 0.9rem;
+      }
+
+      .portfolio-home__section-shell,
+      .portfolio-home__section,
+      .portfolio-home__footer {
+        padding: 88px 0;
+      }
+
+      .portfolio-home__section--work {
+        padding: 72px 0 80px;
+      }
+
+      .portfolio-home__name-marquee {
+        padding: 16px 0 44px;
+      }
+
+      .portfolio-home__floating-card {
+        width: min(150px, 46vw);
+      }
+
+      .portfolio-home__stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .portfolio-home__positioning-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .portfolio-home__service-trigger {
+        padding: 20px 0;
+      }
+
+      .portfolio-home__service.is-open .portfolio-home__service-body {
+        max-height: 280px;
+      }
+
+      .portfolio-home__client-card {
+        min-height: 154px;
+      }
+
+      .portfolio-home__footer-cta {
+        min-height: 320px;
+      }
+
+      .portfolio-home__footer-cta-copy {
+        gap: 18px;
+      }
+
+      .portfolio-home__footer-cta-line {
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      .portfolio-home__footer-cta h2 {
+        white-space: normal;
+      }
+
+      .portfolio-home__cta-orb {
+        margin-top: 0;
+      }
+    }
+  </style>
+
+  <script>
+    const menuToggle = document.getElementById('home-menu-toggle');
+    const menuPanel = document.getElementById('home-menu');
+
+    const closeMenu = () => {
+      menuPanel?.setAttribute('data-open', 'false');
+      menuToggle?.setAttribute('aria-expanded', 'false');
+    };
+
+    menuToggle?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const nextState = menuPanel?.getAttribute('data-open') !== 'true';
+      menuPanel?.setAttribute('data-open', String(nextState));
+      menuToggle.setAttribute('aria-expanded', String(nextState));
+    });
+
+    menuPanel?.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (menuPanel?.contains(target) || menuToggle?.contains(target)) return;
+      closeMenu();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeMenu();
+      }
+    });
+
+  </script>
+</BaseLayout>

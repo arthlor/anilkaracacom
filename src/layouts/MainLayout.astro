@@ -9,16 +9,57 @@ interface Props {
   description?: string | undefined;
   image?: string | undefined;
   noindex?: boolean | undefined;
+  article?: boolean | undefined;
+  lang?: string | undefined;
 }
 
-const { title, description, image, noindex } = Astro.props;
+const { title, description, image, noindex, article = false, lang = 'en' } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image} noindex={noindex}>
-  <Header />
-  <main class="flex-1">
-    <slot />
-  </main>
-  <Footer />
-  <BackToTop />
+<BaseLayout title={title} description={description} image={image} noindex={noindex} article={article} lang={lang}>
+  <div class="portfolio-shell">
+    <div class="portfolio-shell__texture" aria-hidden="true"></div>
+    <Header />
+    <main class="portfolio-shell__main">
+      <slot />
+    </main>
+    <Footer />
+    <BackToTop />
+  </div>
 </BaseLayout>
+
+<style>
+  .portfolio-shell {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: clip;
+    background: #111111;
+    color: #f3f1eb;
+    isolation: isolate;
+  }
+
+  .portfolio-shell__texture {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 16%, rgba(122, 242, 152, 0.16), transparent 16%),
+      radial-gradient(circle at 50% 84%, rgba(122, 242, 152, 0.12), transparent 20%),
+      repeating-linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.012) 0,
+        rgba(255, 255, 255, 0.012) 1px,
+        transparent 1px,
+        transparent 62px
+      ),
+      linear-gradient(180deg, #111111 0%, #080808 100%);
+  }
+
+  .portfolio-shell__main {
+    position: relative;
+    flex: 1;
+  }
+</style>

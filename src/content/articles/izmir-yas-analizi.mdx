@@ -6,8 +6,39 @@ heroImage: "/images/articles/izmir-yas-analizi-2025.webp"
 tags: ["izmir", "demografik", "veri-analizi", "python", "plotly"]
 category: "data-journalism"
 featured: false
+published: true
 draft: false
+track: "data-journalism"
+language: "tr"
+pillar: "data-journalism-civic-tech"
+techStack: ["Python", "Plotly", "Demographic Analysis", "Municipal Open Data"]
+metrics:
+  - label: "İlçe sayısı"
+    value: "30"
+    detail: "İzmir'in tüm ilçeleri yaş grubu dağılımıyla karşılaştırıldı."
+  - label: "Görselleştirme"
+    value: "Bubble chart"
+    detail: "İlçe, yaş grubu ve cinsiyet ilişkisi tek görünümde toplandı."
+executiveSummary: "İzmir'in yaş grupları ve cinsiyet dağılımını tek görsel sistem içinde birleştiren bu çalışma, ilçe bazlı demografik yoğunluğu etkileşimli olarak karşılaştırmayı kolaylaştırıyor."
+context: "Yaş grubu verileri tablo formatında kaldığında ilçeler arası farkları ve cinsiyet dağılımını karşılaştırmak zorlaşıyor. Bubble chart yaklaşımı, yoğunluğu aynı anda hem yaş hem ilçe hem de cinsiyet üzerinden okunabilir hale getiriyor."
+methodology:
+  - "Açık veri seti yaş grupları ve cinsiyet kırılımlarına göre düzenlendi."
+  - "Plotly ile ilçe ve yaş grubu ekseninde etkileşimli bubble chart kurgulandı."
+  - "Yorum bölümü, grafiğin okuyucuya ne anlattığını açıklayan temel çıkarımlarla desteklendi."
+challenge: "Çok boyutlu demografik bilgiyi tek bir görselde toplamak, okunabilirlik kaybı riski taşıyordu. Bu yüzden eksen düzeni ve balon büyüklüklerinin denge içinde kalması kritik hale geldi."
+codeProof: "Grafik yapısı, yaş grupları ile ilçe verisini karşılaştırırken cinsiyet dağılımını da aynı yüzeyde taşıyacak şekilde kurgulandı; böylece veri katmanları ayrı ayrı değil birlikte okunabiliyor."
+conclusion: "Çalışma, İzmir'in demografik yapısının hangi yaş gruplarında ve hangi ilçelerde yoğunlaştığını hızlıca görünür kılıyor; kamuya açık verinin daha sezgisel sunulabileceğini gösteriyor."
+summaryEn: "An interactive age-distribution study of İzmir that compares district, age group, and gender patterns in a single visual system."
+role: "Veri analizi, Python görselleştirme, anlatı desteği"
+impact: "Demografik veriyi tablo düzeyinden çıkarıp karşılaştırmalı, kamuya açık bir grafik deneyimine dönüştürüyor."
+relatedContent:
+  - collection: "articles"
+    slug: "izmir-memleket-dagilimi"
+  - collection: "articles"
+    slug: "turkiye-dogum-istatistikleri"
 ---
+
+import LegacyIframeFallback from '../../components/case-study/LegacyIframeFallback.astro';
 
 Yeni çalışmamda İzmir'in yaş istatistiklerini biraz incelemek istedim.
 
@@ -19,13 +50,11 @@ Grafik, belirli yaş grupları ile İzmir'in ilçelerini kıyaslıyor. Her bir k
 
 *(Grafiği daha rahat bir şekilde deneyimlemek için mobil cihazlarınızı yatay konuma getirmenizi ya da bilgisayar ekranından incelemenizi tavsiye ederim.)*
 
-<iframe 
-  src="/uploads/2024/03/interactive_chart.html" 
-  width="100%" 
-  height="600" 
-  style="border: none; border-radius: 8px;"
+<LegacyIframeFallback
+  src="/uploads/2024/03/interactive_chart.html"
   title="İzmir Yaş Analizi Bubble Chart"
-></iframe>
+  height="600px"
+/>
 
 Peki bu grafik bize ne anlatıyor, biraz yorumlayalım...
 

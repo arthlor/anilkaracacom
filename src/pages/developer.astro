@@ -1,229 +1,33 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
-
 import Icon from '../components/Icon.astro';
-import ResumeLinks from '../components/ResumeLinks.astro';
-import WorkCard from '../components/WorkCard.astro';
-import {
-  appProjects,
-  developerMethods,
-  resumeLinks,
-  supportingProjectSlugs,
-} from '../data/portfolio';
-import { pickEntriesBySlug } from '../lib/content';
 import MainLayout from '../layouts/MainLayout.astro';
-
-const projects: CollectionEntry<'projects'>[] = await getCollection('projects');
-const supportingProjects = pickEntriesBySlug<'projects'>(projects, supportingProjectSlugs);
-const parliamentProject = projects.find((project) => project.slug === 'parliament-analysis');
 ---
 
 <MainLayout
   title="Developer"
-  description="Developer portfolio for Anil Karaca, featuring mobile apps, frontend work, and editorial product implementation."
-  image="/images/projects/parliament.jpg"
+  description="This overview has been folded into the main projects library."
+  noindex={true}
 >
-  <section class="relative overflow-hidden pt-28 pb-18">
-    <div class="absolute inset-0 bg-gradient-to-b from-card/40 to-background"></div>
-    <div class="absolute right-0 top-8 h-[420px] w-[420px] rounded-full bg-secondary/10 blur-[120px]"></div>
-
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="max-w-4xl">
-        <span class="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-card/80 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm">
-          <Icon name="code" size={16} class="text-primary" />
-          Target roles: Frontend Developer, Product Engineer, Mobile Developer
-        </span>
-
-        <h1 class="mt-8 text-5xl font-display font-bold tracking-tight sm:text-6xl">
-          I build interfaces and apps that turn complex ideas into usable products.
-        </h1>
-
-        <p class="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-          My engineering work is strongest where product clarity, communication, and fast delivery matter. I ship
-          mobile apps, editorial interfaces, and custom storytelling experiences with React Native, Expo, React, Astro,
-          and pragmatic data tooling.
-        </p>
-
-        <div class="mt-10 flex flex-col gap-4 sm:flex-row">
-          <a
-            href={resumeLinks.developer}
-            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:brightness-110"
-            data-track-event="download_developer_resume"
-            data-track-label="Developer Hero Resume"
-          >
-            <Icon name="download" size={18} />
-            Download developer resume
-          </a>
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card/80 px-7 py-4 text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/30"
-            data-track-event="contact_click"
-            data-track-label="Developer Contact"
-          >
-            Contact me
-            <Icon name="arrow-right" size={18} />
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-14">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-8 max-w-2xl">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Method</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">How I work as a developer</h2>
-      </div>
-
-      <div class="grid gap-5 md:grid-cols-3">
-        {developerMethods.map((method) => (
-          <div class="rounded-3xl border border-border bg-card/80 p-6 backdrop-blur-sm">
-            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <Icon name="code" size={20} />
-            </div>
-            <p class="mt-4 text-sm leading-relaxed text-muted-foreground">{method}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10 max-w-2xl">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Shipped apps</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Consumer app work with real release pressure</h2>
-        <p class="mt-3 text-base leading-relaxed text-muted-foreground">
-          These apps show the kind of product execution I can bring to a frontend or mobile team: decisions, delivery,
-          and polish, not just isolated code samples.
-        </p>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-3">
-        {appProjects.map((app) => (
-          <WorkCard
-            title={app.name}
-            eyebrow={app.tagline}
-            description={app.technicalSummary}
-            href={app.appStoreUrl}
-            external={true}
-            role={app.role}
-            impact={app.impact}
-            tags={app.stack}
-            image={app.image}
-            ctaLabel="View App Store listing"
-          />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10 max-w-2xl">
-        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Technical case studies</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Interactive systems, not just app screens</h2>
-        <p class="mt-3 text-base leading-relaxed text-muted-foreground">
-          I also build editorial interfaces and custom web experiences. These projects show how I handle data-driven UI,
-          scrollytelling, and bespoke frontend work.
-        </p>
-      </div>
-
-      <div class="grid gap-6 lg:grid-cols-2">
-        {parliamentProject && (
-          <WorkCard
-            title={parliamentProject.data.title}
-            eyebrow="Editorial product"
-            description="A React and D3.js interface that turns parliamentary data into an explorable product. It doubles as both journalism and a frontend systems case study."
-            href={parliamentProject.data.liveUrl || `/projects/${parliamentProject.slug}`}
-            external={Boolean(parliamentProject.data.liveUrl?.startsWith('http'))}
-            role="Frontend architecture, data presentation, interaction design"
-            impact="Shows product-minded engineering on top of complex source data."
-            tags={parliamentProject.data.technologies}
-            image={parliamentProject.data.heroImage}
-            ctaLabel="Open project"
-          />
-        )}
-
-        {supportingProjects.map((project) => (
-          <WorkCard
-            title={project.data.title}
-            eyebrow="Custom storytelling UI"
-            description={project.data.summaryEn || project.data.description}
-            href={project.data.liveUrl || `/projects/${project.slug}`}
-            external={Boolean(project.data.liveUrl?.startsWith('http'))}
-            role={project.data.role}
-            impact={project.data.impact}
-            tags={project.data.technologies}
-            image={project.data.heroImage}
-            ctaLabel="Open project"
-          />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-        <div class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
-          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Workflow</span>
-          <h2 class="mt-4 text-3xl font-display font-bold text-foreground">I use AI as acceleration, not as a substitute for craft.</h2>
-          <p class="mt-4 text-base leading-relaxed text-muted-foreground">
-            AI tools are part of my workflow for iteration, ideation, and speed, but the final responsibility stays
-            with engineering judgment, product sense, and actual implementation discipline.
-          </p>
-        </div>
-
-        <div class="rounded-3xl border border-border bg-card/80 p-8 backdrop-blur-sm">
-          <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">What teams get</span>
-          <div class="mt-5 space-y-4 text-sm leading-relaxed text-muted-foreground">
-            <p>Someone who can bridge product goals, UX clarity, and implementation detail.</p>
-            <p>Frontend and mobile delivery experience shaped by editorial speed and limited-resource execution.</p>
-            <p>A builder who is comfortable working close to content, data, and the business context of the product.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <ResumeLinks
-        title="Resume options"
-        description="The developer version is the primary fit here, but the master and data journalism versions are also available."
-      />
-    </div>
-  </section>
-
-  <section class="pb-24">
+  <section class="pt-28 pb-24">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-      <div class="rounded-[2rem] border border-primary/20 bg-gradient-to-br from-card to-background p-8 text-center md:p-12">
-        <h2 class="text-3xl font-display font-bold text-foreground sm:text-4xl">
-          If you need a product-minded engineer who also understands content and audience, I am ready to talk.
-        </h2>
-        <p class="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Reach out for frontend, mobile, or editorial product roles where communication quality matters as much as
-          implementation speed.
+      <div class="page-frame p-8 text-center md:p-12">
+        <span class="page-kicker">Moved</span>
+        <h1 class="mt-4 text-4xl font-display font-bold tracking-tight text-foreground sm:text-5xl">
+          This work now lives inside the main projects library.
+        </h1>
+        <p class="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+          The portfolio now uses one primary work flow instead of separate lane pages. Use `Projects` for case studies
+          and shipped apps, or `Contact` if you want the fastest route for role discussions.
         </p>
+
         <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-          <a
-            href="/contact"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-7 py-4 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:brightness-110"
-            data-track-event="contact_click"
-            data-track-label="Developer Footer Contact"
-          >
-            Contact me
+          <a href="/projects" class="page-button">
+            Open Projects
             <Icon name="arrow-right" size={18} />
           </a>
-          <a
-            href="https://github.com/arthlor"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card/80 px-7 py-4 text-sm font-semibold text-foreground transition-all duration-300 hover:border-primary/30"
-          >
-            View GitHub
-            <Icon name="external-link" size={18} />
+          <a href="/contact" class="page-button page-button--secondary">
+            Contact Me
+            <Icon name="arrow-right" size={18} />
           </a>
         </div>
       </div>

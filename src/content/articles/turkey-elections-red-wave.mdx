@@ -6,12 +6,39 @@ heroImage: "/images/articles/turkey-elections-2025.png"
 tags: ["turkey", "elections", "data-analysis", "politics"]
 category: "data-journalism"
 featured: true
+published: true
 draft: false
 track: "data-journalism"
 language: "en"
+pillar: "geopolitical-network-analysis"
+techStack: ["Election Analysis", "D3 Geo", "React", "Political Reporting"]
+metrics:
+  - label: "Election comparison"
+    value: "2019 vs 2024"
+    detail: "Local-election shifts are measured across two cycles."
+  - label: "Interactive views"
+    value: "3"
+    detail: "Bar results, province map, and net change view are presented together."
+  - label: "Geographic scope"
+    value: "81 provinces"
+    detail: "Nationwide changes are mapped at province level."
 summaryEn: "An English-language election analysis that maps the opposition's 2024 gains across Turkey."
 role: "Election analysis, mapping, interactive reporting"
 impact: "Explains a major political shift with maps, charts, and contextual reporting."
+executiveSummary: "An English-language election explainer that turns a major Turkish political shift into a navigable, visual story using national results, province maps, and comparative party gains."
+context: "Turkey's 2024 local elections produced a national realignment that could not be explained by headline vote shares alone. Readers needed a structure that showed how the shift looked by party, by province, and by change versus the previous cycle."
+methodology:
+  - "Combined result summaries with a province-level map and party-change comparison."
+  - "Built custom React and D3-based visuals to keep the argument legible without sending readers into separate dashboards."
+  - "Framed the narrative for an international audience unfamiliar with local political context."
+challenge: "Election data stories often over-index on a single chart or headline. The challenge here was sequencing multiple views so each one answered a different question instead of repeating the same point."
+codeProof: "The page uses custom chart components and a hand-built Turkey projection so the analysis can move from aggregate vote totals to province-level interpretation inside a single narrative surface."
+conclusion: "The story clarifies not only that a shift happened, but where it happened and why the territorial spread matters. That makes the analysis useful for readers outside the immediate Turkish political news cycle."
+relatedContent:
+  - collection: "projects"
+    slug: "crackdown-on-chp"
+  - collection: "projects"
+    slug: "parliament-analysis"
 ---
 
 # Turkey Elections: Red Wave Conquers Anatolia
@@ -29,10 +56,66 @@ This shift is particularly noteworthy given Turkey's traditionally polarized pol
 import ElectionResultsBarChart from '../../components/mdx/charts/ElectionResultsBarChart.tsx';
 import PartyChangesChart from '../../components/mdx/charts/PartyChangesChart.tsx';
 import TurkeyElectionMap from '../../components/mdx/charts/TurkeyElectionMap.tsx';
+import ScrollytellingStory from '@/components/case-study/ScrollytellingStory.astro';
+import StoryStep from '@/components/case-study/StoryStep.astro';
 
 #### Last Updates Of Results
 
-<ElectionResultsBarChart client:visible />
+<ScrollytellingStory
+  steps={[
+    {
+      id: "election-overall",
+      label: "Step 1",
+      title: "Overall result",
+      summary: "Start with the aggregate picture before moving into geography.",
+    },
+    {
+      id: "election-map",
+      label: "Step 2",
+      title: "Geographic spread",
+      summary: "The province map shows why the result felt larger than a normal opposition win.",
+    },
+    {
+      id: "election-change",
+      label: "Step 3",
+      title: "Net gains and losses",
+      summary: "Finally, compare how municipal control shifted by party between cycles.",
+    },
+  ]}
+>
+  <StoryStep
+    id="election-overall"
+    label="Step 1"
+    title="The aggregate picture"
+    summary="The first chart establishes who won the largest overall share before the story drills into geographic spread."
+  >
+    <Fragment slot="visual">
+      <ElectionResultsBarChart client:visible />
+    </Fragment>
+  </StoryStep>
+
+  <StoryStep
+    id="election-map"
+    label="Step 2"
+    title="Where the shift spread"
+    summary="The province map matters because it shows the opposition move extending beyond the usual urban strongholds."
+  >
+    <Fragment slot="visual">
+      <TurkeyElectionMap client:visible />
+    </Fragment>
+  </StoryStep>
+
+  <StoryStep
+    id="election-change"
+    label="Step 3"
+    title="How party control changed"
+    summary="The final comparison separates headline vote share from actual municipal gains and losses."
+  >
+    <Fragment slot="visual">
+      <PartyChangesChart client:visible />
+    </Fragment>
+  </StoryStep>
+</ScrollytellingStory>
 
 #### Stressful Results for AKP
 
@@ -50,10 +133,6 @@ Another noteworthy development is the emergence of new political forces, such as
 
 I decided to prepare some interactive graphics about the outcome of the election. In this map, there are information about which cities changed parties, which candidate got selected with how many votes, and some more details.
 
-<TurkeyElectionMap client:visible />
-
 In below chart, you can see which party lost how many cities, towns etc.
 
 #### Changes in Control by Party (2019 vs 2024)
-
-<PartyChangesChart client:visible />

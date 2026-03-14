@@ -1,99 +1,309 @@
 ---
-import Icon from './Icon.astro';
+import { resumeLinks } from '../data/portfolio';
+import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
 
-const socialLinks = [
-  { href: 'https://www.linkedin.com/in/anil-karaca/', label: 'LinkedIn', icon: 'linkedin' },
-  { href: 'https://x.com/anilkaraca17', label: 'X (Twitter)', icon: 'twitter' },
-  { href: 'https://www.youtube.com/@anil.karaca', label: 'YouTube', icon: 'youtube' },
-  { href: 'https://github.com/arthlor', label: 'GitHub', icon: 'github' },
-];
+const footerQuickLinks = navigationLinks.map((link) => ({
+  href: link.href,
+  label: link.label,
+}));
 
-const quickLinks = [
-  { href: '/data-journalism', label: 'Data Journalism' },
-  { href: '/developer', label: 'Developer' },
-  { href: '/projects', label: 'Selected Work' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/anilkaraca-cv.pdf', label: 'Resume' },
-];
+const portfolioLinks = [
+  { label: 'Resume', href: resumeLinks.master, external: false },
+  { label: 'Articles', href: '/articles', external: false },
+  { label: 'GitHub', href: siteConfig.githubUrl, external: true },
+] as const;
 
-const year = new Date().getFullYear();
+const socialLinkMap = new Map(
+  socialLinks.map((link) => [
+    link.label === 'X (Twitter)' ? 'X' : link.label,
+    {
+      ...link,
+      label: link.label === 'X (Twitter)' ? 'X' : link.label,
+    },
+  ]),
+);
+
+const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
+  .map((label) => socialLinkMap.get(label))
+  .filter((link): link is NonNullable<(typeof socialLinks)[number]> => Boolean(link));
+
+const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
-<footer class="relative mt-20">
-  <!-- Gradient divider -->
-  <div class="h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"></div>
-  
-  <div class="bg-card/50 backdrop-blur-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- Main footer content -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
-        <!-- Brand -->
-        <div class="space-y-4">
-          <div class="flex items-center gap-2">
-            <span class="text-2xl font-display font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-              ANIL KARACA
-            </span>
-          </div>
-          <p class="text-muted-foreground text-sm max-w-xs">
-            Data journalist and developer focused on public-interest storytelling, shipped apps, and editorial product work.
-          </p>
+<footer class="site-footer">
+  <div class="site-footer__container">
+    <div class="site-footer__cta">
+      <div class="site-footer__cta-copy">
+        <h2>Ready to shape your</h2>
+        <div class="site-footer__cta-line">
+          <h2>next story or product</h2>
+          <a href="/contact" class="site-footer__cta-orb">Contact</a>
         </div>
-        
-        <!-- Quick Links -->
-        <div>
-          <h3 class="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Quick Links</h3>
-          <ul class="space-y-2">
-            {quickLinks.map((link) => (
-              <li>
-                <a 
-                  href={link.href} 
-                  class="text-muted-foreground hover:text-primary text-sm transition-colors duration-200"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-        <!-- Social & Contact -->
-        <div>
-          <h3 class="text-sm font-semibold text-foreground mb-4 uppercase tracking-wider">Connect</h3>
-          <div class="flex flex-wrap gap-3">
-            {socialLinks.map((link) => (
-              <a
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="group p-2.5 rounded-lg bg-muted/50 text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all duration-200"
-                aria-label={link.label}
-                title={link.label}
-              >
-                <Icon name={link.icon} size={20} class="group-hover:scale-110 transition-transform duration-200" />
-              </a>
-            ))}
-          </div>
-          <div class="mt-6">
-            <a 
-              href="mailto:anilkaraca140@gmail.com" 
-              class="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Icon name="mail" size={16} />
-              anilkaraca140@gmail.com
-            </a>
-          </div>
+        <h2>into shipped work?</h2>
+      </div>
+    </div>
+
+    <div class="site-footer__divider" aria-hidden="true">
+      <span>&lt;/</span>
+    </div>
+
+    <div class="site-footer__grid">
+      <div>
+        <p class="site-footer__title">Quick links</p>
+        <div class="site-footer__links">
+          {footerQuickLinks.map((link) => (
+            <a href={link.href}>{link.label}</a>
+          ))}
         </div>
       </div>
-      
-      <!-- Bottom bar -->
-      <div class="pt-8 border-t border-border/50">
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p class="text-sm text-muted-foreground">
-            &copy; {year} Anil Karaca. All rights reserved.
-          </p>
+
+      <div>
+        <p class="site-footer__title">Portfolio</p>
+        <div class="site-footer__links">
+          {portfolioLinks.map((link) => (
+            <a
+              href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
+      </div>
+
+      <div>
+        <p class="site-footer__title">Social links</p>
+        <div class="site-footer__links">
+          {footerSocialLinks.map((link) => (
+            <a href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <div class="site-footer__contact">
+        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+        <a href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
+          {githubDisplay}
+        </a>
+      </div>
+
+      <div class="site-footer__links site-footer__links--inline">
+        <a href="/projects">Projects</a>
+        <a href="/about">About</a>
+        <a href="/contact">Contact</a>
+        <a href={resumeLinks.master}>Resume</a>
       </div>
     </div>
   </div>
 </footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    padding: 118px 0 40px;
+  }
+
+  .site-footer__container {
+    width: min(100% - 40px, 1320px);
+    margin-inline: auto;
+  }
+
+  .site-footer__cta {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 376px;
+    margin-bottom: 32px;
+  }
+
+  .site-footer__cta::before {
+    content: '';
+    position: absolute;
+    inset: 7% 26% 4%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(122, 242, 152, 0.3), transparent 74%);
+    filter: blur(38px);
+    z-index: -1;
+  }
+
+  .site-footer__cta-copy {
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+    width: min(100%, 980px);
+  }
+
+  .site-footer__cta-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+  }
+
+  .site-footer__cta h2 {
+    margin: 0;
+    text-align: center;
+    font-size: clamp(2.7rem, 5.5vw, 4.85rem);
+    line-height: 0.96;
+    letter-spacing: -0.05em;
+    color: #f2efe8;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .site-footer__cta-orb {
+    flex: 0 0 auto;
+    width: clamp(104px, 8.4vw, 126px);
+    aspect-ratio: 1 / 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: #7af298;
+    color: #111111;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 18px 42px rgba(122, 242, 152, 0.28);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      filter 180ms ease;
+  }
+
+  .site-footer__cta-orb:hover {
+    filter: brightness(1.03);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 46px rgba(122, 242, 152, 0.34);
+  }
+
+  .site-footer__divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    color: #7af298;
+    font-size: 1.25rem;
+  }
+
+  .site-footer__divider::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px;
+    padding-bottom: 48px;
+  }
+
+  .site-footer__title {
+    margin: 0 0 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7af298;
+  }
+
+  .site-footer__links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .site-footer__links a,
+  .site-footer__contact a {
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    transition: color 180ms ease;
+  }
+
+  .site-footer__links a {
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .site-footer__links a:hover,
+  .site-footer__contact a:hover {
+    color: #7af298;
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 28px;
+    align-items: end;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .site-footer__contact {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .site-footer__contact a {
+    font-size: clamp(1.1rem, 2vw, 1.8rem);
+    font-weight: 700;
+  }
+
+  .site-footer__links--inline {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 1080px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .site-footer__bottom {
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .site-footer__links--inline {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .site-footer {
+      padding: 88px 0;
+    }
+
+    .site-footer__container {
+      width: min(100% - 28px, 1320px);
+    }
+
+    .site-footer__cta {
+      min-height: 320px;
+    }
+
+    .site-footer__cta-copy {
+      gap: 18px;
+    }
+
+    .site-footer__cta-line {
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .site-footer__cta h2 {
+      white-space: normal;
+    }
+  }
+</style>

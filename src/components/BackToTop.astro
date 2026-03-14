@@ -7,7 +7,7 @@
 
 <button
   id="back-to-top"
-  class="fixed bottom-6 right-6 z-50 p-3 bg-primary text-primary-foreground rounded-full shadow-lg opacity-0 invisible translate-y-4 transition-all duration-300 hover:bg-primary/90 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+  class="site-back-to-top"
   aria-label="Back to top"
 >
   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -16,6 +16,36 @@
 </button>
 
 <style>
+  .site-back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 45;
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background: #f7f4ef;
+    color: #111111;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition:
+      opacity 180ms ease,
+      visibility 180ms ease,
+      transform 180ms ease,
+      filter 180ms ease;
+    cursor: pointer;
+  }
+
+  .site-back-to-top:hover {
+    filter: brightness(0.98);
+  }
+
   #back-to-top.visible {
     opacity: 1;
     visibility: visible;

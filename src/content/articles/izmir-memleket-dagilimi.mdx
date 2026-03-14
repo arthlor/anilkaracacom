@@ -6,8 +6,39 @@ heroImage: "/images/articles/izmir-memleket-dagilimi-2025.jpg"
 tags: ["izmir", "demografik", "veri-analizi", "python", "folium", "harita"]
 category: "data-journalism"
 featured: false
+published: true
 draft: false
+track: "data-journalism"
+language: "tr"
+pillar: "data-journalism-civic-tech"
+techStack: ["Python", "Folium", "GeoJSON", "Municipal Open Data"]
+metrics:
+  - label: "Districts mapped"
+    value: "30"
+    detail: "İzmir'in tüm ilçeleri özel GeoJSON katmanıyla işlendi."
+  - label: "Dataset size"
+    value: "2.5K+ rows"
+    detail: "İlçe bazlı memleket dağılımı kayıtları sadeleştirildi."
+executiveSummary: "İzmir'in ilçelerinde en yoğun memleket dağılımını harita üstünden okunabilir hale getiren, belediye açık verisini coğrafi bağlamla birleştiren bir çalışma."
+context: "Ham veri tablosu, ilçe bazlı memleket dağılımını anlamayı güçleştiriyordu. Harita üstünden sunulan bir anlatı, İzmir içindeki göç örüntülerini ve demografik yoğunlaşmayı çok daha hızlı görünür kılıyor."
+methodology:
+  - "Belediye açık veri seti temizlenerek ilçe bazlı sıralamalar çıkarıldı."
+  - "Daha önce hazırlanan İzmir ilçe GeoJSON çalışması görselleştirmeye dahil edildi."
+  - "Tıklanabilir harita arayüzüyle her ilçe için ilk 10 memleket görünür hale getirildi."
+challenge: "Asıl zorluk, tablo mantığındaki yoğun veriyi kullanıcıyı yormadan mekânsal bir deneyime dönüştürmekti. İlçe sınırları ve açılır bilgi katmanları bu yüzden birlikte tasarlandı."
+codeProof: "Harita, özel GeoJSON sınırları ile veri eşleştirmesini aynı arayüzde birleştiriyor ve kullanıcıya her ilçe için sıralı sonuçları etkileşimli olarak veriyor."
+conclusion: "Çalışma, İzmir'in demografik çeşitliliğini tek bakışta anlaşılır hale getiriyor ve açık verinin sade bir harita arayüzüyle çok daha erişilebilir olabileceğini gösteriyor."
+summaryEn: "A district-level map of İzmir that makes migration patterns legible by matching municipal demographic data with custom GeoJSON boundaries."
+role: "Veri temizleme, harita kurgusu, Python görselleştirme"
+impact: "Tablo halinde okunması zor bir veri setini kamuya açık, keşfedilebilir bir haritaya dönüştürüyor."
+relatedContent:
+  - collection: "articles"
+    slug: "izmir-yas-analizi"
+  - collection: "articles"
+    slug: "izmir-trafik-kazasi-raporu"
 ---
+
+import LegacyIframeFallback from '../../components/case-study/LegacyIframeFallback.astro';
 
 İzmir, birçok farklı memleketten insanı barındıran büyük bir şehir. Türkiye'de memleket önemlidir, ilk tanışılan insana hemen memleketi sorulur. İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda dolaşırken, tam da bu konuya dair bir veriseti keşfettim. En son 2023'te güncellenen veriseti, İzmir'in hangi ilçesinde en çok hangi memleketten insan yaşadığına dair hazırlanmış.
 
@@ -19,13 +50,11 @@ Bu çalışma için Python Folium kütüphanesini kullanarak bir harita hazırla
 
 Daha sonra çeşitli HTML ve CSS düzenlemeleriyle, ilçelerin çeşitli noktalarını işaretleyerek, bu noktalara tıklandığında o ilçede en çok hangi memleketten insan yaşadığını göstermek istedim. Bunu da Python'u verisetimle eşleştirerek, istediğimi gösterecek bir fonksiyon ile sağladım. Bu fonksiyon, tıkladığınız ilçedeki ilk 10 memleketi size gösteriyor.
 
-<iframe 
-  src="/uploads/2024/02/izmir_interactive_map.html" 
-  width="1200" 
-  height="600" 
-  style="border: none; border-radius: 8px;"
+<LegacyIframeFallback
+  src="/uploads/2024/02/izmir_interactive_map.html"
   title="İzmir Memleket Haritası"
-></iframe>
+  height="600px"
+/>
 
 ## VERİ ANALİZİ
 
@@ -47,13 +76,11 @@ Daha sonra çeşitli HTML ve CSS düzenlemeleriyle, ilçelerin çeşitli noktala
 - **Bartın:** 2 bin 831 kişi
 - **Yalova:** 1 bin 503 kişi
 
-<iframe 
-  src="/uploads/2024/02/plotly_chart.html" 
-  width="100%" 
-  height="500" 
-  style="border: none; border-radius: 8px;"
+<LegacyIframeFallback
+  src="/uploads/2024/02/plotly_chart.html"
   title="Memleket Kıyaslaması Grafiği"
-></iframe>
+  height="500px"
+/>
 
 *(Bu grafiği telefonunuzu yatay hale getirerek daha verimli inceleyebilirsiniz.)*
 

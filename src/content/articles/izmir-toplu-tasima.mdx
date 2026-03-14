@@ -6,12 +6,39 @@ heroImage: "/images/articles/izmir-toplu-tasima-2025.webp"
 tags: ["izmir", "toplu-tasima", "veri-analizi", "python", "dash"]
 category: "data-journalism"
 featured: true
+published: true
 draft: false
 track: "data-journalism"
 language: "tr"
+pillar: "scientific-environmental-modeling"
+techStack: ["Python", "Dash", "Municipal Open Data", "Transit Analysis"]
+metrics:
+  - label: "Veri aralığı"
+    value: "2021-2023"
+    detail: "İzmirimKart kullanım kayıtları yıllık toplamlar üzerinden incelendi."
+  - label: "Toplam kayıt"
+    value: "15K+"
+    detail: "Açık veri seti ulaşım ve kart kullanım kırılımlarıyla işlendi."
+  - label: "Çıktı"
+    value: "Dashboard"
+    detail: "Dash tabanlı etkileşimli arayüz ile sonuçlar okunur hale getirildi."
+executiveSummary: "İzmirimKart kullanım istatistiklerini yıllar, araç türleri ve yolcu kategorileri üzerinden toparlayan bu çalışma, toplu taşıma kullanım alışkanlıklarını hızlıca okunabilir bir dashboard mantığına çeviriyor."
+context: "İzmir'in toplu taşıma ağı çok sayıda işletmeci ve yolcu kategorisi içeriyor. Bu çeşitlilik ham açık veri tablosunda kalınca hangi aracın ya da yolcu tipinin öne çıktığını görmek zorlaşıyor."
+methodology:
+  - "İzmir Büyükşehir Belediyesi açık veri seti temizlenerek yıllık ve kategorik toplamlar çıkarıldı."
+  - "Dashboard kurgusu, araç bazlı kullanım ile yolcu türü dağılımını aynı hikâye içinde gösterdi."
+  - "Python ve Dash ile hazırlanan arayüz, tablo mantığını keşfedilebilir bir görsel düzene dönüştürdü."
+challenge: "Veri seti hem ulaşım modlarını hem de ulaşım dışı bazı belediye kullanım kalemlerini içerdiği için anlatının sadeleşmesi gerekiyordu. Aksi halde okuyucu ana ulaşım örüntüsünü göremiyordu."
+codeProof: "Çalışma, açık veri temizleme ile Dash tabanlı bir etkileşimli dashboard'u tek akışta birleştiriyor; bu da verinin yalnızca tabloda kalmak yerine kullanıcı tarafından sorgulanabilen bir yüzeye taşınmasını sağlıyor."
+conclusion: "Bu proje, İzmir'in toplu taşıma sistemindeki baskın araçları ve yolcu profillerini görünür kılıyor; açık verinin, iyi kurgulanmış bir arayüzle çok daha anlaşılır hale gelebileceğini gösteriyor."
 summaryEn: "An interactive analysis of Izmir public transportation usage between 2021 and 2023 based on open card-usage data."
 role: "Open data analysis, dashboard design, Python workflow"
 impact: "Connects city-scale mobility data to a readable dashboard and concrete public-service insights."
+relatedContent:
+  - collection: "articles"
+    slug: "izmir-coronavirus-toplu-tasima"
+  - collection: "articles"
+    slug: "izmir-yas-analizi"
 ---
 
 İzmir, birçok alternatifle Türkiye'nin en etkili toplu taşıma sistemlerinden birine sahip. Tramvay, metro ve İZBAN gibi raylı ulaşım araçlarının yanı sıra, körfezi dolaşan arabalı feribotları ve vapurları, ESHOT ve İZULAŞ otobüsleri, İZTAŞIT gibi dolmuş alternatifleriyle İzmirliler bir yerden bir yere ulaşabilmek için birçok imkâna sahip.

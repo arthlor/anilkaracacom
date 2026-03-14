@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+
+import WorkCard from './WorkCard.astro';
+import {
+  getEntryHref,
+  getEntrySummary,
+  getEntryTags,
+  getEntryTypeLabel,
+} from '../lib/content';
+
+interface Props {
+  currentCollection: 'articles' | 'projects';
+  currentSlug: string;
+  currentPillar: 'data-journalism-civic-tech' | 'scientific-environmental-modeling' | 'geopolitical-network-analysis' | 'software-systems-architecture';
+  language: 'en' | 'tr';
+  relatedContent?: Array<{ collection: 'articles' | 'projects'; slug: string }>;
+}
+
+const { currentCollection, currentSlug, currentPillar, language, relatedContent = [] } = Astro.props;
+
+const [articles, projects] = await Promise.all([
+  getCollection('articles', ({ data }) => data.published),
+  getCollection('projects', ({ data }) => data.published),
+]);
+
+const explicitEntries = relatedContent
+  .map((item) =>
+    item.collection === 'articles'
+      ? articles.find((entry) => entry.id === item.slug)
+      : projects.find((entry) => entry.id === item.slug),
+  )
+  .filter(
+    (
+      entry,
+    ): entry is (typeof articles)[number] | (typeof projects)[number] => Boolean(entry),
+  );
+
+const fallbackEntries = [...projects, ...articles]
+  .filter((entry) => !(entry.collection === currentCollection && entry.id === currentSlug))
+  .filter((entry) => entry.data.pillar === currentPillar)
+  .slice(0, 3);
+
+const entries = (explicitEntries.length > 0 ? explicitEntries : fallbackEntries).slice(0, 3);
+
+const heading = language === 'tr' ? 'İlgili Çalışmalar' : 'Related Work';
+const description =
+  language === 'tr'
+    ? 'Aynı problem alanını farklı açılardan ilerleten seçili çalışmalar.'
+    : 'Selected adjacent work that extends the same problem space from a different angle.';
+---
+
+{
+  entries.length > 0 && (
+    <section class="mt-20 border-t border-white/8 pt-10">
+      <div class="mb-10 max-w-2xl">
+        <span class="text-xs font-semibold uppercase tracking-[0.18em] text-primary">{heading}</span>
+        <p class="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-3">
+        {entries.map((entry) => (
+          <WorkCard
+            title={entry.data.title}
+            eyebrow={getEntryTypeLabel(entry, language)}
+            pillar={entry.data.pillar}
+            meta={entry.data.pubDate.toLocaleDateString(entry.data.language === 'tr' ? 'tr-TR' : 'en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            })}
+            description={getEntrySummary(entry)}
+            href={getEntryHref(entry)}
+            external={false}
+            role={entry.data.role}
+            impact={entry.data.impact}
+            tags={getEntryTags(entry).slice(0, 4)}
+            image={entry.data.heroImage}
+            ctaLabel={entry.collection === 'projects' ? 'Open case study' : 'Read article'}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}

@@ -1,4 +1,7 @@
 ---
+import { siteConfig } from '../lib/site';
+import { getDefaultOgImageUrl } from '../lib/seo';
+
 interface Props {
   title: string;
   description?: string | undefined;
@@ -9,18 +12,18 @@ interface Props {
 
 const { 
   title, 
-  description = 'Anil Karaca - Data journalist and developer building public-interest stories, apps, and editorial products.',
-  image = '/og-image.jpg',
+  description = siteConfig.description,
+  image = getDefaultOgImageUrl(),
   article = false,
   noindex = false,
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const socialImageURL = new URL(image, Astro.site);
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
+const socialImageURL = new URL(image, Astro.site || siteConfig.url);
 ---
 
 <!-- SEO -->
-<title>{title} | Anıl Karaca</title>
+<title>{title} | {siteConfig.personName}</title>
 <meta name="description" content={description} />
 <meta name="theme-color" content="#0a0a0a" />
 <link rel="canonical" href={canonicalURL} />
@@ -28,6 +31,7 @@ const socialImageURL = new URL(image, Astro.site);
 
 <!-- Open Graph -->
 <meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:site_name" content={siteConfig.name} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
@@ -36,8 +40,8 @@ const socialImageURL = new URL(image, Astro.site);
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:site" content="@anilkaraca17" />
-<meta name="twitter:creator" content="@anilkaraca17" />
+<meta name="twitter:site" content={siteConfig.twitterHandle} />
+<meta name="twitter:creator" content={siteConfig.twitterHandle} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={socialImageURL} />

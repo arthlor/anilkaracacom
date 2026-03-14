@@ -1,0 +1,38 @@
+anilkaraca-cv.pdf
+Data Journalist and Developer
+Strongest where reporting, analysis, interface design, and delivery converge.
+Independent app developer and data journalist
+Shipped React Native and Expo apps to the App Store while continuing public-interest data reporting.
+Built interactive case studies connecting reporting, interface design, and engineering execution.
+Communications advisor
+Produced digital communication assets and documentary work inside a civic institution with public accountability.
+Bridged reporting instincts with message clarity across video, web, and editorial delivery.
+Senior digital journalist
+Covered elections, civic systems, transportation, and political accountability across multiple newsrooms.
+Worked across fast-paced newsroom publishing and deeper analytical formats including visual explainers.
+
+anil-karaca-data-journalism-cv.pdf
+Data Journalist
+I report with data, but I also know how to structure and publish the story around it.
+Independent data journalist and reporter
+Publishing work that connects politics, civic data, and public understanding through story-led digital formats.
+Building interactive case studies that combine reporting, analysis, and web-native presentation.
+Communications advisor
+Produced civic storytelling and documentary work inside a public institution with direct accountability.
+Strengthened narrative pacing, interview structure, and audience-oriented editorial delivery.
+Senior digital journalist
+Covered elections, civic systems, transportation, and political accountability across reporting and visual explainers.
+Developed a newsroom approach combining speed, verification, and clear story architecture.
+
+anil-karaca-developer-cv.pdf
+Frontend and Mobile Developer
+I build interfaces and apps that make complicated ideas feel clear, useful, and shippable.
+Independent app developer and data journalist
+Shipped three React Native and Expo apps to the App Store as real consumer products.
+Used AI-assisted workflows to accelerate delivery while keeping implementation and scope decisions disciplined.
+Communications advisor
+Built digital story packages and documentary work under real audience and delivery constraints.
+Developed practical prioritization, pacing, and communication instincts for public-facing product work.
+Senior digital journalist
+Created custom storytelling experiences that required editorial and technical execution together.
+Worked close to content, audience, and product needs — the habits now behind product and interface decisions.

@@ -6,16 +6,45 @@ heroImage: "/images/articles/izmir-trafik-kazasi-2025.png"
 tags: ["izmir", "trafik", "veri-analizi", "python", "plotly"]
 category: "data-journalism"
 featured: true
+published: true
 draft: false
 track: "data-journalism"
 language: "tr"
+pillar: "data-journalism-civic-tech"
+techStack: ["Python", "Data Cleaning", "Custom React Charts", "Municipal Open Data"]
+metrics:
+  - label: "Kayıt sayısı"
+    value: "17K+"
+    detail: "İzmir Ulaşım Merkezi kaynaklı olay kayıtları işlendi."
+  - label: "İncelenen dönem"
+    value: "2+ yıl"
+    detail: "Kazaların gün, saat ve yıllara göre dağılımı karşılaştırıldı."
+  - label: "Etkileşimli görünüm"
+    value: "3"
+    detail: "Saat yoğunluğu, kaza türleri ve ısı haritası birlikte sunuldu."
 summaryEn: "An investigation into Izmir traffic collisions built from more than 17,000 civic records, with charts and a citywide heatmap."
 role: "Data cleaning, civic reporting, Python analysis, visualization"
 impact: "Turns a large municipal dataset into a public-facing explanation of when and where traffic risk rises."
+executiveSummary: "İzmir'deki trafik olaylarını 17 binden fazla kayıt üzerinden inceleyen bu çalışma, riskin hangi günlerde, saatlerde ve olay türlerinde yoğunlaştığını etkileşimli grafiklerle gösteriyor."
+context: "Trafik yoğunluğu üzerine yapılan gündelik yorumlar çoğu zaman sezgisel kalıyor. Bu çalışma, belediyenin açık veri kayıtlarını kullanarak İzmir'deki trafik riskinin ritmini veriyle görünür kılmayı amaçlıyor."
+methodology:
+  - "Kaza ve arıza kayıtları zaman, yön ve olay türüne göre temizlenip sınıflandırıldı."
+  - "En riskli gün ve saatleri göstermek için özel çizgi, bar ve ısı haritası bileşenleri üretildi."
+  - "Anlatı, okuyucunun önce zaman örüntüsünü sonra olay tiplerini ve yoğunluk haritasını görmesi için kurgulandı."
+challenge: "Veri seti farklı olay türlerini aynı yapıda taşıdığı için hem sınıflandırma hem de grafik dilinde sadeleştirme gerekiyordu. Aksi halde kullanıcı hangi örüntünün gerçekten önemli olduğunu ayırt edemiyordu."
+codeProof: "Grafikler, Astro sayfası içine gömülü özel React bileşenleri olarak yazıldı; böylece okuyucu ayrı bir dış araç yerine doğrudan haber akışı içinde veriyle etkileşime geçebiliyor."
+conclusion: "Bu proje, yerel açık veriyi kamu yararı odaklı bir kent hikâyesine dönüştürüyor ve trafik riskini sezgiden çıkarıp gözlemlenebilir örüntülere indiriyor."
+relatedContent:
+  - collection: "articles"
+    slug: "izmir-coronavirus-toplu-tasima"
+  - collection: "projects"
+    slug: "parliament-analysis"
 ---
 import AccidentTypesBarChart from '@/components/mdx/charts/AccidentTypesBarChart';
 import IncidentHeatmap from '@/components/mdx/charts/IncidentHeatmap';
 import StreetFrequencyLineChart from '@/components/mdx/charts/StreetFrequencyLineChart';
+import ScrollytellingStory from '@/components/case-study/ScrollytellingStory.astro';
+import StoryStep from '@/components/case-study/StoryStep.astro';
 
 İzmir, artan trafik yoğunluğuyla günden güne yaşanması zor bir metropol haline geliyor. Ana arterler artık trafik yükünü taşımada yetersiz kalıyor, en ufak bir kaza trafiği dakikalarca kilitleyebiliyor.
 
@@ -31,7 +60,61 @@ Veri analizi, kentte yaşanan kazaların hangi günlerde, saatlerde ve mevsimler
 
 *Grafikleri daha iyi incelemek için mobil cihazlarınızı yatay konumda kullanmanızı öneririm.*
 
-<StreetFrequencyLineChart client:visible />
+<ScrollytellingStory
+  steps={[
+    {
+      id: "trafik-zaman",
+      label: "Adım 1",
+      title: "Haftalık ritim",
+      summary: "Önce kazaların hangi günlerde yoğunlaştığını okuyalım.",
+    },
+    {
+      id: "trafik-turler",
+      label: "Adım 2",
+      title: "Olay türleri",
+      summary: "Hangi olayların tabloyu belirlediğini ikinci adımda ayırıyoruz.",
+    },
+    {
+      id: "trafik-isiharitasi",
+      label: "Adım 3",
+      title: "Saat yoğunluğu",
+      summary: "Son adımda gün ve saat kesişimindeki yoğunluğa iniyoruz.",
+    },
+  ]}
+>
+  <StoryStep
+    id="trafik-zaman"
+    label="Adım 1"
+    title="Kazaların haftalık ritmi"
+    summary="İlk görsel, haftanın hangi günlerinde riskin daha yoğunlaştığını gösteriyor ve gündelik sezgiyi ölçülebilir bir desene çeviriyor."
+  >
+    <Fragment slot="visual">
+      <StreetFrequencyLineChart client:visible />
+    </Fragment>
+  </StoryStep>
+
+  <StoryStep
+    id="trafik-turler"
+    label="Adım 2"
+    title="Baskın olay kategorileri"
+    summary="İkinci adım, toplam yoğunluğu oluşturan kaza tiplerini ayırarak hangi kategorilerin gerçekten belirleyici olduğunu ortaya koyuyor."
+  >
+    <Fragment slot="visual">
+      <AccidentTypesBarChart client:visible />
+    </Fragment>
+  </StoryStep>
+
+  <StoryStep
+    id="trafik-isiharitasi"
+    label="Adım 3"
+    title="Gün ve saat bazında yoğunluk"
+    summary="Son görsel, haftalık ve mevsimsel anlatıyı gün-saat seviyesine indiriyor; böylece riskin ritmi daha doğrudan okunabiliyor."
+  >
+    <Fragment slot="visual">
+      <IncidentHeatmap client:visible />
+    </Fragment>
+  </StoryStep>
+</ScrollytellingStory>
 
 ## **En Tehlikeli Saatler: Sabah ve Akşam Yoğunluğu**
 
@@ -45,8 +128,6 @@ Kaza verileri aylara göre analiz edildiğinde, **Aralık, Ocak ve Şubat** ayla
 
 **Yaz Aylarında Düşüş:** Yaz aylarında ise kaza sayılarında düşüş gözlemleniyor. Özellikle **Haziran ve Temmuz** aylarında kaza sayısının azalması, tatil dönemlerinin trafik yoğunluğunu şehir merkezinden uzaklaştırmasıyla açıklanabilir.
 
-<AccidentTypesBarChart client:visible />
-
 ## **Müdahale Süreleri**
 
 Verilerde kazalara müdahale süreleri incelendiğinde, olaylara ortalama müdahale süresinin **15-30 dakika** arasında olduğu gözlemleniyor. Özellikle yoğun saatlerde müdahale sürelerinin uzadığı, bu durumun olay yerine ulaşım zorluğuyla ilişkili olabileceği düşünülüyor.
@@ -56,8 +137,6 @@ Verilerde kazalara müdahale süreleri incelendiğinde, olaylara ortalama müdah
 ## **Kazaların Coğrafi Dağılımı ve Riskli Alanlar**
 
 Eğer kaza verileri coğrafi olarak incelenirse, kentin belirli bölgelerinde yoğun kazaların gerçekleştiği görülebilir. Ana yollar, büyük kavşaklar ve inşaat alanlarının bulunduğu bölgelerde daha fazla kaza yaşanıyor. Bu tür bölgelerde ek güvenlik önlemleri alınması, trafik akışının daha güvenli hale getirilmesi ve hız sınırlarının düşürülmesi gibi adımlar, kaza oranlarının azaltılmasına katkı sağlayabilir.
-
-<IncidentHeatmap client:visible />
 
 ## **Kazaların Yıllara Göre Artışı**
 
