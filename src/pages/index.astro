@@ -12,7 +12,7 @@ import {
 import { buildPersonSchema } from '../lib/seo';
 import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import portrait from '../assets/images/anil-karaca.jpg';
+import portrait from '../assets/images/anil-karaca.jpg'; // Keep for now if used elsewhere, but we'll use /images/anilkaraca.png for hero
 
 const projects = await getCollection('projects', ({ data }) => data.published);
 const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 4);
@@ -126,37 +126,6 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
           <h1>ANIL KARACA</h1>
         </div>
 
-        <div class="portfolio-home__hero-side">
-          <div class="portfolio-home__scroll">
-            <span class="portfolio-home__scroll-line" aria-hidden="true"></span>
-            <span>Scroll</span>
-          </div>
-
-          <p class="portfolio-home__hero-summary">
-            I work where public-interest reporting, civic analysis, and shipped digital product delivery overlap.
-          </p>
-
-          <div class="portfolio-home__hero-socials">
-            {footerSocialLinks.map((link) => (
-              <a href={link.href} target="_blank" rel="noopener noreferrer">
-                <span aria-hidden="true">/</span>
-                {link.label}
-              </a>
-            ))}
-          </div>
-        </div>
-
-        <div class="portfolio-home__hero-contacts">
-          <div class="portfolio-home__contact-row">
-            <span class="portfolio-home__contact-key">E</span>
-            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
-          </div>
-          <div class="portfolio-home__contact-row">
-            <span class="portfolio-home__contact-key">CV</span>
-            <a href={resumeLinks.master}>Download resume</a>
-          </div>
-        </div>
-
         <div class="portfolio-home__hero-image-wrap" id="hero-image-container">
           <div class="portfolio-home__hero-glow" id="hero-magnetic-glow" aria-hidden="true"></div>
           
@@ -168,14 +137,39 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
           </div>
 
           <img
-            src={portrait.src}
+            src="/images/anilkaraca.png"
             alt="Portrait of Anil Karaca"
             class="portfolio-home__hero-image"
-            width="680"
-            height="850"
+            width="800"
+            height="1000"
             loading="eager"
             id="hero-portrait"
           />
+        </div>
+
+        <div class="portfolio-home__hero-side">
+          <p class="portfolio-home__hero-summary">
+            Building at the intersection of public-interest reporting, civic analysis, and high-performance digital products.
+          </p>
+
+          <div class="portfolio-home__hero-socials">
+            {footerSocialLinks.map((link) => (
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                <span aria-hidden="true">/</span>
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+        <div class="portfolio-home__hero-contacts">
+          <div class="portfolio-home__contact-row">
+            <span class="portfolio-home__contact-key">E</span>
+            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+          </div>
+          <div class="portfolio-home__contact-row">
+            <span class="portfolio-home__contact-key">CV</span>
+            <a href={resumeLinks.master}>Get Resume</a>
+          </div>
         </div>
       </div>
     </section>
@@ -557,13 +551,13 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     .portfolio-home__hero-grid {
       position: relative;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 320px;
+      grid-template-columns: 1fr 1fr;
       grid-template-areas:
         'copy copy'
-        'contacts side';
-      gap: 54px 96px;
-      min-height: min(1140px, calc(100svh + 150px));
-      padding-bottom: 300px;
+        'side contacts';
+      gap: 64px 0;
+      min-height: min(1080px, calc(100svh + 100px));
+      padding-bottom: 240px;
       align-content: end;
     }
 
@@ -605,24 +599,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       display: flex;
       flex-direction: column;
       gap: 32px;
-    }
-
-    .portfolio-home__scroll {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 12px;
-      writing-mode: vertical-rl;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      font-size: 0.72rem;
-      color: rgba(255, 255, 255, 0.78);
-    }
-
-    .portfolio-home__scroll-line {
-      width: 1px;
-      height: 48px;
-      background: rgba(122, 242, 152, 0.4);
+      max-width: 480px;
     }
 
     .portfolio-home__hero-summary {
@@ -689,13 +666,14 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     .portfolio-home__hero-image-wrap {
       position: absolute;
       left: 50%;
-      bottom: 56px;
-      width: min(100%, 565px);
+      bottom: -20px;
+      width: min(90vw, 720px);
       margin-top: 0;
       transform: translateX(-50%);
       transform-style: preserve-3d;
       transition: transform 0.1s ease-out;
       will-change: transform;
+      pointer-events: none; /* Let clicks pass through to socials/links if overlapping */
     }
 
     .portfolio-home__hero-glow {
@@ -746,17 +724,18 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       width: 100%;
       height: auto;
       object-fit: cover;
-      filter: saturate(0.9) contrast(1.1) brightness(1.05);
+      filter: saturate(0.9) contrast(1.1) brightness(1.02);
       transition: filter 0.5s ease;
-      /* Organic mask combining radial and linear gradients */
+      /* Refined organic mask for the new portrait */
       mask-image: 
-        radial-gradient(circle at 50% 40%, black 50%, transparent 85%),
-        linear-gradient(to bottom, black 70%, transparent 100%);
+        radial-gradient(circle at 50% 35%, black 45%, transparent 80%),
+        linear-gradient(to bottom, black 65%, transparent 100%);
       -webkit-mask-image: 
-        radial-gradient(circle at 50% 40%, black 50%, transparent 85%),
-        linear-gradient(to bottom, black 70%, transparent 100%);
+        radial-gradient(circle at 50% 35%, black 45%, transparent 80%),
+        linear-gradient(to bottom, black 65%, transparent 100%);
       mask-composite: intersect;
       -webkit-mask-composite: source-in;
+      pointer-events: auto; /* Re-enable for tilt logic */
     }
 
     .portfolio-home__hero-image-wrap:hover .portfolio-home__hero-image {
