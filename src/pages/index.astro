@@ -157,8 +157,16 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
           </div>
         </div>
 
-        <div class="portfolio-home__hero-image-wrap">
-          <div class="portfolio-home__hero-glow" aria-hidden="true"></div>
+        <div class="portfolio-home__hero-image-wrap" id="hero-image-container">
+          <div class="portfolio-home__hero-glow" id="hero-magnetic-glow" aria-hidden="true"></div>
+          
+          <div class="portfolio-home__hero-particles" aria-hidden="true">
+            <div class="portfolio-home__particle" style="--top: 15%; --left: 10%; --delay: 0s; --size: 4px;"></div>
+            <div class="portfolio-home__particle" style="--top: 45%; --left: 90%; --delay: 1s; --size: 3px;"></div>
+            <div class="portfolio-home__particle" style="--top: 75%; --left: 15%; --delay: 2s; --size: 5px;"></div>
+            <div class="portfolio-home__particle" style="--top: 25%; --left: 85%; --delay: 3.5s; --size: 2px;"></div>
+          </div>
+
           <img
             src={portrait.src}
             alt="Portrait of Anil Karaca"
@@ -166,6 +174,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
             width="680"
             height="850"
             loading="eager"
+            id="hero-portrait"
           />
         </div>
       </div>
@@ -542,6 +551,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       position: relative;
       padding: 194px 0 96px;
       background: #191818;
+      perspective: 1200px; /* Enable 3D depth */
     }
 
     .portfolio-home__hero-grid {
@@ -683,15 +693,51 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       width: min(100%, 565px);
       margin-top: 0;
       transform: translateX(-50%);
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
+      will-change: transform;
     }
 
     .portfolio-home__hero-glow {
       position: absolute;
-      inset: 12% 8% 0;
+      top: var(--glow-y, 50%);
+      left: var(--glow-x, 50%);
+      width: 400px;
+      height: 400px;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(122, 242, 152, 0.34), transparent 70%);
-      filter: blur(36px);
-      transform: scale(1.58);
+      background: radial-gradient(circle, rgba(122, 242, 152, 0.45), transparent 70%);
+      filter: blur(48px);
+      transform: translate(-50%, -50%) scale(1.6);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.6;
+      transition: opacity 0.4s ease;
+    }
+
+    .portfolio-home__hero-particles {
+      position: absolute;
+      inset: -10% -10%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .portfolio-home__particle {
+      position: absolute;
+      top: var(--top);
+      left: var(--left);
+      width: var(--size);
+      height: var(--size);
+      background: #7af298;
+      border-radius: 50%;
+      opacity: 0.3;
+      filter: blur(1px);
+      animation: hero-particle-drift 8s ease-in-out infinite alternate;
+      animation-delay: var(--delay);
+    }
+
+    @keyframes hero-particle-drift {
+      0% { transform: translate(0, 0); opacity: 0.2; }
+      100% { transform: translate(30px, -40px); opacity: 0.5; }
     }
 
     .portfolio-home__hero-image {
@@ -700,9 +746,25 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       width: 100%;
       height: auto;
       object-fit: cover;
-      filter: saturate(0.95) contrast(1.08);
-      mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, black 72%, transparent 100%);
+      filter: saturate(0.9) contrast(1.1) brightness(1.05);
+      transition: filter 0.5s ease;
+      /* Organic mask combining radial and linear gradients */
+      mask-image: 
+        radial-gradient(circle at 50% 40%, black 50%, transparent 85%),
+        linear-gradient(to bottom, black 70%, transparent 100%);
+      -webkit-mask-image: 
+        radial-gradient(circle at 50% 40%, black 50%, transparent 85%),
+        linear-gradient(to bottom, black 70%, transparent 100%);
+      mask-composite: intersect;
+      -webkit-mask-composite: source-in;
+    }
+
+    .portfolio-home__hero-image-wrap:hover .portfolio-home__hero-image {
+      filter: saturate(1.1) contrast(1.05) brightness(1.1);
+    }
+
+    .portfolio-home__hero-image-wrap:hover .portfolio-home__hero-glow {
+      opacity: 0.9;
     }
 
     .portfolio-home__marquee-section {
@@ -1617,5 +1679,38 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       }
     });
 
+    // --- Hero Image Interactive Effects ---
+    const heroContainer = document.getElementById('hero-image-container');
+    const heroImage = document.getElementById('hero-portrait');
+    const heroGlow = document.getElementById('hero-magnetic-glow');
+
+    if (heroContainer && heroImage && heroGlow) {
+      window.addEventListener('mousemove', (e) => {
+        const rect = heroContainer.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        // Calculate normalized mouse position relative to container center
+        const mouseX = e.clientX - centerX;
+        const mouseY = e.clientY - centerY;
+        
+        // 3D Tilt Effect
+        const tiltX = (mouseY / (window.innerHeight / 2)) * -8; // Max 8 degrees
+        const tiltY = (mouseX / (window.innerWidth / 2)) * 8;
+        
+        heroContainer.style.transform = `translateX(-50%) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+        
+        // Magnetic Glow Position
+        // Calculate offset within the container for the glow
+        const glowX = ((e.clientX - rect.left) / rect.width) * 100;
+        const glowY = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        heroGlow.style.setProperty('--glow-x', `${glowX}%`);
+        heroGlow.style.setProperty('--glow-y', `${glowY}%`);
+      });
+
+      // Reset on mouse leave (if we were tracking container only, but we use window)
+      // Since we use window, it feels more atmospheric. 
+    }
   </script>
 </BaseLayout>
