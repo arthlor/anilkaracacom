@@ -114,40 +114,48 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       </div>
     </header>
 
+    <section class="portfolio-home__hero">
+      <div class="portfolio-home__container portfolio-home__hero-grid">
+        <!-- Left column: all text -->
+        <div class="portfolio-home__hero-copy">
+          <div class="portfolio-home__eyebrow">
+            <span>Data Journalist &amp; Product Developer</span>
+          </div>
+          <h1>ANIL<br/>KARACA</h1>
+        </div>
+
         <div class="portfolio-home__hero-side">
           <p class="portfolio-home__hero-summary">
             Building at the intersection of public-interest reporting, civic analysis, and high-performance digital products.
           </p>
 
-          <div class="portfolio-home__hero-socials">
-            {footerSocialLinks.map((link) => (
-              <a href={link.href} target="_blank" rel="noopener noreferrer">
-                <span aria-hidden="true">/</span>
-                {link.label}
-              </a>
-            ))}
+          <div class="portfolio-home__hero-meta">
+            <div class="portfolio-home__hero-socials">
+              {footerSocialLinks.map((link) => (
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  <span aria-hidden="true">/</span>
+                  {link.label}
+                </a>
+              ))}
+            </div>
+
+            <div class="portfolio-home__hero-contacts">
+              <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+              <span class="portfolio-home__contact-sep" aria-hidden="true">·</span>
+              <a href={resumeLinks.master}>Resume ↓</a>
+            </div>
           </div>
         </div>
 
-        <div class="portfolio-home__hero-contacts">
-          <div class="portfolio-home__contact-row">
-            <span class="portfolio-home__contact-key">E</span>
-            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
-          </div>
-          <div class="portfolio-home__contact-row">
-            <span class="portfolio-home__contact-key">CV</span>
-            <a href={resumeLinks.master}>Get Resume</a>
-          </div>
-        </div>
-
+        <!-- Right column: portrait -->
         <div class="portfolio-home__hero-image-wrap" id="hero-image-container">
           <div class="portfolio-home__hero-glow" id="hero-magnetic-glow" aria-hidden="true"></div>
-          
+
           <div class="portfolio-home__hero-particles" aria-hidden="true">
-            <div class="portfolio-home__particle" style="--top: 15%; --left: 10%; --delay: 0s; --size: 4px;"></div>
-            <div class="portfolio-home__particle" style="--top: 45%; --left: 90%; --delay: 1s; --size: 3px;"></div>
-            <div class="portfolio-home__particle" style="--top: 75%; --left: 15%; --delay: 2s; --size: 5px;"></div>
-            <div class="portfolio-home__particle" style="--top: 25%; --left: 85%; --delay: 3.5s; --size: 2px;"></div>
+            <div class="portfolio-home__particle" style="--top: 12%; --left: 8%; --delay: 0s; --size: 4px;"></div>
+            <div class="portfolio-home__particle" style="--top: 50%; --left: 92%; --delay: 1.2s; --size: 3px;"></div>
+            <div class="portfolio-home__particle" style="--top: 80%; --left: 12%; --delay: 2.4s; --size: 5px;"></div>
+            <div class="portfolio-home__particle" style="--top: 20%; --left: 88%; --delay: 3.6s; --size: 2px;"></div>
           </div>
 
           <img
@@ -532,29 +540,31 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
 
     .portfolio-home__hero {
       position: relative;
-      padding: 194px 0 96px;
+      padding: 140px 0 40px;
       background: #191818;
-      perspective: 1200px; /* Enable 3D depth */
+      perspective: 1200px;
     }
 
     .portfolio-home__hero-grid {
       position: relative;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 400px;
+      grid-template-columns: 1fr 1.2fr;
+      grid-template-rows: auto auto auto;
       grid-template-areas:
-        'copy image'
-        'side image'
-        'contacts image';
-      gap: 32px 0;
-      min-height: min(1020px, calc(100svh + 80px));
-      padding-bottom: 120px;
-      align-content: end;
+        'copy  image'
+        'side  image'
+        '.     image';
+      column-gap: 40px;
+      row-gap: 32px;
+      min-height: min(880px, 92svh);
+      padding-bottom: 48px;
+      align-content: center;
     }
 
     .portfolio-home__hero-copy {
       grid-area: copy;
-      max-width: 960px;
       z-index: 10;
+      align-self: end;
     }
 
     .portfolio-home__eyebrow {
@@ -562,9 +572,11 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       flex-wrap: wrap;
       align-items: center;
       gap: 8px;
-      font-size: clamp(1rem, 1.4vw, 1.9rem);
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.94);
+      font-size: clamp(0.95rem, 1.2vw, 1.3rem);
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
     }
 
     .portfolio-home__wave {
@@ -576,45 +588,52 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__hero h1 {
-      margin: 12px 0 0;
-      font-size: clamp(4.5rem, 11vw, 10.5rem);
-      line-height: 0.85;
-      letter-spacing: -0.06em;
+      margin: 16px 0 0;
+      font-size: clamp(4.8rem, 10vw, 9.5rem);
+      line-height: 0.88;
+      letter-spacing: -0.05em;
       color: #7af298;
       text-transform: uppercase;
-      white-space: nowrap;
     }
 
     .portfolio-home__hero-side {
       grid-area: side;
       display: flex;
       flex-direction: column;
-      gap: 28px;
-      max-width: 520px;
-      margin-top: -10px;
+      gap: 32px;
+      max-width: 540px;
       z-index: 10;
+      align-self: start;
     }
 
     .portfolio-home__hero-summary {
       margin: 0;
-      font-size: 1.25rem;
-      line-height: 1.7;
-      color: rgba(255, 255, 255, 0.88);
-      font-weight: 450;
+      font-size: 1.2rem;
+      line-height: 1.75;
+      color: rgba(255, 255, 255, 0.82);
+      font-weight: 400;
+    }
+
+    .portfolio-home__hero-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .portfolio-home__hero-socials {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
-      color: rgba(255, 255, 255, 0.82);
+      gap: 18px;
+      color: rgba(255, 255, 255, 0.72);
     }
 
     .portfolio-home__hero-socials a {
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      font-size: 0.94rem;
+      font-size: 0.9rem;
       transition: color 180ms ease;
     }
 
@@ -623,52 +642,37 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__hero-contacts {
-      grid-area: contacts;
       display: flex;
-      flex-direction: row;
-      gap: 40px;
-      margin-top: 20px;
-      padding-top: 32px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      z-index: 10;
-    }
-
-    .portfolio-home__contact-row {
-      display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 14px;
-      color: rgba(255, 255, 255, 0.92);
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.9rem;
     }
 
-    .portfolio-home__contact-row a {
-      font-size: 1rem;
-      color: rgba(255, 255, 255, 0.92);
+    .portfolio-home__hero-contacts a {
+      color: rgba(255, 255, 255, 0.82);
       transition: color 180ms ease;
     }
 
-    .portfolio-home__contact-row a:hover {
+    .portfolio-home__hero-contacts a:hover {
       color: #7af298;
     }
 
-    .portfolio-home__contact-key {
-      min-width: 30px;
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      color: rgba(255, 255, 255, 0.48);
-      text-transform: uppercase;
+    .portfolio-home__contact-sep {
+      color: rgba(255, 255, 255, 0.25);
     }
 
     .portfolio-home__hero-image-wrap {
       grid-area: image;
-      position: absolute;
-      right: -80px;
-      bottom: -60px;
-      width: min(50vw, 780px);
+      position: relative;
+      align-self: center;
+      justify-self: end;
+      width: 100%;
+      max-width: 680px;
       transform-style: preserve-3d;
       transition: transform 0.1s ease-out;
       will-change: transform;
-      pointer-events: none;
     }
 
     .portfolio-home__hero-glow {
