@@ -36,12 +36,12 @@ const seoSchema = z
   })
   .optional();
 
-const sharedCaseStudySchema = {
+const sharedCaseStudySchema = ({ image }: { image: any }) => ({
   title: z.string().max(100),
   description: z.string(),
   pubDate: z.coerce.date(),
   updatedDate: z.coerce.date().optional(),
-  heroImage: z.string().optional(),
+  heroImage: image().optional(),
   featured: z.boolean().default(false),
   published: z.boolean(),
   draft: z.boolean().default(false),
@@ -67,14 +67,15 @@ const sharedCaseStudySchema = {
       type: z.enum(['plotly', 'd3', 'map', 'app', 'story', 'video', 'graphic']),
       title: z.string().optional(),
       description: z.string().optional(),
+      image: image().optional(),
     })
     .optional(),
-};
+});
 
 const articles = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
-  schema: z.object({
-    ...sharedCaseStudySchema,
+  schema: ({ image }) => z.object({
+    ...sharedCaseStudySchema({ image }),
     category: z.enum(['data-journalism', 'article', 'tutorial', 'news']).default('article'),
     tags: z.array(z.string()).default([]),
   }),
@@ -82,8 +83,8 @@ const articles = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
-  schema: z.object({
-    ...sharedCaseStudySchema,
+  schema: ({ image }) => z.object({
+    ...sharedCaseStudySchema({ image }),
     demoUrl: z.string().optional(),
     liveUrl: z.string().optional(),
     githubUrl: z.string().url().optional(),
@@ -94,13 +95,13 @@ const projects = defineCollection({
 
 const videos = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/videos' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
     platform: z.enum(['youtube', 'vimeo']).default('youtube'),
     videoId: z.string(),
-    thumbnail: z.string().optional(),
+    thumbnail: image().optional(),
     duration: z.string().optional(),
     tags: z.array(z.string()).default([]),
   }),

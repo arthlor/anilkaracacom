@@ -1,8 +1,15 @@
 import type { ImageMetadata } from 'astro';
 
-import aiFitCheckIcon from '../assets/images/projects/aifitcheckicon.jpg';
-import choreusIcon from '../assets/images/projects/choreusicon.png';
-import yeserIcon from '../assets/images/projects/icon.png';
+import aiFitCheckIcon from '../assets/images/projects/aifitcheckicon.webp';
+import choreusIcon from '../assets/images/projects/choreusicon.webp';
+import yeserIcon from '../assets/images/projects/icon.webp';
+
+// Workplace Logos
+import izmirBsbLogo from '../assets/images/workplaces/izmir-bsb.webp';
+import izbetonLogo from '../assets/images/workplaces/izbeton.webp';
+import birgunLogo from '../assets/images/workplaces/birgun.webp';
+import dokuz8Logo from '../assets/images/workplaces/dokuz8.webp';
+import sonsozLogo from '../assets/images/workplaces/sonsoz.webp';
 
 export const resumeLinks = {
   master: '/anilkaraca.pdf',
@@ -105,11 +112,11 @@ export const featuredArticleSlugs = [
 ] as const;
 
 export const workplaces = [
-  { name: 'Izmir Metropolitan Municipality', logo: '/images/workplaces/izmir-bsb.png', url: 'https://www.izmir.bel.tr/' },
-  { name: 'Izbeton', logo: '/images/workplaces/izbeton.png', url: 'https://www.izbeton.com.tr/' },
-  { name: 'BirGun', logo: '/images/workplaces/birgun.png', url: 'https://www.birgun.net/' },
-  { name: 'dokuz8HABER', logo: '/images/workplaces/dokuz8.png', url: 'https://www.dokuz8haber.net/' },
-  { name: 'Egede SonSoz', logo: '/images/workplaces/sonsoz.png', url: 'https://www.egedesonsoz.com/' },
+  { name: 'Izmir Metropolitan Municipality', logo: izmirBsbLogo, url: 'https://www.izmir.bel.tr/' },
+  { name: 'Izbeton', logo: izbetonLogo, url: 'https://www.izbeton.com.tr/' },
+  { name: 'BirGun', logo: birgunLogo, url: 'https://www.birgun.net/' },
+  { name: 'dokuz8HABER', logo: dokuz8Logo, url: 'https://www.dokuz8haber.net/' },
+  { name: 'Egede SonSoz', logo: sonsozLogo, url: 'https://www.egedesonsoz.com/' },
 ] as const;
 
 export const credibilityHighlights = [

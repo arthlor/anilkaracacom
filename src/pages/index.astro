@@ -12,7 +12,9 @@ import {
 import { buildPersonSchema } from '../lib/seo';
 import { siteConfig, socialLinks } from '../lib/site';
 import MainLayout from '../layouts/MainLayout.astro';
-import portrait from '../assets/images/anil-karaca.jpg'; // Keep for now if used elsewhere, but we'll use /images/anilkaraca.png for hero
+import { Image } from 'astro:assets';
+import portrait from '../assets/images/anilkaraca.webp';
+import heroPortrait from '../assets/images/anilkaraca.webp';
 
 const projects = await getCollection('projects', ({ data }) => data.published);
 const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 4);
@@ -124,12 +126,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
             <div class="portfolio-home__particle" style="--top: 20%; --left: 88%; --delay: 3.6s; --size: 2px;"></div>
           </div>
 
-          <img
-            src="/images/anilkaraca.png"
+          <Image
+            src={heroPortrait}
             alt="Portrait of Anil Karaca"
             class="portfolio-home__hero-image"
-            width="800"
-            height="1000"
+            width={800}
+            height={1000}
             loading="eager"
             id="hero-portrait"
           />
@@ -216,12 +218,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
               <div class="portfolio-home__work-glow" aria-hidden="true"></div>
               
               <div class="portfolio-home__work-image-frame">
-                <img
-                  src={entry.data.heroImage || portrait.src}
+                <Image
+                  src={entry.data.heroImage || portrait}
                   alt={entry.data.title}
                   class="portfolio-home__work-image"
-                  width="1120"
-                  height="820"
+                  width={1120}
+                  height={820}
                   loading="lazy"
                 />
               </div>
@@ -286,11 +288,11 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
                 rel="noopener noreferrer"
                 class="portfolio-home__client-logo"
               >
-                <img
+                <Image
                   src={workplace.logo}
                   alt={workplace.name}
-                  width="240"
-                  height="96"
+                  width={240}
+                  height={96}
                   loading={index < workplaces.length ? 'eager' : 'lazy'}
                 />
               </a>
