@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, NavigationArrow, CornersOut, CornersIn } from '@phosphor-icons/react';
+import { Clock as ClockIcon, NavigationArrow as NavigationArrowIcon, ArrowsOut as ArrowsOutIcon, ArrowsIn as ArrowsInIcon } from '@phosphor-icons/react';
 import rawData from '@/data/incident_volume_heatmap.json';
 
 // Cividis-like palette translated to hex for gradients (Dark Blue -> Teal -> Yellow)
@@ -113,13 +113,13 @@ export default function IncidentHeatmap() {
         className="absolute top-4 right-4 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors z-50"
         title="Tam Ekranda Göster"
       >
-        {isFullscreen ? <CornersIn size={20} /> : <CornersOut size={20} />}
+        {isFullscreen ? <ArrowsInIcon size={20} /> : <ArrowsOutIcon size={20} />}
       </button>
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pr-10">
         <div>
           <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
-            <Clock weight="duotone" className="text-accent-500" />
+            <ClockIcon weight="duotone" className="text-accent-500" />
             Gün ve Saat Bazında Olay Yoğunluğu
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
@@ -249,7 +249,7 @@ export default function IncidentHeatmap() {
                 exit={{ opacity: 0 }}
                 className="text-xs text-slate-400 flex items-center gap-2"
               >
-                <NavigationArrow size={14} className="animate-pulse" />
+                <NavigationArrowIcon size={14} className="animate-pulse" />
                 İncelemek için harita üzerinde gezinin
               </motion.div>
             )}

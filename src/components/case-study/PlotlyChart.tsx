@@ -41,6 +41,7 @@ async function loadPlotly() {
         reject(new Error('Plotly load timeout'));
       }, PLOTLY_TIMEOUT);
 
+      // @ts-ignore - minified plotly.js doesn't have local types
       import('plotly.js/dist/plotly-basic.min.js')
         .then((module) => {
           clearTimeout(timeout);

@@ -10,7 +10,7 @@ import {
   sortEntriesByFeatureAndDate,
 } from '../lib/content';
 import { buildPersonSchema } from '../lib/seo';
-import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
+import { siteConfig, socialLinks } from '../lib/site';
 import MainLayout from '../layouts/MainLayout.astro';
 import portrait from '../assets/images/anil-karaca.jpg'; // Keep for now if used elsewhere, but we'll use /images/anilkaraca.png for hero
 
@@ -32,22 +32,7 @@ const homeStats = [
   },
 ] as const;
 
-const homeMenuLinks = [
-  { label: 'Projects', href: '/projects' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-] as const;
 
-const footerQuickLinks = navigationLinks.map((link) => ({
-  href: link.href,
-  label: link.label,
-}));
-
-const portfolioLinks = [
-  { label: 'Resume', href: resumeLinks.master, external: false },
-  { label: 'Articles', href: '/articles', external: false },
-  { label: 'GitHub', href: siteConfig.githubUrl, external: true },
-] as const;
 
 const socialLinkMap = new Map(
   socialLinks.map((link) => [
@@ -64,7 +49,6 @@ const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
   .filter((link): link is NonNullable<(typeof socialLinks)[number]> => Boolean(link));
 
 const repeatedWorkplaces = [...workplaces, ...workplaces];
-const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
 <MainLayout

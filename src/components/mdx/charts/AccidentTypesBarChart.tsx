@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapTrifold, CornersOut, CornersIn } from '@phosphor-icons/react';
+import { MapTrifold as MapTrifoldIcon, ArrowsOut as ArrowsOutIcon, ArrowsIn as ArrowsInIcon } from '@phosphor-icons/react';
 import rawData from '@/data/accident_types_yearly.json';
 
 // Curated aesthetic category colors replacing Plotly pastel defaults
@@ -106,12 +106,12 @@ export default function AccidentTypesBarChart() {
         className="absolute top-4 right-4 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors z-50"
         title="Tam Ekranda Göster"
       >
-        {isFullscreen ? <CornersIn size={20} /> : <CornersOut size={20} />}
+        {isFullscreen ? <ArrowsInIcon size={20} /> : <ArrowsOutIcon size={20} />}
       </button>
 
       <div className="mb-8 text-center sm:text-left pr-10">
         <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-2">
-          <MapTrifold weight="duotone" className="text-accent-500" />
+          <MapTrifoldIcon weight="duotone" className="text-accent-500" />
           Yıllara Göre Kaza Türleri Dağılımı
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">

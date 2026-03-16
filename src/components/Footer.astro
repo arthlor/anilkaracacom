@@ -21,8 +21,6 @@ const socialLinkMap = new Map(
 const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
   .map((label) => socialLinkMap.get(label))
   .filter((link): link is NonNullable<(typeof socialLinks)[number]> => Boolean(link));
-
-const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
 <footer class="site-footer">

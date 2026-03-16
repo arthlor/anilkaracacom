@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useMemo } from 'react';
-import { CornersOut, CornersIn } from '@phosphor-icons/react';
+import { ArrowsOut as ArrowsOutIcon, ArrowsIn as ArrowsInIcon } from '@phosphor-icons/react';
 import { geoIdentity, geoPath } from 'd3-geo';
 import { motion } from 'framer-motion';
 import turkeyGeoJson from '../../../data/turkey_optimized.json';
@@ -106,7 +106,7 @@ export default function TurkeyElectionMap() {
           onClick={toggleFullscreen}
           className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 z-20"
         >
-          {isFullscreen ? <CornersIn size={20} weight="bold" /> : <CornersOut size={20} weight="bold" />}
+          {isFullscreen ? <ArrowsInIcon size={20} weight="bold" /> : <ArrowsOutIcon size={20} weight="bold" />}
         </button>
       </div>
 

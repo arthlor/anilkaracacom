@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CornersOut, CornersIn } from '@phosphor-icons/react';
+import { ArrowsOut as ArrowsOutIcon, ArrowsIn as ArrowsInIcon } from '@phosphor-icons/react';
 import figureData from '../../../data/elections_bar_data.json';
 
 export default function ElectionResultsBarChart() {
@@ -63,7 +63,7 @@ export default function ElectionResultsBarChart() {
           className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500"
           aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
         >
-          {isFullscreen ? <CornersIn size={20} weight="bold" /> : <CornersOut size={20} weight="bold" />}
+          {isFullscreen ? <ArrowsInIcon size={20} weight="bold" /> : <ArrowsOutIcon size={20} weight="bold" />}
         </button>
       </div>
 
