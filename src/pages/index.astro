@@ -11,7 +11,7 @@ import {
 } from '../lib/content';
 import { buildPersonSchema } from '../lib/seo';
 import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import portrait from '../assets/images/anil-karaca.jpg'; // Keep for now if used elsewhere, but we'll use /images/anilkaraca.png for hero
 
 const projects = await getCollection('projects', ({ data }) => data.published);
@@ -24,7 +24,7 @@ const homeStats = [
   },
   {
     value: `${workplaces.length}`,
-    label: 'Newsrooms and civic institutions represented in the profile',
+    label: 'Newsrooms and civic institutions.',
   },
   {
     value: `${appProjects.length}+`,
@@ -67,66 +67,48 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/\/$/, '');
 ---
 
-<BaseLayout
+<MainLayout
   title="Home"
   description="Framer-style homepage for Anil Karaca, blending data journalism, civic storytelling, mobile apps, and editorial product engineering."
 >
   <JsonLd schema={buildPersonSchema()} />
 
   <div class="portfolio-home">
-    <div class="portfolio-home__texture" aria-hidden="true"></div>
 
-    <header class="portfolio-home__nav">
-      <div class="portfolio-home__container portfolio-home__nav-inner">
-        <a href="/" class="portfolio-home__brand">{siteConfig.personName.toUpperCase()}</a>
-
-        <div class="portfolio-home__menu">
-          <button
-            id="home-menu-toggle"
-            class="portfolio-home__menu-toggle"
-            type="button"
-            aria-expanded="false"
-            aria-controls="home-menu"
-          >
-            <span>Menu</span>
-            <span class="portfolio-home__menu-dot" aria-hidden="true"></span>
-            <svg
-              class="portfolio-home__menu-icon"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="1.2"
-              aria-hidden="true"
-            >
-              <path d="M4 6L8 2L12 6"></path>
-              <path d="M4 10L8 14L12 10"></path>
-            </svg>
-          </button>
-
-          <div id="home-menu" class="portfolio-home__menu-panel" data-open="false">
-            {homeMenuLinks.map((link) => (
-              <a href={link.href} class="portfolio-home__menu-link">
-                {link.label}
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </header>
 
     <section class="portfolio-home__hero">
+      <!-- Hero-wide sparkle layer -->
+      <div class="portfolio-home__hero-sparkles" aria-hidden="true">
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--float" style="--sx: 6%; --sy: 18%; --sd: 0s; --ss: 3px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--twinkle" style="--sx: 14%; --sy: 72%; --sd: 1.4s; --ss: 2px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--drift" style="--sx: 22%; --sy: 38%; --sd: 0.6s; --ss: 4px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--float portfolio-home__sparkle--accent" style="--sx: 32%; --sy: 85%; --sd: 2.8s; --ss: 3px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--twinkle" style="--sx: 40%; --sy: 12%; --sd: 3.2s; --ss: 2px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--drift portfolio-home__sparkle--accent" style="--sx: 48%; --sy: 55%; --sd: 1.0s; --ss: 5px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--float" style="--sx: 58%; --sy: 28%; --sd: 4.0s; --ss: 2px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--twinkle portfolio-home__sparkle--accent" style="--sx: 65%; --sy: 78%; --sd: 0.3s; --ss: 3px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--drift" style="--sx: 72%; --sy: 15%; --sd: 2.2s; --ss: 4px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--float" style="--sx: 78%; --sy: 62%; --sd: 3.6s; --ss: 2px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--twinkle" style="--sx: 85%; --sy: 42%; --sd: 1.8s; --ss: 3px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--drift portfolio-home__sparkle--accent" style="--sx: 90%; --sy: 90%; --sd: 0.8s; --ss: 4px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--float" style="--sx: 95%; --sy: 22%; --sd: 2.5s; --ss: 2px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--twinkle portfolio-home__sparkle--accent" style="--sx: 10%; --sy: 50%; --sd: 4.4s; --ss: 3px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--drift" style="--sx: 52%; --sy: 8%; --sd: 3.0s; --ss: 2px;"></div>
+        <div class="portfolio-home__sparkle portfolio-home__sparkle--float portfolio-home__sparkle--accent" style="--sx: 28%; --sy: 30%; --sd: 1.6s; --ss: 5px;"></div>
+      </div>
+
       <div class="portfolio-home__container portfolio-home__hero-grid">
         <!-- Left column: all text -->
         <div class="portfolio-home__hero-copy">
           <div class="portfolio-home__eyebrow">
-            <span>Data Journalist &amp; Product Developer</span>
+            <span>Data Journalism x Product Engineering</span>
           </div>
           <h1>ANIL<br/>KARACA</h1>
         </div>
 
         <div class="portfolio-home__hero-side">
           <p class="portfolio-home__hero-summary">
-            Building at the intersection of public-interest reporting, civic analysis, and high-performance digital products.
+            Crafting the digital systems that make public-interest reporting legible, interactive, and impactful.
           </p>
 
           <div class="portfolio-home__hero-meta">
@@ -179,16 +161,16 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
               <p class="portfolio-home__section-kicker">// Positioning</p>
 
               <div class="portfolio-home__positioning-copy">
-                <h2>Reporting, product thinking, and delivery in one profile.</h2>
+                <h2>Where reporting meets product precision.</h2>
                 <p>
-                  The strongest work here comes from overlap, not separate lanes: journalism for framing the question,
-                  analysis for making it legible, and product execution for shipping something people can actually use.
+                  High-impact work lives at the overlap: journalism for framing the right questions,
+                  analysis for making complexity legible, and engineering for shipping products people can use.
                 </p>
               </div>
 
               <div class="portfolio-home__positioning-actions">
                 <a href="/projects" class="portfolio-home__button">
-                  See All Work
+                  Explore Work
                 </a>
                 <a href="/about" class="portfolio-home__button portfolio-home__button--ghost">
                   Full Profile
@@ -225,7 +207,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
             <p class="portfolio-home__section-kicker">// Selected Proof</p>
           </div>
 
-          <h2>Selected reporting, apps, and interactive systems</h2>
+          <h2>Featured reporting, apps, and interactive systems</h2>
 
           <div class="portfolio-home__section-mark" aria-hidden="true">
             <span>&lt;/</span>
@@ -237,9 +219,18 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
           <span>&lt;/</span>
         </div>
 
-        <div class="portfolio-home__work-grid">
-          {featuredWork.map((entry) => (
-            <a href={getEntryHref(entry)} class="portfolio-home__work-card">
+        <div class="portfolio-home__work-grid" id="project-bento-grid">
+          {featuredWork.map((entry, index) => (
+            <a 
+              href={getEntryHref(entry)} 
+              class:list={[
+                "portfolio-home__work-card",
+                `portfolio-home__work-card--${index + 1}`
+              ]}
+              data-tilt
+            >
+              <div class="portfolio-home__work-glow" aria-hidden="true"></div>
+              
               <div class="portfolio-home__work-image-frame">
                 <img
                   src={entry.data.heroImage || portrait.src}
@@ -251,17 +242,25 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
                 />
               </div>
 
-              <div class="portfolio-home__work-copy">
-                <h3>{entry.data.title}</h3>
-                <p>{getEntrySummary(entry)}</p>
-              </div>
+              <div class="portfolio-home__work-content">
+                <div class="portfolio-home__work-copy">
+                  <h3>{entry.data.title}</h3>
+                  <p>{getEntrySummary(entry)}</p>
+                </div>
 
-              <div class="portfolio-home__tag-row">
-                {getEntryTags(entry)
-                  .slice(0, 3)
-                  .map((tag) => (
-                    <span>{tag}</span>
-                  ))}
+                <div class="portfolio-home__tag-row">
+                  {getEntryTags(entry)
+                    .slice(0, 3)
+                    .map((tag) => (
+                      <span>{tag}</span>
+                    ))}
+                </div>
+              </div>
+              
+              <div class="portfolio-home__work-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
               </div>
             </a>
           ))}
@@ -269,7 +268,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
 
         <div class="portfolio-home__section-cta">
           <a href="/projects" class="portfolio-home__button">
-            Open Projects
+            View All Projects
           </a>
         </div>
       </div>
@@ -282,7 +281,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
             <p class="portfolio-home__section-kicker">// Experience</p>
           </div>
 
-          <h2>Newsrooms, civic institutions, and self-directed product work behind the portfolio</h2>
+          <h2>The newsrooms, institutions, and independent products behind the work</h2>
 
           <div class="portfolio-home__section-mark" aria-hidden="true">
             <span>&lt;/</span>
@@ -316,87 +315,12 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
         </div>
         <div class="portfolio-home__section-cta">
           <a href="/about" class="portfolio-home__button portfolio-home__button--ghost">
-            Open About
+            View Experience
           </a>
         </div>
       </div>
     </section>
 
-    <footer class="portfolio-home__footer">
-      <div class="portfolio-home__container">
-        <div class="portfolio-home__footer-cta">
-          <div class="portfolio-home__footer-cta-copy">
-            <h2>Ready to take your</h2>
-
-            <div class="portfolio-home__footer-cta-line">
-              <h2>story or product</h2>
-              <a href="/contact" class="portfolio-home__cta-orb">
-                Contact
-              </a>
-            </div>
-
-            <h2>to the next level?</h2>
-          </div>
-        </div>
-
-        <div class="portfolio-home__section-divider portfolio-home__section-divider--footer" aria-hidden="true">
-          <span>&lt;/</span>
-        </div>
-
-        <div class="portfolio-home__footer-grid">
-          <div>
-            <p class="portfolio-home__footer-title">Quick links</p>
-            <div class="portfolio-home__footer-links">
-              {footerQuickLinks.map((link) => (
-                <a href={link.href}>{link.label}</a>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p class="portfolio-home__footer-title">Portfolio</p>
-            <div class="portfolio-home__footer-links">
-              {portfolioLinks.map((link) => (
-                <a
-                  href={link.href}
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener noreferrer' : undefined}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p class="portfolio-home__footer-title">Social links</p>
-            <div class="portfolio-home__footer-links">
-              {footerSocialLinks.map((link) => (
-                <a href={link.href} target="_blank" rel="noopener noreferrer">
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div class="portfolio-home__footer-bottom">
-          <div class="portfolio-home__footer-contact">
-            <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
-            <a href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
-              {githubDisplay}
-            </a>
-          </div>
-
-          <div class="portfolio-home__footer-links portfolio-home__footer-links--inline">
-            <a href="/projects">Projects</a>
-            <a href="/about">About</a>
-            <a href="/contact">Contact</a>
-            <a href={resumeLinks.master}>Resume</a>
-          </div>
-        </div>
-      </div>
-    </footer>
   </div>
 
   <style>
@@ -413,137 +337,75 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       text-decoration: none;
     }
 
-    .portfolio-home__texture {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 16%, rgba(122, 242, 152, 0.2), transparent 16%),
-        radial-gradient(circle at 50% 84%, rgba(122, 242, 152, 0.16), transparent 20%),
-        repeating-linear-gradient(
-          90deg,
-          rgba(255, 255, 255, 0.015) 0,
-          rgba(255, 255, 255, 0.015) 1px,
-          transparent 1px,
-          transparent 64px
-        ),
-        linear-gradient(180deg, #111111 0%, #080808 100%);
-    }
 
     .portfolio-home__container {
       position: relative;
-      width: min(100% - 40px, 1320px);
+      width: min(100% - 80px, 1320px);
       margin-inline: auto;
     }
 
-    .portfolio-home__nav {
-      position: fixed;
-      inset: 0 0 auto;
-      z-index: 40;
-      padding-top: 10px;
-      pointer-events: none;
-    }
-
-    .portfolio-home__nav-inner {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      pointer-events: auto;
-    }
-
-    .portfolio-home__brand {
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.96);
-    }
-
-    .portfolio-home__menu {
-      position: relative;
-    }
-
-    .portfolio-home__menu-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      border: 0;
-      border-radius: 999px;
-      background: #f7f4ef;
-      color: #111111;
-      padding: 13px 16px 13px 18px;
-      font-size: 0.82rem;
-      line-height: 1;
-      cursor: pointer;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
-    }
-
-    .portfolio-home__menu-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: #8517ff;
-      transform: scale(0);
-      transition: transform 180ms ease;
-    }
-
-    .portfolio-home__menu-icon {
-      width: 16px;
-      height: 16px;
-    }
-
-    .portfolio-home__menu-toggle[aria-expanded='true'] .portfolio-home__menu-dot {
-      transform: scale(1);
-    }
-
-    .portfolio-home__menu-panel {
-      position: absolute;
-      top: calc(100% + 10px);
-      right: 0;
-      min-width: 170px;
-      display: grid;
-      gap: 6px;
-      padding: 14px 12px;
-      border-radius: 14px;
-      background: #f7f4ef;
-      color: #111111;
-      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.28);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px);
-      transition:
-        opacity 180ms ease,
-        transform 180ms ease,
-        visibility 180ms ease;
-    }
-
-    .portfolio-home__menu-panel[data-open='true'] {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .portfolio-home__menu-link {
-      display: block;
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      transition: background-color 180ms ease;
-    }
-
-    .portfolio-home__menu-link:hover {
-      background: rgba(17, 17, 17, 0.08);
-    }
 
     .portfolio-home__hero {
       position: relative;
-      padding: 140px 0 40px;
-      background: #191818;
+      padding: 0;
+      background: transparent;
       perspective: 1200px;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
     }
+
+    .portfolio-home__hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, transparent, #111111);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .portfolio-home__hero-sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .portfolio-home__sparkle {
+      position: absolute;
+      left: var(--sx);
+      top: var(--sy);
+      width: var(--ss);
+      height: var(--ss);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.7);
+      opacity: 0;
+      filter: blur(0.5px);
+      animation-delay: var(--sd);
+      animation-fill-mode: both;
+    }
+
+    .portfolio-home__sparkle--accent {
+      background: rgba(122, 242, 152, 0.6);
+      box-shadow: 0 0 6px rgba(122, 242, 152, 0.3);
+    }
+
+    .portfolio-home__sparkle--float {
+      animation: sparkle-float 7s ease-in-out infinite alternate;
+    }
+
+    .portfolio-home__sparkle--twinkle {
+      animation: sparkle-twinkle 4s ease-in-out infinite;
+    }
+
+    .portfolio-home__sparkle--drift {
+      animation: sparkle-drift 9s ease-in-out infinite alternate;
+    }
+
 
     .portfolio-home__hero-grid {
       position: relative;
@@ -554,11 +416,12 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
         'copy  image'
         'side  image'
         '.     image';
-      column-gap: 40px;
-      row-gap: 32px;
-      min-height: min(880px, 92svh);
-      padding-bottom: 48px;
+      column-gap: 48px;
+      row-gap: 28px;
+      padding-top: 140px;
+      padding-bottom: 80px;
       align-content: center;
+      z-index: 2;
     }
 
     .portfolio-home__hero-copy {
@@ -592,7 +455,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       font-size: clamp(4.8rem, 10vw, 9.5rem);
       line-height: 0.88;
       letter-spacing: -0.05em;
-      color: #7af298;
+      color: #f5f2eb;
       text-transform: uppercase;
     }
 
@@ -638,7 +501,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__hero-socials a:hover {
-      color: #7af298;
+      color: #f5f2eb;
     }
 
     .portfolio-home__hero-contacts {
@@ -656,7 +519,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__hero-contacts a:hover {
-      color: #7af298;
+      color: #f5f2eb;
     }
 
     .portfolio-home__contact-sep {
@@ -669,7 +532,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       align-self: center;
       justify-self: end;
       width: 100%;
-      max-width: 680px;
+      max-width: 820px;
       transform-style: preserve-3d;
       transition: transform 0.1s ease-out;
       will-change: transform;
@@ -682,7 +545,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       width: 400px;
       height: 400px;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(122, 242, 152, 0.45), transparent 70%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent 70%);
       filter: blur(48px);
       transform: translate(-50%, -50%) scale(1.6);
       pointer-events: none;
@@ -704,7 +567,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       left: var(--left);
       width: var(--size);
       height: var(--size);
-      background: #7af298;
+      background: rgba(255, 255, 255, 0.6);
       border-radius: 50%;
       opacity: 0.3;
       filter: blur(1px);
@@ -712,10 +575,6 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       animation-delay: var(--delay);
     }
 
-    @keyframes hero-particle-drift {
-      0% { transform: translate(0, 0); opacity: 0.2; }
-      100% { transform: translate(30px, -40px); opacity: 0.5; }
-    }
 
     .portfolio-home__hero-image {
       position: relative;
@@ -723,15 +582,14 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       width: 100%;
       height: auto;
       object-fit: cover;
-      filter: saturate(0.9) contrast(1.1) brightness(1.02);
+      filter: saturate(0.92) contrast(1.08) brightness(1.04);
       transition: filter 0.5s ease;
-      /* Refined organic mask for side-anchored portrait */
       mask-image: 
-        radial-gradient(circle at 60% 40%, black 55%, transparent 90%),
-        linear-gradient(to top, transparent 0%, black 30%);
+        linear-gradient(to bottom, black 0%, black 55%, transparent 100%),
+        radial-gradient(ellipse 90% 95% at 50% 42%, black 55%, transparent 90%);
       -webkit-mask-image: 
-        radial-gradient(circle at 60% 40%, black 55%, transparent 90%),
-        linear-gradient(to top, transparent 0%, black 30%);
+        linear-gradient(to bottom, black 0%, black 55%, transparent 100%),
+        radial-gradient(ellipse 90% 95% at 50% 42%, black 55%, transparent 90%);
       mask-composite: intersect;
       -webkit-mask-composite: source-in;
       pointer-events: auto;
@@ -763,7 +621,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__section--work {
-      padding: 92px 0 96px;
+      padding: 72px 0 76px;
     }
 
     .portfolio-home__section-head {
@@ -951,14 +809,14 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       min-height: 52px;
       border: 0;
       border-radius: 999px;
-      background: #7af298;
-      color: #111111;
+      background: #2ecc71;
+      color: #0a0a0a;
       padding: 12px 28px;
       font-size: 0.84rem;
       font-weight: 700;
       letter-spacing: 0.03em;
       text-transform: none;
-      box-shadow: 0 14px 34px rgba(122, 242, 152, 0.22);
+      box-shadow: 0 14px 34px rgba(46, 204, 113, 0.25);
       transition:
         transform 180ms ease,
         box-shadow 180ms ease,
@@ -966,9 +824,9 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__button:hover {
-      filter: brightness(1.04);
+      filter: brightness(1.08);
       transform: translateY(-1px);
-      box-shadow: 0 18px 38px rgba(122, 242, 152, 0.28);
+      box-shadow: 0 18px 38px rgba(46, 204, 113, 0.35);
     }
 
     .portfolio-home__button--ghost {
@@ -979,10 +837,10 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__button--ghost:hover {
-      color: #7af298;
+      color: #2ecc71;
       filter: none;
       box-shadow: none;
-      border-color: rgba(122, 242, 152, 0.32);
+      border-color: rgba(46, 204, 113, 0.4);
     }
 
     .portfolio-home__stats-grid {
@@ -1014,69 +872,156 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
 
     .portfolio-home__work-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 76px 62px;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      margin-top: 40px;
     }
 
     .portfolio-home__work-card {
-      display: grid;
-      gap: 20px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 28px;
+      overflow: hidden;
+      text-decoration: none;
+      transition: 
+        border-color 0.4s ease,
+        background-color 0.4s ease,
+        transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      isolation: isolate;
     }
 
-    .portfolio-home__work-image-frame,
-    .portfolio-home__article-image-frame {
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.02);
+    .portfolio-home__work-card:hover {
+      border-color: rgba(122, 242, 152, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-4px);
+    }
+
+    /* Bento Spans - Now more compact 2x2 */
+    .portfolio-home__work-card--1 { grid-column: span 6; grid-row: span 1; }
+    .portfolio-home__work-card--2 { grid-column: span 6; grid-row: span 1; }
+    .portfolio-home__work-card--3 { grid-column: span 6; grid-row: span 1; }
+    .portfolio-home__work-card--4 { grid-column: span 6; grid-row: span 1; }
+
+    .portfolio-home__work-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(122, 242, 152, 0.15),
+        transparent 40%
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .portfolio-home__work-card:hover .portfolio-home__work-glow {
+      opacity: 1;
     }
 
     .portfolio-home__work-image-frame {
-      aspect-ratio: 1.16 / 1;
+      position: relative;
+      overflow: hidden;
+      background: #000;
+      flex: 1;
+      aspect-ratio: auto;
     }
 
-    .portfolio-home__section--work .portfolio-home__section-head {
-      margin-bottom: 16px;
+    .portfolio-home__work-card--1 .portfolio-home__work-image-frame { aspect-ratio: 16 / 10; }
+    .portfolio-home__work-card--2 .portfolio-home__work-image-frame { aspect-ratio: 16 / 10; }
+    .portfolio-home__work-card--3 .portfolio-home__work-image-frame { aspect-ratio: 16 / 10; }
+    .portfolio-home__work-card--4 .portfolio-home__work-image-frame { aspect-ratio: 16 / 10; }
+
+    .portfolio-home__work-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
-    .portfolio-home__section--work .portfolio-home__section-divider {
-      margin-bottom: 28px;
+    .portfolio-home__work-card:hover .portfolio-home__work-image {
+      transform: scale(1.05);
     }
 
-    .portfolio-home__section--work .portfolio-home__work-grid {
-      gap: 40px 38px;
+    .portfolio-home__work-content {
+      position: relative;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 2;
+      background: linear-gradient(to top, rgba(10, 10, 10, 0.9), transparent);
     }
 
-    .portfolio-home__section--work .portfolio-home__work-card {
-      gap: 10px;
+    .portfolio-home__work-copy h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #f5f2eb;
+      letter-spacing: -0.02em;
     }
 
-    .portfolio-home__section--work .portfolio-home__work-image-frame {
-      aspect-ratio: 1.48 / 1;
+    .portfolio-home__work-copy p {
+      margin: 6px 0 0;
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: rgba(255, 255, 255, 0.6);
+      max-width: 480px;
     }
 
-    .portfolio-home__section--work .portfolio-home__work-copy h3 {
-      font-size: 1.75rem;
-      line-height: 1.06;
+    .portfolio-home__tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .portfolio-home__section--work .portfolio-home__work-copy p {
-      margin-top: 6px;
-      font-size: 0.95rem;
-      line-height: 1.52;
+    .portfolio-home__tag-row span {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(122, 242, 152, 0.1);
+      border: 1px solid rgba(122, 242, 152, 0.15);
+      color: #7af298;
+      font-size: 0.75rem;
+      font-weight: 600;
     }
 
-    .portfolio-home__section--work .portfolio-home__tag-row {
-      gap: 6px;
+    .portfolio-home__work-arrow {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(122, 242, 152, 0.1);
+      color: #7af298;
+      opacity: 0;
+      transform: translate(-10px, 10px);
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      z-index: 3;
     }
 
-    .portfolio-home__section--work .portfolio-home__tag-row span {
-      min-height: 30px;
-      padding: 0 12px;
-      font-size: 0.76rem;
+    .portfolio-home__work-card:hover .portfolio-home__work-arrow {
+      opacity: 1;
+      transform: translate(0, 0);
+    }
+
+    .portfolio-home__work-arrow svg {
+      width: 20px;
+      height: 20px;
     }
 
     .portfolio-home__section--work .portfolio-home__section-cta {
-      margin-top: 32px;
+      margin-top: 20px;
     }
 
     .portfolio-home__work-image,
@@ -1310,7 +1255,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       position: absolute;
       inset: 7% 26% 4%;
       border-radius: 999px;
-      background: radial-gradient(circle, rgba(122, 242, 152, 0.3), transparent 74%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 74%);
       filter: blur(38px);
       z-index: -1;
     }
@@ -1350,11 +1295,11 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      background: #7af298;
-      color: #111111;
+      background: #2ecc71;
+      color: #0a0a0a;
       font-size: 0.78rem;
       font-weight: 700;
-      box-shadow: 0 18px 42px rgba(122, 242, 152, 0.28);
+      box-shadow: 0 18px 42px rgba(46, 204, 113, 0.3);
       transition:
         transform 180ms ease,
         box-shadow 180ms ease,
@@ -1362,77 +1307,94 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
     }
 
     .portfolio-home__cta-orb:hover {
-      filter: brightness(1.03);
+      filter: brightness(1.08);
       transform: translateY(-2px);
-      box-shadow: 0 20px 46px rgba(122, 242, 152, 0.34);
+      box-shadow: 0 20px 46px rgba(46, 204, 113, 0.4);
     }
 
-    .portfolio-home__section-divider--footer {
-      margin-bottom: 28px;
-    }
-
-    .portfolio-home__footer-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 40px;
-      padding-bottom: 48px;
-    }
-
-    .portfolio-home__footer-title {
-      margin: 0 0 16px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #7af298;
-    }
-
-    .portfolio-home__footer-links {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .portfolio-home__footer-links a {
-      font-size: 0.92rem;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.9);
-      transition: color 180ms ease;
-    }
-
-    .portfolio-home__footer-links a:hover,
-    .portfolio-home__footer-contact a:hover {
-      color: #7af298;
+    .portfolio-home__footer-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin-bottom: 40px;
     }
 
     .portfolio-home__footer-bottom {
-      display: flex;
-      justify-content: space-between;
-      gap: 28px;
-      align-items: end;
-      padding-top: 28px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 32px;
+      align-items: start;
+      padding-bottom: 32px;
     }
 
-    .portfolio-home__footer-contact {
+    .portfolio-home__footer-col {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
-    .portfolio-home__footer-contact a {
-      font-size: clamp(1.1rem, 2vw, 1.8rem);
-      font-weight: 700;
-      color: #f4f1ea;
+    .portfolio-home__footer-email,
+    .portfolio-home__footer-github {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.72);
       transition: color 180ms ease;
     }
 
-    .portfolio-home__footer-links--inline {
-      flex-direction: row;
+    .portfolio-home__footer-email:hover,
+    .portfolio-home__footer-github:hover {
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__footer-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .portfolio-home__footer-nav a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+      transition: color 180ms ease;
+    }
+
+    .portfolio-home__footer-nav a:hover {
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__footer-socials {
+      display: flex;
       flex-wrap: wrap;
       justify-content: flex-end;
+      gap: 20px;
+    }
+
+    .portfolio-home__footer-socials a {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      transition: color 180ms ease;
+    }
+
+    .portfolio-home__footer-socials a:hover {
+      color: #f5f2eb;
+    }
+
+    .portfolio-home__footer-copy {
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: center;
+    }
+
+    .portfolio-home__footer-copy span {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.35);
+      letter-spacing: 0.04em;
     }
 
     @keyframes portfolio-home-wave {
@@ -1466,9 +1428,12 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       .portfolio-home__hero-grid,
       .portfolio-home__positioning-grid,
       .portfolio-home__skills-grid,
-      .portfolio-home__footer-grid,
       .portfolio-home__process-grid {
         grid-template-columns: 1fr;
+      }
+
+      .portfolio-home__hero {
+        min-height: auto;
       }
 
       .portfolio-home__hero-grid {
@@ -1477,7 +1442,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
           'side'
           'contacts'
           'image';
-        min-height: auto;
+        padding-top: 120px;
         padding-bottom: 0;
       }
 
@@ -1500,8 +1465,7 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
         grid-template-columns: 1fr;
       }
 
-      .portfolio-home__section-head,
-      .portfolio-home__footer-bottom {
+      .portfolio-home__section-head {
         flex-direction: column;
         align-items: start;
       }
@@ -1511,30 +1475,33 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       }
 
       .portfolio-home__section--work .portfolio-home__work-grid {
-        gap: 38px;
+        gap: 28px;
       }
 
-      .portfolio-home__footer-links--inline {
+      .portfolio-home__work-card {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+      }
+
+      .portfolio-home__footer-bottom {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .portfolio-home__footer-nav {
+        justify-content: flex-start;
+      }
+
+      .portfolio-home__footer-socials {
         justify-content: flex-start;
       }
     }
 
     @media (max-width: 720px) {
       .portfolio-home__container {
-        width: min(100% - 28px, 1320px);
+        width: min(100% - 36px, 1320px);
       }
 
-      .portfolio-home__nav {
-        padding-top: 12px;
-      }
-
-      .portfolio-home__brand {
-        font-size: 0.78rem;
-      }
-
-      .portfolio-home__menu-toggle {
-        padding: 11px 14px 11px 16px;
-      }
 
       .portfolio-home__hero {
         padding-top: 138px;
@@ -1601,61 +1568,10 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
         min-height: 154px;
       }
 
-      .portfolio-home__footer-cta {
-        min-height: 320px;
-      }
-
-      .portfolio-home__footer-cta-copy {
-        gap: 18px;
-      }
-
-      .portfolio-home__footer-cta-line {
-        flex-wrap: wrap;
-        gap: 18px;
-      }
-
-      .portfolio-home__footer-cta h2 {
-        white-space: normal;
-      }
-
-      .portfolio-home__cta-orb {
-        margin-top: 0;
-      }
     }
   </style>
 
   <script>
-    const menuToggle = document.getElementById('home-menu-toggle');
-    const menuPanel = document.getElementById('home-menu');
-
-    const closeMenu = () => {
-      menuPanel?.setAttribute('data-open', 'false');
-      menuToggle?.setAttribute('aria-expanded', 'false');
-    };
-
-    menuToggle?.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const nextState = menuPanel?.getAttribute('data-open') !== 'true';
-      menuPanel?.setAttribute('data-open', String(nextState));
-      menuToggle.setAttribute('aria-expanded', String(nextState));
-    });
-
-    menuPanel?.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', closeMenu);
-    });
-
-    document.addEventListener('click', (event) => {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
-      if (menuPanel?.contains(target) || menuToggle?.contains(target)) return;
-      closeMenu();
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') {
-        closeMenu();
-      }
-    });
 
     // --- Hero Image Interactive Effects ---
     const heroContainer = document.getElementById('hero-image-container');
@@ -1690,5 +1606,20 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
       // Reset on mouse leave (if we were tracking container only, but we use window)
       // Since we use window, it feels more atmospheric. 
     }
+
+    // Project card hover interactive effects
+    const cards = document.querySelectorAll('.portfolio-home__work-card');
+    
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        if (!(card instanceof HTMLElement)) return;
+        const rect = card.getBoundingClientRect();
+        const x = (e as MouseEvent).clientX - rect.left;
+        const y = (e as MouseEvent).clientY - rect.top;
+        
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
   </script>
-</BaseLayout>
+</MainLayout>
