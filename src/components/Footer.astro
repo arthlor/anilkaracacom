@@ -2,16 +2,11 @@
 import { resumeLinks } from '../data/portfolio';
 import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
 
-const footerQuickLinks = navigationLinks.map((link) => ({
-  href: link.href,
-  label: link.label,
-}));
+interface Props {
+  hideCTA?: boolean;
+}
 
-const portfolioLinks = [
-  { label: 'Resume', href: resumeLinks.master, external: false },
-  { label: 'Articles', href: '/articles', external: false },
-  { label: 'GitHub', href: siteConfig.githubUrl, external: true },
-] as const;
+const { hideCTA = false } = Astro.props;
 
 const socialLinkMap = new Map(
   socialLinks.map((link) => [
@@ -32,71 +27,67 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
 
 <footer class="site-footer">
   <div class="site-footer__container">
-    <div class="site-footer__cta">
-      <div class="site-footer__cta-copy">
-        <h2>Ready to shape your</h2>
-        <div class="site-footer__cta-line">
-          <h2>next story or product</h2>
-          <a href="/contact" class="site-footer__cta-orb">Contact</a>
-        </div>
-        <h2>into shipped work?</h2>
-      </div>
-    </div>
-
-    <div class="site-footer__divider" aria-hidden="true">
-      <span>&lt;/</span>
-    </div>
-
-    <div class="site-footer__grid">
-      <div>
-        <p class="site-footer__title">Quick links</p>
-        <div class="site-footer__links">
-          {footerQuickLinks.map((link) => (
-            <a href={link.href}>{link.label}</a>
-          ))}
+    {!hideCTA && (
+      <div class="site-footer__cta">
+        <div class="site-footer__cta-content">
+          <h2 class="site-footer__cta-title">
+            Let's build <br />
+            <span>something great.</span>
+          </h2>
+          <a href="/contact" class="site-footer__cta-button">
+            Start a project
+            <svg viewBox="0 0 16 16" fill="none" class="w-4 h-4" stroke="currentColor" stroke-width="1.5">
+              <path d="M3.33331 8H12.6666" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M8 3.33331L12.6667 7.99998L8 12.6666" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
         </div>
       </div>
+    )}
 
-      <div>
-        <p class="site-footer__title">Portfolio</p>
-        <div class="site-footer__links">
-          {portfolioLinks.map((link) => (
-            <a
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-            >
-              {link.label}
-            </a>
-          ))}
+    <div class="site-footer__main">
+      <div class="site-footer__brand-col">
+        <div class="site-footer__brand-id">
+          <span class="site-footer__tag">{siteConfig.personName}</span>
+          <p class="site-footer__tag-desc">Data Journalist & Product Engineer</p>
         </div>
-      </div>
-
-      <div>
-        <p class="site-footer__title">Social links</p>
-        <div class="site-footer__links">
+        <div class="site-footer__social-pills">
           {footerSocialLinks.map((link) => (
-            <a href={link.href} target="_blank" rel="noopener noreferrer">
+            <a href={link.href} target="_blank" rel="noopener noreferrer" class="site-footer__social-pill">
               {link.label}
             </a>
           ))}
+        </div>
+      </div>
+
+      <div class="site-footer__nav-grid">
+        <div class="site-footer__nav-col">
+          <p class="site-footer__nav-label">Navigate</p>
+          <div class="site-footer__nav-links">
+            {navigationLinks.map(link => (
+              <a href={link.href}>{link.label}</a>
+            ))}
+          </div>
+        </div>
+        <div class="site-footer__nav-col">
+          <p class="site-footer__nav-label">Explore</p>
+          <div class="site-footer__nav-links">
+            <a href={resumeLinks.master}>Resume</a>
+            <a href="/articles">Articles</a>
+            <a href={siteConfig.githubUrl} target="_blank">GitHub</a>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="site-footer__bottom">
-      <div class="site-footer__contact">
-        <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
-        <a href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer">
-          {githubDisplay}
-        </a>
+      <div class="site-footer__legal">
+        <span>© {new Date().getFullYear()}</span>
+        <a href={`mailto:${siteConfig.contactEmail}`} class="site-footer__contact-link">{siteConfig.contactEmail}</a>
       </div>
-
-      <div class="site-footer__links site-footer__links--inline">
-        <a href="/projects">Projects</a>
-        <a href="/about">About</a>
-        <a href="/contact">Contact</a>
-        <a href={resumeLinks.master}>Resume</a>
+      <div class="site-footer__status">
+        <span class="site-footer__status-dot"></span>
+        <span>Open for new mandates 2024+</span>
       </div>
     </div>
   </div>
@@ -105,205 +96,207 @@ const githubDisplay = siteConfig.githubUrl.replace(/^https?:\/\//, '').replace(/
 <style>
   .site-footer {
     position: relative;
-    padding: 118px 0 40px;
+    padding: 80px 0 40px;
+    background: transparent;
+    color: #f3f1eb;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    z-index: 10;
   }
 
   .site-footer__container {
-    width: min(100% - 40px, 1320px);
+    width: min(100% - 48px, 1200px);
     margin-inline: auto;
   }
 
+  /* Compact CTA Section */
   .site-footer__cta {
-    position: relative;
+    margin-bottom: 80px;
+    padding: 60px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     justify-content: center;
-    align-items: center;
-    min-height: 376px;
-    margin-bottom: 32px;
-  }
-
-  .site-footer__cta::before {
-    content: '';
-    position: absolute;
-    inset: 7% 26% 4%;
-    border-radius: 999px;
-    background: radial-gradient(circle, rgba(122, 242, 152, 0.3), transparent 74%);
-    filter: blur(38px);
-    z-index: -1;
-  }
-
-  .site-footer__cta-copy {
-    display: grid;
-    justify-items: center;
-    gap: 4px;
-    width: min(100%, 980px);
-  }
-
-  .site-footer__cta-line {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 22px;
-  }
-
-  .site-footer__cta h2 {
-    margin: 0;
     text-align: center;
-    font-size: clamp(2.7rem, 5.5vw, 4.85rem);
-    line-height: 0.96;
-    letter-spacing: -0.05em;
-    color: #f2efe8;
-    text-transform: uppercase;
-    white-space: nowrap;
   }
 
-  .site-footer__cta-orb {
-    flex: 0 0 auto;
-    width: clamp(104px, 8.4vw, 126px);
-    aspect-ratio: 1 / 1;
+  .site-footer__cta-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    color: #fff;
+  }
+
+  .site-footer__cta-title span {
+    color: var(--premium-accent, #7af298);
+  }
+
+  .site-footer__cta-button {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 12px;
+    padding: 16px 32px;
+    background: #fff;
+    color: #000;
     border-radius: 999px;
-    background: #7af298;
-    color: #111111;
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     font-weight: 700;
     text-decoration: none;
-    box-shadow: 0 18px 42px rgba(122, 242, 152, 0.28);
-    transition:
-      transform 180ms ease,
-      box-shadow 180ms ease,
-      filter 180ms ease;
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 300ms ease;
   }
 
-  .site-footer__cta-orb:hover {
-    filter: brightness(1.03);
+  .site-footer__cta-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 20px 46px rgba(122, 242, 152, 0.34);
+    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
   }
 
-  .site-footer__divider {
+  /* Main Footer Section */
+  .site-footer__main {
     display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 28px;
-    color: #7af298;
-    font-size: 1.25rem;
+    justify-content: space-between;
+    gap: 60px;
+    margin-bottom: 80px;
   }
 
-  .site-footer__divider::after {
-    content: '';
-    flex: 1;
-    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  .site-footer__brand-col {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 320px;
   }
 
-  .site-footer__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 40px;
-    padding-bottom: 48px;
-  }
-
-  .site-footer__title {
-    margin: 0 0 16px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+  .site-footer__tag {
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #7af298;
+    color: #fff;
   }
 
-  .site-footer__links {
+  .site-footer__tag-desc {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.4);
+    margin-top: 4px;
+  }
+
+  .site-footer__social-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .site-footer__social-pill {
+    padding: 6px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: all 200ms ease;
+  }
+
+  .site-footer__social-pill:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .site-footer__nav-grid {
+    display: flex;
+    gap: 100px;
+  }
+
+  .site-footer__nav-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--premium-accent, #7af298);
+    margin-bottom: 20px;
+  }
+
+  .site-footer__nav-links {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
 
-  .site-footer__links a,
-  .site-footer__contact a {
-    color: rgba(255, 255, 255, 0.9);
-    text-decoration: none;
-    transition: color 180ms ease;
-  }
-
-  .site-footer__links a {
-    font-size: 0.92rem;
+  .site-footer__nav-links a {
+    font-size: 0.9rem;
     font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 200ms ease;
   }
 
-  .site-footer__links a:hover,
-  .site-footer__contact a:hover {
-    color: #7af298;
+  .site-footer__nav-links a:hover {
+    color: #fff;
   }
 
+  /* Bottom Bar */
   .site-footer__bottom {
     display: flex;
     justify-content: space-between;
-    gap: 28px;
-    align-items: end;
-    padding-top: 28px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    align-items: center;
+    padding-top: 32px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .site-footer__contact {
+  .site-footer__legal {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 20px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.4);
   }
 
-  .site-footer__contact a {
-    font-size: clamp(1.1rem, 2vw, 1.8rem);
-    font-weight: 700;
+  .site-footer__contact-link {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 200ms ease;
   }
 
-  .site-footer__links--inline {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+  .site-footer__contact-link:hover {
+    color: #fff;
   }
 
-  @media (max-width: 1080px) {
-    .site-footer__grid {
-      grid-template-columns: 1fr;
+  .site-footer__status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .site-footer__status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--premium-accent, #7af298);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--premium-accent, #7af298);
+  }
+
+  @media (max-width: 768px) {
+    .site-footer__main {
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .site-footer__nav-grid {
+      gap: 40px;
+      justify-content: space-between;
     }
 
     .site-footer__bottom {
       flex-direction: column;
-      align-items: start;
-    }
-
-    .site-footer__links--inline {
-      justify-content: flex-start;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .site-footer {
-      padding: 88px 0;
-    }
-
-    .site-footer__container {
-      width: min(100% - 28px, 1320px);
-    }
-
-    .site-footer__cta {
-      min-height: 320px;
-    }
-
-    .site-footer__cta-copy {
-      gap: 18px;
-    }
-
-    .site-footer__cta-line {
-      flex-wrap: wrap;
-      gap: 18px;
-    }
-
-    .site-footer__cta h2 {
-      white-space: normal;
+      align-items: flex-start;
+      gap: 24px;
     }
   }
 </style>

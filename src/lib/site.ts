@@ -15,9 +15,9 @@ export const siteConfig = {
   name: PUBLIC_SITE_NAME,
   title: 'Anil Karaca',
   personName: 'Anil Karaca',
-  role: 'Data journalist and product-minded developer',
+  role: 'Data Journalist & Editorial Product Engineer',
   description:
-    'Production-grade portfolio for Anil Karaca, spanning data journalism, civic storytelling, mobile apps, and editorial product engineering.',
+    'The professional work of Anil Karaca: A synthesis of data journalism, civic analysis, and high-performance digital product engineering.',
   url: PUBLIC_SITE_URL,
   contactEmail: PUBLIC_CONTACT_EMAIL,
   twitterHandle: PUBLIC_TWITTER_HANDLE,
@@ -47,7 +47,7 @@ export const pillarConfig: Record<
     title: 'Data Journalism & Civic Technology',
     shortTitle: 'Civic Stories',
     description:
-      'Work that turns public datasets, election records, and municipal systems into readable investigations and explainers.',
+      'Decoding complex public datasets and institutional records into readable, high-impact investigations.',
     icon: 'data-journalism',
     accentClass: 'text-primary',
   },
@@ -69,9 +69,9 @@ export const pillarConfig: Record<
   },
   'software-systems-architecture': {
     title: 'Software Systems & Architecture',
-    shortTitle: 'Software Systems',
+    shortTitle: 'Product Engineering',
     description:
-      'Frontend, mobile, and editorial-product delivery that proves implementation judgment, not just conceptual design.',
+      'Architecting resilient mobile apps and editorial products that prove technical judgment through shipped code.',
     icon: 'code',
     accentClass: 'text-primary',
   },

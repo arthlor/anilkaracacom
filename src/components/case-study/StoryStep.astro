@@ -12,19 +12,23 @@ const { id, label, title, summary } = Astro.props;
 <section
   id={id}
   data-story-step
-  class="page-frame-soft grid gap-8 p-6 md:p-8 lg:min-h-[78vh] lg:grid-cols-[minmax(0,0.85fr)_minmax(320px,0.95fr)] lg:items-start"
+  class="page-frame-soft grid gap-10 p-5 md:p-8 lg:min-h-[78vh] lg:grid-cols-[minmax(0,0.6fr)_minmax(320px,1.4fr)] lg:items-start"
 >
-  <div class="space-y-5">
-    {label && <p class="page-kicker">{label}</p>}
-    <h3 class="text-3xl font-display font-bold text-foreground">{title}</h3>
-    <p class="text-base leading-relaxed text-muted-foreground">{summary}</p>
-    <div class="prose-article max-w-none">
+  <div class="space-y-6">
+    {label && (
+      <div class="hidden sm:inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 backdrop-blur-sm">
+        <p class="text-[10px] font-bold uppercase tracking-widest text-primary">{label}</p>
+      </div>
+    )}
+    <h3 class="text-3xl font-display font-bold text-foreground leading-tight">{title}</h3>
+    <p class="text-base leading-relaxed text-muted-foreground/90">{summary}</p>
+    <div class="prose-article max-w-none text-sm leading-relaxed">
       <slot />
     </div>
   </div>
 
-  <div class="lg:sticky lg:top-28">
-    <div class="page-frame p-4">
+  <div class="lg:sticky lg:top-28 min-w-0 w-full overflow-hidden">
+    <div class="page-frame p-2 sm:p-4 w-full">
       <slot name="visual" />
     </div>
   </div>

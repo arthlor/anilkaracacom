@@ -34,7 +34,6 @@ const { title, description, image, noindex, article = false, lang = 'en' } = Ast
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: clip;
     background: #111111;
     color: #f3f1eb;
     isolation: isolate;
@@ -46,14 +45,12 @@ const { title, description, image, noindex, article = false, lang = 'en' } = Ast
     z-index: -1;
     pointer-events: none;
     background:
-      radial-gradient(circle at 50% 16%, rgba(122, 242, 152, 0.16), transparent 16%),
-      radial-gradient(circle at 50% 84%, rgba(122, 242, 152, 0.12), transparent 20%),
       repeating-linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.012) 0,
-        rgba(255, 255, 255, 0.012) 1px,
+        rgba(255, 255, 255, 0.015) 0,
+        rgba(255, 255, 255, 0.015) 1px,
         transparent 1px,
-        transparent 62px
+        transparent 64px
       ),
       linear-gradient(180deg, #111111 0%, #080808 100%);
   }
@@ -61,5 +58,17 @@ const { title, description, image, noindex, article = false, lang = 'en' } = Ast
   .portfolio-shell__main {
     position: relative;
     flex: 1;
+  }
+
+  /* Global Container Standard (Match Homepage) */
+  :global(.container-standard) {
+    width: min(100% - 80px, 1320px);
+    margin-inline: auto;
+  }
+
+  @media (max-width: 720px) {
+    :global(.container-standard) {
+      width: min(100% - 40px, 1320px);
+    }
   }
 </style>

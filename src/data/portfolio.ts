@@ -5,36 +5,36 @@ import choreusIcon from '../assets/images/projects/choreusicon.png';
 import yeserIcon from '../assets/images/projects/icon.png';
 
 export const resumeLinks = {
-  master: '/anilkaraca-cv.pdf',
+  master: '/anilkaraca.pdf',
 } as const;
 
 export const expertiseLanes = [
   {
     slug: 'data-journalism',
     title: 'Data Journalism',
-    kicker: 'Reporting, analysis, and visual storytelling',
+    kicker: 'Reporting, analysis, and visual systems',
     summary:
-      'I turn public-interest data into investigations, explainers, and interactive stories that help readers understand politics, cities, and social change.',
+      'I decode complex public datasets into investigations and interactive stories that make power, politics, and urban systems legible.',
   },
   {
     slug: 'developer',
-    title: 'Developer',
-    kicker: 'Frontend, mobile, and product delivery',
+    title: 'Product Engineer',
+    kicker: 'Mobile, frontend, and systems delivery',
     summary:
-      'I design and ship apps, editorial interfaces, and product experiences with React Native, React, Astro, and pragmatic data workflows.',
+      'I architect mobile apps and editorial interfaces with React Native and Astro, focused on performance and seamless product execution.',
   },
 ] as const;
 
 export const journalismMethods = [
-  'Investigations built from public data, election results, and civic records',
-  'Interactive explainers that combine reporting, analysis, and scrollytelling',
-  'Visual systems for making dense political or city data readable',
+  'Deep investigations built from election records and civic micro-data',
+  'Interactive features that merge field reporting with rigorous analysis',
+  'Custom visual systems for making dense institutional data accessible',
 ] as const;
 
 export const developerMethods = [
-  'React Native and Expo apps shipped from concept to App Store release',
-  'Frontend systems and editorial products built with React and Astro',
-  'AI-assisted workflows used to accelerate delivery, not replace engineering judgment',
+  'Consumer iOS applications shipped from concept to App Store release',
+  'High-performance frontend systems and tailored editorial products',
+  'Strategic use of AI to accelerate delivery without compromising integrity',
 ] as const;
 
 export type AppProject = {
@@ -58,7 +58,7 @@ export const appProjects: AppProject[] = [
     technicalSummary:
       'Built as a consumer mobile product with React Native and Expo, focused on simple onboarding and repeat-use UX.',
     role: 'Product design, React Native implementation, release workflow',
-    impact: 'Shows shipped mobile product work beyond prototypes or demos.',
+    impact: 'Proven track record of shipping real-world consumer mobile products.',
     stack: ['React Native', 'Expo', 'Mobile UX'],
     appStoreUrl: 'https://apps.apple.com/us/app/ye%C5%9Fer/id6747253728',
     image: yeserIcon,
@@ -71,7 +71,7 @@ export const appProjects: AppProject[] = [
     technicalSummary:
       'Designed as a playful task product with mobile-first interaction patterns and retention-oriented mechanics.',
     role: 'Product strategy, interface implementation, app delivery',
-    impact: 'Demonstrates consumer app thinking, not just engineering execution.',
+    impact: 'Evidence of product-first thinking in a competitive consumer space.',
     stack: ['React Native', 'Expo', 'Product Thinking'],
     appStoreUrl: 'https://apps.apple.com/us/app/choreus-gamify-boring-chores/id6755533194',
     image: choreusIcon,
@@ -84,7 +84,7 @@ export const appProjects: AppProject[] = [
     technicalSummary:
       'Built as an AI-assisted mobile product with upload flows, feedback UX, and a playful consumer positioning.',
     role: 'Concept, app UX, integration, release workflow',
-    impact: 'Shows experimentation with AI features inside a real app experience.',
+    impact: 'Rapid experimentation with AI features integrated into a production UX.',
     stack: ['React Native', 'Expo', 'AI Product'],
     appStoreUrl: 'https://apps.apple.com/tr/app/ai-fit-check-slay-or-nay/id6757414884',
     image: aiFitCheckIcon,
@@ -113,9 +113,9 @@ export const workplaces = [
 ] as const;
 
 export const credibilityHighlights = [
-  '10+ years across journalism, public communications, and product work',
-  'Editorial work spanning elections, civic data, urban systems, and political accountability',
-  'Shipped mobile apps and interactive sites alongside newsroom and communications work',
+  'A decade of experience bridging high-stakes journalism and product work',
+  'Expertise in elections, civic data, and institutional accountability',
+  'Full-stack product delivery across newsrooms and independent ventures',
 ] as const;
 
 export type ExperienceEntry = {

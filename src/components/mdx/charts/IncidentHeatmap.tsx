@@ -42,10 +42,20 @@ export default function IncidentHeatmap() {
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      await containerRef.current.requestFullscreen().catch(err => console.error(err));
+    const element = containerRef.current as any;
+    
+    if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      if (element.requestFullscreen) {
+        await element.requestFullscreen().catch((err: any) => console.error(err));
+      } else if (element.webkitRequestFullscreen) {
+        await element.webkitRequestFullscreen();
+      }
     } else {
-      await document.exitFullscreen().catch(err => console.error(err));
+      if (document.exitFullscreen) {
+        await document.exitFullscreen().catch((err: any) => console.error(err));
+      } else if ((document as any).webkitExitFullscreen) {
+        await (document as any).webkitExitFullscreen();
+      }
     }
   };
 
@@ -136,8 +146,8 @@ export default function IncidentHeatmap() {
       </div>
 
       {/* Heatmap Grid Wrapper (Scrollable on very tight screens) */}
-      <div className="w-full overflow-x-auto pb-4">
-        <div className="min-w-[700px]">
+      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
+        <div className="min-w-[640px] lg:min-w-[800px]">
           
           {/* X Axis: Hours */}
           <div className="flex ml-16 mb-2">

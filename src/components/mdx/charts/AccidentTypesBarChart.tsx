@@ -44,10 +44,20 @@ export default function AccidentTypesBarChart() {
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      await containerRef.current.requestFullscreen().catch(err => console.error(err));
+    const element = containerRef.current as any;
+    
+    if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      if (element.requestFullscreen) {
+        await element.requestFullscreen().catch((err: any) => console.error(err));
+      } else if (element.webkitRequestFullscreen) {
+        await element.webkitRequestFullscreen();
+      }
     } else {
-      await document.exitFullscreen().catch(err => console.error(err));
+      if (document.exitFullscreen) {
+        await document.exitFullscreen().catch((err: any) => console.error(err));
+      } else if ((document as any).webkitExitFullscreen) {
+        await (document as any).webkitExitFullscreen();
+      }
     }
   };
 

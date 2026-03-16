@@ -25,7 +25,7 @@ const grouped = groupEntriesByPillar(allEntries).filter((section) => section.ent
   description="Unified work library spanning shipped apps, investigations, and interactive case studies."
 >
   <section class="pt-28 pb-14">
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="container-standard">
       <div class="page-frame p-6 md:p-8">
         <span class="page-kicker">All work</span>
         <h1 class="mt-4 max-w-4xl text-5xl font-display font-bold tracking-tight text-foreground sm:text-6xl">
@@ -40,7 +40,7 @@ const grouped = groupEntriesByPillar(allEntries).filter((section) => section.ent
   </section>
 
   <section class="pb-24 pt-8">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="container-standard">
       <div class="space-y-16">
         {grouped.map((section) => (
           <section>

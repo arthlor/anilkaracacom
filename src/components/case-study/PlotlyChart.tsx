@@ -16,7 +16,6 @@ type PlotlyModule = {
     config?: Record<string, unknown>,
   ) => Promise<unknown>;
   purge: (root: HTMLDivElement) => void;
-  register: (modules: unknown[]) => void;
   Plots: {
     resize: (root: HTMLDivElement) => void;
   };
@@ -32,34 +31,29 @@ type PlotlyChartProps = {
   className?: string;
 };
 
-const moduleMap: Record<TraceModule, () => Promise<{ default?: unknown }>> = {
-  bar: () => import('plotly.js/lib/bar'),
-  scatter: () => import('plotly.js/lib/scatter'),
-};
-
 let plotlyPromise: Promise<PlotlyModule> | null = null;
-const registeredModules = new Set<TraceModule>();
+const PLOTLY_TIMEOUT = 12000;
 
-async function loadPlotly(traceModules: TraceModule[]) {
+async function loadPlotly() {
   if (!plotlyPromise) {
-    plotlyPromise = import('plotly.js/lib/core').then(
-      (module) => (module.default ?? module) as PlotlyModule,
-    );
+    plotlyPromise = new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Plotly load timeout'));
+      }, PLOTLY_TIMEOUT);
+
+      import('plotly.js/dist/plotly-basic.min.js')
+        .then((module) => {
+          clearTimeout(timeout);
+          resolve((module.default ?? module) as PlotlyModule);
+        })
+        .catch((err) => {
+          clearTimeout(timeout);
+          reject(err);
+        });
+    });
   }
 
-  const Plotly = await plotlyPromise;
-  const pendingModules = traceModules.filter((traceModule) => !registeredModules.has(traceModule));
-
-  if (pendingModules.length > 0) {
-    const modules = await Promise.all(
-      pendingModules.map((traceModule) => moduleMap[traceModule]()),
-    );
-
-    Plotly.register(modules.map((module) => module.default ?? module));
-    pendingModules.forEach((traceModule) => registeredModules.add(traceModule));
-  }
-
-  return Plotly;
+  return plotlyPromise;
 }
 
 export default function PlotlyChart({
@@ -76,6 +70,7 @@ export default function PlotlyChart({
   const plotlyRef = useRef<PlotlyModule | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -103,21 +98,28 @@ export default function PlotlyChart({
     let isActive = true;
 
     void (async () => {
-      const Plotly = await loadPlotly(traceModules);
-      if (!isActive || !plotRef.current) return;
+      try {
+        const Plotly = await loadPlotly();
+        if (!isActive || !plotRef.current) return;
 
-      plotlyRef.current = Plotly;
-      const mergedConfig = {
-        displayModeBar: false,
-        responsive: true,
-        ...config,
-      };
+        plotlyRef.current = Plotly;
+        const mergedConfig = {
+          displayModeBar: false,
+          responsive: true,
+          ...config,
+        };
 
-      if (isReady) {
-        await Plotly.react(plotRef.current, data, layout, mergedConfig);
-      } else {
-        await Plotly.newPlot(plotRef.current, data, layout, mergedConfig);
-        setIsReady(true);
+        if (isReady) {
+          await Plotly.react(plotRef.current, data, layout, mergedConfig);
+        } else {
+          await Plotly.newPlot(plotRef.current, data, layout, mergedConfig);
+          setIsReady(true);
+        }
+      } catch (err) {
+        if (isActive) {
+          setError(err instanceof Error ? err.message : 'Failed to load chart');
+          console.error('PlotlyChart error:', err);
+        }
       }
     })();
 
@@ -153,14 +155,31 @@ export default function PlotlyChart({
       <div
         ref={plotRef}
         style={{ minHeight }}
-        className="w-full"
+        className={`w-full ${error ? 'hidden' : ''}`}
       />
-      {!isReady && (
+      {!isReady && !error && (
         <div
           className="absolute inset-0 flex items-center justify-center text-sm text-slate-400"
           style={{ minHeight }}
         >
-          {loadingLabel}
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-slate-700 border-t-indigo-500" />
+            {loadingLabel}
+          </div>
+        </div>
+      )}
+      {error && (
+        <div
+          className="flex items-center justify-center rounded-xl border border-red-900/20 bg-red-950/10 p-8 text-center text-sm text-red-400"
+          style={{ minHeight }}
+        >
+          <div className="max-w-xs">
+            <p className="font-semibold text-red-300">Analysis visual disrupted</p>
+            <p className="mt-2 text-red-400/80">
+              The interactive data layer failed to initialize. Please refresh or try again.
+            </p>
+            <p className="mt-4 text-xs font-mono text-red-500/50 uppercase tracking-widest">{error}</p>
+          </div>
         </div>
       )}
     </div>

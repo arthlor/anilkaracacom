@@ -21,7 +21,7 @@ const grouped = groupEntriesByPillar(articles).filter((section) => section.entri
   description="Article archive for Anil Karaca, grouped by pillar across data journalism, systems analysis, and political reporting."
 >
   <section class="pt-28 pb-14">
-    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="container-standard">
       <div class="page-frame p-6 md:p-8">
         <span class="page-kicker">Article archive</span>
         <h1 class="mt-4 text-5xl font-display font-bold tracking-tight text-foreground sm:text-6xl">
@@ -36,7 +36,7 @@ const grouped = groupEntriesByPillar(articles).filter((section) => section.entri
   </section>
 
   <section class="pb-24 pt-8">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="container-standard">
       <div class="space-y-16">
         {grouped.map((section) => (
           <section>

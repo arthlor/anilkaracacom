@@ -40,10 +40,20 @@ export default function StreetFrequencyLineChart() {
 
   const toggleFullscreen = async () => {
     if (!containerRef.current) return;
-    if (!document.fullscreenElement) {
-      await containerRef.current.requestFullscreen().catch(err => console.error(err));
+    const element = containerRef.current as any;
+    
+    if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      if (element.requestFullscreen) {
+        await element.requestFullscreen().catch((err: any) => console.error(err));
+      } else if (element.webkitRequestFullscreen) {
+        await element.webkitRequestFullscreen();
+      }
     } else {
-      await document.exitFullscreen().catch(err => console.error(err));
+      if (document.exitFullscreen) {
+        await document.exitFullscreen().catch((err: any) => console.error(err));
+      } else if ((document as any).webkitExitFullscreen) {
+        await (document as any).webkitExitFullscreen();
+      }
     }
   };
 
@@ -78,7 +88,7 @@ export default function StreetFrequencyLineChart() {
   // SVG Geometry constants
   const viewBoxWidth = 800;
   const viewBoxHeight = 400;
-  const padding = { top: 40, right: 120, bottom: 40, left: 40 };
+  const padding = { top: 40, right: 30, bottom: 40, left: 40 }; // Reduced right padding since we hide labels on mobile
   
   const drawWidth = viewBoxWidth - padding.left - padding.right;
   const drawHeight = viewBoxHeight - padding.top - padding.bottom;
@@ -144,7 +154,7 @@ export default function StreetFrequencyLineChart() {
         </p>
       </div>
 
-      <div className="relative w-full aspect-[2/1] min-h-[300px] mt-6 select-none bg-slate-50/50 dark:bg-slate-800/10 rounded-xl overflow-hidden">
+      <div className="relative w-full aspect-[2/1] mt-6 select-none bg-slate-50/50 dark:bg-slate-800/10 rounded-xl overflow-hidden">
         
         <svg 
           viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`} 
