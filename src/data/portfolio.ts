@@ -2,7 +2,7 @@ import type { ImageMetadata } from 'astro';
 
 import aiFitCheckIcon from '../assets/images/projects/aifitcheckicon.webp';
 import choreusIcon from '../assets/images/projects/choreusicon.webp';
-import yeserIcon from '../assets/images/projects/icon.webp';
+import yeserIcon from '../assets/images/projects/yesericon.webp';
 
 // Workplace Logos
 import izmirBsbLogo from '../assets/images/workplaces/izmir-bsb.webp';

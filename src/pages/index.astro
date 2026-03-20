@@ -17,7 +17,7 @@ import portrait from '../assets/images/anilkaraca.webp';
 import heroPortrait from '../assets/images/anilkaraca.webp';
 
 const projects = await getCollection('projects', ({ data }) => data.published);
-const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 4);
+const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 6);
 
 const homeStats = [
   {
@@ -859,8 +859,8 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__work-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-      margin-top: 40px;
+      gap: 20px;
+      margin-top: 32px;
     }
 
     .portfolio-home__work-card {
@@ -885,11 +885,13 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       transform: translateY(-4px);
     }
 
-    /* Bento Spans - Now more compact 2x2 */
-    .portfolio-home__work-card--1 { grid-column: span 6; grid-row: span 1; }
-    .portfolio-home__work-card--2 { grid-column: span 6; grid-row: span 1; }
-    .portfolio-home__work-card--3 { grid-column: span 6; grid-row: span 1; }
-    .portfolio-home__work-card--4 { grid-column: span 6; grid-row: span 1; }
+    /* Bento Spans - Now 3-column grid */
+    .portfolio-home__work-card--1 { grid-column: span 4; grid-row: span 1; }
+    .portfolio-home__work-card--2 { grid-column: span 4; grid-row: span 1; }
+    .portfolio-home__work-card--3 { grid-column: span 4; grid-row: span 1; }
+    .portfolio-home__work-card--4 { grid-column: span 4; grid-row: span 1; }
+    .portfolio-home__work-card--5 { grid-column: span 4; grid-row: span 1; }
+    .portfolio-home__work-card--6 { grid-column: span 4; grid-row: span 1; }
 
     .portfolio-home__work-glow {
       position: absolute;
@@ -936,28 +938,32 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__work-content {
       position: relative;
-      padding: 24px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
       z-index: 2;
-      background: linear-gradient(to top, rgba(10, 10, 10, 0.9), transparent);
+      background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
     }
 
     .portfolio-home__work-copy h3 {
       margin: 0;
-      font-size: 1.35rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: #f5f2eb;
-      letter-spacing: -0.02em;
+      letter-spacing: -0.01em;
     }
 
     .portfolio-home__work-copy p {
-      margin: 6px 0 0;
-      font-size: 0.92rem;
-      line-height: 1.5;
-      color: rgba(255, 255, 255, 0.6);
+      margin: 4px 0 0;
+      font-size: 0.88rem;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.55);
       max-width: 480px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .portfolio-home__tag-row {
@@ -1024,7 +1030,6 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       transform: scale(1.02);
     }
 
-    .portfolio-home__work-copy h3,
     .portfolio-home__article-card h3,
     .portfolio-home__process-card h3 {
       margin: 0;
@@ -1033,7 +1038,6 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       color: #f5f2eb;
     }
 
-    .portfolio-home__work-copy p,
     .portfolio-home__process-card p,
     .portfolio-home__service-body p,
     .portfolio-home__client-card span {
