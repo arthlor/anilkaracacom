@@ -43,7 +43,13 @@ const imageSrc = image;
 
 <article class="group flex h-full flex-col gap-4">
   {imageSrc && (
-    <div class="aspect-[1.36/1] overflow-hidden rounded-[20px] bg-white/[0.03] transition-all duration-500 group-hover:shadow-[0_20px_48px_rgba(0,0,0,0.35)]">
+    <a
+      href={href}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      aria-label={ctaLabel ? `${ctaLabel}: ${title}` : `Open ${title}`}
+      class="block aspect-[1.36/1] overflow-hidden rounded-[20px] bg-white/[0.03] transition-all duration-500 group-hover:shadow-[0_20px_48px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
       <OptimizedImage
         src={imageSrc}
         alt={imageAlt}
@@ -52,7 +58,7 @@ const imageSrc = image;
         width={800}
         height={500}
       />
-    </div>
+    </a>
   )}
 
   <div class="flex flex-1 flex-col">
@@ -73,7 +79,14 @@ const imageSrc = image;
     )}
 
     <h3 class="text-[clamp(1.55rem,2vw,1.95rem)] font-display font-bold leading-[1.08] text-foreground transition-colors group-hover:text-primary">
-      {title}
+      <a
+        href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+        class="transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        {title}
+      </a>
     </h3>
 
     <p class="mt-2 text-[0.96rem] leading-7 text-muted-foreground">

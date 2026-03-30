@@ -1,4 +1,7 @@
-import { VisualizationIsland, type VisualizationIslandProps } from './VisualizationIsland';
+import {
+  VisualizationIsland,
+  type VisualizationIslandProps,
+} from "./VisualizationIsland";
 
 export function NetworkGraphFrame<TState = never>({
   title,
@@ -7,7 +10,11 @@ export function NetworkGraphFrame<TState = never>({
   children,
 }: VisualizationIslandProps<TState>) {
   return (
-    <VisualizationIsland title={title} description={description} className={className}>
+    <VisualizationIsland
+      title={title}
+      description={description}
+      className={className}
+    >
       <div className="min-h-[320px]">{children}</div>
     </VisualizationIsland>
   );

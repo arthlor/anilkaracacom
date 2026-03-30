@@ -11,7 +11,8 @@ draft: false
 track: "data-journalism"
 language: "tr"
 pillar: "data-journalism-civic-tech"
-techStack: ["Python", "Data Cleaning", "Custom React Charts", "Municipal Open Data"]
+techStack:
+  ["Python", "Data Cleaning", "Custom React Charts", "Municipal Open Data"]
 metrics:
   - label: "Kayıt sayısı"
     value: "17K+"
@@ -40,11 +41,12 @@ relatedContent:
   - collection: "projects"
     slug: "parliament-analysis"
 ---
-import AccidentTypesBarChart from '@/components/mdx/charts/AccidentTypesBarChart';
-import IncidentHeatmap from '@/components/mdx/charts/IncidentHeatmap';
-import StreetFrequencyLineChart from '@/components/mdx/charts/StreetFrequencyLineChart';
-import ScrollytellingStory from '@/components/case-study/ScrollytellingStory.astro';
-import StoryStep from '@/components/case-study/StoryStep.astro';
+
+import AccidentTypesBarChart from "@/components/mdx/charts/AccidentTypesBarChart";
+import IncidentHeatmap from "@/components/mdx/charts/IncidentHeatmap";
+import StreetFrequencyLineChart from "@/components/mdx/charts/StreetFrequencyLineChart";
+import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
+import StoryStep from "@/components/case-study/StoryStep.astro";
 
 İzmir, artan trafik yoğunluğuyla günden güne yaşanması zor bir metropol haline geliyor. Ana arterler artık trafik yükünü taşımada yetersiz kalıyor, en ufak bir kaza trafiği dakikalarca kilitleyebiliyor.
 
@@ -58,7 +60,7 @@ Veri analizi, kentte yaşanan kazaların hangi günlerde, saatlerde ve mevsimler
 
 **Hafta Sonu Dikkat Çekiyor:** Cumartesi ve Pazar günleri ise nispeten daha düşük kaza sayısına sahip olsa da, hafta sonu yaşanan kazalar eğlence, alışveriş ve sosyal aktiviteler nedeniyle farklı saatlere yayılabiliyor. **Cumartesi günü 1,755** ve **Pazar günü 1,028** kazayla hafta sonları daha düşük bir yoğunluk sergiliyor.
 
-*Grafikleri daha iyi incelemek için mobil cihazlarınızı yatay konumda kullanmanızı öneririm.*
+_Grafikleri daha iyi incelemek için mobil cihazlarınızı yatay konumda kullanmanızı öneririm._
 
 <ScrollytellingStory
   steps={[
@@ -93,16 +95,16 @@ Veri analizi, kentte yaşanan kazaların hangi günlerde, saatlerde ve mevsimler
     </Fragment>
   </StoryStep>
 
-  <StoryStep
-    id="trafik-turler"
-    label="Adım 2"
-    title="Baskın olay kategorileri"
-    summary="İkinci adım, toplam yoğunluğu oluşturan kaza tiplerini ayırarak hangi kategorilerin gerçekten belirleyici olduğunu ortaya koyuyor."
-  >
-    <Fragment slot="visual">
-      <AccidentTypesBarChart client:visible />
-    </Fragment>
-  </StoryStep>
+<StoryStep
+  id="trafik-turler"
+  label="Adım 2"
+  title="Baskın olay kategorileri"
+  summary="İkinci adım, toplam yoğunluğu oluşturan kaza tiplerini ayırarak hangi kategorilerin gerçekten belirleyici olduğunu ortaya koyuyor."
+>
+  <Fragment slot="visual">
+    <AccidentTypesBarChart client:visible />
+  </Fragment>
+</StoryStep>
 
   <StoryStep
     id="trafik-isiharitasi"
@@ -152,8 +154,6 @@ Kazaların gün ve saat bazında analiz edilmesi, kaynakların daha etkin kullan
 
 **Mevsimsel Güvenlik Önlemleri:** Kış aylarında artan kaza oranlarına yönelik farkındalık kampanyaları ve ek güvenlik önlemleri, hava koşullarına bağlı riskleri azaltmada etkili olabilir.
 
-
-
 ---
 
-*Kaynak: [İzmir Büyükşehir Belediyesi Açık Veri Portalı](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri)*
+_Kaynak: [İzmir Büyükşehir Belediyesi Açık Veri Portalı](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri)_

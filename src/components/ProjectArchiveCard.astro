@@ -1,0 +1,126 @@
+---
+import type { ImageMetadata } from 'astro';
+
+import Icon from './Icon.astro';
+import OptimizedImage from './OptimizedImage.astro';
+import TechBadge from './ui/TechBadge.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  href: string;
+  eyebrow: string;
+  meta?: string | undefined;
+  role?: string | undefined;
+  impact?: string | undefined;
+  tags?: string[] | undefined;
+  image: string | ImageMetadata;
+  ctaLabel: string;
+  external?: boolean | undefined;
+}
+
+const {
+  title,
+  description,
+  href,
+  eyebrow,
+  meta,
+  role,
+  impact,
+  tags = [],
+  image,
+  ctaLabel,
+  external = false,
+} = Astro.props as Props;
+
+const proofItems = [
+  role ? { label: 'Role', value: role } : undefined,
+  impact ? { label: 'Impact', value: impact } : undefined,
+].filter((item): item is { label: string; value: string } => Boolean(item));
+
+const visibleTags = tags.slice(0, 3);
+---
+
+<article class="group flex h-full flex-col overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] shadow-[0_20px_48px_rgba(0,0,0,0.2)] transition-all duration-300 hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_28px_60px_rgba(0,0,0,0.28)]">
+  <a
+    href={href}
+    target={external ? '_blank' : undefined}
+    rel={external ? 'noopener noreferrer' : undefined}
+    aria-label={ctaLabel ? `${ctaLabel}: ${title}` : `Open ${title}`}
+    class="block aspect-[1.36/1] overflow-hidden border-b border-white/10 bg-white/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+  >
+    <OptimizedImage
+      src={image}
+      alt={title}
+      class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+      loading="lazy"
+      width={800}
+      height={500}
+    />
+  </a>
+
+  <div class="flex flex-1 flex-col gap-4 p-5">
+    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <p class="text-[0.72rem] font-semibold uppercase tracking-[0.14em]" style="color: var(--premium-accent);">
+        {eyebrow}
+      </p>
+      {meta && (
+        <p class="text-[0.72rem] uppercase tracking-[0.12em] text-muted-foreground">
+          {meta}
+        </p>
+      )}
+    </div>
+
+    <div class="space-y-2">
+      <h3 class="text-[clamp(1.45rem,2vw,1.85rem)] font-display font-bold leading-[1.08] text-foreground transition-colors group-hover:text-primary">
+        <a
+          href={href}
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noopener noreferrer' : undefined}
+          class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          {title}
+        </a>
+      </h3>
+
+      <p class="text-[0.95rem] leading-7 text-muted-foreground">
+        {description}
+      </p>
+    </div>
+
+    {proofItems.length > 0 && (
+      <div class={`grid gap-2 ${proofItems.length > 1 ? 'sm:grid-cols-2' : ''}`}>
+        {proofItems.map((item) => (
+          <div class="rounded-[18px] border border-white/8 bg-black/20 px-3 py-3">
+            <p class="text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-white/45">
+              {item.label}
+            </p>
+            <p class="mt-1 text-[0.82rem] leading-6 text-white/72">
+              {item.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {visibleTags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {visibleTags.map((tag) => (
+          <TechBadge label={tag} />
+        ))}
+      </div>
+    )}
+
+    <div class="mt-auto pt-1">
+      <a
+        href={href}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noopener noreferrer' : undefined}
+        class="inline-flex items-center gap-2 text-[0.82rem] font-semibold tracking-wider uppercase text-foreground transition-all hover:gap-3 hover:text-primary"
+      >
+        {ctaLabel}
+        <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-1" />
+      </a>
+    </div>
+  </div>
+</article>

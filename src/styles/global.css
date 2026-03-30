@@ -1,16 +1,16 @@
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/space-grotesk/400.css';
-@import '@fontsource/space-grotesk/500.css';
-@import '@fontsource/space-grotesk/600.css';
-@import '@fontsource/space-grotesk/700.css';
-@import '@fontsource/jetbrains-mono/400.css';
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 @layer base {
   :root {
@@ -50,9 +50,9 @@
     /* ===========================================
        TYPOGRAPHY SCALE - Responsive with clamp()
        =========================================== */
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: "Space Grotesk", sans-serif;
+    --font-body: "Inter", sans-serif;
+    --font-mono: "JetBrains Mono", monospace;
 
     /* Fluid type scale */
     --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.75rem);
@@ -126,26 +126,57 @@
    =========================================== */
 
 @keyframes sparkle-float {
-  0% { transform: translateY(0) scale(1); opacity: 0.15; }
-  50% { opacity: 0.6; }
-  100% { transform: translateY(-30px) scale(1.2); opacity: 0.2; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-30px) scale(1.2);
+    opacity: 0.2;
+  }
 }
 
 @keyframes sparkle-twinkle {
-  0%, 100% { opacity: 0.1; transform: scale(0.8); }
-  50% { opacity: 0.7; transform: scale(1.3); }
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.3);
+  }
 }
 
 @keyframes sparkle-drift {
-  0% { transform: translate(0, 0) scale(1); opacity: 0.12; }
-  33% { opacity: 0.5; }
-  66% { opacity: 0.3; }
-  100% { transform: translate(20px, -25px) scale(1.1); opacity: 0.15; }
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.12;
+  }
+  33% {
+    opacity: 0.5;
+  }
+  66% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translate(20px, -25px) scale(1.1);
+    opacity: 0.15;
+  }
 }
 
 @keyframes hero-particle-drift {
-  0% { transform: translate(0, 0); opacity: 0.2; }
-  100% { transform: translate(30px, -40px); opacity: 0.5; }
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(30px, -40px);
+    opacity: 0.5;
+  }
 }
 
 /* Infinite scroll animation for marquee */
@@ -282,14 +313,30 @@ pre {
 
 .page-frame {
   background:
-    radial-gradient(circle at top left, rgba(122, 242, 152, 0.11), transparent 30%),
-    radial-gradient(circle at bottom right, rgba(255, 214, 133, 0.08), transparent 24%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+    radial-gradient(
+      circle at top left,
+      rgba(122, 242, 152, 0.11),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(255, 214, 133, 0.08),
+      transparent 24%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.015)
+    );
 }
 
 .page-frame-soft {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.015)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.028),
+      rgba(255, 255, 255, 0.015)
+    ),
     rgba(255, 255, 255, 0.02);
 }
 
@@ -368,7 +415,9 @@ pre {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: hsl(var(--primary));
-  transition: gap 180ms ease, color 180ms ease;
+  transition:
+    gap 180ms ease,
+    color 180ms ease;
 }
 
 .page-inline-link:hover {
@@ -414,12 +463,20 @@ pre {
   position: relative;
   overflow: hidden;
   background:
-    radial-gradient(circle at top right, rgba(122, 242, 152, 0.13), transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
+    radial-gradient(
+      circle at top right,
+      rgba(122, 242, 152, 0.13),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.03),
+      rgba(255, 255, 255, 0.015)
+    );
 }
 
 .page-cta-block::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 1.5rem;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -450,12 +507,12 @@ pre {
 }
 
 /* First paragraph special styling */
-.prose-article>p:first-of-type {
+.prose-article > p:first-of-type {
   @apply text-lg text-text leading-relaxed;
 }
 
 /* Drop Cap for first letter */
-.prose-article.with-dropcap>p:first-of-type::first-letter {
+.prose-article.with-dropcap > p:first-of-type::first-letter {
   @apply float-left text-6xl font-display font-bold text-[#edbd21] mr-3 mt-1;
   line-height: 0.85;
 }
@@ -500,7 +557,7 @@ pre {
 }
 
 .prose-article ul li::before {
-  content: '';
+  content: "";
   @apply absolute left-0 top-[0.6em] w-2 h-2 rounded-full bg-[#edbd21]/60;
 }
 
@@ -516,7 +573,7 @@ pre {
 }
 
 .prose-article ol li::before {
-  content: counter(item) '.';
+  content: counter(item) ".";
   @apply absolute -left-6 font-semibold text-[#edbd21];
 }
 
@@ -547,13 +604,13 @@ pre {
   @apply my-8 p-0 bg-transparent overflow-visible;
 }
 
-.prose-article pre>code {
+.prose-article pre > code {
   @apply block p-5 bg-surface-elevated rounded-xl overflow-x-auto text-sm leading-relaxed;
   border: 1px solid hsl(var(--primary) / 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.prose-article :not(pre)>code {
+.prose-article :not(pre) > code {
   @apply font-mono bg-surface-elevated px-2 py-1 rounded text-sm text-[#edbd21];
   border: 1px solid hsl(var(--primary) / 0.1);
 }

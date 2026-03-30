@@ -8,11 +8,13 @@ description: How to create a new article or blog post
 
 1. **Create the MDX file**
    Create a new file in `src/content/articles/` using kebab-case naming:
+
    ```bash
    touch src/content/articles/my-article-title.mdx
    ```
 
 2. **Add frontmatter**
+
    ```mdx
    ---
    title: "Your Article Title"
@@ -27,13 +29,14 @@ description: How to create a new article or blog post
 
 3. **Write content**
    Use Markdown with optional MDX components:
+
    ```mdx
-   import DataChart from '../../components/DataChart.tsx';
-   
+   import DataChart from "../../components/DataChart.tsx";
+
    # Introduction
-   
+
    Your content here...
-   
+
    <DataChart client:visible data={myData} />
    ```
 
@@ -43,12 +46,13 @@ description: How to create a new article or blog post
    - Format: WebP or JPEG
    - Add descriptive alt text
 
-// turbo
-5. **Preview locally**
-   ```bash
-   npm run dev
-   ```
-   Visit `http://localhost:4321/articles/my-article-title`
+// turbo 5. **Preview locally**
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:4321/articles/my-article-title`
 
 6. **Commit and deploy**
    ```bash

@@ -8,17 +8,19 @@ const currentPath = Astro.url.pathname;
 
 <header class="site-header">
   <div class="site-header__container">
-    <a href="/" class="site-header__brand" aria-label="Home">
-      <span class="brand-text">ANIL KARACA</span>
-      <span class="brand-dot"></span>
-    </a>
+    <div class="site-header__panel">
+      <a href="/" class="site-header__brand" aria-label="Home">
+        <span class="brand-text">ANIL KARACA</span>
+        <span class="brand-dot"></span>
+      </a>
 
-    <HeaderNavigation 
-      client:load 
-      links={navigationLinks} 
-      currentPath={currentPath}
-      resumeHref={resumeLinks.master}
-    />
+      <HeaderNavigation 
+        client:load 
+        links={navigationLinks} 
+        currentPath={currentPath}
+        resumeHref={resumeLinks.master}
+      />
+    </div>
   </div>
 </header>
 
@@ -34,23 +36,57 @@ const currentPath = Astro.url.pathname;
   .site-header__container {
     width: min(100% - 48px, 1200px);
     margin-inline: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     pointer-events: auto;
   }
 
+  .site-header__panel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.72rem 0.78rem 0.72rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(19, 19, 19, 0.94), rgba(10, 10, 10, 0.9)),
+      rgba(14, 14, 14, 0.94);
+    box-shadow:
+      0 24px 60px rgba(0, 0, 0, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(24px);
+  }
+
+  .site-header__panel::before {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at top left, rgba(122, 242, 152, 0.08), transparent 28%),
+      radial-gradient(circle at top right, rgba(255, 255, 255, 0.04), transparent 24%);
+    pointer-events: none;
+  }
+
   .site-header__brand {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 8px;
+    padding: 0.82rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.035);
     text-decoration: none;
     color: white;
-    transition: opacity 200ms ease;
+    transition: opacity 200ms ease, background 200ms ease, border-color 200ms ease;
   }
 
   .site-header__brand:hover {
-    opacity: 0.8;
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(255, 255, 255, 0.11);
   }
 
   .brand-text {
@@ -74,6 +110,15 @@ const currentPath = Astro.url.pathname;
     
     .site-header__container {
       width: min(100% - 32px, 1200px);
+    }
+
+    .site-header__panel {
+      padding: 0.68rem;
+      border-radius: 1.5rem;
+    }
+
+    .site-header__brand {
+      padding: 0.72rem 0.82rem;
     }
 
     .brand-text {

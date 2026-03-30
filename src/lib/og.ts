@@ -1,4 +1,4 @@
-import { pillarConfig, siteConfig, type PillarKey } from './site';
+import { pillarConfig, siteConfig, type PillarKey } from "./site";
 
 type OgCardPayload = {
   title: string;
@@ -10,16 +10,16 @@ type OgCardPayload = {
 
 function escapeXml(value: string) {
   return value
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
 
 function wrapText(text: string, maxLength: number) {
   const words = text.split(/\s+/);
   const lines: string[] = [];
-  let currentLine = '';
+  let currentLine = "";
 
   for (const word of words) {
     const nextLine = currentLine ? `${currentLine} ${word}` : word;
@@ -41,16 +41,16 @@ function wrapText(text: string, maxLength: number) {
 
 function getPillarAccent(pillar?: PillarKey) {
   switch (pillar) {
-    case 'data-journalism-civic-tech':
-      return '#20b2aa';
-    case 'scientific-environmental-modeling':
-      return '#ff9f43';
-    case 'geopolitical-network-analysis':
-      return '#ff6b6b';
-    case 'software-systems-architecture':
-      return '#4dabf7';
+    case "data-journalism-civic-tech":
+      return "#20b2aa";
+    case "scientific-environmental-modeling":
+      return "#ff9f43";
+    case "geopolitical-network-analysis":
+      return "#ff6b6b";
+    case "software-systems-architecture":
+      return "#4dabf7";
     default:
-      return '#20b2aa';
+      return "#20b2aa";
   }
 }
 
@@ -62,7 +62,7 @@ export function renderOgSvg({
   techStack = [],
 }: OgCardPayload) {
   const accent = getPillarAccent(pillar);
-  const pillarLabel = pillar ? pillarConfig[pillar].title : 'Hybrid Portfolio';
+  const pillarLabel = pillar ? pillarConfig[pillar].title : "Hybrid Portfolio";
   const titleLines = wrapText(title, 26).slice(0, 3);
   const descriptionLines = wrapText(description, 54).slice(0, 3);
   const badges = techStack.slice(0, 4);
@@ -75,7 +75,7 @@ export function renderOgSvg({
         <text x="${x + 18}" y="564" fill="#f3f7f8" font-size="20" font-family="Inter, Arial, sans-serif">${escapeXml(badge)}</text>
       `;
     })
-    .join('');
+    .join("");
 
   return `
     <svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,7 +103,7 @@ export function renderOgSvg({
             <text x="56" y="${210 + index * 72}" fill="#f8fbfc" font-size="58" font-weight="700" font-family="'Space Grotesk', Arial, sans-serif">${escapeXml(line)}</text>
           `,
         )
-        .join('')}
+        .join("")}
 
       ${descriptionLines
         .map(
@@ -111,11 +111,11 @@ export function renderOgSvg({
             <text x="56" y="${430 + index * 34}" fill="#b8c5c9" font-size="26" font-family="Inter, Arial, sans-serif">${escapeXml(line)}</text>
           `,
         )
-        .join('')}
+        .join("")}
 
       ${badgeMarkup}
 
-      <text x="56" y="612" fill="#6f848b" font-size="20" font-family="Inter, Arial, sans-serif">${escapeXml(siteConfig.personName)} • ${escapeXml(siteConfig.url.replace(/^https?:\/\//, ''))}</text>
+      <text x="56" y="612" fill="#6f848b" font-size="20" font-family="Inter, Arial, sans-serif">${escapeXml(siteConfig.personName)} • ${escapeXml(siteConfig.url.replace(/^https?:\/\//, ""))}</text>
     </svg>
   `;
 }

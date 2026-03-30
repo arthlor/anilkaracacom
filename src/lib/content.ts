@@ -1,7 +1,9 @@
-import type { CollectionEntry, CollectionKey } from 'astro:content';
-import { pillarConfig, type PillarKey } from './site';
+import type { CollectionEntry, CollectionKey } from "astro:content";
+import { pillarConfig, type PillarKey } from "./site";
 
-export type CaseStudyEntry = CollectionEntry<'articles'> | CollectionEntry<'projects'>;
+export type CaseStudyEntry =
+  | CollectionEntry<"articles">
+  | CollectionEntry<"projects">;
 
 type EntryWithDate = {
   id: string;
@@ -9,7 +11,7 @@ type EntryWithDate = {
   data: {
     pubDate: Date;
     published?: boolean | undefined;
-    track?: 'data-journalism' | 'developer' | 'supporting' | undefined;
+    track?: "data-journalism" | "developer" | "supporting" | undefined;
     pillar?: PillarKey | undefined;
     summaryEn?: string | undefined;
     description: string;
@@ -31,12 +33,14 @@ export function pickEntriesBySlug<T extends CollectionKey>(
 }
 
 export function sortEntriesByDateDesc<T extends EntryWithDate>(entries: T[]) {
-  return [...entries].sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  return [...entries].sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
 }
 
-export function sortEntriesByFeatureAndDate<T extends EntryWithDate & { data: { featured: boolean } }>(
-  entries: T[],
-) {
+export function sortEntriesByFeatureAndDate<
+  T extends EntryWithDate & { data: { featured: boolean } },
+>(entries: T[]) {
   return [...entries].sort((a, b) => {
     if (a.data.featured !== b.data.featured) {
       return Number(b.data.featured) - Number(a.data.featured);
@@ -52,9 +56,11 @@ export function isPublished<T extends EntryWithDate>(entry: T) {
 
 export function filterEntriesByTrack<T extends EntryWithDate>(
   entries: T[],
-  track: 'data-journalism' | 'developer',
+  track: "data-journalism" | "developer",
 ) {
-  return entries.filter((entry) => entry.data.track === track || entry.data.track === 'supporting');
+  return entries.filter(
+    (entry) => entry.data.track === track || entry.data.track === "supporting",
+  );
 }
 
 export function groupEntriesByPillar<T extends EntryWithDate>(entries: T[]) {
@@ -73,28 +79,33 @@ export function getEntryTags<T extends EntryWithDate>(entry: T) {
   return entry.data.techStack || entry.data.technologies || [];
 }
 
-export function getProjectHref(entry: CollectionEntry<'projects'>) {
+export function getProjectHref(entry: CollectionEntry<"projects">) {
   return `/projects/${entry.id}`;
 }
 
-export function getArticleHref(entry: CollectionEntry<'articles'>) {
+export function getArticleHref(entry: CollectionEntry<"articles">) {
   return `/articles/${entry.id}`;
 }
 
 export function getEntryHref(entry: CaseStudyEntry) {
-  return entry.collection === 'articles' ? getArticleHref(entry) : getProjectHref(entry);
+  return entry.collection === "articles"
+    ? getArticleHref(entry)
+    : getProjectHref(entry);
 }
 
-export function getEntryTypeLabel(entry: CaseStudyEntry, language: 'en' | 'tr' = 'en') {
-  if (entry.collection === 'projects') {
-    return language === 'tr' ? 'Proje vaka çalışması' : 'Project case study';
+export function getEntryTypeLabel(
+  entry: CaseStudyEntry,
+  language: "en" | "tr" = "en",
+) {
+  if (entry.collection === "projects") {
+    return language === "tr" ? "Proje vaka çalışması" : "Project case study";
   }
 
-  return language === 'tr'
-    ? entry.data.language === 'tr'
-      ? 'Türkçe makale'
-      : 'İngilizce makale'
-    : entry.data.language === 'tr'
-      ? 'Article in Turkish'
-      : 'Article in English';
+  return language === "tr"
+    ? entry.data.language === "tr"
+      ? "Türkçe makale"
+      : "İngilizce makale"
+    : entry.data.language === "tr"
+      ? "Article in Turkish"
+      : "Article in English";
 }

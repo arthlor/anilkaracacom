@@ -53,11 +53,11 @@ The most striking change observed in the election outcomes is the rise of the Re
 
 This shift is particularly noteworthy given Turkey's traditionally polarized political environment, where major cities play a pivotal role in setting political trends and narratives.
 
-import ElectionResultsBarChart from '../../components/mdx/charts/ElectionResultsBarChart.tsx';
-import PartyChangesChart from '../../components/mdx/charts/PartyChangesChart.tsx';
-import TurkeyElectionMap from '../../components/mdx/charts/TurkeyElectionMap.tsx';
-import ScrollytellingStory from '@/components/case-study/ScrollytellingStory.astro';
-import StoryStep from '@/components/case-study/StoryStep.astro';
+import ElectionResultsBarChart from "../../components/mdx/charts/ElectionResultsBarChart.tsx";
+import PartyChangesChart from "../../components/mdx/charts/PartyChangesChart.tsx";
+import TurkeyElectionMap from "../../components/mdx/charts/TurkeyElectionMap.tsx";
+import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
+import StoryStep from "@/components/case-study/StoryStep.astro";
 
 #### Last Updates Of Results
 
@@ -94,16 +94,16 @@ import StoryStep from '@/components/case-study/StoryStep.astro';
     </Fragment>
   </StoryStep>
 
-  <StoryStep
-    id="election-map"
-    label="Step 2"
-    title="Where the shift spread"
-    summary="The province map matters because it shows the opposition move extending beyond the usual urban strongholds."
-  >
-    <Fragment slot="visual">
-      <TurkeyElectionMap client:visible />
-    </Fragment>
-  </StoryStep>
+<StoryStep
+  id="election-map"
+  label="Step 2"
+  title="Where the shift spread"
+  summary="The province map matters because it shows the opposition move extending beyond the usual urban strongholds."
+>
+  <Fragment slot="visual">
+    <TurkeyElectionMap client:visible />
+  </Fragment>
+</StoryStep>
 
   <StoryStep
     id="election-change"

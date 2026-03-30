@@ -1,15 +1,17 @@
-import { glob } from 'astro/loaders';
-import { defineCollection, z } from 'astro:content';
+import { glob } from "astro/loaders";
+import { defineCollection, z } from "astro:content";
 
 const pillarSchema = z.enum([
-  'data-journalism-civic-tech',
-  'scientific-environmental-modeling',
-  'geopolitical-network-analysis',
-  'software-systems-architecture',
+  "data-journalism-civic-tech",
+  "scientific-environmental-modeling",
+  "geopolitical-network-analysis",
+  "software-systems-architecture",
 ]);
 
-const languageSchema = z.enum(['en', 'tr']).default('en');
-const trackSchema = z.enum(['data-journalism', 'developer', 'supporting']).default('supporting');
+const languageSchema = z.enum(["en", "tr"]).default("en");
+const trackSchema = z
+  .enum(["data-journalism", "developer", "supporting"])
+  .default("supporting");
 
 const metricSchema = z.object({
   label: z.string(),
@@ -18,7 +20,7 @@ const metricSchema = z.object({
 });
 
 const relatedContentSchema = z.object({
-  collection: z.enum(['articles', 'projects']),
+  collection: z.enum(["articles", "projects"]),
   slug: z.string(),
 });
 
@@ -64,7 +66,7 @@ const sharedCaseStudySchema = ({ image }: { image: any }) => ({
   seo: seoSchema,
   featuredVisual: z
     .object({
-      type: z.enum(['plotly', 'd3', 'map', 'app', 'story', 'video', 'graphic']),
+      type: z.enum(["plotly", "d3", "map", "app", "story", "video", "graphic"]),
       title: z.string().optional(),
       description: z.string().optional(),
       image: image().optional(),
@@ -73,38 +75,28 @@ const sharedCaseStudySchema = ({ image }: { image: any }) => ({
 });
 
 const articles = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/articles' }),
-  schema: ({ image }) => z.object({
-    ...sharedCaseStudySchema({ image }),
-    category: z.enum(['data-journalism', 'article', 'tutorial', 'news']).default('article'),
-    tags: z.array(z.string()).default([]),
-  }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/articles" }),
+  schema: ({ image }) =>
+    z.object({
+      ...sharedCaseStudySchema({ image }),
+      category: z
+        .enum(["data-journalism", "article", "tutorial", "news"])
+        .default("article"),
+      tags: z.array(z.string()).default([]),
+    }),
 });
 
 const projects = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/projects' }),
-  schema: ({ image }) => z.object({
-    ...sharedCaseStudySchema({ image }),
-    demoUrl: z.string().optional(),
-    liveUrl: z.string().optional(),
-    githubUrl: z.string().url().optional(),
-    order: z.number().default(0),
-    technologies: z.array(z.string()).optional(),
-  }),
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
+  schema: ({ image }) =>
+    z.object({
+      ...sharedCaseStudySchema({ image }),
+      demoUrl: z.string().optional(),
+      liveUrl: z.string().optional(),
+      githubUrl: z.string().url().optional(),
+      order: z.number().default(0),
+      technologies: z.array(z.string()).optional(),
+    }),
 });
 
-const videos = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/videos' }),
-  schema: ({ image }) => z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    platform: z.enum(['youtube', 'vimeo']).default('youtube'),
-    videoId: z.string(),
-    thumbnail: image().optional(),
-    duration: z.string().optional(),
-    tags: z.array(z.string()).default([]),
-  }),
-});
-
-export const collections = { articles, projects, videos };
+export const collections = { articles, projects };

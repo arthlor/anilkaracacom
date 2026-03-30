@@ -20,7 +20,7 @@ export function BentoGrid({ className, children }: BentoGridProps) {
     <div
       className={cn(
         "mx-auto grid max-w-7xl grid-cols-1 gap-4 md:auto-rows-[18rem] md:grid-cols-3",
-        className
+        className,
       )}
     >
       {children}
@@ -40,7 +40,7 @@ export function BentoCard({
     <div
       className={cn(
         "group/bento row-span-1 flex flex-col justify-between space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5",
-        className
+        className,
       )}
     >
       {header}

@@ -1,40 +1,46 @@
-import type { CollectionEntry } from 'astro:content';
-import { pillarConfig, siteConfig } from './site';
+import type { CollectionEntry } from "astro:content";
+import { pillarConfig, siteConfig } from "./site";
 
-type CaseStudyEntry = CollectionEntry<'articles'> | CollectionEntry<'projects'>;
+type CaseStudyEntry = CollectionEntry<"articles"> | CollectionEntry<"projects">;
 
 export function getCanonicalUrl(pathname: string) {
   return new URL(pathname, siteConfig.url).toString();
 }
 
-export function getOgImageUrl(collection: 'articles' | 'projects', slug: string) {
+export function getOgImageUrl(
+  collection: "articles" | "projects",
+  slug: string,
+) {
   return getCanonicalUrl(`/og/${collection}/${slug}.svg`);
 }
 
 export function getDefaultOgImageUrl() {
-  return getCanonicalUrl('/og/default.svg');
+  return getCanonicalUrl("/og/default.svg");
 }
 
 export function getEntrySeo(
-  collection: 'articles' | 'projects',
+  collection: "articles" | "projects",
   entry: CaseStudyEntry,
 ) {
   return {
     title: entry.data.seo?.title || entry.data.title,
-    description: entry.data.seo?.description || entry.data.summaryEn || entry.data.description,
+    description:
+      entry.data.seo?.description ||
+      entry.data.summaryEn ||
+      entry.data.description,
     image: getOgImageUrl(collection, entry.id),
   };
 }
 
 export function buildPersonSchema() {
   return {
-    '@type': 'Person',
+    "@type": "Person",
     name: siteConfig.personName,
     jobTitle: siteConfig.role,
     url: siteConfig.url,
     description: siteConfig.description,
     sameAs: [
-      `https://x.com/${siteConfig.twitterHandle.replace(/^@/, '')}`,
+      `https://x.com/${siteConfig.twitterHandle.replace(/^@/, "")}`,
       siteConfig.githubUrl,
       siteConfig.linkedinUrl,
       siteConfig.youtubeUrl,
@@ -43,41 +49,43 @@ export function buildPersonSchema() {
   };
 }
 
-export function buildArticleSchema(entry: CollectionEntry<'articles'>) {
+export function buildArticleSchema(entry: CollectionEntry<"articles">) {
   return {
-    '@type': 'Article',
+    "@type": "Article",
     headline: entry.data.title,
     description: entry.data.description,
     datePublished: entry.data.pubDate.toISOString(),
     dateModified: (entry.data.updatedDate || entry.data.pubDate).toISOString(),
     author: {
-      '@type': 'Person',
+      "@type": "Person",
       name: siteConfig.personName,
     },
-    image: getOgImageUrl('articles', entry.id),
+    image: getOgImageUrl("articles", entry.id),
     url: getCanonicalUrl(`/articles/${entry.id}`),
-    keywords: entry.data.tags?.join(', '),
+    keywords: entry.data.tags?.join(", "),
     inLanguage: entry.data.language,
     articleSection: pillarConfig[entry.data.pillar].title,
   };
 }
 
-export function buildProjectSchema(entry: CollectionEntry<'projects'>) {
+export function buildProjectSchema(entry: CollectionEntry<"projects">) {
   const hasSourceCode = Boolean(entry.data.githubUrl);
 
   return {
-    '@type': hasSourceCode ? ['CreativeWork', 'SoftwareSourceCode'] : 'CreativeWork',
+    "@type": hasSourceCode
+      ? ["CreativeWork", "SoftwareSourceCode"]
+      : "CreativeWork",
     name: entry.data.title,
     description: entry.data.description,
     datePublished: entry.data.pubDate.toISOString(),
     author: {
-      '@type': 'Person',
+      "@type": "Person",
       name: siteConfig.personName,
     },
     url: getCanonicalUrl(`/projects/${entry.id}`),
-    image: getOgImageUrl('projects', entry.id),
+    image: getOgImageUrl("projects", entry.id),
     about: pillarConfig[entry.data.pillar].title,
-    keywords: entry.data.techStack.join(', '),
+    keywords: entry.data.techStack.join(", "),
     codeRepository: entry.data.githubUrl,
     programmingLanguage: entry.data.techStack,
   };

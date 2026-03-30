@@ -1,60 +1,289 @@
 ---
 import { getCollection } from 'astro:content';
 
-import WorkCard from '../../components/WorkCard.astro';
+import Icon from '../../components/Icon.astro';
+import ProjectArchiveCard from '../../components/ProjectArchiveCard.astro';
+import TechBadge from '../../components/ui/TechBadge.astro';
+import { primaryProductProjectSlugs, projectShowcaseSections } from '../../data/portfolio';
 import {
+  getArticleHref,
   getEntryHref,
   getEntrySummary,
+  getEntryTags,
   getEntryTypeLabel,
-  groupEntriesByPillar,
+  sortEntriesByDateDesc,
   sortEntriesByFeatureAndDate,
 } from '../../lib/content';
 import MainLayout from '../../layouts/MainLayout.astro';
 
-const [articles, projects] = await Promise.all([
-  getCollection('articles', ({ data }) => data.published),
+const [projects, latestArticles] = await Promise.all([
   getCollection('projects', ({ data }) => data.published),
+  getCollection('articles', ({ data }) => data.published).then((entries) => sortEntriesByDateDesc(entries).slice(0, 3)),
 ]);
 
-const allEntries = sortEntriesByFeatureAndDate([...projects, ...articles]);
-const grouped = groupEntriesByPillar(allEntries).filter((section) => section.entries.length > 0);
+const featuredProductProjects = new Set<string>(primaryProductProjectSlugs);
+const featuredDocumentaryId = 'ekmegimizi-buyutuyoruz';
+const remainingProjects = sortEntriesByFeatureAndDate(
+  projects.filter((entry) => !featuredProductProjects.has(entry.id) && entry.id !== featuredDocumentaryId),
+);
+const featuredDocumentary = projects.find((entry) => entry.id === featuredDocumentaryId);
+
+const getYouTubeVideoId = (url?: string) => {
+  if (!url) return undefined;
+
+  try {
+    const parsed = new URL(url);
+    const shortId = parsed.hostname.includes('youtu.be') ? parsed.pathname.replace(/^\/+/, '') : undefined;
+    const watchId = parsed.searchParams.get('v') ?? undefined;
+    const embedId = parsed.pathname.startsWith('/embed/') ? parsed.pathname.split('/')[2] : undefined;
+    return shortId || watchId || embedId;
+  } catch {
+    return undefined;
+  }
+};
+
+const documentaryBadges = ['9 min 23 sec', 'Written by me', 'Shot by me', 'Edited by me'];
+const documentaryHighlights = [
+  {
+    label: 'What the film captures',
+    text:
+      'The documentary follows process and impact together: how the team works, which neighborhoods it reaches first, and what those interventions mean in daily life.',
+  },
+];
+const featuredDocumentaryVideoId = getYouTubeVideoId(featuredDocumentary?.data.demoUrl ?? featuredDocumentary?.data.liveUrl);
+const featuredDocumentaryHref = featuredDocumentary ? getEntryHref(featuredDocumentary) : undefined;
+const featuredDocumentaryVideoUrl = featuredDocumentary?.data.demoUrl ?? featuredDocumentary?.data.liveUrl;
+const sectionTitleClass =
+  'mt-3 max-w-2xl text-[clamp(2rem,3vw,2.55rem)] font-display font-bold leading-[1.08] text-foreground';
+const sectionDescriptionClass = 'mt-3 max-w-2xl text-[0.98rem] leading-8 text-muted-foreground';
 ---
 
 <MainLayout
   title="Projects"
-  description="Unified work library spanning shipped apps, investigations, and interactive case studies."
+  description="Project archive organized into mobile apps, websites, and interactive case studies."
 >
   <section class="pt-28 pb-14">
     <div class="container-standard">
       <div class="page-frame p-6 md:p-8">
-        <span class="page-kicker">All work</span>
+        <span class="page-kicker">Project archive</span>
         <h1 class="mt-4 max-w-4xl text-5xl font-display font-bold tracking-tight text-foreground sm:text-6xl">
-          The main archive for apps, reporting, investigations, and case studies.
+          Shipped mobile apps, live websites, and interactive project work in one archive.
         </h1>
-        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          This is the one place to review the full range of work. Everything is grouped by pillar so the connections are
-          visible without turning the rest of the site into duplicate archive pages.
+        <p class="mt-5 max-w-2xl text-base leading-8 text-muted-foreground sm:text-[1.02rem]">
+          One archive for shipped apps, branded websites, documentary work, and reporting-led digital projects.
         </p>
       </div>
     </div>
   </section>
 
-  <section class="pb-24 pt-8">
+  <section class="pb-20 pt-6">
     <div class="container-standard">
-      <div class="space-y-16">
-        {grouped.map((section) => (
+      <div class="space-y-14">
+        {projectShowcaseSections.map((section) => (
           <section>
-            <div class="mb-8">
+            <div class="mb-6">
               <div class="page-section-head mb-0 max-w-3xl">
                 <span class="page-kicker">{section.shortTitle}</span>
-                <h2 class="mt-3 text-3xl font-display font-bold text-foreground">{section.title}</h2>
-                <p class="mt-3 text-base leading-relaxed text-muted-foreground">{section.description}</p>
+                <h2 class={sectionTitleClass}>{section.title}</h2>
+                <p class={sectionDescriptionClass}>{section.description}</p>
               </div>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-3">
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {section.entries.map((entry) => (
-                <WorkCard
+                <ProjectArchiveCard
+                  title={entry.title}
+                  eyebrow={entry.eyebrow}
+                  meta={entry.meta}
+                  description={entry.description}
+                  href={entry.href}
+                  external={entry.external}
+                  role={entry.role}
+                  impact={entry.impact}
+                  tags={entry.tags}
+                  image={entry.image}
+                  ctaLabel={entry.ctaLabel}
+                />
+              ))}
+            </div>
+          </section>
+        ))}
+
+        {featuredDocumentary && featuredDocumentaryVideoId && (
+          <section class="projects-documentary">
+            <div class="mb-6">
+              <div class="page-section-head mb-0 max-w-3xl">
+                <span class="page-kicker">Documentary</span>
+                <h2 class={sectionTitleClass}>
+                  Solo documentary work that extends the reporting side of the portfolio.
+                </h2>
+                <p class={sectionDescriptionClass}>
+                  A field documentary about İzmir&apos;s Acil Çözüm Ekibi and how municipal service delivery becomes visible at
+                  street level.
+                </p>
+              </div>
+            </div>
+
+            <div class="projects-documentary__body">
+              <div class="projects-documentary__player-shell">
+                <div class="projects-documentary__player-meta">
+                  <div class="projects-documentary__player-labels">
+                    <span>Field documentary</span>
+                    <span>İzmirTube / 2021</span>
+                  </div>
+
+                  {featuredDocumentaryVideoUrl && (
+                    <a
+                      href={featuredDocumentaryVideoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="projects-documentary__player-link"
+                    >
+                      Watch on YouTube
+                      <Icon name="external-link" size={14} />
+                    </a>
+                  )}
+                </div>
+
+                <div class="projects-documentary__player-frame">
+                  <div class="projects-documentary__player-dots" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+
+                  <div class="projects-documentary__player-embed">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${featuredDocumentaryVideoId}?rel=0&modestbranding=1`}
+                      title={featuredDocumentary.data.title}
+                      class="h-full w-full"
+                      loading="lazy"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+
+                <p class="projects-documentary__player-caption">
+                  A municipal field documentary centered on visible neighborhood change, urgent service delivery, and
+                  civic storytelling told at street level.
+                </p>
+              </div>
+
+              <div class="projects-documentary__content">
+                <div class="projects-documentary__summary-card">
+                  <div class="projects-documentary__summary-header">
+                    <div class="page-icon-tile h-14 w-14 shrink-0">
+                      <Icon name="video" size={24} />
+                    </div>
+                    <span class="page-kicker">Written, shot, and edited by me</span>
+                  </div>
+                  <h2 class="mt-1 text-[clamp(2rem,3vw,2.35rem)] font-display font-bold leading-[1.06] text-foreground">
+                    {featuredDocumentary.data.title}
+                  </h2>
+                  <p class="text-[0.98rem] leading-8 text-muted-foreground">{featuredDocumentary.data.description}</p>
+
+                  <div class="flex flex-wrap gap-2">
+                    {documentaryBadges.map((badge) => (
+                      <TechBadge label={badge} />
+                    ))}
+                  </div>
+
+                  <div class="projects-documentary__summary-points">
+                    {documentaryHighlights.map((item) => (
+                      <div class="projects-documentary__summary-point">
+                        <p class="projects-documentary__summary-point-label">{item.label}</p>
+                        <p>{item.text}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div class="projects-documentary__actions">
+                    {featuredDocumentaryHref && (
+                      <a href={featuredDocumentaryHref} class="page-inline-link">
+                        Open case study
+                        <Icon name="arrow-right" size={16} />
+                      </a>
+                    )}
+
+                    {featuredDocumentaryVideoUrl && (
+                      <a
+                        href={featuredDocumentaryVideoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="page-inline-link"
+                      >
+                        Watch on YouTube
+                        <Icon name="external-link" size={16} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {latestArticles.length > 0 && (
+          <section>
+            <div class="mb-6">
+              <div class="page-section-head mb-0 max-w-3xl">
+                <a href="/articles" class="page-kicker transition-colors hover:text-foreground">
+                  Articles
+                </a>
+                <h2 class={sectionTitleClass}>
+                  The latest reporting, investigations, and analysis from the writing archive.
+                </h2>
+                <p class={sectionDescriptionClass}>
+                  Three recent pieces from the full articles showcase, spanning civic reporting, systems analysis, and
+                  political coverage.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {latestArticles.map((entry) => (
+                <ProjectArchiveCard
+                  title={entry.data.title}
+                  eyebrow={getEntryTypeLabel(entry)}
+                  meta={entry.data.pubDate.toLocaleDateString(entry.data.language === 'tr' ? 'tr-TR' : 'en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })}
+                  description={getEntrySummary(entry)}
+                  href={getArticleHref(entry)}
+                  external={false}
+                  role={entry.data.role}
+                  impact={entry.data.impact}
+                  tags={getEntryTags(entry)}
+                  image={entry.data.heroImage}
+                  ctaLabel="Read article"
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {remainingProjects.length > 0 && (
+          <section>
+            <div class="mb-6">
+              <div class="page-section-head mb-0 max-w-3xl">
+                <span class="page-kicker">Interactive case studies</span>
+                <h2 class={sectionTitleClass}>
+                  Reporting-driven projects and investigative builds.
+                </h2>
+                <p class={sectionDescriptionClass}>
+                  Reporting builds, data investigations, and custom storytelling formats collected as standalone case
+                  studies.
+                </p>
+              </div>
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {remainingProjects.map((entry) => (
+                <ProjectArchiveCard
                   title={entry.data.title}
                   eyebrow={getEntryTypeLabel(entry)}
                   meta={entry.data.pubDate.toLocaleDateString(entry.data.language === 'tr' ? 'tr-TR' : 'en-US', {
@@ -65,15 +294,222 @@ const grouped = groupEntriesByPillar(allEntries).filter((section) => section.ent
                   description={getEntrySummary(entry)}
                   href={getEntryHref(entry)}
                   external={false}
-                  tags={entry.collection === 'articles' ? entry.data.tags.slice(0, 3) : entry.data.techStack.slice(0, 4)}
+                  tags={entry.data.techStack}
                   image={entry.data.heroImage}
-                  ctaLabel={entry.collection === 'projects' ? 'Open case study' : 'Read article'}
+                  ctaLabel="Open case study"
                 />
               ))}
             </div>
           </section>
-        ))}
+        )}
       </div>
     </div>
   </section>
 </MainLayout>
+
+<style>
+  .projects-documentary {
+    position: relative;
+  }
+
+  .projects-documentary__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.24fr) minmax(320px, 0.76fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  .projects-documentary__player-shell {
+    position: relative;
+    display: grid;
+    gap: 1rem;
+    padding: clamp(1rem, 1.8vw, 1.3rem);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 32px;
+    background:
+      radial-gradient(circle at top left, rgba(122, 242, 152, 0.12), transparent 34%),
+      radial-gradient(circle at bottom right, rgba(255, 214, 133, 0.08), transparent 28%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.018));
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.22);
+    overflow: hidden;
+  }
+
+  .projects-documentary__player-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .projects-documentary__player-labels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+  }
+
+  .projects-documentary__player-labels span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.1rem;
+    padding: 0 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.68);
+  }
+
+  .projects-documentary__player-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #7af298;
+    font-size: 0.84rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 180ms ease;
+  }
+
+  .projects-documentary__player-link:hover {
+    color: #9af7b1;
+  }
+
+  .projects-documentary__player-frame {
+    position: relative;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.28);
+  }
+
+  .projects-documentary__player-dots {
+    display: inline-flex;
+    gap: 0.45rem;
+  }
+
+  .projects-documentary__player-dots span {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .projects-documentary__player-dots span:first-child {
+    background: rgba(255, 107, 107, 0.82);
+  }
+
+  .projects-documentary__player-dots span:nth-child(2) {
+    background: rgba(255, 214, 102, 0.82);
+  }
+
+  .projects-documentary__player-dots span:last-child {
+    background: rgba(122, 242, 152, 0.82);
+  }
+
+  .projects-documentary__player-embed {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 22px;
+    background: #050505;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  .projects-documentary__player-caption {
+    margin: 0;
+    max-width: 52rem;
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .projects-documentary__content {
+    display: block;
+  }
+
+  .projects-documentary__summary-card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+      rgba(255, 255, 255, 0.02);
+  }
+
+  .projects-documentary__summary-card {
+    display: grid;
+    gap: 1.1rem;
+    padding: 1.65rem;
+  }
+
+  .projects-documentary__summary-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .projects-documentary__summary-points {
+    display: grid;
+    gap: 0.85rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .projects-documentary__summary-point-label {
+    margin: 0 0 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #7af298;
+  }
+
+  .projects-documentary__summary-point p:last-child,
+  .projects-documentary__summary-point p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.72);
+  }
+
+  .projects-documentary__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.25rem;
+    align-items: center;
+    padding-top: 0.25rem;
+  }
+
+  @media (max-width: 1080px) {
+    .projects-documentary__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .projects-documentary__player-shell,
+    .projects-documentary__summary-card {
+      padding: 1rem;
+      border-radius: 24px;
+    }
+
+    .projects-documentary__player-frame {
+      padding: 0.8rem;
+      border-radius: 22px;
+    }
+
+    .projects-documentary__player-embed {
+      border-radius: 16px;
+    }
+
+    .projects-documentary__summary-header .page-kicker {
+      width: 100%;
+    }
+  }
+</style>

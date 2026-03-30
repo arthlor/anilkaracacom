@@ -52,12 +52,12 @@ export function InfiniteMovingCards({
       if (direction === "left") {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "forwards"
+          "forwards",
         );
       } else {
         containerRef.current.style.setProperty(
           "--animation-direction",
-          "reverse"
+          "reverse",
         );
       }
     }
@@ -80,7 +80,7 @@ export function InfiniteMovingCards({
       ref={containerRef}
       className={cn(
         "scroller relative z-20 max-w-7xl overflow-hidden [mask-image:linear-gradient(to_right,transparent,white_20%,white_80%,transparent)]",
-        className
+        className,
       )}
     >
       <ul
@@ -88,7 +88,7 @@ export function InfiniteMovingCards({
         className={cn(
           "flex w-max min-w-full shrink-0 flex-nowrap gap-8 py-4",
           start && "animate-scroll",
-          pauseOnHover && "hover:[animation-play-state:paused]"
+          pauseOnHover && "hover:[animation-play-state:paused]",
         )}
       >
         {items.map((item, idx) => (

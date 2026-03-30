@@ -5,6 +5,7 @@ description: How to deploy the portfolio website
 # Deploy Workflow
 
 ## Prerequisites
+
 - Code pushed to GitHub
 - Netlify account connected
 
@@ -19,6 +20,7 @@ git push origin main
 ```
 
 Netlify will:
+
 1. Detect the push
 2. Build the Astro site
 3. Deploy to production
@@ -27,15 +29,19 @@ Netlify will:
 ## Manual Deployment
 
 // turbo
+
 1. **Build locally**
+
    ```bash
    npm run build
    ```
 
 2. **Preview build**
+
    ```bash
    npm run preview
    ```
+
    Visit `http://localhost:4321` to verify
 
 3. **Deploy to Netlify**
@@ -47,10 +53,10 @@ Netlify will:
 
 Set these in your deployment platform:
 
-| Variable | Description |
-|----------|-------------|
-| `SITE_URL` | Production URL (https://anilkaraca.com) |
-| `ANALYTICS_ID` | Plausible/Umami analytics ID |
+| Variable       | Description                             |
+| -------------- | --------------------------------------- |
+| `SITE_URL`     | Production URL (https://anilkaraca.com) |
+| `ANALYTICS_ID` | Plausible/Umami analytics ID            |
 
 ## Post-Deployment Checklist
 

@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-type TraceModule = 'bar' | 'scatter';
+type TraceModule = "bar" | "scatter";
 
 type PlotlyModule = {
   newPlot: (
@@ -38,11 +38,11 @@ async function loadPlotly() {
   if (!plotlyPromise) {
     plotlyPromise = new Promise((resolve, reject) => {
       const timeout = setTimeout(() => {
-        reject(new Error('Plotly load timeout'));
+        reject(new Error("Plotly load timeout"));
       }, PLOTLY_TIMEOUT);
 
       // @ts-ignore - minified plotly.js doesn't have local types
-      import('plotly.js/dist/plotly-basic.min.js')
+      import("plotly.js/dist/plotly-basic.min.js")
         .then((module) => {
           clearTimeout(timeout);
           resolve((module.default ?? module) as PlotlyModule);
@@ -63,7 +63,7 @@ export default function PlotlyChart({
   config,
   traceModules,
   minHeight = 420,
-  loadingLabel = 'Loading chart…',
+  loadingLabel = "Loading chart…",
   className,
 }: PlotlyChartProps) {
   const hostRef = useRef<HTMLDivElement>(null);
@@ -84,7 +84,7 @@ export default function PlotlyChart({
           observer.disconnect();
         }
       },
-      { rootMargin: '200px 0px' },
+      { rootMargin: "200px 0px" },
     );
 
     observer.observe(host);
@@ -118,8 +118,8 @@ export default function PlotlyChart({
         }
       } catch (err) {
         if (isActive) {
-          setError(err instanceof Error ? err.message : 'Failed to load chart');
-          console.error('PlotlyChart error:', err);
+          setError(err instanceof Error ? err.message : "Failed to load chart");
+          console.error("PlotlyChart error:", err);
         }
       }
     })();
@@ -152,11 +152,11 @@ export default function PlotlyChart({
   }, []);
 
   return (
-    <div ref={hostRef} className={`relative ${className ?? ''}`.trim()}>
+    <div ref={hostRef} className={`relative ${className ?? ""}`.trim()}>
       <div
         ref={plotRef}
         style={{ minHeight }}
-        className={`w-full ${error ? 'hidden' : ''}`}
+        className={`w-full ${error ? "hidden" : ""}`}
       />
       {!isReady && !error && (
         <div
@@ -175,11 +175,16 @@ export default function PlotlyChart({
           style={{ minHeight }}
         >
           <div className="max-w-xs">
-            <p className="font-semibold text-red-300">Analysis visual disrupted</p>
-            <p className="mt-2 text-red-400/80">
-              The interactive data layer failed to initialize. Please refresh or try again.
+            <p className="font-semibold text-red-300">
+              Analysis visual disrupted
             </p>
-            <p className="mt-4 text-xs font-mono text-red-500/50 uppercase tracking-widest">{error}</p>
+            <p className="mt-2 text-red-400/80">
+              The interactive data layer failed to initialize. Please refresh or
+              try again.
+            </p>
+            <p className="mt-4 text-xs font-mono text-red-500/50 uppercase tracking-widest">
+              {error}
+            </p>
           </div>
         </div>
       )}
