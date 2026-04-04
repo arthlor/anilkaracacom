@@ -1,10 +1,6 @@
-import { useMemo, useState, useRef, useEffect } from "react";
+import { useMemo, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  TrendUp as TrendUpIcon,
-  ArrowsOut as ArrowsOutIcon,
-  ArrowsIn as ArrowsInIcon,
-} from "@phosphor-icons/react";
+import { TrendUp as TrendUpIcon } from "@phosphor-icons/react";
 import rawData from "@/data/yearly_accident_frequency_streets.json";
 import clsx from "clsx";
 
@@ -30,42 +26,7 @@ interface Point {
 export default function StreetFrequencyLineChart() {
   const [hoveredStreet, setHoveredStreet] = useState<string | null>(null);
   const [activeYearIndex, setActiveYearIndex] = useState<number | null>(null);
-
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () =>
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
-
-  const toggleFullscreen = async () => {
-    if (!containerRef.current) return;
-    const element = containerRef.current as any;
-
-    if (
-      !document.fullscreenElement &&
-      !(document as any).webkitFullscreenElement
-    ) {
-      if (element.requestFullscreen) {
-        await element
-          .requestFullscreen()
-          .catch((err: any) => console.error(err));
-      } else if (element.webkitRequestFullscreen) {
-        await element.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen().catch((err: any) => console.error(err));
-      } else if ((document as any).webkitExitFullscreen) {
-        await (document as any).webkitExitFullscreen();
-      }
-    }
-  };
 
   const { series, years, minYear, maxYear, maxY } = useMemo(() => {
     let maxYVal = 0;
@@ -146,32 +107,19 @@ export default function StreetFrequencyLineChart() {
   return (
     <div
       ref={containerRef}
-      className={`w-full bg-white dark:bg-slate-900 rounded-2xl p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10 ${isFullscreen ? "overflow-auto flex flex-col justify-center" : ""}`}
+      className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10"
     >
-      {/* Fullscreen Toggle Button */}
-      <button
-        onClick={toggleFullscreen}
-        className="absolute top-4 right-4 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors z-50"
-        title="Tam Ekranda Göster"
-      >
-        {isFullscreen ? (
-          <ArrowsInIcon size={20} />
-        ) : (
-          <ArrowsOutIcon size={20} />
-        )}
-      </button>
-
-      <div className="mb-8 pr-10">
-        <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
+      <div className="mb-6 sm:mb-8 pr-2">
+        <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
           <TrendUpIcon weight="duotone" className="text-accent-500" />
-          Yıllık Kaza Sıklığı - En Riskli Caddeler
+          Yıllık Kaza Sıklığı
         </h3>
-        <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
           Hangi arterlerde risk artıyor veya azalıyor? (2021-2024)
         </p>
       </div>
 
-      <div className="relative w-full aspect-[2/1] mt-6 select-none bg-slate-50/50 dark:bg-slate-800/10 rounded-xl overflow-hidden">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[2/1] mt-6 select-none bg-slate-50/50 dark:bg-slate-800/10 rounded-xl overflow-hidden">
         <svg
           viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
           className="w-full h-full overflow-visible"
@@ -313,7 +261,7 @@ export default function StreetFrequencyLineChart() {
                 {points.map((p: Point, pIdx: number) => {
                   const showPoint = isHovered || activeYearIndex === pIdx;
                   return (
-                    <motion.circle
+                    <circle
                       key={pIdx}
                       cx={mapX(p.x)}
                       cy={mapY(p.y)}
@@ -321,14 +269,7 @@ export default function StreetFrequencyLineChart() {
                       fill={s.color}
                       stroke="white"
                       strokeWidth="2"
-                      className="pointer-events-none"
-                      initial={false}
-                      animate={{ r: showPoint ? 5 : 0 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 20,
-                      }}
+                      className="pointer-events-none transition-all duration-200"
                     />
                   );
                 })}
@@ -361,9 +302,9 @@ export default function StreetFrequencyLineChart() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md rounded-xl shadow-lg ring-1 ring-slate-200 dark:ring-slate-700 p-3 min-w-[200px] z-50 pointer-events-none"
+              className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-lg shadow-xl ring-1 ring-slate-200 dark:ring-slate-700 p-2.5 min-w-[150px] z-50 pointer-events-none"
             >
-              <div className="text-center font-bold text-slate-800 dark:text-slate-100 mb-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+              <div className="text-center text-xs font-bold text-slate-800 dark:text-slate-100 mb-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 uppercase tracking-wider">
                 {years[activeYearIndex]} Verileri
               </div>
               <div className="flex flex-col gap-1 max-h-[150px] overflow-y-auto no-scrollbar">
@@ -374,7 +315,7 @@ export default function StreetFrequencyLineChart() {
                   .map((s) => (
                     <div
                       key={s.name}
-                      className="flex justify-between items-center text-xs gap-4"
+                      className="flex justify-between items-center text-[10px] sm:text-[11px] gap-3"
                     >
                       <div className="flex items-center gap-1.5 flex-1 truncate">
                         <div

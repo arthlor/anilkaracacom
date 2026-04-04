@@ -38,7 +38,7 @@ relatedContent:
     slug: "turkiye-dogum-istatistikleri"
 ---
 
-import LegacyIframeFallback from "../../components/case-study/LegacyIframeFallback.astro";
+import AgeDistributionBubbleChart from "../../components/mdx/charts/AgeDistributionBubbleChart.tsx";
 
 Yeni çalışmamda İzmir'in yaş istatistiklerini biraz incelemek istedim.
 
@@ -50,11 +50,7 @@ Grafik, belirli yaş grupları ile İzmir'in ilçelerini kıyaslıyor. Her bir k
 
 _(Grafiği daha rahat bir şekilde deneyimlemek için mobil cihazlarınızı yatay konuma getirmenizi ya da bilgisayar ekranından incelemenizi tavsiye ederim.)_
 
-<LegacyIframeFallback
-  src="/uploads/2024/03/interactive_chart.html"
-  title="İzmir Yaş Analizi Bubble Chart"
-  height="600px"
-/>
+<AgeDistributionBubbleChart client:load />
 
 Peki bu grafik bize ne anlatıyor, biraz yorumlayalım...
 

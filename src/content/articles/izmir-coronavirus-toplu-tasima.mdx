@@ -41,8 +41,8 @@ relatedContent:
     slug: "attack-on-ozgur-ozel"
 ---
 
-import UlasimRecoveryChart from "../../components/UlasimRecoveryChart";
-import UlasimDemographicsChart from "../../components/UlasimDemographicsChart";
+import TransportRecoveryAreaChart from "../../components/mdx/charts/TransportRecoveryAreaChart";
+import TransportDemographicsStackedBarChart from "../../components/mdx/charts/TransportDemographicsStackedBarChart";
 
 The reverberations of the COVID-19 pandemic reshaped urban mobility worldwide, and İzmir was no exception. As lockdowns were enforced and remote work became the norm, the bustling arteries of the city—its buses, ferries, trains, and trams—suddenly fell quiet.
 
@@ -54,7 +54,7 @@ In the early months of 2021, the shadow of the pandemic was still heavy. Total m
 
 The interactive chart below tracks the monthly ridership across different transit modes. Notice the distinct seasonal dips—common in İzmir during the hot summer months as schools close and residents leave for coastal towns—and the sharp upward trend heading into 2023 and 2024.
 
-<UlasimRecoveryChart client:visible />
+<TransportRecoveryAreaChart client:visible />
 
 _Tip: You can interact with the chart by hovering over data points, or clicking on the legend to isolate specific transport types._
 
@@ -66,7 +66,7 @@ The recovery wasn't uniform across all demographics. When we break down the ride
 
 Full-fare paying adults (often white-collar workers) were among the slowest to return, likely due to the enduring shift towards hybrid and remote working models. Conversely, the return of students in late 2021 and early 2022 created massive spikes in overall transit use.
 
-<UlasimDemographicsChart client:visible />
+<TransportDemographicsStackedBarChart client:visible />
 
 This demographic breakdown highlights a crucial reality of public infrastructure: it relies heavily on the youth and the student population. The massive upward waves representing student fares perfectly align with the academic calendar.
 

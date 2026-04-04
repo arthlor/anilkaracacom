@@ -39,7 +39,7 @@ export function BentoCard({
   return (
     <div
       className={cn(
-        "group/bento row-span-1 flex flex-col justify-between space-y-4 rounded-xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5",
+        "group/bento row-span-1 flex flex-col justify-between space-y-4 rounded-xl bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/5",
         className,
       )}
     >

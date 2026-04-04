@@ -1,8 +1,4 @@
-import { useRef, useState, useEffect, useMemo } from "react";
-import {
-  ArrowsOut as ArrowsOutIcon,
-  ArrowsIn as ArrowsInIcon,
-} from "@phosphor-icons/react";
+import { useRef, useState, useMemo } from "react";
 import { geoIdentity, geoPath } from "d3-geo";
 import { motion } from "framer-motion";
 import turkeyGeoJson from "../../../data/turkey_optimized.json";
@@ -24,29 +20,10 @@ type GeoFeature = {
 
 export default function TurkeyElectionMap() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [hoveredProvince, setHoveredProvince] = useState<GeoFeature | null>(
     null,
   );
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleFullscreenChange = () =>
-      setIsFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () =>
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current
-        ?.requestFullscreen()
-        .catch((err) => console.error(err));
-    } else {
-      document.exitFullscreen();
-    }
-  };
 
   const partyColors: Record<string, string> = {
     CHP: "#E30A17",
@@ -104,11 +81,7 @@ export default function TurkeyElectionMap() {
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className={`relative w-full rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] flex flex-col transition-all duration-300 ${
-        isFullscreen
-          ? "h-screen p-8"
-          : "h-auto min-h-[550px] p-4 sm:p-6 mb-12 mt-4"
-      }`}
+      className="relative w-full rounded-2xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 flex flex-col transition-all duration-300 h-auto min-h-[400px] sm:min-h-[550px] p-4 sm:p-6 my-10 font-sans"
     >
       <div className="flex justify-between items-start mb-2 shrink-0 z-10">
         <div className="pointer-events-none">
@@ -119,16 +92,6 @@ export default function TurkeyElectionMap() {
             Hover over a province to see which party took control
           </p>
         </div>
-        <button
-          onClick={toggleFullscreen}
-          className="p-2 sm:p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 z-20"
-        >
-          {isFullscreen ? (
-            <ArrowsInIcon size={20} weight="bold" />
-          ) : (
-            <ArrowsOutIcon size={20} weight="bold" />
-          )}
-        </button>
       </div>
 
       <div className="flex-1 w-full relative flex items-center justify-center p-4">
@@ -166,18 +129,18 @@ export default function TurkeyElectionMap() {
         {/* Custom Tooltip */}
         {hoveredProvince && (
           <div
-            className="absolute pointer-events-none z-50 bg-slate-900 dark:bg-white text-white dark:text-slate-900 p-4 rounded-xl shadow-2xl border border-white/20 dark:border-slate-300 min-w-[220px] transform -translate-x-1/2 -translate-y-full mb-4 transition-all duration-75"
+            className="absolute pointer-events-none z-50 bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 p-2.5 rounded-lg shadow-xl border border-white/10 dark:border-slate-200 min-w-[150px] transform -translate-x-1/2 -translate-y-full mb-4 transition-all duration-75"
             style={{
               left: mousePos.x,
               top: mousePos.y,
             }}
           >
-            <div className="flex justify-between items-start mb-3 gap-4">
-              <h4 className="font-black text-xl leading-tight text-white dark:text-slate-900">
+            <div className="flex justify-between items-center mb-1.5 gap-3">
+              <h4 className="font-bold text-sm leading-none text-white dark:text-slate-900">
                 {hoveredProvince.id}
               </h4>
               <div
-                className="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider bg-white/10 dark:bg-slate-100 shadow-sm"
+                className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-white/10 dark:bg-slate-100 shadow-sm"
                 style={{ color: partyColors[hoveredProvince.status] }}
               >
                 {hoveredProvince.status}
@@ -185,31 +148,31 @@ export default function TurkeyElectionMap() {
             </div>
 
             {hoveredProvince.details.candidate && (
-              <div className="mb-4">
-                <p className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1 font-bold">
+              <div className="mb-2">
+                <p className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
                   Selected Candidate
                 </p>
-                <p className="font-bold text-base leading-tight text-white dark:text-slate-900">
+                <p className="font-bold text-xs leading-tight text-white dark:text-slate-900">
                   {hoveredProvince.details.candidate}
                 </p>
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4 border-t border-white/10 dark:border-slate-100 pt-3 mt-1">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 border-t border-white/10 dark:border-slate-100 pt-2 mt-0.5">
               <div>
-                <p className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1 font-bold">
+                <p className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
                   Votes
                 </p>
-                <p className="font-black text-lg text-white dark:text-slate-900">
+                <p className="font-black text-sm text-white dark:text-slate-900">
                   %{hoveredProvince.details.percentage}
                 </p>
               </div>
               {hoveredProvince.details.change && (
                 <div>
-                  <p className="text-[10px] uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1 font-bold">
+                  <p className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
                     Status
                   </p>
-                  <p className="text-xs font-bold leading-tight text-white dark:text-slate-900">
+                  <p className="text-[10px] font-bold leading-tight text-white dark:text-slate-900">
                     {hoveredProvince.details.change}
                   </p>
                 </div>

@@ -1,11 +1,6 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Clock as ClockIcon,
-  NavigationArrow as NavigationArrowIcon,
-  ArrowsOut as ArrowsOutIcon,
-  ArrowsIn as ArrowsInIcon,
-} from "@phosphor-icons/react";
+import { Clock as ClockIcon, NavigationArrow as NavigationArrowIcon } from "@phosphor-icons/react";
 import rawData from "@/data/incident_volume_heatmap.json";
 
 // Cividis-like palette translated to hex for gradients (Dark Blue -> Teal -> Yellow)
@@ -46,42 +41,7 @@ export default function IncidentHeatmap() {
     value: number;
     index: number;
   } | null>(null);
-
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () =>
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
-
-  const toggleFullscreen = async () => {
-    if (!containerRef.current) return;
-    const element = containerRef.current as any;
-
-    if (
-      !document.fullscreenElement &&
-      !(document as any).webkitFullscreenElement
-    ) {
-      if (element.requestFullscreen) {
-        await element
-          .requestFullscreen()
-          .catch((err: any) => console.error(err));
-      } else if (element.webkitRequestFullscreen) {
-        await element.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen().catch((err: any) => console.error(err));
-      } else if ((document as any).webkitExitFullscreen) {
-        await (document as any).webkitExitFullscreen();
-      }
-    }
-  };
 
   // Group data by years, then structure into a grid
   const { dataByYear, maxVal } = useMemo(() => {
@@ -134,28 +94,15 @@ export default function IncidentHeatmap() {
   return (
     <div
       ref={containerRef}
-      className={`w-full bg-white dark:bg-slate-900 rounded-2xl p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10 ${isFullscreen ? "overflow-auto flex flex-col justify-center" : "overflow-hidden"}`}
+      className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10 overflow-hidden"
     >
-      {/* Fullscreen Toggle Button */}
-      <button
-        onClick={toggleFullscreen}
-        className="absolute top-4 right-4 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors z-50"
-        title="Tam Ekranda Göster"
-      >
-        {isFullscreen ? (
-          <ArrowsInIcon size={20} />
-        ) : (
-          <ArrowsOutIcon size={20} />
-        )}
-      </button>
-
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pr-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
         <div>
-          <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
+          <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
             <ClockIcon weight="duotone" className="text-accent-500" />
             Gün ve Saat Bazında Olay Yoğunluğu
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
             Hangi saatlerde kazalar daha yoğun?
           </p>
         </div>
@@ -268,27 +215,25 @@ export default function IncidentHeatmap() {
         <div className="min-h-[40px] flex items-center justify-end w-full sm:w-auto">
           <AnimatePresence mode="popLayout">
             {hoveredCell ? (
-              <motion.div
-                key="readout"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 py-1.5 px-4 rounded-full border border-slate-100 dark:border-slate-700"
-              >
-                <div className="flex items-center gap-1.5 text-accent-600 dark:text-accent-400 font-semibold text-sm">
-                  {hoveredCell.day}
-                  <span className="text-slate-300 dark:text-slate-600 mx-1">
-                    •
-                  </span>
-                  <span className="font-mono">
-                    {hoveredCell.hour.toString().padStart(2, "0")}:00
-                  </span>
-                </div>
-                <div className="h-4 w-[1px] bg-slate-200 dark:bg-slate-700" />
-                <div className="text-slate-700 dark:text-slate-200 font-bold text-sm">
-                  {hoveredCell.value} Olay
-                </div>
-              </motion.div>
+                <motion.div
+                  key="readout"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="flex items-center gap-2.5 bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 py-1 px-3 rounded-lg shadow-xl border border-white/10 dark:border-slate-200"
+                >
+                  <div className="flex items-center gap-1.5 text-accent-400 dark:text-accent-600 font-bold text-xs">
+                    {hoveredCell.day}
+                    <span className="text-white/20 dark:text-slate-300 mx-0.5">•</span>
+                    <span className="font-mono">
+                      {hoveredCell.hour.toString().padStart(2, "0")}:00
+                    </span>
+                  </div>
+                  <div className="h-3 w-[1px] bg-white/10 dark:bg-slate-200" />
+                  <div className="font-black text-xs">
+                    {hoveredCell.value} Olay
+                  </div>
+                </motion.div>
             ) : (
               <motion.div
                 key="hint"
@@ -304,6 +249,7 @@ export default function IncidentHeatmap() {
           </AnimatePresence>
         </div>
       </div>
+
     </div>
   );
 }

@@ -1,10 +1,6 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  MapTrifold as MapTrifoldIcon,
-  ArrowsOut as ArrowsOutIcon,
-  ArrowsIn as ArrowsInIcon,
-} from "@phosphor-icons/react";
+import { MapTrifold as MapTrifoldIcon } from "@phosphor-icons/react";
 import rawData from "@/data/accident_types_yearly.json";
 
 // Curated aesthetic category colors replacing Plotly pastel defaults
@@ -34,42 +30,7 @@ interface DataSeries {
 export default function AccidentTypesBarChart() {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
   const [activeYear, setActiveYear] = useState<number | null>(null);
-
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () =>
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, []);
-
-  const toggleFullscreen = async () => {
-    if (!containerRef.current) return;
-    const element = containerRef.current as any;
-
-    if (
-      !document.fullscreenElement &&
-      !(document as any).webkitFullscreenElement
-    ) {
-      if (element.requestFullscreen) {
-        await element
-          .requestFullscreen()
-          .catch((err: any) => console.error(err));
-      } else if (element.webkitRequestFullscreen) {
-        await element.webkitRequestFullscreen();
-      }
-    } else {
-      if (document.exitFullscreen) {
-        await document.exitFullscreen().catch((err: any) => console.error(err));
-      } else if ((document as any).webkitExitFullscreen) {
-        await (document as any).webkitExitFullscreen();
-      }
-    }
-  };
 
   // Parse and sort the data
   const { series, years, yearTotals } = useMemo(() => {
@@ -109,33 +70,20 @@ export default function AccidentTypesBarChart() {
   return (
     <div
       ref={containerRef}
-      className={`w-full bg-white dark:bg-slate-900 rounded-2xl p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10 ${isFullscreen ? "overflow-auto flex flex-col justify-center" : ""}`}
+      className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10"
     >
-      {/* Fullscreen Toggle Button */}
-      <button
-        onClick={toggleFullscreen}
-        className="absolute top-4 right-4 p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 transition-colors z-50"
-        title="Tam Ekranda Göster"
-      >
-        {isFullscreen ? (
-          <ArrowsInIcon size={20} />
-        ) : (
-          <ArrowsOutIcon size={20} />
-        )}
-      </button>
-
-      <div className="mb-8 text-center sm:text-left pr-10">
-        <h3 className="text-xl sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-2">
+      <div className="mb-6 sm:mb-8 text-center sm:text-left pr-2">
+        <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-2">
           <MapTrifoldIcon weight="duotone" className="text-accent-500" />
-          Yıllara Göre Kaza Türleri Dağılımı
+          Kaza Türleri Dağılımı
         </h3>
-        <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
           Büyükşehir kaza ve arıza müdahale raporları (2021-2024)
         </p>
       </div>
 
       {/* Main Chart Area */}
-      <div className="relative h-[450px] sm:h-[500px] w-full mt-10">
+      <div className="relative h-[400px] sm:h-[500px] w-full mt-8 sm:mt-10">
         {/* Y Axis Guides */}
         <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
           {[1, 0.75, 0.5, 0.25, 0].map((step) => (
@@ -204,14 +152,14 @@ export default function AccidentTypesBarChart() {
                               initial={{ opacity: 0, scale: 0.9 }}
                               animate={{ opacity: 1, scale: 1 }}
                               exit={{ opacity: 0, scale: 0.9 }}
-                              className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:-left-4 md:-translate-x-full md:top-1/2 md:-translate-y-1/2 bg-slate-800 dark:bg-slate-700 text-white text-xs px-3 py-2 rounded-lg shadow-xl whitespace-nowrap pointer-events-none hidden sm:block"
+                              className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:-left-4 md:-translate-x-full md:top-1/2 md:-translate-y-1/2 bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 px-2.5 py-1.5 rounded shadow-xl border border-white/10 dark:border-slate-200 whitespace-nowrap pointer-events-none hidden sm:block"
                             >
-                              <div className="font-semibold">{s.name}</div>
-                              <div className="text-slate-300 font-mono mt-1">
+                              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-0.5">{s.name}</div>
+                              <div className="text-xs font-black">
                                 {val.toLocaleString("tr-TR")} vaka
                               </div>
                               {/* Connector arrow */}
-                              <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-3 h-3 bg-slate-800 dark:bg-slate-700 rotate-45 hidden md:block" />
+                              <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2 h-2 bg-slate-900/95 dark:bg-white/95 rotate-45 hidden md:block" />
                             </motion.div>
                           )}
                         </AnimatePresence>

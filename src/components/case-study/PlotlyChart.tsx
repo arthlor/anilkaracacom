@@ -171,7 +171,7 @@ export default function PlotlyChart({
       )}
       {error && (
         <div
-          className="flex items-center justify-center rounded-xl border border-red-900/20 bg-red-950/10 p-8 text-center text-sm text-red-400"
+          className="flex items-center justify-center rounded-xl bg-red-950/10 p-8 text-center text-sm text-red-400"
           style={{ minHeight }}
         >
           <div className="max-w-xs">

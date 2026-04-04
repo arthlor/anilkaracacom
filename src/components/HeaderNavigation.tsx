@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -47,12 +48,24 @@ export default function HeaderNavigation({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
   return (
     <nav className="relative flex items-center">
       {/* Desktop Navigation */}
       <div
         className={cn(
-          "hidden md:flex items-center gap-1 p-1 rounded-full border border-white/8 overflow-hidden relative transition-all duration-300",
+          "hidden md:flex items-center gap-1 p-1 rounded-full overflow-hidden relative transition-all duration-300",
           isScrolled
             ? "bg-[#1a1a1a]/92 shadow-[0_16px_36px_rgba(0,0,0,0.22)]"
             : "bg-[#1a1a1a]/72 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]",
@@ -136,65 +149,73 @@ export default function HeaderNavigation({
         </div>
       </button>
 
-      {/* Mobile Navigation Overlay */}
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/72 backdrop-blur-sm z-[100]"
-            />
-            <motion.div
-              initial={{ x: "100%", opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "100%", opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed right-0 top-0 bottom-0 w-[85%] max-w-sm border-l border-white/10 bg-[linear-gradient(180deg,rgba(18,18,18,0.98),rgba(8,8,8,0.98))] p-8 pt-24 z-[101] shadow-[0_24px_80px_rgba(0,0,0,0.45)]"
-            >
-              <div className="flex flex-col gap-6">
-                {links.map((link, idx) => (
-                  <motion.a
-                    initial={{ x: 20, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.1 + idx * 0.05 }}
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "text-2xl font-bold tracking-tight py-2 border-b border-white/5 transition-colors",
-                      activeIndex === idx ? "text-white" : "text-white/40",
-                    )}
-                  >
-                    {link.label}
-                  </motion.a>
-                ))}
-
-                <motion.a
-                  initial={{ y: 20, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                  href={resumeHref}
-                  className="mt-8 px-6 py-4 rounded-xl bg-white text-black text-center font-bold text-lg shadow-xl"
-                >
-                  Download Resume
-                </motion.a>
-
+      {/* Mobile Navigation Overlay — rendered via portal to escape header stacking context */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <>
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-auto pt-10 text-[0.7rem] text-white/30 uppercase tracking-[0.2em]"
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsOpen(false)}
+                  className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9998]"
+                />
+                <motion.div
+                  initial={{ x: "100%", opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: "100%", opacity: 0 }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                  className="fixed right-0 top-0 bottom-0 w-[85%] max-w-sm border-l border-white/10 z-[9999] shadow-[0_24px_80px_rgba(0,0,0,0.45)]"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, rgba(18, 18, 18, 1) 0%, rgba(10, 10, 10, 1) 100%)",
+                  }}
                 >
-                  © {new Date().getFullYear()} Anil Karaca
+                  <div className="flex flex-col gap-6 p-8 pt-24 h-full">
+                    {links.map((link, idx) => (
+                      <motion.a
+                        initial={{ x: 20, opacity: 0 }}
+                        animate={{ x: 0, opacity: 1 }}
+                        transition={{ delay: 0.1 + idx * 0.05 }}
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                        className={cn(
+                          "text-2xl font-bold tracking-tight py-2 border-b border-white/5 transition-colors",
+                          activeIndex === idx ? "text-white" : "text-white/40",
+                        )}
+                      >
+                        {link.label}
+                      </motion.a>
+                    ))}
+
+                    <motion.a
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      href={resumeHref}
+                      className="mt-8 px-6 py-4 rounded-xl bg-white text-black text-center font-bold text-lg shadow-xl"
+                    >
+                      Download Resume
+                    </motion.a>
+
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="mt-auto pt-10 text-[0.7rem] text-white/30 uppercase tracking-[0.2em]"
+                    >
+                      © {new Date().getFullYear()} Anil Karaca
+                    </motion.div>
+                  </div>
                 </motion.div>
-              </div>
-            </motion.div>
-          </>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </nav>
   );
 }

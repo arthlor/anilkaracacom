@@ -272,7 +272,7 @@ pre {
 }
 
 .glass {
-  @apply bg-surface/80 backdrop-blur-lg border border-primary/10;
+  @apply bg-surface/80 backdrop-blur-lg;
 }
 
 .glow-border {
@@ -280,7 +280,7 @@ pre {
 }
 
 .clean-card {
-  @apply bg-[#161616] border border-white/10 rounded-[1.5rem];
+  @apply bg-[#161616] rounded-[1.5rem];
 }
 
 .interactive-item {
@@ -295,7 +295,6 @@ pre {
   gap: 0.55rem;
   min-height: 2.75rem;
   padding: 0.7rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   font-size: 0.78rem;
   font-weight: 500;
@@ -307,7 +306,6 @@ pre {
 .page-frame,
 .page-frame-soft,
 .page-cta-block {
-  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 1.5rem; /* Standardized radius */
 }
 
@@ -357,7 +355,6 @@ pre {
   align-items: center;
   min-height: 2.2rem;
   padding: 0.5rem 0.9rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   border-radius: 999px; /* More modern than sharp edges */
   font-size: 0.72rem;
@@ -432,7 +429,6 @@ pre {
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
   color: var(--premium-accent);
 }
@@ -440,7 +436,6 @@ pre {
 .page-stat-card {
   padding: 1.5rem;
   border-radius: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -476,12 +471,7 @@ pre {
 }
 
 .page-cta-block::before {
-  content: "";
-  position: absolute;
-  inset: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 1rem;
-  pointer-events: none;
+  display: none;
 }
 
 /* ===========================================
@@ -649,7 +639,7 @@ pre {
 }
 
 .visualization-wrapper {
-  @apply bg-surface/30 backdrop-blur-sm border border-primary/10 rounded-2xl p-4 sm:p-6;
+  @apply bg-surface/30 backdrop-blur-sm rounded-2xl p-4 sm:p-6;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 

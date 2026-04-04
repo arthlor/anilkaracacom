@@ -66,10 +66,10 @@ const sectionDescriptionClass = 'mt-3 max-w-2xl text-[0.98rem] leading-8 text-mu
     <div class="container-standard">
       <div class="page-frame p-6 md:p-8">
         <span class="page-kicker">Project archive</span>
-        <h1 class="mt-4 max-w-4xl text-5xl font-display font-bold tracking-tight text-foreground sm:text-6xl">
+        <h1 class="mt-4 max-w-4xl text-4xl font-display font-medium tracking-tight text-foreground/90 sm:text-5xl">
           Shipped mobile apps, live websites, and interactive project work in one archive.
         </h1>
-        <p class="mt-5 max-w-2xl text-base leading-8 text-muted-foreground sm:text-[1.02rem]">
+        <p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground/90 sm:text-base">
           One archive for shipped apps, branded websites, documentary work, and reporting-led digital projects.
         </p>
       </div>
@@ -383,10 +383,7 @@ const sectionDescriptionClass = 'mt-3 max-w-2xl text-[0.98rem] leading-8 text-mu
     position: relative;
     display: grid;
     gap: 0.9rem;
-    padding: 1rem;
-    border-radius: 28px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(0, 0, 0, 0.28);
+    padding: 0;
   }
 
   .projects-documentary__player-dots {
@@ -418,7 +415,6 @@ const sectionDescriptionClass = 'mt-3 max-w-2xl text-[0.98rem] leading-8 text-mu
     overflow: hidden;
     border-radius: 22px;
     background: #050505;
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
   }
 
   .projects-documentary__player-caption {
@@ -434,17 +430,9 @@ const sectionDescriptionClass = 'mt-3 max-w-2xl text-[0.98rem] leading-8 text-mu
   }
 
   .projects-documentary__summary-card {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 28px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
-      rgba(255, 255, 255, 0.02);
-  }
-
-  .projects-documentary__summary-card {
     display: grid;
     gap: 1.1rem;
-    padding: 1.65rem;
+    padding: 1rem 0.5rem;
   }
 
   .projects-documentary__summary-header {
@@ -500,8 +488,7 @@ const sectionDescriptionClass = 'mt-3 max-w-2xl text-[0.98rem] leading-8 text-mu
     }
 
     .projects-documentary__player-frame {
-      padding: 0.8rem;
-      border-radius: 22px;
+      padding: 0;
     }
 
     .projects-documentary__player-embed {

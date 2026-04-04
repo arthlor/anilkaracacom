@@ -16,7 +16,7 @@ const { id, label, title, summary } = Astro.props;
 >
   <div class="space-y-6">
     {label && (
-      <div class="hidden sm:inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 backdrop-blur-sm">
+      <div class="hidden sm:inline-flex items-center rounded-full bg-white/5 px-3 py-1 backdrop-blur-sm">
         <p class="text-[10px] font-bold uppercase tracking-widest text-primary">{label}</p>
       </div>
     )}
@@ -28,8 +28,6 @@ const { id, label, title, summary } = Astro.props;
   </div>
 
   <div class="lg:sticky lg:top-28 min-w-0 w-full overflow-hidden">
-    <div class="page-frame p-2 sm:p-4 w-full">
-      <slot name="visual" />
-    </div>
+    <slot name="visual" />
   </div>
 </section>

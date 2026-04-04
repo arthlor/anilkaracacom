@@ -1,9 +1,5 @@
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { motion } from "framer-motion";
-import {
-  ArrowsOut as ArrowsOutIcon,
-  ArrowsIn as ArrowsInIcon,
-} from "@phosphor-icons/react";
 import changeData from "../../../data/elections_change_data.json";
 
 type LevelData = {
@@ -14,31 +10,7 @@ type LevelData = {
 
 export default function PartyChangesChart() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [activeLevel, setActiveLevel] = useState<string>("City");
-
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, []);
-
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen().catch((err: any) => {
-        console.error(
-          `Error attempting to enable full-screen mode: ${err.message} (${err.name})`,
-        );
-      });
-    } else {
-      document.exitFullscreen();
-    }
-  };
 
   const partyColors: Record<string, string> = {
     CHP: "#E30A17",
@@ -74,16 +46,14 @@ export default function PartyChangesChart() {
   return (
     <div
       ref={containerRef}
-      className={`relative w-full rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0f172a] transition-all duration-300 flex flex-col ${
-        isFullscreen ? "h-screen p-8" : "min-h-[500px] p-6 mb-12 mt-4"
-      }`}
+      className="relative w-full rounded-2xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 transition-all duration-300 flex flex-col min-h-[400px] sm:min-h-[500px] p-4 sm:p-6 my-10 font-sans"
     >
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 shrink-0 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 shrink-0 gap-4">
         <div>
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 font-sans tracking-tight">
+          <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
             Net Change in Elected Municipalities
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
             Difference between 2019 and 2024 local elections
           </p>
         </div>
@@ -105,17 +75,6 @@ export default function PartyChangesChart() {
             ))}
           </div>
 
-          <button
-            onClick={toggleFullscreen}
-            className="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 dark:focus:ring-slate-500 ml-2"
-            aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-          >
-            {isFullscreen ? (
-              <ArrowsInIcon size={20} weight="bold" />
-            ) : (
-              <ArrowsOutIcon size={20} weight="bold" />
-            )}
-          </button>
         </div>
       </div>
 
@@ -170,7 +129,7 @@ export default function PartyChangesChart() {
                 <div className="flex-1 h-8 sm:h-12 relative flex items-center group-hover:bg-slate-50 dark:group-hover:bg-slate-800/50 rounded-r-lg transition-colors">
                   {/* Tooltip */}
                   <div
-                    className={`opacity-0 group-hover:opacity-100 transition-opacity absolute top-1/2 -translate-y-1/2 ${isPositive ? "left-1/2 pl-2" : "right-1/2 pr-2"} bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold py-1 px-2 rounded-md shadow-lg pointer-events-none z-20 whitespace-nowrap transform ${isPositive ? "translate-x-4 group-hover:translate-x-6" : "-translate-x-4 group-hover:-translate-x-6"} duration-200`}
+                    className={`opacity-0 group-hover:opacity-100 transition-opacity absolute top-1/2 -translate-y-1/2 ${isPositive ? "left-1/2 pl-2" : "right-1/2 pr-2"} bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 text-[11px] font-black py-1 px-2.5 rounded shadow-xl border border-white/10 dark:border-slate-200 pointer-events-none z-20 whitespace-nowrap transform ${isPositive ? "translate-x-3 group-hover:translate-x-5" : "-translate-x-3 group-hover:-translate-x-5"} duration-200`}
                   >
                     {isPositive ? "+" : ""}
                     {changeValue}
@@ -205,9 +164,7 @@ export default function PartyChangesChart() {
                         className="h-full relative rounded-r-sm shadow-sm"
                         style={{ backgroundColor: color }}
                       >
-                        <div
-                          className={`absolute inset-0 bg-gradient-to-r from-black/20 to-transparent ${isFullscreen ? "opacity-30" : "opacity-20"}`}
-                        ></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent opacity-20"></div>
                         <div className="absolute inset-x-0 top-0 h-1 bg-white/20"></div>
                       </motion.div>
                     )}
