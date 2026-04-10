@@ -1,6 +1,6 @@
 ---
-title: "İnteraktif | İzmir'in trafik kazası raporu"
-description: "İzmir, artan trafik yoğunluğuyla günden güne yaşanması zor bir metropol haline geliyor. 17 bin satırlık verisetini analiz ettim."
+title: "İzmir'in trafik riski: kaza ve arıza kayıtları ne söylüyor?"
+description: "İzmir'deki trafik olaylarını 17 binden fazla kayıt üzerinden okuyarak riskin hangi arterlerde, olay türlerinde ve saatlerde yoğunlaştığını gösteren çalışma."
 pubDate: 2024-12-15
 heroImage: "../../assets/images/articles/izmir-trafik-kazasi-2025.webp"
 tags: ["izmir", "trafik", "veri-analizi", "python", "plotly"]
@@ -12,7 +12,7 @@ track: "data-journalism"
 language: "tr"
 pillar: "data-journalism-civic-tech"
 techStack:
-  ["Python", "Data Cleaning", "Custom React Charts", "Municipal Open Data"]
+  ["İzmir Ulaşım Merkezi verisi", "Zaman yoğunluğu modelleme", "React scrollytelling grafikleri", "Astro haber akışı"]
 metrics:
   - label: "Kayıt sayısı"
     value: "17K+"
@@ -22,18 +22,18 @@ metrics:
     detail: "Kazaların gün, saat ve yıllara göre dağılımı karşılaştırıldı."
   - label: "Etkileşimli görünüm"
     value: "3"
-    detail: "Saat yoğunluğu, kaza türleri ve ısı haritası birlikte sunuldu."
+    detail: "Arter sıralaması, olay türleri ve karşılaştırmalı zaman matrisi birlikte sunuldu."
 summaryEn: "An investigation into Izmir traffic collisions built from more than 17,000 civic records, with charts and a citywide heatmap."
-role: "Data cleaning, civic reporting, Python analysis, visualization"
+role: "Veri temizleme, kentsel risk analizi, etkileşimli anlatı tasarımı"
 impact: "Turns a large municipal dataset into a public-facing explanation of when and where traffic risk rises."
 executiveSummary: "İzmir'deki trafik olaylarını 17 binden fazla kayıt üzerinden inceleyen bu çalışma, riskin hangi günlerde, saatlerde ve olay türlerinde yoğunlaştığını etkileşimli grafiklerle gösteriyor."
 context: "Trafik yoğunluğu üzerine yapılan gündelik yorumlar çoğu zaman sezgisel kalıyor. Bu çalışma, belediyenin açık veri kayıtlarını kullanarak İzmir'deki trafik riskinin ritmini veriyle görünür kılmayı amaçlıyor."
 methodology:
   - "Kaza ve arıza kayıtları zaman, yön ve olay türüne göre temizlenip sınıflandırıldı."
-  - "En riskli gün ve saatleri göstermek için özel çizgi, bar ve ısı haritası bileşenleri üretildi."
-  - "Anlatı, okuyucunun önce zaman örüntüsünü sonra olay tiplerini ve yoğunluk haritasını görmesi için kurgulandı."
-challenge: "Veri seti farklı olay türlerini aynı yapıda taşıdığı için hem sınıflandırma hem de grafik dilinde sadeleştirme gerekiyordu. Aksi halde kullanıcı hangi örüntünün gerçekten önemli olduğunu ayırt edemiyordu."
-codeProof: "Grafikler, Astro sayfası içine gömülü özel React bileşenleri olarak yazıldı; böylece okuyucu ayrı bir dış araç yerine doğrudan haber akışı içinde veriyle etkileşime geçebiliyor."
+  - "Arter sıralaması için bump/slope görünümü, olay türleri için top-N lollipop listesi ve zaman yoğunluğu için karşılaştırmalı ısı matrisi kuruldu."
+  - "Scrollytelling akışı, okuru önce sokak bazlı baskıya, sonra olay türlerinin dağılımına, son olarak da gün-saat ritmine indiriyor."
+challenge: "Veri seti farklı olay türlerini aynı yapıda taşıdığı için hem sınıflandırma hem de görsel önceliklendirme gerekiyordu. Her şeyi aynı anda gösteren kalabalık grafikler yerine, her adımın tek bir soruya cevap verdiği bir akış kurmak zorundaydım."
+codeProof: "Grafikler, aynı editoryal çerçeveyi paylaşan özel React bileşenleri olarak yeniden yazıldı. Böylece scrollytelling içinde dolaşan okur, ayrı panel kutuları ya da dış gömüler olmadan veriyi adım adım çözebiliyor."
 conclusion: "Bu proje, yerel açık veriyi kamu yararı odaklı bir kent hikâyesine dönüştürüyor ve trafik riskini sezgiden çıkarıp gözlemlenebilir örüntülere indiriyor."
 relatedContent:
   - collection: "articles"
@@ -48,69 +48,63 @@ import StreetFrequencyLineChart from "@/components/mdx/charts/StreetFrequencyLin
 import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
 import StoryStep from "@/components/case-study/StoryStep.astro";
 
-İzmir, artan trafik yoğunluğuyla günden güne yaşanması zor bir metropol haline geliyor. Ana arterler artık trafik yükünü taşımada yetersiz kalıyor, en ufak bir kaza trafiği dakikalarca kilitleyebiliyor.
+İzmir'de artan trafik yoğunluğu, ana arterleri daha kırılgan hale getiriyor. Küçük bir olay bile dakikalar içinde daha geniş bir düğüme dönüşebiliyor.
 
-Bu sorun artarak devam ederken, İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda yer alan, İzmir Ulaşım Merkezi tarafından kayıt altına alınan kaza türleri ve arıza türlerine ait konum, kaldırılma sürelerini içeren veri seti ile bir veri analizi çalışması hazırladım. Çalışma İzmir'deki kazaların hangi saatlerde, hangi istikamette, hangi sıklıkta olduğunu ve yıllara göre değişimi irdeliyor. **17 bin satırdan** oluşan ve **iki yılı aşkın bir süreyi kapsayan** verisetini, elimden geldiğince anlamlı bir şekilde görselleştirmeye çalıştım.
+Bu çalışma, İzmir Ulaşım Merkezi tarafından kayıt altına alınan kaza ve arıza olaylarını veriyle yeniden okuyor. **17 bin satırdan** oluşan ve **iki yılı aşkın bir süreyi kapsayan** veri seti; riskin hangi arterlerde biriktiğini, hangi olay türlerinin tabloyu domine ettiğini ve günün hangi saatlerinde yoğunlaştığını birlikte gösteriyor.
 
-Veri analizi, kentte yaşanan kazaların hangi günlerde, saatlerde ve mevsimlerde yoğunlaştığını ortaya koyuyor. İzmir'in kaza verilerinde öne çıkan bulgular ve en riskli saatler şöyle:
+Yeni görsel sistemde amaç, aynı bilgiyi üç ayrı kutuya bölmek yerine tek bir hikâye akışı içinde çözmek. İlk adımda hangi arterlerin üst sıralara tırmandığı, ikinci adımda hangi olay türlerinin baskınlaştığı, son adımda ise gün ve saat ritmi görülüyor.
 
-## **En Yoğun Gün: Cuma**
-
-[**2021 Aralık ayından bugüne incelenen verilere**](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri) göre, **Cuma günü** haftanın en fazla kazanın yaşandığı gün olarak öne çıkıyor. **3,090 kazayla** zirvede yer alan Cuma gününü sırasıyla Pazartesi (**3,047 kaza**) ve Salı (**2,823 kaza**) takip ediyor. Çalışma günlerinde yaşanan bu yoğunluk, özellikle iş giriş ve çıkış saatlerinde trafik sıkışıklığının kazalara yol açabileceğine işaret ediyor.
-
-**Hafta Sonu Dikkat Çekiyor:** Cumartesi ve Pazar günleri ise nispeten daha düşük kaza sayısına sahip olsa da, hafta sonu yaşanan kazalar eğlence, alışveriş ve sosyal aktiviteler nedeniyle farklı saatlere yayılabiliyor. **Cumartesi günü 1,755** ve **Pazar günü 1,028** kazayla hafta sonları daha düşük bir yoğunluk sergiliyor.
-
-_Grafikleri daha iyi incelemek için mobil cihazlarınızı yatay konumda kullanmanızı öneririm._
+[**2021 Aralık ayından bugüne incelenen verilere**](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri) bakınca, baskının kent geneline eşit dağılmadığı görülüyor. Bazı ana arterler neredeyse her yıl üst sıralarda kalırken, bazıları son dönemde daha hızlı yükseliyor.
 
 <ScrollytellingStory
   steps={[
     {
       id: "trafik-zaman",
       label: "Adım 1",
-      title: "Haftalık ritim",
-      summary: "Önce kazaların hangi günlerde yoğunlaştığını okuyalım.",
+      title: "Riskli arterler",
+      summary: "İlk adımda hangi caddelerin üst sıralara tırmandığını görüyoruz.",
     },
     {
       id: "trafik-turler",
       label: "Adım 2",
       title: "Olay türleri",
-      summary: "Hangi olayların tabloyu belirlediğini ikinci adımda ayırıyoruz.",
+      summary: "İkinci adım, toplam baskıyı oluşturan olay başlıklarını ayırıyor.",
     },
     {
       id: "trafik-isiharitasi",
       label: "Adım 3",
-      title: "Saat yoğunluğu",
-      summary: "Son adımda gün ve saat kesişimindeki yoğunluğa iniyoruz.",
+      title: "Gün ve saat yoğunluğu",
+      summary: "Son adımda riskin haftanın hangi anlarında biriktiğine iniyoruz.",
     },
   ]}
 >
   <StoryStep
     id="trafik-zaman"
     label="Adım 1"
-    title="Kazaların haftalık ritmi"
-    summary="İlk görsel, haftanın hangi günlerinde riskin daha yoğunlaştığını gösteriyor ve gündelik sezgiyi ölçülebilir bir desene çeviriyor."
+    title="Arterlerin sıralama yarışı"
+    summary="İlk görsel, her yılı ayrı çizgi gibi göstermek yerine cadde sıralamasını izleyerek riskin hangi arterlerde kalıcılaştığını ortaya koyuyor."
   >
     <Fragment slot="visual">
       <StreetFrequencyLineChart client:visible />
     </Fragment>
   </StoryStep>
 
-<StoryStep
-  id="trafik-turler"
-  label="Adım 2"
-  title="Baskın olay kategorileri"
-  summary="İkinci adım, toplam yoğunluğu oluşturan kaza tiplerini ayırarak hangi kategorilerin gerçekten belirleyici olduğunu ortaya koyuyor."
->
-  <Fragment slot="visual">
-    <AccidentTypesBarChart client:visible />
-  </Fragment>
-</StoryStep>
+  <StoryStep
+    id="trafik-turler"
+    label="Adım 2"
+    title="Baskın olay kategorileri"
+    summary="İkinci adım, uzun kuyruklu olay listesini sadeleştirerek hangi başlıkların tabloyu gerçekten sürüklediğini gösteriyor."
+  >
+    <Fragment slot="visual">
+      <AccidentTypesBarChart client:visible />
+    </Fragment>
+  </StoryStep>
 
   <StoryStep
     id="trafik-isiharitasi"
     label="Adım 3"
     title="Gün ve saat bazında yoğunluk"
-    summary="Son görsel, haftalık ve mevsimsel anlatıyı gün-saat seviyesine indiriyor; böylece riskin ritmi daha doğrudan okunabiliyor."
+    summary="Son görsel, gün-saat matrisini marjinal toplamlar ve fark modu ile açarak yoğunluğun tam olarak hangi zamanlarda düğümlendiğini gösteriyor."
   >
     <Fragment slot="visual">
       <IncidentHeatmap client:visible />
@@ -118,41 +112,19 @@ _Grafikleri daha iyi incelemek için mobil cihazlarınızı yatay konumda kullan
   </StoryStep>
 </ScrollytellingStory>
 
-## **En Tehlikeli Saatler: Sabah ve Akşam Yoğunluğu**
+## Öne Çıkan Bulgular
 
-Kazaların saatlik analizine baktığımızda, özellikle **08:00-10:00** ve **17:00-19:00** saatleri arasında ciddi bir yoğunluk gözlemleniyor. Bu saat aralıkları, iş giriş ve çıkış saatlerine denk gelerek trafik kazalarının sıklığını artırıyor. Sabah yoğunluğunda yaşanan kazalar, sürücülerin aceleci davranışı ve yoğun trafikle birleştiğinde riski artırırken, akşam saatlerindeki kazalar ise günün yorgunluğuyla ilişkilendirilebilir.
+- Arter sıralaması, bazı caddelerin yalnızca yoğun değil aynı zamanda yapısal olarak kırılgan olduğunu gösteriyor. Her yıl üst sıralarda kalan akslar, müdahale ve önleyici planlama açısından özel izleme gerektiriyor.
+- Olay türü görünümü, birkaç kategori dışındaki başlıkların daha sınırlı bir ağırlık taşıdığını netleştiriyor. Bu da kaynak dağılımında genel değil hedefli önceliklendirmeyi mümkün kılıyor.
+- Gün ve saat matrisi, işe gidiş ve dönüş ritmini güçlü biçimde yansıtıyor. Fark modu açıldığında ise iki yıl arasındaki değişim, yoğunluğun sadece toplamda değil zaman paterninde de kaydığını gösteriyor.
 
-**Gece Saatlerinde Düşüş:** Gece saatlerinde, özellikle **23:00-05:00** aralığında kaza sayısında belirgin bir düşüş gözlemleniyor. Bu saatlerde daha az trafiğin olması, kaza oranını düşüren bir faktör olarak öne çıkıyor
+## Neden Önemli?
 
-## **Kış Aylarında Artan Kaza Sayıları**
-
-Kaza verileri aylara göre analiz edildiğinde, **Aralık, Ocak ve Şubat** aylarında kaza sayılarında artış gözlemleniyor. Kış aylarında yaşanan artış, olumsuz hava koşullarıyla ilişkilendirilebilir. Bu dönemde meydana gelen kazalar, buzlanma ve yağmur gibi faktörlerden kaynaklanırken, bu durum sürücülerin kış aylarında daha dikkatli olması gerektiğini gösteriyor.
-
-**Yaz Aylarında Düşüş:** Yaz aylarında ise kaza sayılarında düşüş gözlemleniyor. Özellikle **Haziran ve Temmuz** aylarında kaza sayısının azalması, tatil dönemlerinin trafik yoğunluğunu şehir merkezinden uzaklaştırmasıyla açıklanabilir.
-
-## **Müdahale Süreleri**
-
-Verilerde kazalara müdahale süreleri incelendiğinde, olaylara ortalama müdahale süresinin **15-30 dakika** arasında olduğu gözlemleniyor. Özellikle yoğun saatlerde müdahale sürelerinin uzadığı, bu durumun olay yerine ulaşım zorluğuyla ilişkili olabileceği düşünülüyor.
-
-**Trafik Kazalarına Daha Hızlı Müdahale Gerekiyor:** Trafik kazalarına daha hızlı müdahale edilmesi gerektiğini gösteren veriler, iş giriş ve çıkış saatlerinde kaza riskinin arttığı saatlerde daha fazla ekibin görevlendirilmesi ihtiyacını ortaya koyuyor.
-
-## **Kazaların Coğrafi Dağılımı ve Riskli Alanlar**
-
-Eğer kaza verileri coğrafi olarak incelenirse, kentin belirli bölgelerinde yoğun kazaların gerçekleştiği görülebilir. Ana yollar, büyük kavşaklar ve inşaat alanlarının bulunduğu bölgelerde daha fazla kaza yaşanıyor. Bu tür bölgelerde ek güvenlik önlemleri alınması, trafik akışının daha güvenli hale getirilmesi ve hız sınırlarının düşürülmesi gibi adımlar, kaza oranlarının azaltılmasına katkı sağlayabilir.
-
-## **Kazaların Yıllara Göre Artışı**
-
-Yıllık kaza sayısındaki değişimleri incelediğimizde, son birkaç yılda trafik yoğunluğunun artmasıyla birlikte kaza sayısında da genel bir artış gözlemleniyor. Özellikle yeni yol projeleri, büyük inşaat alanları ve kentleşmenin artması, kaza oranlarını artıran faktörlerden biri olarak öne çıkıyor.
-
-2023 yılı verilerine göre kaza sayısının bir önceki yıla oranla **%10 oranında arttığı**, bu artışın özellikle iş merkezlerinin çevresinde ve ana arterlerde yoğunlaştığı görülüyor. Bu durum, şehir planlamasında güvenlik önlemlerine daha fazla önem verilmesi gerektiğini gösteriyor.
+Bu veriler, trafik güvenliğini sadece "çok kaza oluyor" düzeyinde değil, "hangi arter, hangi kategori, hangi saat" düzeyinde tartışmayı mümkün kılıyor. Böyle bir okuma; ekip planlaması, sinyalizasyon, yol tasarımı ve kamu iletişimi gibi alanlarda daha somut kararlar üretmek için kullanılabilir.
 
 ## **Sonuç**
 
-Kazaların gün ve saat bazında analiz edilmesi, kaynakların daha etkin kullanılmasını ve riskli saatlerde daha fazla ekibin görevlendirilmesini gerektiriyor. Ayrıca, kazaların coğrafi yoğunluk bölgelerine yönelik iyileştirmeler yapılması, kaza riskini azaltabilir. Mevsimsel riskler göz önüne alındığında, kış aylarında sürücülerin daha dikkatli olmaları ve güvenlik önlemlerinin artırılması gerektiği anlaşılmaktadır.
-
-**Kaynak Dağıtımının İyileştirilmesi:** Yoğun kazaların yaşandığı saat ve günlerde ek güvenlik önlemleri ve daha fazla ekip görevlendirilmesi, müdahale süresini kısaltarak kaza sonrası etkilerin hafifletilmesine katkı sağlayabilir.
-
-**Mevsimsel Güvenlik Önlemleri:** Kış aylarında artan kaza oranlarına yönelik farkındalık kampanyaları ve ek güvenlik önlemleri, hava koşullarına bağlı riskleri azaltmada etkili olabilir.
+İzmir'in trafik verisi, riskin rastlantısal değil örüntülü olduğunu gösteriyor. Hangi arterlerin sürekli üst sıralarda kaldığını, hangi olay türlerinin toplam baskıyı taşıdığını ve günün hangi saatlerinin daha kırılgan olduğunu görünür kıldığınızda, kentsel güvenlik sezgiye değil ölçülebilir bir ritme dayanıyor.
 
 ---
 

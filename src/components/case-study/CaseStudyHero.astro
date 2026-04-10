@@ -138,11 +138,6 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
 <style>
   .case-study-hero {
     position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background:
-      radial-gradient(circle at top left, rgba(122, 242, 152, 0.12), transparent 32%),
-      radial-gradient(circle at bottom right, rgba(255, 214, 133, 0.08), transparent 28%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015));
     padding: clamp(1.4rem, 2vw, 2rem);
   }
 
@@ -180,10 +175,6 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
   .case-study-hero__date {
     display: inline-flex;
     align-items: center;
-    min-height: 2.5rem;
-    padding: 0.65rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -218,9 +209,8 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
 
   .case-study-hero__summary {
     margin-top: 1.75rem;
-    padding: 1.4rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    padding: 1.4rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
 
   .case-study-hero__label,
@@ -251,7 +241,7 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
 
   .case-study-hero__fact {
     padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
 
   .case-study-hero__fact-label {
@@ -316,8 +306,7 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
 
   .case-study-hero__media {
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
   }
 
   .case-study-hero__metrics {

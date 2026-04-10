@@ -17,6 +17,11 @@ interface Props {
 const { entry, collection, Content } = Astro.props;
 const isTurkish = entry.data.language === 'tr';
 const seo = getEntrySeo(collection, entry);
+const noindex = collection === 'articles' && !entry.data.published;
+const contentGridClass =
+  collection === 'articles'
+    ? 'mx-auto grid w-full max-w-[1580px] gap-12 px-4 sm:px-6 lg:px-8 min-w-0'
+    : 'mx-auto grid w-full max-w-[1440px] gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.5fr)] lg:px-8 min-w-0';
 
 const copy = isTurkish
   ? {
@@ -25,12 +30,12 @@ const copy = isTurkish
       roleLabel: 'Rol',
       impactLabel: 'Etkisi',
       summaryLabel: 'Kısa Özet',
-      methodologyLabel: 'Yöntem',
+      methodologyLabel: 'Üretim Akışı',
       contextLabel: 'Bağlam ve Problem Alanı',
-      challengeLabel: 'Teknik Zorluk',
-      codeLabel: 'Kod ve Sistem Kanıtı',
+      challengeLabel: 'Üretim Zorluğu',
+      codeLabel: 'Etkileşimli Sistem Notu',
       conclusionLabel: 'Sonuç ve Değer',
-      narrativeLabel: 'İnteraktif Anlatı',
+      narrativeLabel: 'Makale ve Görsel Okuma',
     }
   : {
       backLabel: collection === 'articles' ? 'Back to articles' : 'Back to projects',
@@ -38,12 +43,12 @@ const copy = isTurkish
       roleLabel: 'Role',
       impactLabel: 'Impact',
       summaryLabel: 'Executive Summary',
-      methodologyLabel: 'Methodology & Stack',
+      methodologyLabel: 'Reporting Workflow',
       contextLabel: 'Context & Problem Space',
-      challengeLabel: 'Technical Challenge',
-      codeLabel: 'Code & Systems Proof',
+      challengeLabel: 'Production Challenge',
+      codeLabel: 'Interactive System Note',
       conclusionLabel: 'Conclusion & Value',
-      narrativeLabel: 'Interactive Narrative',
+      narrativeLabel: 'Article & Visual Analysis',
     };
 
 const schema = collection === 'articles' ? buildArticleSchema(entry as CollectionEntry<'articles'>) : buildProjectSchema(entry as CollectionEntry<'projects'>);
@@ -53,6 +58,7 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
   title={seo.title}
   description={seo.description}
   image={seo.image}
+  noindex={noindex}
   article={collection === 'articles'}
   lang={entry.data.language}
 >
@@ -60,8 +66,8 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
 
   <CaseStudyHero entry={entry} collection={collection} locale={copy} />
 
-  <section class="case-study-layout">
-    <div class="mx-auto grid max-w-[1440px] w-full gap-8 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.5fr)] lg:px-8 min-w-0 overflow-hidden">
+  <section class="case-study-layout" data-case-study={collection}>
+    <div class={contentGridClass}>
       <div>
         <div class="case-study-layout__panel case-study-layout__panel--main">
           <div class="grid gap-8">
@@ -129,16 +135,19 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
   }
 
   .case-study-layout__panel {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
-      rgba(255, 255, 255, 0.02);
     padding: clamp(1.25rem, 2vw, 1.9rem);
     border-radius: 20px;
   }
 
   .case-study-layout__panel--main {
     position: relative;
+    overflow: visible;
+  }
+
+  .case-study-layout__sidebar .case-study-layout__panel {
+    border-left: 2px solid rgba(122, 242, 152, 0.15);
+    background: rgba(255, 255, 255, 0.015);
+    border-radius: 0 12px 12px 0;
   }
 
   .case-study-layout__label {
@@ -164,8 +173,8 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
 
   .case-study-layout__methodology li {
     padding: 0.95rem 1rem;
-    border-left: 1px solid rgba(122, 242, 152, 0.25);
-    background: rgba(255, 255, 255, 0.03);
+    border-left: 1px solid rgba(122, 242, 152, 0.18);
+    background: rgba(255, 255, 255, 0.02);
     font-size: 0.95rem;
     line-height: 1.75;
     color: hsl(var(--foreground));
@@ -182,5 +191,37 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
     font-size: 0.95rem;
     line-height: 1.8;
     color: hsl(var(--muted-foreground));
+  }
+
+  .case-study-layout[data-case-study='articles'] .case-study-layout__sidebar {
+    margin-top: 0.5rem;
+  }
+
+  .case-study-layout[data-case-study='articles'] .case-study-layout__panel--main {
+    padding-inline: clamp(1.1rem, 1.8vw, 1.7rem);
+  }
+
+  .case-study-layout[data-case-study='articles'] :global(.prose-article > :where(p, h2, h3, h4, ul, ol, blockquote, pre, hr, img)) {
+    max-width: 52rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .case-study-layout[data-case-study='articles'] :global(.prose-article > :where(.article-visual-frame, [data-story-root])) {
+    max-width: none;
+    scroll-margin-top: 7rem;
+  }
+
+  @media (min-width: 1024px) {
+    .case-study-layout[data-case-study='articles'] :global(.prose-article > :where(.article-visual-frame, [data-story-root])) {
+      margin-left: clamp(-2.75rem, -1.8vw, -1.25rem);
+      margin-right: clamp(-2.75rem, -1.8vw, -1.25rem);
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .case-study-layout[data-case-study='articles'] > div {
+      grid-template-columns: minmax(0, 1.58fr) minmax(300px, 0.42fr);
+    }
   }
 </style>

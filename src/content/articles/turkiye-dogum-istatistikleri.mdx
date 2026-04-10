@@ -1,6 +1,6 @@
 ---
-title: 'Doğum istatistikleri: Türkiye "3 çocuk" politikasını kabul etmedi'
-description: "Türkiye'de 2001-2020 yılları arasındaki doğum istatistikleri. Doğurganlık hızı ve annelerin ortalama yaşı ile ilgili veriler ve analizler."
+title: "Türkiye'nin doğum ritmi: \"3 çocuk\" söylemi neden karşılık bulmadı?"
+description: "Türkiye'de 2001-2020 arasındaki doğum ritmini kaba doğum hızı, toplam doğurganlık ve anne yaşı üzerinden okuyan etkileşimli analiz."
 pubDate: 2024-05-15
 heroImage: "../../assets/images/articles/turkiye-dogum-istatistikleri-2025.webp"
 tags: ["türkiye", "demografik", "veri-analizi", "tuik"]
@@ -11,25 +11,25 @@ draft: false
 track: "data-journalism"
 language: "tr"
 pillar: "scientific-environmental-modeling"
-techStack: ["TÜİK", "Python", "Statistical Analysis", "Plotly"]
+techStack: ["TÜİK doğurganlık serileri", "Zaman ekseninde gösterge eşleştirme", "Bağlı React grafik sistemi", "Astro anlatı düzeni"]
 metrics:
   - label: "Kapsanan dönem"
     value: "2001-2020"
     detail: "Doğum verileri yirmi yıllık zaman aralığında incelendi."
   - label: "Ana gösterge"
-    value: "3"
-    detail: "Kaba doğum hızı, doğurganlık ve anne yaşı birlikte yorumlandı."
-executiveSummary: "Türkiye'nin doğum verilerini yirmi yıllık perspektifle ele alan bu çalışma, doğurganlık düşüşünü ve anne yaşındaki artışı veriye dayalı bir nüfus hikâyesine dönüştürüyor."
-context: "Doğum istatistikleri kamuoyunda genellikle siyasi söylem düzeyinde tartışılıyor. Bu çalışma, TÜİK verilerini kullanarak sayıların gerçekten ne söylediğini göstermek ve '3 çocuk' politikasının karşılık bulup bulmadığını veriyle tartışmak için üretildi."
+    value: "3 seri"
+    detail: "Kaba doğum hızı, toplam doğurganlık ve anne yaşı aynı zaman ekseninde okunuyor."
+executiveSummary: "Türkiye'nin doğum verilerini yirmi yıllık perspektifle ele alan bu çalışma, kaba doğum hızındaki gerilemeyi, doğurganlık eşiğindeki düşüşü ve anne yaşındaki artışı tek bir nüfus hikâyesinde topluyor."
+context: "Doğum istatistikleri kamuoyunda çoğu zaman siyasi sloganlarla tartışılıyor. Bu çalışma, TÜİK'in temel göstergelerini aynı anlatı içinde birleştirerek sayıların gerçekten ne söylediğini görünür kılmak için üretildi."
 methodology:
-  - "TÜİK'in yayımladığı doğum verileri zaman serisi olarak okunacak şekilde düzenlendi."
-  - "Birden fazla demografik gösterge aynı anlatı içinde yorumlandı."
-  - "Düşük değerlerin okunabilirliği için logaritmik ölçek tercih edildi."
-challenge: "Demografik göstergeler kamuoyunda güçlü politik çağrışımlar taşıdığı için, yorumun sayılardan kopmaması gerekiyordu. Bu nedenle çalışma doğrudan veri ritmine yaslanan sade bir anlatıyla kuruldu."
-codeProof: "Grafik yaklaşımı, düşük değerlerin de görünür kalması için logaritmik ölçek kullanıyor; böylece sadece trend değil, trendin hızındaki değişim de okunabiliyor."
+  - "TÜİK'in yıllık doğum göstergeleri tek bir zaman serisi kümesine dönüştürüldü."
+  - "Ham tabloyu tekrar etmeyen üç bağlı küçük görünüm kuruldu; scrubber aynı yılı bütün panellerde eşzamanlı sabitliyor."
+  - "Anlatı notları, geçici toparlanmaları ve uzun dönemli kırılmayı siyasi söylemden ayrıştıracak şekilde yerleştirildi."
+challenge: "Doğum sayısını tek başına göstermek bu dönüşümü eksik bırakıyordu. Yoğunluk, aile büyüklüğü ve annelik yaşı aynı yüzde buluşmalı; ama grafik yine de sade kalmalıydı."
+codeProof: "Eski gömülü HTML grafiği yerine yerel veri modülüyle çalışan üç senkronize React zaman serisi kuruldu. Böylece okuyucu tek yüzeyde hem trendi hem de belirli bir yılın kırılımını okuyabiliyor."
 conclusion: "Bu çalışma, Türkiye'nin nüfus dinamiklerinin siyasi sloganlardan daha karmaşık olduğunu gösteriyor; veriler hem doğum oranındaki düşüşü hem de annelik yaşındaki artışı açık biçimde ortaya koyuyor."
 summaryEn: "A long-range birth statistics explainer showing how Turkey's fertility and maternal-age trends changed over two decades."
-role: "Veri yorumlama, anlatı kurma, görselleştirme"
+role: "Veri doğrulama, demografik yorumlama, etkileşim tasarımı"
 impact: "Demografik veriyi politik tartışmanın ötesine taşıyarak uzun dönemli eğilimi görünür kılıyor."
 relatedContent:
   - collection: "articles"
@@ -38,46 +38,41 @@ relatedContent:
     slug: "izmir-coronavirus-toplu-tasima"
 ---
 
-import LegacyIframeFallback from "../../components/case-study/LegacyIframeFallback.astro";
+import BirthMetricsTimeline from "../../components/mdx/charts/BirthMetricsTimeline";
 
-Türkiye İstatistik Kurumu (TÜİK), 15 Mayıs'ta doğum istatistikleri verilerini açıkladı. Birçok çarpıcı verinin yer aldığı çalışmada, 2001 yılından 2020 yılına kadar Türkiye'de doğum sayılarında önemli dalgalanmalar gözleniyor. Verisetine göre, 2001 yılında yaklaşık 1.32 milyon doğum gerçekleşirken, yıllar geçtikçe anne olma yaşının arttığı ve doğum sayısının azaldığı ortaya çıkıyor.
+Türkiye İstatistik Kurumu'nun yayımladığı doğum göstergeleri, son yirmi yılda ülkenin nüfus ritminin nasıl değiştiğini açık biçimde gösteriyor. Ancak tek başına doğum sayısı bu dönüşümü anlatmaya yetmiyor; yoğunluk, aile büyüklüğü ve annelik yaşı birlikte okunduğunda daha net bir tablo ortaya çıkıyor.
 
-Verilere bakıldığında, bugüne kadar genç nüfusuyla güçlü ve üretken kabul edilen Türkiye'nin, yıllar geçtikçe nüfus değişimlerinde Avrupa trendlerine evrileceğini öngörebiliriz. Doğum istatistikleri verileri ayrıca hükümetin bir zamanlar dillendirdiği "3 çocuk" politikasının açıkça toplum tarafından kabul görmediğini de ortaya koyuyor.
+Bu nedenle eski gömülü grafik kaldırıldı ve üç bağlı zaman serisinden oluşan yerel bir görsel sistem kuruldu. Üstte kaba doğum hızı, ortada toplam doğurganlık hızı, altta ise annelerin ortalama yaşı yer alıyor. Yıl seçici, seçilen dönemi üç görünümde birden sabitleyerek hangi kırılmanın ne zaman hızlandığını izlemeyi kolaylaştırıyor.
 
-![Doğum Grafiği](/uploads/2024/05/dogum.gif)
-_Kaynak: TÜİK_
+<BirthMetricsTimeline client:load />
 
-### Yıllara Göre Kaba Doğum Hızı
+## Grafiğin anlattığı üç kırılma
 
-Kaba doğum hızı, her 1.000 kişi başına düşen doğum sayısını ifade eder. 2001 yılında 20.3 olan bu oran, yıllar içinde sürekli bir düşüş eğilimi gösteriyor. 2020 yılında bu oran, nüfus artış hızının yavaşladığını ve doğum oranlarının azaldığını işaret eder şekilde daha düşük seviyelere geriliyor.
+- Kaba doğum hızı neredeyse kesintisiz bir aşağı yönlü hat izliyor.
+- Toplam doğurganlık hızı, 2010'ların ortasındaki kısa soluklanmaya rağmen yenilenme eşiğinin altındaki yeni düzeye yerleşiyor.
+- Annelerin ortalama yaşı düzenli biçimde yükseliyor; bu da doğumun zamanlamasının değiştiğini gösteriyor.
 
-### Yıllara Göre Doğurganlık Hızı
+## Siyasi söylem ile veri neden ayrışıyor?
 
-Bir kadının yaşamı boyunca sahip olacağı ortalama çocuk sayısını ifade eden doğurganlık hızı, 2001 yılında 2.38 iken, yıllar içinde sürekli bir azalma gösteriyor. 2020 yılına gelindiğinde bu oran daha düşük seviyelere iniyor.
+Bu örüntü, kamuoyunda sık tekrarlanan "3 çocuk" söyleminin veride neden karşılık bulmadığını da açıklıyor. Ailelerin davranışı, siyasi çağrıdan çok ekonomik koşullar, eğitim süresi, kentleşme ve yaşam planı tarafından belirleniyor. Kısacası mesele yalnızca kaç çocuk yapıldığı değil; ne zaman, hangi koşulda ve hangi toplumsal beklenti içinde çocuk sahibi olunduğu.
 
-Görselleştirmede düşük sayıların okunabilirliğini artırmak için logaritmik ölçü kullandım. En iyi görsel deneyim için mobil cihazınızı yatay konuma getirmenizi ya da bilgisayardan incelemenizi öneririm.
+## Neyi okuyoruz?
 
-<LegacyIframeFallback
-  src="/uploads/2024/05/dogumchart.html"
-  title="Doğum İstatistikleri Grafiği"
-  height="600px"
-/>
+- Kaba doğum hızı, nüfusun genel doğum yoğunluğunu gösteriyor.
+- Toplam doğurganlık hızı, aile büyüklüğü davranışındaki uzun dönemli değişimi ölçüyor.
+- Annelerin ortalama yaşı ise doğumun yaşam döngüsünde daha geç bir döneme kaydığını anlatıyor.
 
-_Görselleştirmede düşük sayıların okunabilirliğini artırmak için logaritmik ölçü kullandım. En iyi görsel deneyim için mobil cihazınızı yatay konuma getirmenizi ya da bilgisayardan incelemenizi öneririm. Kaynak: TÜİK_
+Bu üç seri birlikte okunduğunda, Türkiye'nin giderek daha düşük doğurganlık ve daha geç annelik yaşına sahip bir demografik rejime yaklaştığı görülüyor. Bu da sosyal politika, bakım ekonomisi, eğitim ve çalışma hayatı açısından daha uzun vadeli sonuçlar doğuruyor.
 
-#### Yıllara Göre Annelerin Ortalama Yaşı
+## 2023 haritası neyi tamamlıyor?
 
-Doğum yapan annelerin ortalama yaşı, 2001 yılında yaklaşık 26.7 iken, yıllar içinde artarak 2020 yılında daha yüksek seviyelere ulaşıyor. Kadınların çocuk sahibi olma yaşının artması; kariyer planlaması, eğitim seviyesindeki artış ve aile kurma yaşı ile ilgili toplumsal normlardaki değişiklikleri yansıtmakta. Ayrıca ülke ekonomisinin içinde bulunduğu kötü gidişat da aileleri çocuk yapmaktan uzak tutan bir faktör olarak değerlendirilebilir.
-
-#### Demografik Değişimlerin Ekonomik Etkileri
-
-Bu veriler, Türkiye'de demografik yapının önemli değişimler geçirdiğini gösteriyor. Azalan doğurganlık ve kaba doğum hızları, nüfus artış hızının yavaşladığını ve gelecekteki demografik değişimlerin ülke ekonomisi anlamında da önemli olacağını işaret ediyor. Türkiye ekonomisindeki kötü tablonun bu sonuçlara yol açmakta önemli bir faktör olduğunu söylemek yanlış olmaz. Ayrıca, annelerin ortalama yaşının artması, Türkiye'de kadınların kariyer ve eğitim hayatlarına daha fazla odaklandığı şeklinde de yorumlanabilir.
+2023 il haritası, bu dönüşümün mekânsal tarafını hatırlatıyor: ilk doğumdaki ortalama anne yaşı ülke içinde de homojen değil. Büyükşehirler, eğitim ve çalışma hayatının daha uzun sürdüğü iller ve yaşam maliyetinin daha yüksek olduğu bölgeler bu gecikmeyi daha belirgin taşıyor.
 
 ![Ortalama Anne Yaşı Haritası](/uploads/2024/05/indir.webp)
 _2023 yılına ait doğum istatistikleri verileri, ilk doğumdaki ortalama anne yaşının en yüksek ve en düşük olduğu 10 ili göstermektedir. (TÜİK)_
 
-#### Kaynak ve Daha Fazla Bilgi
+## Kaynak ve not
 
 Kaynak: [**TÜİK**](https://www.tuik.gov.tr/)
 
-Bu metin, Türkiye'deki doğum istatistiklerini yıllara göre analiz ederek demografik değişimleri ve bunların ekonomik etkilerini ele alır. Detaylı bilgi ve kaynaklar için TÜİK web sitesini ziyaret edebilirsiniz.
+Bu çalışma, TÜİK'in temel doğurganlık göstergelerini tek bir okuma yüzeyinde birleştirerek Türkiye'deki demografik değişimi daha net okumayı amaçlıyor. Detaylı veri tabloları ve resmî bültenler için TÜİK'in yayımlarına bakılabilir.

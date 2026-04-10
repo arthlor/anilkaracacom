@@ -1,6 +1,6 @@
 ---
-title: "İnteraktif: İzmirliler en çok hangi toplu taşımayı kullanıyor?"
-description: "İzmir'de 2021-2023 arası İzmirimKart kullanım istatistikleri. ESHOT, Metro, İZBAN ve diğer ulaşım araçlarının interaktif analizi."
+title: "İzmir'de toplu taşıma yükünü kim taşıyor?"
+description: "İzmirimKart verisini işletmeci ve yolcu türü katmanlarıyla okuyarak 2021 başından 2024 ilk çeyreğine kadar sistemin hangi omurgayla çalıştığını gösteren analiz."
 pubDate: 2023-11-15
 heroImage: "../../assets/images/articles/izmir-toplu-tasima-2025.webp"
 tags: ["izmir", "toplu-tasima", "veri-analizi", "python", "dash"]
@@ -11,29 +11,29 @@ draft: false
 track: "data-journalism"
 language: "tr"
 pillar: "scientific-environmental-modeling"
-techStack: ["Python", "Dash", "Municipal Open Data", "Transit Analysis"]
+techStack: ["İzmirimKart aylık kullanım verisi", "İşletmeci bazlı trendleme", "Yolcu türü kompozisyonu", "Astro anlatı yüzeyi"]
 metrics:
   - label: "Veri aralığı"
-    value: "2021-2023"
-    detail: "İzmirimKart kullanım kayıtları yıllık toplamlar üzerinden incelendi."
-  - label: "Toplam kayıt"
-    value: "15K+"
-    detail: "Açık veri seti ulaşım ve kart kullanım kırılımlarıyla işlendi."
+    value: "2021-2024"
+    detail: "İzmirimKart kullanım kayıtları 2024 Martına kadar aylık akış içinde okundu."
+  - label: "İşletmeci sayısı"
+    value: "6 işletmeci"
+    detail: "Otobüs, metro, İZBAN, vapur ve diğer işletmeciler aynı yüzeyde karşılaştırıldı."
   - label: "Çıktı"
-    value: "Dashboard"
-    detail: "Dash tabanlı etkileşimli arayüz ile sonuçlar okunur hale getirildi."
-executiveSummary: "İzmirimKart kullanım istatistiklerini yıllar, araç türleri ve yolcu kategorileri üzerinden toparlayan bu çalışma, toplu taşıma kullanım alışkanlıklarını hızlıca okunabilir bir dashboard mantığına çeviriyor."
-context: "İzmir'in toplu taşıma ağı çok sayıda işletmeci ve yolcu kategorisi içeriyor. Bu çeşitlilik ham açık veri tablosunda kalınca hangi aracın ya da yolcu tipinin öne çıktığını görmek zorlaşıyor."
+    value: "Bağlı görünüm"
+    detail: "Operatör trendi ile yolcu bileşimi aynı ay seçimi üzerinden senkronize çalışıyor."
+executiveSummary: "İzmirimKart kullanım istatistiklerini işletmeci, dönem ve yolcu türü ekseninde toparlayan bu çalışma, toplu taşıma sisteminin hangi araçlar ve hangi kullanıcı profilleriyle çalıştığını görünür kılıyor."
+context: "İzmir'in toplu taşıma ağı çok sayıda işletmeci ve yolcu kategorisi içeriyor. Bu çeşitlilik ham açık veri tablosunda kalınca hangi aracın, hangi dönemde ve hangi kullanıcı profiliyle öne çıktığını görmek zorlaşıyor."
 methodology:
-  - "İzmir Büyükşehir Belediyesi açık veri seti temizlenerek yıllık ve kategorik toplamlar çıkarıldı."
-  - "Dashboard kurgusu, araç bazlı kullanım ile yolcu türü dağılımını aynı hikâye içinde gösterdi."
-  - "Python ve Dash ile hazırlanan arayüz, tablo mantığını keşfedilebilir bir görsel düzene dönüştürdü."
-challenge: "Veri seti hem ulaşım modlarını hem de ulaşım dışı bazı belediye kullanım kalemlerini içerdiği için anlatının sadeleşmesi gerekiyordu. Aksi halde okuyucu ana ulaşım örüntüsünü göremiyordu."
-codeProof: "Çalışma, açık veri temizleme ile Dash tabanlı bir etkileşimli dashboard'u tek akışta birleştiriyor; bu da verinin yalnızca tabloda kalmak yerine kullanıcı tarafından sorgulanabilen bir yüzeye taşınmasını sağlıyor."
+  - "İzmir Büyükşehir Belediyesi açık veri seti aylık operatör toplamları ve yolcu türü serileri olarak yeniden düzenlendi."
+  - "Üst bölümde operatör trendi, sağ panelde seçili ay sıralaması ve alt bölümde yolcu kompozisyonu birlikte çalışacak şekilde tasarlandı."
+  - "Okuyucunun ay seçimini kaybetmeden ilerleyebilmesi için tüm görünüm aynı seçim kilidine bağlandı."
+challenge: "Veri seti hem ulaşım modlarını hem de belediye kartı kullanımının farklı türlerini içerdiği için ana ritmi kaybetmeden okumayı sadeleştirmek gerekiyordu. Tek bir grafik yeterli olmadığından ama iç içe dashboard kutuları da istenmediğinden, anlatıyı tek çerçeveli bağlı görünüm olarak yeniden kurdum."
+codeProof: "Çalışma, eski dış dashboard yerine yerel veri modülleriyle çalışan React grafiklerini kullanıyor. Böylece operatör trendi ve yolcu bileşimi, haber akışı içinde aynı ay seçimi üzerinden birlikte okunabiliyor."
 conclusion: "Bu proje, İzmir'in toplu taşıma sistemindeki baskın araçları ve yolcu profillerini görünür kılıyor; açık verinin, iyi kurgulanmış bir arayüzle çok daha anlaşılır hale gelebileceğini gösteriyor."
 summaryEn: "An interactive analysis of Izmir public transportation usage between 2021 and 2023 based on open card-usage data."
-role: "Open data analysis, dashboard design, Python workflow"
-impact: "Connects city-scale mobility data to a readable dashboard and concrete public-service insights."
+role: "Açık veri modelleme, ulaşım anlatısı, etkileşim tasarımı"
+impact: "Kent ölçeğindeki hareketlilik verisini, kamu hizmeti tartışmasına bağlanabilen okunur bir analiz yüzeyine dönüştürüyor."
 relatedContent:
   - collection: "articles"
     slug: "izmir-coronavirus-toplu-tasima"
@@ -41,62 +41,31 @@ relatedContent:
     slug: "izmir-yas-analizi"
 ---
 
-İzmir, birçok alternatifle Türkiye'nin en etkili toplu taşıma sistemlerinden birine sahip. Tramvay, metro ve İZBAN gibi raylı ulaşım araçlarının yanı sıra, körfezi dolaşan arabalı feribotları ve vapurları, ESHOT ve İZULAŞ otobüsleri, İZTAŞIT gibi dolmuş alternatifleriyle İzmirliler bir yerden bir yere ulaşabilmek için birçok imkâna sahip.
+import IzmirTransportUsageExplorer from "../../components/mdx/charts/IzmirTransportUsageExplorer";
 
-Bu toplu taşıma sistemlerini kullanmak için "İzmirimKart" adı verilen bir kart kullanılıyor. Bu kart ile toplu taşıma araçlarının yanı sıra, belediyenin farklı tesislerinden de faydalanılabiliyor.
+İzmir'in toplu taşıma sistemi, tek bir araç türüne değil çok katmanlı bir ağa dayanıyor. Otobüsler, metro, İZBAN, vapurlar ve diğer belediye bağlantıları kentin günlük hareketini birlikte taşıyor. Ancak bu ağın hangi dönemlerde hangi taşıyıcıyla öne çıktığını çıplak tabloya bakarak anlamak kolay değil.
 
-[İzmir Büyükşehir Belediyesi Açık Veri Portalı'ndan](https://acikveri.bizizmir.com/tr/dataset/izmirim-kart-kullanim-istatistikleri) edindiğim veriler ile bu kullanımlara ışık tutmak için bir grafik hazırladım. Veriseti, 2021 ile 2023 Ekim ayı arasındaki İzmirimKart kullanım sayılarını içeriyor.
+[İzmir Büyükşehir Belediyesi Açık Veri Portalı'ndaki](https://acikveri.bizizmir.com/tr/dataset/izmirim-kart-kullanim-istatistikleri) İzmirimKart verisi, 2021 başından 2024 Martına kadar sistemin aylık ritmini izlemeye izin veriyor. Bu sürümde eski dashboard düzeni kaldırıldı; bunun yerine işletmeci trendi ile yolcu bileşimini aynı ay seçimine bağlayan tek çerçeveli bir editoryal kurgu kuruldu.
 
-## Nasıl Hazırladım?
+Üst bölüm işletmecilerin aylık seyrini, sağ panel seçili ayın sıralamasını, alt bölüm ise aynı ayın yolcu türü kompozisyonunu gösteriyor. Böylece okur bir dönemi sabitleyip hem hangi işletmecinin öne çıktığını hem de bu hareketin hangi kullanıcı profiliyle oluştuğunu aynı anda okuyabiliyor.
 
-Bu verisetini görselleştirmek için açık kaynak verisetini kullandım. Daha sonra, en etkili görselleştirmeyi tasarlamak için ChatGPT'den faydalandım ve Python yazılım dilini kullanarak, interaktif bir dashboard oluşturdum. Bunu **Dash** uygulaması olarak gerçekleştirdim ve PythonAnywhere'de barındırdım.
+<IzmirTransportUsageExplorer client:load />
 
-## Veri Analizi
+## Ana bulgular
 
-### Ulaşım Kullanımının Yıllık Karşılaştırması
+- Otobüs ağı, toplam hareketin ana taşıyıcısı olmaya devam ediyor. Kent içi yaygın erişim, bu katmanı diğer işletmecilerden belirgin biçimde ayırıyor.
+- Metro ve İZBAN, özellikle düzenli iş ve okul akışının yoğunlaştığı dönemlerde ikinci büyük omurga olarak öne çıkıyor.
+- Yolcu bileşiminde tam yolcu ve öğrenci grupları, sistemin ritmini belirleyen iki ana kütleyi oluşturuyor. Bu da eğitim takvimi ile gündelik işe gidiş geliş akışının toplu taşımadaki ağırlığını gösteriyor.
 
-| Yıl                 | Yolcu Sayısı  |
-| ------------------- | ------------- |
-| 2021                | 341.180.791   |
-| 2022                | 908.783.788   |
-| 2023 (Ekim'e kadar) | 1.036.819.106 |
+## Neden bu görünüm?
 
-Veriler, 2021'den 2023 Ekim ayına kadar İzmirlilerin toplu taşıma araçlarını kullanımında önemli bir artış olduğunu gösteriyor. Bu artışta yeni hatların açılmasının ve toplu taşıma yatırımları gibi gelişmelerin rol oynadığını söyleyebiliriz.
+Yıllık toplamlar hangi aracın büyük olduğunu söylüyor; ama ne zaman hızlandığını, hangi dönemde yavaşladığını ve bu değişimin hangi yolcu gruplarıyla geldiğini göstermiyor. Bu nedenle görsel sistem, tek bir tablo ya da ayrı ayrı kutular yerine, ortak ay seçimine bağlı paneller olarak tasarlandı.
 
-### En Çok Kullanılan Toplu Taşıma Aracı: ESHOT
+Bu yapı özellikle mevsimsel dalgalanmayı ve öğrenci hareketinin sisteme etkisini okumayı kolaylaştırıyor. Belirli bir ay sabitlendiğinde aynı dönemin hem işletmeci sıralaması hem de kullanıcı bileşimi birlikte görülebiliyor.
 
-Yıllar boyunca en çok kullanılan ulaşım hizmet sağlayıcısı, toplam **1 milyar 300 milyon 350 bin 366** yolcu ile ESHOT.
+## Sonuç
 
-### Toplam Kullanımına Göre Toplu Taşıma Hizmetleri Sıralaması
-
-1. **ESHOT:** 1.300.350.366 yolcu
-2. **METRO:** 441.657.570 yolcu
-3. **İZBAN:** 407.345.272 yolcu
-4. **İZULAŞ:** 309.472.182 yolcu
-5. **Tramvay Konak:** 111.765.156 yolcu
-6. **İZDENİZ:** 70.184.366 yolcu
-7. **Tramvay Karşıyaka:** 43.154.204 yolcu
-8. **İZTAŞIT Menemen:** 34.106.400 yolcu
-9. **Seferihisar Mot. Taş. Kooperatifi:** 19.624.816 yolcu
-
-### Toplam Kullanımına Göre Yolcu Türü Sıralamaları
-
-1. **Tam Yolcu:** 1.344.230.050 yolcu
-2. **Öğrenci:** 852.718.406 yolcu
-3. **Ücretsiz:** 455.622.914 yolcu
-4. **Personel:** 76.321.960 yolcu
-5. **Öğretmen:** 19.409.020 yolcu
-6. **Banka Kartı:** 7.697.444 yolcu
-
-## İçgörüler
-
-- Veriler, ESHOT'un en çok tercih edilen hizmet sağlayıcı olarak ortaya çıktığını göstermektedir. Bu, ESHOT'un geniş ağı, güvenilirliği veya halka cazip gelen diğer faktörleri yansıtabilir.
-- Kullanımda önde gelen Tam Yolcu kategorisi, nüfusun önemli bir bölümünün ulaşım ihtiyaçları için tam ücret ödediğini vurgulamaktadır.
-- Metro, Tramvay, İZDENİZ gibi araçlarda kullanılan Banka Kartı/Kredi Kartı ile ödeme imkânının İzmirliler tarafından ilgiyle karşılandığı söylenebilir.
-
-## Sınırlamalar
-
-15 bin satırı aşkın bir veriseti ile çalıştığım ve bu konuda çok deneyimimin olmamasından kaynaklı, analizlerde çok büyük olmamak kaydıyla rakamsal farklılıklar olabilir. Örneğin "yolcu" diye belirtilen sayıların içinde, toplam kullanımı ele alan verilerde Buz Pateni Pisti gibi ulaşım amaçlı kullanılmayan kullanımlar da yer almış olabilir.
+Kent içi hareketin büyük kısmı birkaç ana işletmecide toplanırken, kullanıcı profili çok daha parçalı bir yapı gösteriyor. Bu ikili tablo, toplu taşıma planlamasında yalnızca kapasiteyi değil sosyal erişimi de birlikte düşünmek gerektiğini hatırlatıyor. Aynı veri, okul takvimi, fiyat hassasiyeti ve kartlı erişim politikalarının ulaşım sistemini doğrudan etkilediğini de açık biçimde ortaya koyuyor.
 
 ---
 

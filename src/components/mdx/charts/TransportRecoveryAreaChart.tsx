@@ -86,12 +86,12 @@ export default function TransportRecoveryAreaChart() {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10 overflow-hidden">
+    <div className="w-full bg-white/[0.02] rounded-2xl p-4 sm:p-6 border border-white/[0.06] relative font-sans my-10 overflow-hidden">
       <div className="mb-6">
-        <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 uppercase tracking-tight">
+        <h3 className="text-lg sm:text-xl font-bold text-[#f3f1eb] uppercase tracking-tight">
           Public Transportation Recovery
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-xs text-[#71717a]">
           Weekly ridership volume stacked by transit mode (2021-2024)
         </p>
       </div>
@@ -116,14 +116,14 @@ export default function TransportRecoveryAreaChart() {
                   y2={y}
                   stroke="currentColor"
                   strokeDasharray="4 4"
-                  className="text-slate-100 dark:text-slate-800"
+                  className="text-white/[0.06]"
                 />
                 <text
                   x={padding.left - 10}
                   y={y}
                   textAnchor="end"
                   alignmentBaseline="middle"
-                  className="text-[10px] fill-slate-400 font-mono"
+                  className="text-[10px] fill-[#71717a] font-mono"
                 >
                   {Math.round(val / 1000000)}M
                 </text>
@@ -154,7 +154,7 @@ export default function TransportRecoveryAreaChart() {
                 x={getX(i)}
                 y={svgHeight - padding.bottom + 20}
                 textAnchor="middle"
-                className="text-[10px] fill-slate-400 font-mono"
+                className="text-[10px] fill-[#71717a] font-mono"
               >
                 {week.split('-')[0]}
               </text>
@@ -183,14 +183,14 @@ export default function TransportRecoveryAreaChart() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed pointer-events-none z-[100] bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 p-2.5 rounded-lg shadow-xl border border-white/10 dark:border-slate-200 min-w-[140px]"
+            className="fixed pointer-events-none z-[100] bg-[#1a1a1a]/95 backdrop-blur-md text-white p-2.5 rounded-lg shadow-xl border border-white/[0.08] min-w-[140px]"
             style={{
               left: Math.min(mousePos.x + 15, window.innerWidth - 160),
               top: Math.max(mousePos.y - 120, 10),
             }}
           >
-            <div className="flex justify-between items-center mb-1.5 border-b border-white/10 dark:border-slate-100 pb-1">
-              <span className="text-[10px] font-black tracking-widest uppercase text-slate-400 dark:text-slate-500">
+            <div className="flex justify-between items-center mb-1.5 border-b border-white/[0.08] pb-1">
+              <span className="text-[10px] font-black tracking-widest uppercase text-[#71717a]">
                 {weeks[hoveredWeekIndex]}
               </span>
             </div>
@@ -202,7 +202,7 @@ export default function TransportRecoveryAreaChart() {
                       className="w-1.5 h-1.5 rounded-full" 
                       style={{ backgroundColor: categoryColors[cat] }} 
                     />
-                    <span className="text-[10px] font-bold text-slate-300 dark:text-slate-600 uppercase">
+                    <span className="text-[10px] font-bold text-[#a1a1aa] uppercase">
                       {cat}
                     </span>
                   </div>
@@ -216,11 +216,11 @@ export default function TransportRecoveryAreaChart() {
         )}
       </AnimatePresence>
 
-      <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-slate-100 dark:border-slate-800/50">
+      <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-white/[0.06]">
         {categories.map(cat => (
           <div key={cat} className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: categoryColors[cat] }} />
-            <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300 uppercase tracking-wider">{cat}</span>
+            <span className="text-[11px] font-medium text-[#a1a1aa] uppercase tracking-wider">{cat}</span>
           </div>
         ))}
       </div>

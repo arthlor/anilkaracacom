@@ -38,7 +38,7 @@ const proofItems = [
   impact ? { label: 'Impact', value: impact } : undefined,
 ].filter((item): item is { label: string; value: string } => Boolean(item));
 
-const visibleTags = tags.slice(0, 3);
+const visibleTags = tags.slice(0, 2);
 ---
 
 <article class="group flex h-full flex-col gap-4">
@@ -47,7 +47,7 @@ const visibleTags = tags.slice(0, 3);
     target={external ? '_blank' : undefined}
     rel={external ? 'noopener noreferrer' : undefined}
     aria-label={ctaLabel ? `${ctaLabel}: ${title}` : `Open ${title}`}
-    class="block aspect-[1.36/1] overflow-hidden rounded-[20px] bg-white/[0.03] transition-all duration-500 group-hover:shadow-[0_20px_48px_rgba(0,0,0,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    class="block aspect-[1.36/1] overflow-hidden rounded-xl bg-white/[0.02] transition-all duration-500 group-hover:shadow-[0_12px_32px_rgba(0,0,0,0.25)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
   >
     <OptimizedImage
       src={image}
@@ -59,7 +59,7 @@ const visibleTags = tags.slice(0, 3);
     />
   </a>
 
-  <div class="flex flex-1 flex-col gap-4 pt-1">
+  <div class="flex flex-1 flex-col gap-3 pt-1">
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
       <p class="text-[0.72rem] font-semibold uppercase tracking-[0.14em]" style="color: var(--premium-accent);">
         {eyebrow}
@@ -89,10 +89,10 @@ const visibleTags = tags.slice(0, 3);
     </div>
 
     {proofItems.length > 0 && (
-      <div class="space-y-2 border-l border-white/10 pl-4">
+      <div class="flex flex-wrap gap-x-4 gap-y-1">
         {proofItems.map((item) => (
-          <p class="text-sm text-muted-foreground">
-            <span class="font-medium text-foreground">{item.label}:</span> {item.value}
+          <p class="text-[0.82rem] text-muted-foreground">
+            <span class="font-medium text-foreground/80">{item.label}:</span> {item.value}
           </p>
         ))}
       </div>
@@ -111,7 +111,7 @@ const visibleTags = tags.slice(0, 3);
         href={href}
         target={external ? '_blank' : undefined}
         rel={external ? 'noopener noreferrer' : undefined}
-        class="inline-flex items-center gap-2 text-[0.82rem] font-semibold tracking-wider uppercase text-foreground transition-all hover:gap-3 hover:text-primary"
+        class="inline-flex items-center gap-2 text-[0.78rem] font-medium tracking-wider uppercase text-muted-foreground transition-all hover:gap-3 hover:text-primary"
       >
         {ctaLabel}
         <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-1" />

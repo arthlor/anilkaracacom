@@ -294,11 +294,10 @@ pre {
   align-items: center;
   gap: 0.55rem;
   min-height: 2.75rem;
-  padding: 0.7rem 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
+  padding: 0.7rem 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
 }
@@ -313,29 +312,29 @@ pre {
   background:
     radial-gradient(
       circle at top left,
-      rgba(122, 242, 152, 0.11),
+      rgba(122, 242, 152, 0.04),
       transparent 30%
     ),
     radial-gradient(
       circle at bottom right,
-      rgba(255, 214, 133, 0.08),
+      rgba(255, 214, 133, 0.03),
       transparent 24%
     ),
     linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.03),
-      rgba(255, 255, 255, 0.015)
+      rgba(255, 255, 255, 0.018),
+      rgba(255, 255, 255, 0.008)
     );
 }
 
 .page-frame-soft {
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.028),
-      rgba(255, 255, 255, 0.015)
-    ),
-    rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+  margin: 3rem 0;
 }
 
 .page-section-head {
@@ -510,7 +509,8 @@ pre {
 /* Headings with better hierarchy */
 .prose-article h2 {
   @apply font-display font-bold text-text text-3xl mt-16 mb-6 pb-3;
-  border-bottom: 2px solid hsl(var(--primary) / 0.2);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, hsl(var(--primary) / 0.25), transparent 70%) 1;
 }
 
 .prose-article h3 {
@@ -714,4 +714,147 @@ pre {
 
 .callout-content p:last-child {
   @apply mb-0;
+}
+
+/* ===========================================
+   ARTICLE VISUALIZATION SYSTEM
+   =========================================== */
+
+.viz-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.viz-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.viz-toggle {
+  min-height: 2.2rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.viz-toggle:hover,
+.viz-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+  color: hsl(var(--foreground));
+  outline: none;
+}
+
+.viz-toggle[data-active="true"] {
+  background: rgba(122, 242, 152, 0.12);
+  color: var(--premium-cream);
+}
+
+.viz-search {
+  min-height: 2.5rem;
+  width: min(100%, 220px);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  color: hsl(var(--foreground));
+  padding: 0 0.95rem;
+  font-size: 0.84rem;
+}
+
+.viz-search::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.viz-search:focus {
+  outline: none;
+  border-color: rgba(122, 242, 152, 0.24);
+  box-shadow: 0 0 0 1px rgba(122, 242, 152, 0.16);
+}
+
+.viz-label {
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.viz-stat-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.viz-stat {
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.viz-stat strong {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: hsl(var(--foreground));
+}
+
+.viz-note {
+  font-size: 0.76rem;
+  line-height: 1.7;
+  color: hsl(var(--muted-foreground));
+}
+
+.viz-ranking-list {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.viz-ranking-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.7rem 0.8rem;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.viz-ranking-item:hover,
+.viz-ranking-item:focus-visible {
+  background: rgba(255, 255, 255, 0.04);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.viz-ranking-item[data-active="true"] {
+  background: rgba(122, 242, 152, 0.08);
+}
+
+.viz-divider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.08) 16%,
+    rgba(255, 255, 255, 0.08) 84%,
+    transparent
+  );
 }

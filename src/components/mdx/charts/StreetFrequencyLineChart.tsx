@@ -1,377 +1,282 @@
-import { useMemo, useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { TrendUp as TrendUpIcon } from "@phosphor-icons/react";
-import rawData from "@/data/yearly_accident_frequency_streets.json";
-import clsx from "clsx";
+import { useMemo, useState } from "react";
 
-// Curated colors for lines
+import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
+import { formatNumber } from "@/components/case-study/chartTheme";
+import rawData from "@/data/yearly_accident_frequency_streets.json";
+
+type StreetSeries = {
+  name: string;
+  x: number[];
+  y: number[];
+  color: string;
+};
+
+type RankedStreetRow = {
+  name: string;
+  value: number;
+  rank: number;
+  year: number;
+};
+
 const lineColors = [
-  "#f43f5e", // rose-500
-  "#3b82f6", // blue-500
-  "#10b981", // emerald-500
-  "#8b5cf6", // violet-500
-  "#f59e0b", // amber-500
-  "#06b6d4", // cyan-500
-  "#d946ef", // fuchsia-500
-  "#84cc16", // lime-500
-  "#ec4899", // pink-500
-  "#14b8a6", // teal-500
+  "#f46f88",
+  "#68d3f5",
+  "#7af298",
+  "#9b8cff",
+  "#f6c56d",
+  "#8c98ad",
+  "#63d3a6",
+  "#e879f9",
+  "#f97316",
+  "#2dd4bf",
 ];
 
-interface Point {
-  x: number;
-  y: number;
-}
-
 export default function StreetFrequencyLineChart() {
-  const [hoveredStreet, setHoveredStreet] = useState<string | null>(null);
-  const [activeYearIndex, setActiveYearIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const parsed = useMemo<{
+    series: StreetSeries[];
+    years: number[];
+    rankingByYear: RankedStreetRow[][];
+    positions: Map<string, Array<{ year: number; rank: number; value: number }>>;
+  }>(() => {
+    const series = (rawData as any[])
+      .filter((entry) => entry.type === "scatter")
+      .map(
+        (entry, index) =>
+          ({
+            name: entry.name,
+            x: entry.x,
+            y: entry.y,
+            color: lineColors[index % lineColors.length] ?? "#8c98ad",
+          }) satisfies StreetSeries,
+      );
 
-  const { series, years, minYear, maxYear, maxY } = useMemo(() => {
-    let maxYVal = 0;
-
-    // Sort streets by their most recent year value (or overall max)
-    const validSeries = (rawData as any[]).filter(
-      (s) => s.type === "scatter" && s.x && s.y,
+    const years = series[0]?.x ?? [];
+    const rankingByYear = years.map((year: number, yearIndex: number) =>
+      [...series]
+        .map((street) => ({
+          name: street.name,
+          value: street.y[yearIndex] ?? 0,
+        }))
+        .sort((left, right) => right.value - left.value)
+        .map((row, rank) => ({ ...row, rank: rank + 1, year })),
     );
-    validSeries.sort((a, b) => Math.max(...b.y) - Math.max(...a.y));
 
-    validSeries.forEach((s) => {
-      const seriesMax = Math.max(...s.y);
-      if (seriesMax > maxYVal) maxYVal = seriesMax;
-    });
+    const positions = new Map<string, Array<{ year: number; rank: number; value: number }>>();
 
-    const parsedSeries = validSeries.map((s, idx) => ({
-      name: s.name,
-      x: s.x,
-      y: s.y,
-      color: lineColors[idx % lineColors.length],
-    }));
+    for (const rankedYear of rankingByYear) {
+      for (const row of rankedYear) {
+        if (!positions.has(row.name)) {
+          positions.set(row.name, []);
+        }
+        positions.get(row.name)?.push({
+          year: row.year,
+          rank: row.rank,
+          value: row.value,
+        });
+      }
+    }
 
-    return {
-      series: parsedSeries,
-      years: parsedSeries[0]?.x || [],
-      minYear: Math.min(...(parsedSeries[0]?.x || [0])),
-      maxYear: Math.max(...(parsedSeries[0]?.x || [0])),
-      maxY: maxYVal,
-    };
+    return { series, years, rankingByYear, positions };
   }, []);
 
-  // SVG Geometry constants
-  const viewBoxWidth = 800;
-  const viewBoxHeight = 400;
-  const padding = { top: 40, right: 30, bottom: 40, left: 40 }; // Reduced right padding since we hide labels on mobile
+  const [selectedStreet, setSelectedStreet] = useState(parsed.series[0]?.name ?? "");
+  const [hoveredStreet, setHoveredStreet] = useState<string | null>(null);
+  const fallbackStreet = parsed.series[0];
 
-  const drawWidth = viewBoxWidth - padding.left - padding.right;
-  const drawHeight = viewBoxHeight - padding.top - padding.bottom;
+  if (!fallbackStreet) {
+    return null;
+  }
 
-  const mapX = (val: number) => {
-    if (maxYear === minYear) return padding.left + drawWidth / 2;
-    return padding.left + ((val - minYear) / (maxYear - minYear)) * drawWidth;
-  };
+  const activeStreetName = hoveredStreet ?? selectedStreet;
+  const activeStreet =
+    parsed.series.find((street) => street.name === activeStreetName) ?? fallbackStreet;
+  const activePositions = parsed.positions.get(activeStreetName) ?? [];
 
-  const mapY = (val: number) => {
-    return padding.top + drawHeight - (val / maxY) * drawHeight;
-  };
+  const width = 720;
+  const height = 360;
+  const padding = { top: 24, right: 32, bottom: 28, left: 48 };
+  const innerWidth = width - padding.left - padding.right;
+  const innerHeight = height - padding.top - padding.bottom;
 
-  // Generate smooth SVG paths
-  const generatePath = (points: Point[]) => {
-    if (points.length === 0) return "";
-    if (points.length === 1 && points[0])
-      return `M ${mapX(points[0].x)},${mapY(points[0].y)}`;
-
-    let path = `M ${mapX(points[0]!.x)},${mapY(points[0]!.y)}`;
-
-    for (let i = 0; i < points.length - 1; i++) {
-      const p1 = points[i];
-      const p2 = points[i + 1];
-      if (!p1 || !p2) continue;
-
-      const x1 = mapX(p1.x);
-      const y1 = mapY(p1!.y);
-      const x2 = mapX(p2!.x);
-      const y2 = mapY(p2!.y);
-
-      // Simple cubic bezier for smoothing
-      const cpX1 = x1 + (x2 - x1) / 3;
-      const cpY1 = y1;
-      const cpX2 = x1 + ((x2 - x1) * 2) / 3;
-      const cpY2 = y2;
-
-      path += ` C ${cpX1},${cpY1} ${cpX2},${cpY2} ${x2},${y2}`;
-    }
-    return path;
-  };
+  const top2024 = parsed.rankingByYear.at(-1)?.slice(0, 8) ?? [];
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10"
-    >
-      <div className="mb-6 sm:mb-8 pr-2">
-        <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
-          <TrendUpIcon weight="duotone" className="text-accent-500" />
-          Yıllık Kaza Sıklığı
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
-          Hangi arterlerde risk artıyor veya azalıyor? (2021-2024)
-        </p>
-      </div>
-
-      <div className="relative w-full aspect-[4/3] sm:aspect-[2/1] mt-6 select-none bg-slate-50/50 dark:bg-slate-800/10 rounded-xl overflow-hidden">
-        <svg
-          viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
-          className="w-full h-full overflow-visible"
-          preserveAspectRatio="xMidYMid meet"
-          onMouseLeave={() => setActiveYearIndex(null)}
-        >
-          {/* Y Axis Grid Lines */}
-          {[1, 0.75, 0.5, 0.25, 0].map((step) => (
-            <g key={step}>
-              <line
-                x1={padding.left}
-                y1={mapY(maxY * step)}
-                x2={viewBoxWidth - padding.right}
-                y2={mapY(maxY * step)}
-                className="stroke-slate-200 dark:stroke-slate-800"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-              />
-              <text
-                x={padding.left - 10}
-                y={mapY(maxY * step)}
-                className="fill-slate-400 dark:fill-slate-300 text-[10px] font-mono"
-                textAnchor="end"
-                alignmentBaseline="middle"
-                dy="4"
-              >
-                {Math.round(maxY * step)}
-              </text>
-            </g>
-          ))}
-
-          {/* Interactive Hover Columns (to snap Active Year) */}
-          {years.map((year: number, idx: number) => {
-            const x = mapX(year);
-            const colWidth = drawWidth / (years.length - 1 || 1);
-            return (
-              <rect
-                key={year}
-                x={x - colWidth / 2}
-                y={padding.top}
-                width={colWidth}
-                height={drawHeight}
-                fill="transparent"
-                className="cursor-crosshair"
-                onMouseEnter={() => setActiveYearIndex(idx)}
-              />
-            );
-          })}
-
-          {/* Active Year Crosshair */}
-          <AnimatePresence>
-            {activeYearIndex !== null && (
-              <motion.g
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0, transition: { duration: 0.1 } }}
-              >
-                <line
-                  x1={mapX(years[activeYearIndex])}
-                  y1={padding.top}
-                  x2={mapX(years[activeYearIndex])}
-                  y2={viewBoxHeight - padding.bottom}
-                  className="stroke-slate-300 dark:stroke-slate-600"
-                  strokeWidth="2"
-                  strokeDasharray="6 6"
-                />
-              </motion.g>
+    <ArticleChartFrame
+      eyebrow="Arter baskısı"
+      title="Risk hangi ana arterlerde kalıcılaşıyor?"
+      description="Bu sıralama akışı, yıllar boyunca üst sıralarda kalan arterleri ve son dönemde hızla tırmananları aynı yüzeyde gösteriyor."
+      aside={
+        <div className="space-y-5">
+          <div className="viz-stat-grid">
+            <div className="viz-stat border-t-0 pt-0">
+              <span className="viz-label">Odak arter</span>
+              <strong>{activeStreetName}</strong>
+            </div>
+            {activePositions[0] && activePositions.at(-1) && (
+              <div className="viz-stat">
+                <span className="viz-label">Sıra değişimi</span>
+                <strong>
+                  #{activePositions[0].rank} → #{activePositions.at(-1)?.rank}
+                </strong>
+              </div>
             )}
-          </AnimatePresence>
+            {activeStreet && (
+              <div className="viz-stat">
+                <span className="viz-label">2024 kayıt sayısı</span>
+                <strong>{formatNumber(activeStreet.y.at(-1) ?? 0)}</strong>
+              </div>
+            )}
+          </div>
 
-          {/* X Axis Labels */}
-          {years.map((year: number, idx: number) => {
-            const isHovered = activeYearIndex === idx;
-            return (
-              <text
-                key={year}
-                x={mapX(year)}
-                y={viewBoxHeight - padding.bottom + 25}
-                className={clsx(
-                  "text-xs font-medium transition-colors duration-200",
-                  isHovered
-                    ? "fill-accent-500 font-bold"
-                    : "fill-slate-500 dark:fill-slate-300",
-                )}
-                textAnchor="middle"
-              >
-                {year}
-              </text>
-            );
-          })}
+          <div className="viz-divider" />
 
-          {/* Lines */}
-          {series.map((s, sIdx: number) => {
-            const points = s.x.map((x: number, i: number) => ({
-              x,
-              y: s.y[i],
-            }));
-            const d = generatePath(points);
-            const isHovered = hoveredStreet === s.name;
-            const dim = hoveredStreet !== null && !isHovered;
-
-            return (
-              <g
-                key={s.name}
-                className="transition-opacity duration-300"
-                style={{ opacity: dim ? 0.2 : 1, zIndex: isHovered ? 10 : 1 }}
-              >
-                {/* Visible Path */}
-                <motion.path
-                  d={d}
-                  fill="none"
-                  stroke={s.color}
-                  strokeWidth={isHovered ? 4 : 2}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  initial={{ pathLength: 0 }}
-                  whileInView={{ pathLength: 1 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{
-                    duration: 1.5,
-                    delay: sIdx * 0.1,
-                    ease: "easeOut",
-                  }}
-                  className="pointer-events-none"
-                />
-
-                {/* Invisible thicker path for easier hovering */}
-                <path
-                  d={d}
-                  fill="none"
-                  stroke="transparent"
-                  strokeWidth="20"
-                  className="cursor-pointer"
-                  onMouseEnter={() => setHoveredStreet(s.name)}
+          <div>
+            <p className="viz-label">2024 ilk sekiz</p>
+            <div className="viz-ranking-list mt-3">
+              {top2024.map((row: RankedStreetRow) => (
+                <button
+                  key={row.name}
+                  type="button"
+                  className="viz-ranking-item text-left"
+                  data-active={row.name === activeStreetName}
+                  onClick={() => setSelectedStreet(row.name)}
+                  onMouseEnter={() => setHoveredStreet(row.name)}
                   onMouseLeave={() => setHoveredStreet(null)}
-                />
-
-                {/* Data Points */}
-                {points.map((p: Point, pIdx: number) => {
-                  const showPoint = isHovered || activeYearIndex === pIdx;
-                  return (
-                    <circle
-                      key={pIdx}
-                      cx={mapX(p.x)}
-                      cy={mapY(p.y)}
-                      r={showPoint ? 5 : 0}
-                      fill={s.color}
-                      stroke="white"
-                      strokeWidth="2"
-                      className="pointer-events-none transition-all duration-200"
-                    />
-                  );
-                })}
-
-                {/* Line End Label (Right side) */}
-                <motion.text
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.5, delay: 1.5 + sIdx * 0.1 }}
-                  x={mapX(points[points.length - 1].x) + 12}
-                  y={mapY(points[points.length - 1].y)}
-                  className="text-[10px] font-medium hidden sm:block pointer-events-none"
-                  fill={s.color}
-                  alignmentBaseline="middle"
-                  style={{ opacity: dim ? 0.3 : 1 }}
                 >
-                  {s.name.substring(0, 15)}
-                  {s.name.length > 15 ? "..." : ""}
-                </motion.text>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    #{row.rank}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {row.name}
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">
+                    {formatNumber(row.value)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      }
+      footer={
+        <div className="viz-note">
+          Üzerine gelmek hızlı önizleme sağlar, tıklamak arteri sabitler. Bir çizginin
+          aşağı inmesi, o arterin risk sıralamasında daha üst basamağa çıktığı anlamına gelir.
+        </div>
+      }
+    >
+      <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.015] p-4">
+        <div className="overflow-x-auto pb-1">
+          <svg viewBox={`0 0 ${width} ${height}`} className="min-w-[760px] overflow-visible">
+          {Array.from({ length: parsed.series.length }, (_, index) => {
+            const y = padding.top + (index / Math.max(parsed.series.length - 1, 1)) * innerHeight;
+            return (
+              <g key={`rank-${index + 1}`}>
+                <line
+                  x1={padding.left}
+                  x2={width - padding.right}
+                  y1={y}
+                  y2={y}
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeDasharray="4 6"
+                />
+                <text
+                  x={padding.left - 10}
+                  y={y + 4}
+                  textAnchor="end"
+                  className="fill-[rgba(243,241,235,0.45)] text-[10px]"
+                >
+                  #{index + 1}
+                </text>
               </g>
             );
           })}
-        </svg>
 
-        {/* Floating Tooltip Data Panel (HTML overlay over SVG so text renders sharply) */}
-        <AnimatePresence>
-          {activeYearIndex !== null && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md rounded-lg shadow-xl ring-1 ring-slate-200 dark:ring-slate-700 p-2.5 min-w-[150px] z-50 pointer-events-none"
-            >
-              <div className="text-center text-xs font-bold text-slate-800 dark:text-slate-100 mb-1.5 pb-1.5 border-b border-slate-100 dark:border-slate-800 uppercase tracking-wider">
-                {years[activeYearIndex]} Verileri
-              </div>
-              <div className="flex flex-col gap-1 max-h-[150px] overflow-y-auto no-scrollbar">
-                {/* Sort tooltip items descending by the active year's value */}
-                {[...series]
-                  .sort((a, b) => b.y[activeYearIndex] - a.y[activeYearIndex])
-                  .slice(0, 7)
-                  .map((s) => (
-                    <div
-                      key={s.name}
-                      className="flex justify-between items-center text-[10px] sm:text-[11px] gap-3"
-                    >
-                      <div className="flex items-center gap-1.5 flex-1 truncate">
-                        <div
-                          className="w-2 h-2 rounded-full flex-shrink-0"
-                          style={{ backgroundColor: s.color }}
-                        />
-                        <span
-                          className={clsx(
-                            "truncate text-slate-600 dark:text-slate-300",
-                            hoveredStreet === s.name &&
-                              "font-bold !text-slate-900 dark:!text-white",
-                          )}
+          {parsed.years.map((year: number, index: number) => {
+            const x = padding.left + (index / Math.max(parsed.years.length - 1, 1)) * innerWidth;
+            return (
+              <g key={year}>
+                <text
+                  x={x}
+                  y={height - 8}
+                  textAnchor="middle"
+                  className="fill-[rgba(243,241,235,0.68)] text-[11px] font-semibold"
+                >
+                  {year}
+                </text>
+              </g>
+            );
+          })}
+
+          {parsed.series.map((street) => {
+            const points = parsed.positions.get(street.name) ?? [];
+            const isActive = street.name === activeStreetName;
+            const path = points
+              .map((point, index) => {
+                const x = padding.left + (index / Math.max(parsed.years.length - 1, 1)) * innerWidth;
+                const y =
+                  padding.top +
+                  ((point.rank - 1) / Math.max(parsed.series.length - 1, 1)) * innerHeight;
+                return `${index === 0 ? "M" : "L"} ${x} ${y}`;
+              })
+              .join(" ");
+
+            return (
+              <g key={street.name} opacity={isActive ? 1 : 0.22}>
+                <path
+                  d={path}
+                  fill="none"
+                  stroke={street.color}
+                  strokeWidth={isActive ? 4.5 : 2.2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d={path}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth={16}
+                  onMouseEnter={() => setHoveredStreet(street.name)}
+                  onMouseLeave={() => setHoveredStreet(null)}
+                  onClick={() => setSelectedStreet(street.name)}
+                  style={{ cursor: "pointer" }}
+                />
+                {points.map((point, index) => {
+                  const x = padding.left + (index / Math.max(parsed.years.length - 1, 1)) * innerWidth;
+                  const y =
+                    padding.top +
+                    ((point.rank - 1) / Math.max(parsed.series.length - 1, 1)) * innerHeight;
+                  return (
+                    <g key={`${street.name}-${point.year}`}>
+                      <circle
+                        cx={x}
+                        cy={y}
+                        r={isActive ? 7 : 4}
+                        fill={street.color}
+                        stroke="rgba(17,17,17,0.92)"
+                        strokeWidth={isActive ? 3 : 2}
+                      />
+                      {isActive && (
+                        <text
+                          x={x}
+                          y={y - 12}
+                          textAnchor="middle"
+                          className="fill-[#f3f1eb] text-[10px] font-semibold"
                         >
-                          {s.name}
-                        </span>
-                      </div>
-                      <span
-                        className={clsx(
-                          "font-mono text-slate-800 dark:text-slate-100",
-                          hoveredStreet === s.name &&
-                            "font-bold text-accent-500",
-                        )}
-                      >
-                        {s.y[activeYearIndex]}
-                      </span>
-                    </div>
-                  ))}
-                {series.length > 7 && (
-                  <div className="text-center text-[10px] text-slate-400 mt-1 italic">
-                    +{series.length - 7} diğer cadde
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                          {point.value}
+                        </text>
+                      )}
+                    </g>
+                  );
+                })}
+              </g>
+            );
+          })}
+          </svg>
+        </div>
       </div>
-
-      {/* Mobile Legend (since right-side inline labels might be hidden) */}
-      <div className="mt-6 flex flex-wrap gap-2 sm:hidden">
-        {series.map((s) => (
-          <span
-            key={s.name + "-mob"}
-            className="flex items-center gap-1 text-[10px] bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded"
-            onClick={() =>
-              setHoveredStreet(hoveredStreet === s.name ? null : s.name)
-            }
-          >
-            <div
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: s.color }}
-            />
-            {s.name.substring(0, 10)}..
-          </span>
-        ))}
-      </div>
-    </div>
+    </ArticleChartFrame>
   );
 }

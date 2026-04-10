@@ -19,7 +19,7 @@ export function VisualizationIsland<TState = never>({
   return (
     <section
       className={cn(
-        "bg-white/[0.03] p-4 shadow-lg shadow-black/5 sm:p-6",
+        "bg-white/[0.02] p-4 border border-white/[0.06] rounded-2xl sm:p-6",
         className,
       )}
     >

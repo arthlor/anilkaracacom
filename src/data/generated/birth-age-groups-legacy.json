@@ -1,0 +1,1245 @@
+{
+  "distribution": [
+    {
+      "year": 2023,
+      "ageGroup": "<15",
+      "births": 130
+    },
+    {
+      "year": 2023,
+      "ageGroup": "15-17",
+      "births": 6505
+    },
+    {
+      "year": 2023,
+      "ageGroup": "18-19",
+      "births": 26946
+    },
+    {
+      "year": 2023,
+      "ageGroup": "20-24",
+      "births": 195558
+    },
+    {
+      "year": 2023,
+      "ageGroup": "25-29",
+      "births": 322094
+    },
+    {
+      "year": 2023,
+      "ageGroup": "30-34",
+      "births": 249364
+    },
+    {
+      "year": 2023,
+      "ageGroup": "35-39",
+      "births": 119757
+    },
+    {
+      "year": 2023,
+      "ageGroup": "40-44",
+      "births": 30592
+    },
+    {
+      "year": 2023,
+      "ageGroup": "45-49",
+      "births": 2077
+    },
+    {
+      "year": 2023,
+      "ageGroup": "50+",
+      "births": 327
+    },
+    {
+      "year": 2022,
+      "ageGroup": "50+",
+      "births": 327
+    },
+    {
+      "year": 2022,
+      "ageGroup": "<15",
+      "births": 159
+    },
+    {
+      "year": 2022,
+      "ageGroup": "15-17",
+      "births": 7101
+    },
+    {
+      "year": 2022,
+      "ageGroup": "18-19",
+      "births": 30187
+    },
+    {
+      "year": 2022,
+      "ageGroup": "20-24",
+      "births": 219854
+    },
+    {
+      "year": 2022,
+      "ageGroup": "25-29",
+      "births": 343161
+    },
+    {
+      "year": 2022,
+      "ageGroup": "30-34",
+      "births": 268322
+    },
+    {
+      "year": 2022,
+      "ageGroup": "35-39",
+      "births": 130384
+    },
+    {
+      "year": 2022,
+      "ageGroup": "40-44",
+      "births": 33994
+    },
+    {
+      "year": 2022,
+      "ageGroup": "45-49",
+      "births": 2247
+    },
+    {
+      "year": 2022,
+      "ageGroup": "50+",
+      "births": 284
+    },
+    {
+      "year": 2021,
+      "ageGroup": "50+",
+      "births": 284
+    },
+    {
+      "year": 2021,
+      "ageGroup": "<15",
+      "births": 123
+    },
+    {
+      "year": 2021,
+      "ageGroup": "15-17",
+      "births": 7202
+    },
+    {
+      "year": 2021,
+      "ageGroup": "18-19",
+      "births": 32373
+    },
+    {
+      "year": 2021,
+      "ageGroup": "20-24",
+      "births": 231460
+    },
+    {
+      "year": 2021,
+      "ageGroup": "25-29",
+      "births": 356905
+    },
+    {
+      "year": 2021,
+      "ageGroup": "30-34",
+      "births": 278933
+    },
+    {
+      "year": 2021,
+      "ageGroup": "35-39",
+      "births": 137308
+    },
+    {
+      "year": 2021,
+      "ageGroup": "40-44",
+      "births": 33981
+    },
+    {
+      "year": 2021,
+      "ageGroup": "45-49",
+      "births": 2063
+    },
+    {
+      "year": 2021,
+      "ageGroup": "50+",
+      "births": 166
+    },
+    {
+      "year": 2020,
+      "ageGroup": "50+",
+      "births": 166
+    },
+    {
+      "year": 2020,
+      "ageGroup": "<15",
+      "births": 136
+    },
+    {
+      "year": 2020,
+      "ageGroup": "15-17",
+      "births": 8288
+    },
+    {
+      "year": 2020,
+      "ageGroup": "18-19",
+      "births": 37976
+    },
+    {
+      "year": 2020,
+      "ageGroup": "20-24",
+      "births": 247697
+    },
+    {
+      "year": 2020,
+      "ageGroup": "25-29",
+      "births": 361272
+    },
+    {
+      "year": 2020,
+      "ageGroup": "30-34",
+      "births": 279585
+    },
+    {
+      "year": 2020,
+      "ageGroup": "35-39",
+      "births": 143005
+    },
+    {
+      "year": 2020,
+      "ageGroup": "40-44",
+      "births": 33417
+    },
+    {
+      "year": 2020,
+      "ageGroup": "45-49",
+      "births": 2642
+    },
+    {
+      "year": 2020,
+      "ageGroup": "50+",
+      "births": 234
+    },
+    {
+      "year": 2019,
+      "ageGroup": "50+",
+      "births": 234
+    },
+    {
+      "year": 2019,
+      "ageGroup": "<15",
+      "births": 207
+    },
+    {
+      "year": 2019,
+      "ageGroup": "15-17",
+      "births": 10110
+    },
+    {
+      "year": 2019,
+      "ageGroup": "18-19",
+      "births": 44015
+    },
+    {
+      "year": 2019,
+      "ageGroup": "20-24",
+      "births": 265490
+    },
+    {
+      "year": 2019,
+      "ageGroup": "25-29",
+      "births": 380337
+    },
+    {
+      "year": 2019,
+      "ageGroup": "30-34",
+      "births": 294301
+    },
+    {
+      "year": 2019,
+      "ageGroup": "35-39",
+      "births": 154429
+    },
+    {
+      "year": 2019,
+      "ageGroup": "40-44",
+      "births": 33463
+    },
+    {
+      "year": 2019,
+      "ageGroup": "45-49",
+      "births": 2760
+    },
+    {
+      "year": 2019,
+      "ageGroup": "50+",
+      "births": 265
+    },
+    {
+      "year": 2018,
+      "ageGroup": "50+",
+      "births": 265
+    },
+    {
+      "year": 2018,
+      "ageGroup": "<15",
+      "births": 251
+    },
+    {
+      "year": 2018,
+      "ageGroup": "15-17",
+      "births": 12157
+    },
+    {
+      "year": 2018,
+      "ageGroup": "18-19",
+      "births": 48920
+    },
+    {
+      "year": 2018,
+      "ageGroup": "20-24",
+      "births": 287163
+    },
+    {
+      "year": 2018,
+      "ageGroup": "25-29",
+      "births": 395350
+    },
+    {
+      "year": 2018,
+      "ageGroup": "30-34",
+      "births": 307415
+    },
+    {
+      "year": 2018,
+      "ageGroup": "35-39",
+      "births": 163455
+    },
+    {
+      "year": 2018,
+      "ageGroup": "40-44",
+      "births": 34287
+    },
+    {
+      "year": 2018,
+      "ageGroup": "45-49",
+      "births": 2461
+    },
+    {
+      "year": 2018,
+      "ageGroup": "50+",
+      "births": 293
+    },
+    {
+      "year": 2017,
+      "ageGroup": "50+",
+      "births": 293
+    },
+    {
+      "year": 2017,
+      "ageGroup": "<15",
+      "births": 295
+    },
+    {
+      "year": 2017,
+      "ageGroup": "15-17",
+      "births": 15282
+    },
+    {
+      "year": 2017,
+      "ageGroup": "18-19",
+      "births": 55058
+    },
+    {
+      "year": 2017,
+      "ageGroup": "20-24",
+      "births": 304227
+    },
+    {
+      "year": 2017,
+      "ageGroup": "25-29",
+      "births": 405568
+    },
+    {
+      "year": 2017,
+      "ageGroup": "30-34",
+      "births": 311058
+    },
+    {
+      "year": 2017,
+      "ageGroup": "35-39",
+      "births": 166851
+    },
+    {
+      "year": 2017,
+      "ageGroup": "40-44",
+      "births": 33493
+    },
+    {
+      "year": 2017,
+      "ageGroup": "45-49",
+      "births": 2445
+    },
+    {
+      "year": 2017,
+      "ageGroup": "50+",
+      "births": 384
+    },
+    {
+      "year": 2016,
+      "ageGroup": "50+",
+      "births": 384
+    },
+    {
+      "year": 2016,
+      "ageGroup": "<15",
+      "births": 309
+    },
+    {
+      "year": 2016,
+      "ageGroup": "15-17",
+      "births": 17099
+    },
+    {
+      "year": 2016,
+      "ageGroup": "18-19",
+      "births": 59244
+    },
+    {
+      "year": 2016,
+      "ageGroup": "20-24",
+      "births": 309470
+    },
+    {
+      "year": 2016,
+      "ageGroup": "25-29",
+      "births": 406808
+    },
+    {
+      "year": 2016,
+      "ageGroup": "30-34",
+      "births": 314256
+    },
+    {
+      "year": 2016,
+      "ageGroup": "35-39",
+      "births": 162411
+    },
+    {
+      "year": 2016,
+      "ageGroup": "40-44",
+      "births": 33189
+    },
+    {
+      "year": 2016,
+      "ageGroup": "45-49",
+      "births": 2362
+    },
+    {
+      "year": 2016,
+      "ageGroup": "50+",
+      "births": 479
+    },
+    {
+      "year": 2015,
+      "ageGroup": "50+",
+      "births": 479
+    },
+    {
+      "year": 2015,
+      "ageGroup": "<15",
+      "births": 321
+    },
+    {
+      "year": 2015,
+      "ageGroup": "15-17",
+      "births": 18841
+    },
+    {
+      "year": 2015,
+      "ageGroup": "18-19",
+      "births": 61559
+    },
+    {
+      "year": 2015,
+      "ageGroup": "20-24",
+      "births": 315594
+    },
+    {
+      "year": 2015,
+      "ageGroup": "25-29",
+      "births": 414956
+    },
+    {
+      "year": 2015,
+      "ageGroup": "30-34",
+      "births": 323103
+    },
+    {
+      "year": 2015,
+      "ageGroup": "35-39",
+      "births": 152617
+    },
+    {
+      "year": 2015,
+      "ageGroup": "40-44",
+      "births": 35224
+    },
+    {
+      "year": 2015,
+      "ageGroup": "45-49",
+      "births": 2493
+    },
+    {
+      "year": 2015,
+      "ageGroup": "50+",
+      "births": 444
+    },
+    {
+      "year": 2014,
+      "ageGroup": "50+",
+      "births": 444
+    },
+    {
+      "year": 2014,
+      "ageGroup": "<15",
+      "births": 436
+    },
+    {
+      "year": 2014,
+      "ageGroup": "15-17",
+      "births": 20682
+    },
+    {
+      "year": 2014,
+      "ageGroup": "18-19",
+      "births": 65860
+    },
+    {
+      "year": 2014,
+      "ageGroup": "20-24",
+      "births": 327116
+    },
+    {
+      "year": 2014,
+      "ageGroup": "25-29",
+      "births": 416737
+    },
+    {
+      "year": 2014,
+      "ageGroup": "30-34",
+      "births": 327552
+    },
+    {
+      "year": 2014,
+      "ageGroup": "35-39",
+      "births": 144950
+    },
+    {
+      "year": 2014,
+      "ageGroup": "40-44",
+      "births": 34276
+    },
+    {
+      "year": 2014,
+      "ageGroup": "45-49",
+      "births": 2619
+    },
+    {
+      "year": 2014,
+      "ageGroup": "50+",
+      "births": 374
+    },
+    {
+      "year": 2013,
+      "ageGroup": "50+",
+      "births": 374
+    },
+    {
+      "year": 2013,
+      "ageGroup": "<15",
+      "births": 449
+    },
+    {
+      "year": 2013,
+      "ageGroup": "15-17",
+      "births": 21967
+    },
+    {
+      "year": 2013,
+      "ageGroup": "18-19",
+      "births": 67847
+    },
+    {
+      "year": 2013,
+      "ageGroup": "20-24",
+      "births": 323274
+    },
+    {
+      "year": 2013,
+      "ageGroup": "25-29",
+      "births": 400292
+    },
+    {
+      "year": 2013,
+      "ageGroup": "30-34",
+      "births": 309422
+    },
+    {
+      "year": 2013,
+      "ageGroup": "35-39",
+      "births": 133272
+    },
+    {
+      "year": 2013,
+      "ageGroup": "40-44",
+      "births": 28992
+    },
+    {
+      "year": 2013,
+      "ageGroup": "45-49",
+      "births": 2911
+    },
+    {
+      "year": 2013,
+      "ageGroup": "50+",
+      "births": 393
+    },
+    {
+      "year": 2012,
+      "ageGroup": "50+",
+      "births": 393
+    },
+    {
+      "year": 2012,
+      "ageGroup": "<15",
+      "births": 568
+    },
+    {
+      "year": 2012,
+      "ageGroup": "15-17",
+      "births": 24098
+    },
+    {
+      "year": 2012,
+      "ageGroup": "18-19",
+      "births": 70299
+    },
+    {
+      "year": 2012,
+      "ageGroup": "20-24",
+      "births": 332232
+    },
+    {
+      "year": 2012,
+      "ageGroup": "25-29",
+      "births": 397945
+    },
+    {
+      "year": 2012,
+      "ageGroup": "30-34",
+      "births": 306208
+    },
+    {
+      "year": 2012,
+      "ageGroup": "35-39",
+      "births": 126055
+    },
+    {
+      "year": 2012,
+      "ageGroup": "40-44",
+      "births": 26116
+    },
+    {
+      "year": 2012,
+      "ageGroup": "45-49",
+      "births": 3454
+    },
+    {
+      "year": 2012,
+      "ageGroup": "50+",
+      "births": 416
+    }
+  ],
+  "byYear": [
+    {
+      "year": 2023,
+      "values": [
+        {
+          "ageGroup": "<15",
+          "births": 130
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 6505
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 26946
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 195558
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 322094
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 249364
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 119757
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 30592
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2077
+        },
+        {
+          "ageGroup": "50+",
+          "births": 327
+        }
+      ]
+    },
+    {
+      "year": 2022,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 327
+        },
+        {
+          "ageGroup": "<15",
+          "births": 159
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 7101
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 30187
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 219854
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 343161
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 268322
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 130384
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 33994
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2247
+        },
+        {
+          "ageGroup": "50+",
+          "births": 284
+        }
+      ]
+    },
+    {
+      "year": 2021,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 284
+        },
+        {
+          "ageGroup": "<15",
+          "births": 123
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 7202
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 32373
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 231460
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 356905
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 278933
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 137308
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 33981
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2063
+        },
+        {
+          "ageGroup": "50+",
+          "births": 166
+        }
+      ]
+    },
+    {
+      "year": 2020,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 166
+        },
+        {
+          "ageGroup": "<15",
+          "births": 136
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 8288
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 37976
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 247697
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 361272
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 279585
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 143005
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 33417
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2642
+        },
+        {
+          "ageGroup": "50+",
+          "births": 234
+        }
+      ]
+    },
+    {
+      "year": 2019,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 234
+        },
+        {
+          "ageGroup": "<15",
+          "births": 207
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 10110
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 44015
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 265490
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 380337
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 294301
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 154429
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 33463
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2760
+        },
+        {
+          "ageGroup": "50+",
+          "births": 265
+        }
+      ]
+    },
+    {
+      "year": 2018,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 265
+        },
+        {
+          "ageGroup": "<15",
+          "births": 251
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 12157
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 48920
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 287163
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 395350
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 307415
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 163455
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 34287
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2461
+        },
+        {
+          "ageGroup": "50+",
+          "births": 293
+        }
+      ]
+    },
+    {
+      "year": 2017,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 293
+        },
+        {
+          "ageGroup": "<15",
+          "births": 295
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 15282
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 55058
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 304227
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 405568
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 311058
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 166851
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 33493
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2445
+        },
+        {
+          "ageGroup": "50+",
+          "births": 384
+        }
+      ]
+    },
+    {
+      "year": 2016,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 384
+        },
+        {
+          "ageGroup": "<15",
+          "births": 309
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 17099
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 59244
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 309470
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 406808
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 314256
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 162411
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 33189
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2362
+        },
+        {
+          "ageGroup": "50+",
+          "births": 479
+        }
+      ]
+    },
+    {
+      "year": 2015,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 479
+        },
+        {
+          "ageGroup": "<15",
+          "births": 321
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 18841
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 61559
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 315594
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 414956
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 323103
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 152617
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 35224
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2493
+        },
+        {
+          "ageGroup": "50+",
+          "births": 444
+        }
+      ]
+    },
+    {
+      "year": 2014,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 444
+        },
+        {
+          "ageGroup": "<15",
+          "births": 436
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 20682
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 65860
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 327116
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 416737
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 327552
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 144950
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 34276
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2619
+        },
+        {
+          "ageGroup": "50+",
+          "births": 374
+        }
+      ]
+    },
+    {
+      "year": 2013,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 374
+        },
+        {
+          "ageGroup": "<15",
+          "births": 449
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 21967
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 67847
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 323274
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 400292
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 309422
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 133272
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 28992
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 2911
+        },
+        {
+          "ageGroup": "50+",
+          "births": 393
+        }
+      ]
+    },
+    {
+      "year": 2012,
+      "values": [
+        {
+          "ageGroup": "50+",
+          "births": 393
+        },
+        {
+          "ageGroup": "<15",
+          "births": 568
+        },
+        {
+          "ageGroup": "15-17",
+          "births": 24098
+        },
+        {
+          "ageGroup": "18-19",
+          "births": 70299
+        },
+        {
+          "ageGroup": "20-24",
+          "births": 332232
+        },
+        {
+          "ageGroup": "25-29",
+          "births": 397945
+        },
+        {
+          "ageGroup": "30-34",
+          "births": 306208
+        },
+        {
+          "ageGroup": "35-39",
+          "births": 126055
+        },
+        {
+          "ageGroup": "40-44",
+          "births": 26116
+        },
+        {
+          "ageGroup": "45-49",
+          "births": 3454
+        },
+        {
+          "ageGroup": "50+",
+          "births": 416
+        }
+      ]
+    }
+  ]
+}

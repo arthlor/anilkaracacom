@@ -13,8 +13,8 @@ interface Props {
 const { steps } = Astro.props;
 ---
 
-<section class="my-16" data-story-root>
-  <div class="sticky top-[78px] z-40 mb-12 -mx-4 px-4 py-4 backdrop-blur-lg bg-[#111111]/90 border-y border-white/10 md:mx-0 md:rounded-2xl md:border md:top-24">
+<section class="article-story-shell my-20" data-story-root>
+  <div class="sticky top-[78px] z-40 mb-12 -mx-4 px-4 py-3 backdrop-blur-xl bg-[#111111]/84 border-b border-white/[0.06] md:mx-0 md:rounded-[24px] md:border md:border-white/[0.06] md:top-24 lg:mb-14 lg:px-5">
     <div class="flex items-center gap-4 overflow-x-auto no-scrollbar" data-story-nav-root>
       <div class="flex gap-2">
         {steps.map((step, index) => (
@@ -23,10 +23,10 @@ const { steps } = Astro.props;
             data-story-nav
             data-story-target={step.id}
             class:list={[
-              'whitespace-nowrap rounded-full border px-5 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-300 backdrop-blur-md',
+              'whitespace-nowrap rounded-full border px-5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] transition-all duration-300',
               index === 0 
-                ? 'border-white/20 bg-white/10 text-white shadow-[0_4px_12px_rgba(0,0,0,0.1)]' 
-                : 'border-white/5 bg-white/5 text-slate-400 hover:border-white/15 hover:bg-white/10 hover:text-slate-200',
+                ? 'border-primary/30 bg-primary/10 text-primary' 
+                : 'border-white/[0.04] bg-white/[0.03] text-[#71717a] hover:border-white/[0.08] hover:bg-white/[0.05] hover:text-[#a1a1aa]',
             ]}
           >
             {step.label}
@@ -35,7 +35,7 @@ const { steps } = Astro.props;
       </div>
     </div>
   </div>
-  <div class="space-y-16">
+  <div class="space-y-[4.5rem]">
     <slot />
   </div>
 </section>
@@ -72,12 +72,12 @@ const { steps } = Astro.props;
         }
 
         const isActive = link.dataset.storyTarget === stepId;
-        link.classList.toggle('border-primary', isActive);
-        link.classList.toggle('bg-primary', isActive);
-        link.classList.toggle('text-black', isActive);
-        link.classList.toggle('border-white/10', !isActive);
-        link.classList.toggle('bg-white/5', !isActive);
-        link.classList.toggle('text-muted-foreground', !isActive);
+        link.classList.toggle('border-primary/30', isActive);
+        link.classList.toggle('bg-primary/10', isActive);
+        link.classList.toggle('text-primary', isActive);
+        link.classList.toggle('border-white/[0.04]', !isActive);
+        link.classList.toggle('bg-white/[0.03]', !isActive);
+        link.classList.toggle('text-[#71717a]', !isActive);
       });
     };
 

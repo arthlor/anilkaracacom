@@ -1,265 +1,512 @@
-import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import rawData from "../../../data/izmir_age_data_optimized.json";
+import {
+  startTransition,
+  useDeferredValue,
+  useMemo,
+  useState,
+  type CSSProperties,
+} from "react";
+
+import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
+import {
+  chartPalette,
+  formatCompactNumber,
+  formatNumber,
+  interpolateColor,
+  interpolateDivergingColor,
+} from "@/components/case-study/chartTheme";
+import rawData from "@/data/izmir_age_data_optimized.json";
+
+type MetricMode = "total" | "female" | "male" | "gap";
+
+type AgePoint = {
+  district: string;
+  ageGroup: string;
+  female: number;
+  male: number;
+  total: number;
+};
+
+const metricOptions: Array<{ key: MetricMode; label: string }> = [
+  { key: "total", label: "Toplam" },
+  { key: "female", label: "Kadın" },
+  { key: "male", label: "Erkek" },
+  { key: "gap", label: "Cinsiyet farkı" },
+];
+
+const orderedAgeGroups = [...rawData.ageGroups].reverse();
 
 export default function AgeDistributionBubbleChart() {
-  const { data, ageGroups, districts } = rawData;
-  const [hoveredData, setHoveredData] = useState<any>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const points = rawData.data as AgePoint[];
+  const districts = rawData.districts;
+  const [metric, setMetric] = useState<MetricMode>("total");
+  const [selectedDistrict, setSelectedDistrict] = useState("KONAK");
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState("25-29");
+  const [searchValue, setSearchValue] = useState("");
+  const [hoveredCell, setHoveredCell] = useState<{
+    district: string;
+    ageGroup: string;
+  } | null>(null);
 
-  // Dimensions
-  const svgWidth = 1400; // Large explicit width to force scrolling
-  const svgHeight = 700;
-  const padding = { top: 40, right: 40, bottom: 80, left: 120 };
+  const deferredSearch = useDeferredValue(searchValue);
 
-  const plotWidth = svgWidth - padding.left - padding.right;
-  const plotHeight = svgHeight - padding.top - padding.bottom;
+  const lookup = useMemo(() => {
+    const map = new Map<string, AgePoint>();
 
-  // Max value for proportional bubble size
-  const maxTotal = useMemo(() => Math.max(...data.map((d) => d.total)), [data]);
-  const maxRadius = 18; // Maximum bubble radius
+    for (const point of points) {
+      map.set(`${point.district}__${point.ageGroup}`, point);
+    }
 
-  // Reverse age groups so 90+ is at the top
-  const orderedAgeGroups = [...ageGroups].reverse();
+    return map;
+  }, [points]);
 
-  // Plotly distinct colors pattern
-  const rowColors = [
-    "#636efa", "#EF553B", "#00cc96", "#ab63fa", "#FFA15A",
-    "#19d3f3", "#FF6692", "#B6E880", "#FF97FF", "#FECB52"
-  ];
+  const filteredDistricts = useMemo(() => {
+    const query = deferredSearch.trim().toLocaleLowerCase("tr-TR");
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    setMousePos({
-      x: e.clientX,
-      y: e.clientY,
+    if (!query) {
+      return districts;
+    }
+
+    const matched = districts.filter((district) =>
+      district.toLocaleLowerCase("tr-TR").includes(query),
+    );
+
+    if (
+      selectedDistrict &&
+      !matched.includes(selectedDistrict) &&
+      districts.includes(selectedDistrict)
+    ) {
+      return [selectedDistrict, ...matched];
+    }
+
+    return matched;
+  }, [deferredSearch, districts, selectedDistrict]);
+
+  const heatmapValues = useMemo(() => {
+    const values = points.map((point) => getMetricValue(point, metric));
+    const positives = values.filter((value) => value >= 0);
+    const negatives = values.filter((value) => value < 0);
+
+    return {
+      maxValue: Math.max(...positives, 1),
+      maxAbsGap: Math.max(...negatives.map((value) => Math.abs(value)), ...positives, 1),
+    };
+  }, [metric, points]);
+
+  const activeDistrict = hoveredCell?.district ?? selectedDistrict;
+  const activeAgeGroup = hoveredCell?.ageGroup ?? selectedAgeGroup;
+  const activePoint =
+    lookup.get(`${activeDistrict}__${activeAgeGroup}`) ??
+    lookup.get(`${selectedDistrict}__${selectedAgeGroup}`);
+
+  const districtSeries = useMemo(() => {
+    return orderedAgeGroups.map((ageGroup) => {
+      const point = lookup.get(`${activeDistrict}__${ageGroup}`);
+      return {
+        ageGroup,
+        female: point?.female ?? 0,
+        male: point?.male ?? 0,
+        total: point?.total ?? 0,
+      };
     });
-  };
+  }, [activeDistrict, lookup]);
+
+  const ranking = useMemo(() => {
+    return districts
+      .map((district) => {
+        const point = lookup.get(`${district}__${activeAgeGroup}`);
+        return {
+          district,
+          value: point ? getMetricValue(point, metric) : 0,
+          total: point?.total ?? 0,
+        };
+      })
+      .sort((left, right) => Math.abs(right.value) - Math.abs(left.value));
+  }, [activeAgeGroup, districts, lookup, metric]);
+
+  const selectedDistrictTotal = useMemo(() => {
+    return orderedAgeGroups.reduce((sum, ageGroup) => {
+      const point = lookup.get(`${activeDistrict}__${ageGroup}`);
+      return sum + (point?.total ?? 0);
+    }, 0);
+  }, [activeDistrict, lookup]);
 
   return (
-    <div className="relative grid grid-cols-1 w-full min-w-0 overflow-hidden rounded-2xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 bg-white dark:bg-slate-900 transition-all duration-300 h-auto min-h-[400px] sm:min-h-[600px] p-4 sm:p-6 my-10 font-sans">
-      <div className="flex flex-col h-full">
-      <div className="flex justify-between items-start mb-4 shrink-0 z-10">
-        <div className="pointer-events-none">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 font-sans tracking-tight">
-            İzmir Yaş Analizi
-          </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-300 mt-1">
-            İlçelere Göre Demografik Dağılım
-          </p>
-        </div>
-      </div>
-
-      {/* Main Chart Scroll Container */}
-      <div className="flex-1 w-full min-w-0 overflow-hidden relative border border-slate-100 dark:border-slate-800 rounded-lg bg-slate-50/50 dark:bg-slate-800/20">
-        
-        {/* Sticky Y-Axis Overlay */}
-        <div className="absolute left-0 top-0 bottom-0 w-[50px] sm:w-[80px] bg-white/90 dark:bg-slate-900/90 backdrop-blur-md z-20 pointer-events-none flex flex-col border-r border-slate-100 dark:border-slate-800">
-          {orderedAgeGroups.map((age, i) => {
-            const y = padding.top + (i / Math.max(1, orderedAgeGroups.length - 1)) * plotHeight;
-            return (
-              <div 
-                key={`y-label-${age}`} 
-                className="absolute right-3" 
-                style={{ top: `${y}px`, transform: 'translateY(-50%)' }}
+    <ArticleChartFrame
+      eyebrow="Demografik tarama"
+      title="İlçe ilçe yaş yoğunluğu ve cinsiyet dengesi"
+      description="Sol taraftaki ısı matrisi hangi yaş bandının hangi ilçede yoğunlaştığını tarıyor; sağ panel aynı anda seçili ilçenin kadın-erkek dağılımını açıyor."
+      helper="Hücre üzerinde gezinmek hızlı okuma sağlar, tıklamak ise ilçe ve yaş bandını sabitler. Arama kutusu matriste kaybolmadan ilçe bulmak için eklendi."
+      controls={
+        <div className="viz-controls">
+          <input
+            value={searchValue}
+            onChange={(event) => setSearchValue(event.target.value)}
+            className="viz-search"
+            placeholder="İlçe ara"
+            aria-label="İlçe ara"
+          />
+          <div className="viz-toggle-group" role="tablist" aria-label="Metrik seçimi">
+            {metricOptions.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                className="viz-toggle"
+                data-active={metric === option.key}
+                onClick={() => setMetric(option.key)}
               >
-                <span className="text-[10px] sm:text-xs font-bold text-slate-500 dark:text-slate-400">
-                  {age}
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      }
+      aside={
+        <div className="space-y-5">
+          <div className="viz-stat-grid">
+            <div className="viz-stat border-t-0 pt-0">
+              <span className="viz-label">Seçili ilçe</span>
+              <strong>{activeDistrict}</strong>
+            </div>
+            <div className="viz-stat">
+              <span className="viz-label">Toplam nüfus</span>
+              <strong>{formatNumber(selectedDistrictTotal)}</strong>
+            </div>
+            {activePoint && (
+              <div className="viz-stat">
+                <span className="viz-label">Seçili yaş bandı</span>
+                <strong>{activeAgeGroup}</strong>
+                <p className="viz-note mt-2">
+                  Bu bantta {formatNumber(activePoint.total)} kişi var. Kadın payı{" "}
+                  {Math.round((activePoint.female / activePoint.total) * 100)}%, erkek payı{" "}
+                  {Math.round((activePoint.male / activePoint.total) * 100)}.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="viz-divider" />
+
+          <div>
+            <p className="viz-label">İlçe nüfus piramidi</p>
+            <PopulationPyramid
+              rows={districtSeries}
+              highlightedAgeGroup={activeAgeGroup}
+            />
+          </div>
+        </div>
+      }
+      footer={
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div>
+            <p className="viz-label">Seçili yaş bandı sıralaması</p>
+            <p className="viz-note mt-1">
+              {activeAgeGroup} bandında öne çıkan ilçeleri, seçtiğiniz metriğe göre
+              karşılaştırın.
+            </p>
+          </div>
+          <div className="text-right text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+            Merkez ile çeper ilçeler aynı yaş ritmini taşımıyor.
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-5">
+        <div className="overflow-x-auto rounded-[24px] border border-white/[0.07] bg-white/[0.015] pb-1">
+          <div className="grid min-w-[920px]" style={gridStyle(filteredDistricts.length)}>
+            <div className="sticky left-0 z-20 border-r border-white/[0.07] bg-[#111111]/96 px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
+              Yaş
+            </div>
+            {filteredDistricts.map((district) => {
+              const isSelected = district === activeDistrict;
+
+              return (
+                <button
+                  key={district}
+                  type="button"
+                  onClick={() => {
+                    startTransition(() => {
+                      setSelectedDistrict(district);
+                    });
+                  }}
+                  className="border-b border-white/[0.07] px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
+                  style={{
+                    color: isSelected ? chartPalette.text : undefined,
+                    background: isSelected ? "rgba(255,255,255,0.03)" : undefined,
+                  }}
+                >
+                  {district}
+                </button>
+              );
+            })}
+
+            {orderedAgeGroups.map((ageGroup) => (
+              <FragmentRow
+                key={ageGroup}
+                ageGroup={ageGroup}
+                districts={filteredDistricts}
+                lookup={lookup}
+                metric={metric}
+                maxValue={heatmapValues.maxValue}
+                maxAbsGap={heatmapValues.maxAbsGap}
+                selectedDistrict={selectedDistrict}
+                selectedAgeGroup={selectedAgeGroup}
+                hoveredCell={hoveredCell}
+                onCellEnter={setHoveredCell}
+                onCellLeave={() => setHoveredCell(null)}
+                onCellSelect={(district, nextAgeGroup) => {
+                  startTransition(() => {
+                    setSelectedDistrict(district);
+                    setSelectedAgeGroup(nextAgeGroup);
+                  });
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="viz-label">Yaş bandı sıralaması</p>
+              <p className="viz-note mt-1">
+                {activeAgeGroup} bandında en yoğun ilçeler.
+              </p>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {metric === "gap"
+                ? "Pozitif değer kadınların, negatif değer erkeklerin daha yüksek olduğu bandı gösterir."
+                : "Yoğunluk, seçtiğiniz metrikteki gerçek değerlerle sıralanır."}
+            </div>
+          </div>
+
+          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+            {ranking.slice(0, 6).map((row, index) => (
+              <button
+                key={row.district}
+                type="button"
+                className="viz-ranking-item text-left"
+                data-active={row.district === activeDistrict}
+                onClick={() => setSelectedDistrict(row.district)}
+              >
+                <span className="text-xs font-medium text-muted-foreground">
+                  {String(index + 1).padStart(2, "0")}
                 </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Scrollable Area */}
-        <div className="w-full h-full overflow-x-auto overflow-y-hidden custom-scrollbar relative">
-          <div 
-            className="h-full relative"
-            style={{ width: `${svgWidth}px` }}
-            onMouseMove={handleMouseMove}
-            onClick={(e) => {
-              // Dismiss tooltip on background click for mobile
-              if ((e.target as any).tagName === 'svg') setHoveredData(null);
-            }}
-          >
-            <svg
-              viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-              preserveAspectRatio="xMidYMid meet"
-              className="block w-full h-full"
-            >
-              {/* Grid Lines */}
-              <g className="grid-lines pointer-events-none">
-              {/* Horizontal Lines (Age Groups) */}
-              {orderedAgeGroups.map((age, i) => {
-                const y = padding.top + (i / Math.max(1, orderedAgeGroups.length - 1)) * plotHeight;
-                return (
-                  <g key={`h-grid-${age}`}>
-                    {/* Grid Line */}
-                    <line
-                      x1={padding.left}
-                      x2={svgWidth - padding.right}
-                      y1={y}
-                      y2={y}
-                      stroke="currentColor"
-                      className="text-slate-100 dark:text-slate-800"
-                      strokeWidth="1"
-                    />
-                  </g>
-                );
-              })}
-
-              {/* Vertical Lines (Districts) */}
-              {districts.map((district, i) => {
-                const x = padding.left + (i / Math.max(1, districts.length - 1)) * plotWidth;
-                return (
-                  <g key={`v-grid-${district}`}>
-                    {/* X-Axis Label: Rotated */}
-                    <text
-                      x={x}
-                      y={svgHeight - padding.bottom + 20}
-                      fill="currentColor"
-                      className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest"
-                      textAnchor="end"
-                      transform={`rotate(-45, ${x}, ${svgHeight - padding.bottom + 20})`}
-                    >
-                      {district}
-                    </text>
-                    {/* Grid Line */}
-                    <line
-                      x1={x}
-                      x2={x}
-                      y1={padding.top}
-                      y2={svgHeight - padding.bottom}
-                      stroke="currentColor"
-                      className="text-slate-100 dark:text-slate-800"
-                      strokeWidth="1"
-                      strokeDasharray="4 4"
-                    />
-                  </g>
-                );
-              })}
-            </g>
-
-            {/* Bubble Data */}
-            <g className="bubbles">
-              {data.map((d: any, index: number) => {
-                const ageIndex = orderedAgeGroups.indexOf(d.ageGroup);
-                const districtIndex = districts.indexOf(d.district);
-
-                if (ageIndex === -1 || districtIndex === -1) return null;
-
-                const cx = padding.left + (districtIndex / Math.max(1, districts.length - 1)) * plotWidth;
-                const cy = padding.top + (ageIndex / Math.max(1, orderedAgeGroups.length - 1)) * plotHeight;
-                
-                // Map radius proportionally to Area (Math.sqrt)
-                // Avoid dividing by zero and provide a tiny min radius for visibility
-                const radius = Math.max(2, Math.sqrt(d.total / maxTotal) * maxRadius);
-
-                return (
-                  <motion.circle
-                    key={`${d.district}-${d.ageGroup}`}
-                    cx={cx}
-                    cy={cy}
-                    r={radius}
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 0.8, scale: 1 }}
-                    whileHover={{ opacity: 1, scale: 1.2, strokeWidth: 2, zIndex: 10 }}
-                    transition={{
-                      duration: 0.5, 
-                      delay: (index % 100) * 0.005, // Stagger effect
-                      type: "spring",
-                      stiffness: 200
-                    }}
-                    fill={rowColors[ageIndex % rowColors.length]} 
-                    stroke="white"
-                    strokeWidth="1"
-                    className="cursor-pointer"
-                    onMouseEnter={(e) => {
-                      setHoveredData(d);
-                      setMousePos({ x: e.clientX, y: e.clientY });
-                    }}
-                    onMouseLeave={() => setHoveredData(null)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (hoveredData?.district === d.district && hoveredData?.ageGroup === d.ageGroup) {
-                        setHoveredData(null);
-                      } else {
-                        setHoveredData(d);
-                        setMousePos({ x: e.clientX, y: e.clientY });
-                      }
-                    }}
-                  />
-                );
-              })}
-            </g>
-          </svg>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-semibold text-foreground">
+                    {row.district}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    Toplam segment: {formatCompactNumber(row.total)}
+                  </p>
+                </div>
+                <span className="text-sm font-semibold text-foreground">
+                  {metric === "gap" && row.value > 0 ? "+" : ""}
+                  {formatCompactNumber(row.value)}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-
-      {/* Floating Tooltip via AnimatePresence */}
-      <AnimatePresence>
-        {hoveredData && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.1 }}
-            className="fixed pointer-events-none z-[100] bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 p-2.5 rounded-lg shadow-xl border border-white/10 dark:border-slate-200 min-w-[140px]"
-            style={{
-              left: Math.min(mousePos.x + 10, window.innerWidth - 150),
-              top: Math.max(mousePos.y - 100, 10),
-            }}
-          >
-             <div className="flex justify-between items-center mb-1.5 gap-3">
-              <h4 className="font-bold text-sm leading-none text-white dark:text-slate-900">
-                {hoveredData.district}
-              </h4>
-               <div className="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-white/10 dark:bg-slate-100 shadow-sm text-cyan-400 dark:text-cyan-600">
-                {hoveredData.ageGroup}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-x-4 gap-y-1 border-t border-white/10 dark:border-slate-100 pt-2 mt-0.5">
-              <div>
-                <p className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
-                  Kadın
-                </p>
-                <p className="font-black text-xs text-white dark:text-slate-900">
-                  {hoveredData.female.toLocaleString()}
-                </p>
-              </div>
-              <div>
-                <p className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
-                  Erkek
-                </p>
-                <p className="font-black text-xs text-white dark:text-slate-900">
-                  {hoveredData.male.toLocaleString()}
-                </p>
-              </div>
-               <div className="col-span-2 pt-1 border-t border-white/5 dark:border-slate-200 flex justify-between items-center">
-                <p className="text-[9px] uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">
-                  Toplam
-                </p>
-                <p className="font-black text-sm text-white dark:text-slate-900">
-                  {hoveredData.total.toLocaleString()}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-       {/* Legend Section */}
-      <div className="shrink-0 flex flex-wrap justify-between items-center sm:gap-6 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/50">
-        <div className="flex items-center gap-4">
-           {/* Color legend is implicit via row positions now. */}
-        </div>
-        <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 hidden sm:block">
-           Balon boyutu toplam segment nüfusunu temsil eder.
-        </p>
-      </div>
-
-      </div>
-    </div>
+    </ArticleChartFrame>
   );
+}
+
+function FragmentRow({
+  ageGroup,
+  districts,
+  lookup,
+  metric,
+  maxValue,
+  maxAbsGap,
+  selectedDistrict,
+  selectedAgeGroup,
+  hoveredCell,
+  onCellEnter,
+  onCellLeave,
+  onCellSelect,
+}: {
+  ageGroup: string;
+  districts: string[];
+  lookup: Map<string, AgePoint>;
+  metric: MetricMode;
+  maxValue: number;
+  maxAbsGap: number;
+  selectedDistrict: string;
+  selectedAgeGroup: string;
+  hoveredCell: { district: string; ageGroup: string } | null;
+  onCellEnter: (value: { district: string; ageGroup: string } | null) => void;
+  onCellLeave: () => void;
+  onCellSelect: (district: string, ageGroup: string) => void;
+}) {
+  return (
+    <>
+      <div className="sticky left-0 z-10 border-r border-t border-white/[0.07] bg-[#111111]/96 px-3 py-3 text-sm font-semibold text-foreground backdrop-blur">
+        {ageGroup}
+      </div>
+      {districts.map((district) => {
+        const point = lookup.get(`${district}__${ageGroup}`);
+        const value = point ? getMetricValue(point, metric) : 0;
+        const isSelected =
+          district === selectedDistrict && ageGroup === selectedAgeGroup;
+        const isHovered =
+          hoveredCell?.district === district && hoveredCell?.ageGroup === ageGroup;
+
+        return (
+          <button
+            key={`${district}-${ageGroup}`}
+            type="button"
+            className="group relative border-t border-white/[0.07] px-1 py-1 focus:outline-none"
+            onMouseEnter={() => onCellEnter({ district, ageGroup })}
+            onMouseLeave={onCellLeave}
+            onFocus={() => onCellEnter({ district, ageGroup })}
+            onBlur={onCellLeave}
+            onClick={() => onCellSelect(district, ageGroup)}
+          >
+            <span
+              className="relative flex h-12 items-center justify-center rounded-[16px] border border-transparent text-[11px] font-medium transition-transform duration-150 group-hover:scale-[1.02]"
+              style={{
+                background: getCellColor(value, metric, maxValue, maxAbsGap),
+                borderColor: isSelected
+                  ? "rgba(122,242,152,0.85)"
+                  : isHovered
+                    ? "rgba(255,255,255,0.22)"
+                    : "transparent",
+                boxShadow: isSelected
+                  ? "0 0 0 1px rgba(122,242,152,0.2), 0 16px 36px rgba(0,0,0,0.16)"
+                  : undefined,
+                color:
+                  metric === "gap"
+                    ? Math.abs(value) > maxAbsGap * 0.4
+                      ? chartPalette.text
+                      : chartPalette.dim
+                    : value > maxValue * 0.35
+                      ? chartPalette.text
+                      : chartPalette.dim,
+              }}
+            >
+              {metric === "gap" && value > 0 ? "+" : ""}
+              {formatCompactNumber(value)}
+            </span>
+          </button>
+        );
+      })}
+    </>
+  );
+}
+
+function PopulationPyramid({
+  rows,
+  highlightedAgeGroup,
+}: {
+  rows: Array<{ ageGroup: string; female: number; male: number; total: number }>;
+  highlightedAgeGroup: string;
+}) {
+  const maxValue = Math.max(...rows.map((row) => Math.max(row.female, row.male)), 1);
+  const chartHeight = rows.length * 24;
+  const width = 320;
+  const center = width / 2;
+  const barMaxWidth = 118;
+
+  return (
+    <svg viewBox={`0 0 ${width} ${chartHeight + 24}`} className="w-full">
+      <text
+        x={center - 70}
+        y={14}
+        textAnchor="middle"
+        className="fill-[rgba(243,241,235,0.5)] text-[10px] uppercase tracking-[0.24em]"
+      >
+        Erkek
+      </text>
+      <text
+        x={center + 70}
+        y={14}
+        textAnchor="middle"
+        className="fill-[rgba(243,241,235,0.5)] text-[10px] uppercase tracking-[0.24em]"
+      >
+        Kadın
+      </text>
+      <line
+        x1={center}
+        x2={center}
+        y1={22}
+        y2={chartHeight + 18}
+        stroke="rgba(255,255,255,0.12)"
+      />
+      {rows.map((row, index) => {
+        const y = 28 + index * 24;
+        const maleWidth = (row.male / maxValue) * barMaxWidth;
+        const femaleWidth = (row.female / maxValue) * barMaxWidth;
+        const isHighlighted = row.ageGroup === highlightedAgeGroup;
+
+        return (
+          <g key={row.ageGroup}>
+            <rect
+              x={center - maleWidth}
+              y={y - 8}
+              width={maleWidth}
+              height={16}
+              rx={8}
+              fill={isHighlighted ? chartPalette.cyan : "rgba(104, 211, 245, 0.35)"}
+            />
+            <rect
+              x={center}
+              y={y - 8}
+              width={femaleWidth}
+              height={16}
+              rx={8}
+              fill={isHighlighted ? chartPalette.rose : "rgba(244, 111, 136, 0.35)"}
+            />
+            <text
+              x={center}
+              y={y + 4}
+              textAnchor="middle"
+              className={`text-[10px] ${isHighlighted ? "fill-[#f3f1eb]" : "fill-[rgba(243,241,235,0.58)]"}`}
+            >
+              {row.ageGroup}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function getMetricValue(point: AgePoint, metric: MetricMode) {
+  switch (metric) {
+    case "female":
+      return point.female;
+    case "male":
+      return point.male;
+    case "gap":
+      return point.female - point.male;
+    default:
+      return point.total;
+  }
+}
+
+function getCellColor(
+  value: number,
+  metric: MetricMode,
+  maxValue: number,
+  maxAbsGap: number,
+) {
+  if (metric === "gap") {
+    return interpolateDivergingColor(
+      chartPalette.cyan,
+      "rgba(255,255,255,0.02)",
+      chartPalette.rose,
+      value,
+      maxAbsGap,
+    );
+  }
+
+  const ratio = value / Math.max(maxValue, 1);
+  return interpolateColor("#1b1b1b", "#6fd39a", ratio);
+}
+
+function gridStyle(columnCount: number): CSSProperties {
+  return {
+    gridTemplateColumns: `120px repeat(${columnCount}, minmax(92px, 1fr))`,
+  };
 }

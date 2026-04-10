@@ -1,229 +1,172 @@
-import { useState, useMemo, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapTrifold as MapTrifoldIcon } from "@phosphor-icons/react";
+import { useMemo, useState } from "react";
+
+import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
+import { formatNumber } from "@/components/case-study/chartTheme";
 import rawData from "@/data/accident_types_yearly.json";
 
-// Curated aesthetic category colors replacing Plotly pastel defaults
-const categoryColors = [
-  "#f43f5e", // rose-500
-  "#3b82f6", // blue-500
-  "#10b981", // emerald-500
-  "#8b5cf6", // violet-500
-  "#f59e0b", // amber-500
-  "#06b6d4", // cyan-500
-  "#d946ef", // fuchsia-500
-  "#84cc16", // lime-500
-  "#ec4899", // pink-500
-  "#14b8a6", // teal-500
-  "#f97316", // orange-500
-  "#6366f1", // indigo-500
-  "#64748b", // slate-500
-];
-
-interface DataSeries {
+type AccidentSeries = {
   name: string;
   x: number[];
   y: number[];
-  color: string;
-}
+};
+
+const categoryPalette = [
+  "#f46f88",
+  "#68d3f5",
+  "#7af298",
+  "#9b8cff",
+  "#f6c56d",
+  "#8c98ad",
+  "#fb923c",
+  "#2dd4bf",
+  "#e879f9",
+  "#facc15",
+  "#94a3b8",
+  "#ef4444",
+];
 
 export default function AccidentTypesBarChart() {
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
-  const [activeYear, setActiveYear] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  // Parse and sort the data
-  const { series, years, yearTotals } = useMemo(() => {
-    // Exclude the text/tooltip series which has all zeros and mode="markers"
-    const validSeries = (rawData as any[]).filter((s) => s.type === "bar");
-
-    // Sort series by total volume across all years to put largest at bottom
-    validSeries.sort((a, b) => {
-      const sumA = a.y.reduce((acc: number, val: number) => acc + val, 0);
-      const sumB = b.y.reduce((acc: number, val: number) => acc + val, 0);
-      return sumB - sumA;
-    });
-
-    const parsedSeries: DataSeries[] = validSeries.map((s, idx) => ({
-      name: s.name,
-      x: s.x,
-      y: s.y,
-      color: categoryColors[idx % categoryColors.length] || "#000",
-    }));
-
-    const yearsList = parsedSeries[0]?.x || [];
-
-    const totalsByYear =
-      yearsList?.map((_year: number, yIdx: number) => {
-        return parsedSeries.reduce((acc, s) => acc + (s.y[yIdx] || 0), 0);
-      }) || [];
+  const parsed = useMemo<{ years: number[]; series: AccidentSeries[] }>(() => {
+    const series = (rawData as any[])
+      .filter((entry) => entry.type === "bar")
+      .map((entry) => ({
+        name: entry.name,
+        x: entry.x,
+        y: entry.y,
+      })) satisfies AccidentSeries[];
 
     return {
-      series: parsedSeries,
-      years: yearsList,
-      yearTotals: totalsByYear,
+      years: series[0]?.x ?? [],
+      series,
     };
   }, []);
 
-  const maxTotal = Math.max(...yearTotals);
+  const [selectedYear, setSelectedYear] = useState(parsed.years.at(-1) ?? 2024);
+  const [topCount, setTopCount] = useState(10);
+
+  const ranking = useMemo(() => {
+    const yearIndex = parsed.years.indexOf(selectedYear);
+
+    return parsed.series
+      .map((item, index) => ({
+        name: item.name,
+        value: item.y[yearIndex] ?? 0,
+        color: categoryPalette[index % categoryPalette.length],
+      }))
+      .sort((left, right) => right.value - left.value);
+  }, [parsed.series, parsed.years, selectedYear]);
+
+  const visibleItems = ranking.slice(0, topCount);
+  const maxValue = Math.max(...visibleItems.map((item) => item.value), 1);
+  const total = ranking.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10"
-    >
-      <div className="mb-6 sm:mb-8 text-center sm:text-left pr-2">
-        <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-center sm:justify-start gap-2">
-          <MapTrifoldIcon weight="duotone" className="text-accent-500" />
-          Kaza Türleri Dağılımı
-        </h3>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
-          Büyükşehir kaza ve arıza müdahale raporları (2021-2024)
-        </p>
-      </div>
-
-      {/* Main Chart Area */}
-      <div className="relative h-[400px] sm:h-[500px] w-full mt-8 sm:mt-10">
-        {/* Y Axis Guides */}
-        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
-          {[1, 0.75, 0.5, 0.25, 0].map((step) => (
-            <div key={step} className="w-full flex items-center">
-              <span className="text-xs text-slate-400 dark:text-slate-300 w-12 text-right pr-4">
-                {Math.round(maxTotal * step).toLocaleString("tr-TR")}
-              </span>
-              <div className="flex-1 border-b border-dashed border-slate-200 dark:border-slate-800"></div>
-            </div>
-          ))}
+    <ArticleChartFrame
+      eyebrow="Olay başlıkları"
+      title="Toplam baskıyı hangi olay türleri taşıyor?"
+      description="Seçili yılda tabloyu gerçekten sürükleyen başlıklar öne çıkarılıyor. Amaç tüm kategorileri aynı anda büyütmek değil, baskın olay türlerini hızla görünür kılmak."
+      controls={
+        <div className="viz-controls">
+          <div className="viz-toggle-group" role="tablist" aria-label="Yıl seçici">
+            {parsed.years.map((year) => (
+              <button
+                key={year}
+                type="button"
+                className="viz-toggle"
+                data-active={selectedYear === year}
+                onClick={() => setSelectedYear(year)}
+              >
+                {year}
+              </button>
+            ))}
+          </div>
+          <div className="viz-toggle-group" role="tablist" aria-label="Görünür kategori sayısı">
+            {[8, 10, 12].map((count) => (
+              <button
+                key={count}
+                type="button"
+                className="viz-toggle"
+                data-active={topCount === count}
+                onClick={() => setTopCount(count)}
+              >
+                Top {count}
+              </button>
+            ))}
+          </div>
         </div>
+      }
+      aside={
+        <div className="space-y-5">
+          <div className="viz-stat-grid">
+            <div className="viz-stat border-t-0 pt-0">
+              <span className="viz-label">Seçili yıl</span>
+              <strong>{selectedYear}</strong>
+            </div>
+            <div className="viz-stat">
+              <span className="viz-label">Toplam kayıt</span>
+              <strong>{formatNumber(total)}</strong>
+            </div>
+            {visibleItems[0] && (
+              <div className="viz-stat">
+                <span className="viz-label">Baskın kategori</span>
+                <strong>{visibleItems[0].name}</strong>
+              </div>
+            )}
+          </div>
 
-        {/* Bars */}
-        <div className="absolute inset-0 flex items-end justify-around pb-8 pl-12 pr-4 sm:pr-8">
-          {years.map((year, yearIdx) => {
-            const isHoveredYear = activeYear === year;
-            const dimYear = activeYear !== null && activeYear !== year;
+          <div className="viz-divider" />
+
+          <p className="viz-note">
+            Top-N görünümü uzun kuyruğu yok saymıyor; yalnızca ilk bakışta okunması
+            gereken ana baskıyı öne alıyor.
+          </p>
+        </div>
+      }
+      footer={
+        <div className="viz-note">
+          Başlangıç görünümü editoryal öncelik sırasını vurguluyor; ayrıntı arayan okur
+          ise daha fazla kategori açarak uzun kuyruğu da görebiliyor.
+        </div>
+      }
+    >
+      <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.015] p-4 sm:p-5">
+        <div className="space-y-3">
+          {visibleItems.map((item, index) => {
+            const width = (item.value / maxValue) * 100;
 
             return (
               <div
-                key={year}
-                className="relative flex flex-col justify-end items-center h-full group"
-                style={{ width: "12%" }}
-                onMouseEnter={() => setActiveYear(year)}
-                onMouseLeave={() => setActiveYear(null)}
+                key={`${selectedYear}-${item.name}`}
+                className="grid gap-3 rounded-[20px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 sm:grid-cols-[auto_minmax(0,220px)_minmax(0,1fr)_auto] sm:items-center"
               >
-                {/* Stacked segments */}
-                <div
-                  className={`w-full relative flex flex-col-reverse justify-start transition-opacity duration-300 ${dimYear ? "opacity-30" : "opacity-100"}`}
-                  style={{ height: "100%" }}
-                >
-                  {series.map((s) => {
-                    const val = s.y[yearIdx] || 0;
-                    if (val === 0) return null;
-                    const heightPct = (val / maxTotal) * 100;
-
-                    const isHoveredCategory = hoveredCategory === s.name;
-                    const dimCategory =
-                      hoveredCategory !== null && !isHoveredCategory;
-
-                    return (
-                      <motion.div
-                        key={s.name}
-                        initial={{ height: 0, opacity: 0 }}
-                        whileInView={{ height: `${heightPct}%`, opacity: 1 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{
-                          duration: 0.8,
-                          delay: yearIdx * 0.1,
-                          type: "spring",
-                          damping: 20,
-                        }}
-                        className={`w-full relative cursor-pointer outline-none transition-all duration-200 border-b border-white/20 dark:border-slate-900/40`}
-                        style={{
-                          backgroundColor: s.color,
-                          opacity: dimCategory ? 0.3 : 1,
-                        }}
-                        onMouseEnter={() => setHoveredCategory(s.name)}
-                        onMouseLeave={() => setHoveredCategory(null)}
-                      >
-                        {/* Hover Tooltip inside bar if big enough, else absolute */}
-                        <AnimatePresence>
-                          {(isHoveredCategory ||
-                            (isHoveredYear && heightPct > 10)) && (
-                            <motion.div
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.9 }}
-                              className="absolute z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 md:-left-4 md:-translate-x-full md:top-1/2 md:-translate-y-1/2 bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 px-2.5 py-1.5 rounded shadow-xl border border-white/10 dark:border-slate-200 whitespace-nowrap pointer-events-none hidden sm:block"
-                            >
-                              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-0.5">{s.name}</div>
-                              <div className="text-xs font-black">
-                                {val.toLocaleString("tr-TR")} vaka
-                              </div>
-                              {/* Connector arrow */}
-                              <div className="absolute top-1/2 -right-1 -translate-y-1/2 w-2 h-2 bg-slate-900/95 dark:bg-white/95 rotate-45 hidden md:block" />
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </motion.div>
-                    );
-                  })}
+                <span className="text-xs font-medium text-muted-foreground">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p className="text-sm font-semibold text-foreground">{item.name}</p>
+                <div className="relative flex items-center">
+                  <div className="h-[2px] w-full bg-white/[0.08]" />
+                  <div
+                    className="absolute left-0 h-[2px] rounded-full"
+                    style={{ width: `${width}%`, background: item.color }}
+                  />
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 rounded-full border-4 border-[#111111]"
+                    style={{
+                      left: `calc(${width}% - 10px)`,
+                      width: 14,
+                      height: 14,
+                      background: item.color,
+                    }}
+                  />
                 </div>
-
-                {/* Year Label */}
-                <div
-                  className={`absolute -bottom-8 font-semibold transition-colors duration-200 ${isHoveredYear ? "text-accent-500" : "text-slate-600 dark:text-slate-200"}`}
-                >
-                  {year}
-                </div>
-
-                {/* Total floating above bar */}
-                <AnimatePresence>
-                  {isHoveredYear && yearTotals[yearIdx] !== undefined && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 5 }}
-                      className="absolute -top-10 bg-accent-50 text-accent-700 dark:bg-accent-500/20 dark:text-accent-300 px-3 py-1 rounded-full text-xs font-bold shadow-sm"
-                    >
-                      {yearTotals[yearIdx].toLocaleString("tr-TR")} Total
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                <span className="text-sm font-semibold text-foreground">
+                  {formatNumber(item.value)}
+                </span>
               </div>
             );
           })}
         </div>
       </div>
-
-      {/* Interactive Legend */}
-      <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800">
-        <p className="text-xs font-medium text-slate-500 uppercase tracking-widest mb-4">
-          Vaka Türleri (En Yoğuna Göre)
-        </p>
-        <div className="flex flex-wrap gap-2 sm:gap-3">
-          {series
-            .filter((s) => s.y?.some((val: number) => val > 0))
-            .map((s) => (
-              <button
-                key={s.name}
-                onMouseEnter={() => setHoveredCategory(s.name)}
-                onMouseLeave={() => setHoveredCategory(null)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-medium transition-all duration-200 ${
-                  hoveredCategory === s.name
-                    ? "bg-slate-100 dark:bg-slate-800 scale-105 shadow-sm ring-1 ring-slate-200 dark:ring-slate-700"
-                    : hoveredCategory !== null
-                      ? "opacity-40 bg-transparent"
-                      : "bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800"
-                } text-slate-700 dark:text-slate-300`}
-              >
-                <span
-                  className="w-2.5 h-2.5 rounded-full shadow-sm"
-                  style={{ backgroundColor: s.color }}
-                />
-                {s.name}
-              </button>
-            ))}
-        </div>
-      </div>
-    </div>
+    </ArticleChartFrame>
   );
 }

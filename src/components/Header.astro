@@ -6,118 +6,99 @@ import HeaderNavigation from './HeaderNavigation';
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="site-header">
-  <div class="site-header__container">
-    <div class="site-header__panel">
-      <a href="/" class="site-header__brand" aria-label="Home">
-        <span class="brand-text">ANIL KARACA</span>
-        <span class="brand-dot"></span>
-      </a>
+<header class="site-header" id="site-header">
+  <div class="site-header__bar">
+    <a href="/" class="site-header__brand" aria-label="Home">
+      <span class="brand-text">ANIL KARACA</span>
+      <span class="brand-dot"></span>
+    </a>
 
-      <HeaderNavigation 
-        client:load 
-        links={navigationLinks} 
-        currentPath={currentPath}
-        resumeHref={resumeLinks.master}
-      />
-    </div>
+    <HeaderNavigation 
+      client:load 
+      links={navigationLinks} 
+      currentPath={currentPath}
+      resumeHref={resumeLinks.master}
+    />
   </div>
 </header>
 
 <style>
   .site-header {
     position: fixed;
-    inset: 0 0 auto;
+    top: 0;
+    left: 0;
+    right: 0;
     z-index: 100;
-    padding-top: 24px;
+    padding: 16px 0;
     pointer-events: none;
+    transition: padding 0.3s ease;
   }
 
-  .site-header__container {
-    width: min(100% - 48px, 1200px);
-    margin-inline: auto;
-    pointer-events: auto;
-  }
-
-  .site-header__panel {
-    position: relative;
+  .site-header__bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 0.72rem 0.78rem 0.72rem 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 999px;
-    background:
-      linear-gradient(180deg, rgba(19, 19, 19, 0.94), rgba(10, 10, 10, 0.9)),
-      rgba(14, 14, 14, 0.94);
+    width: min(100% - 32px, 1200px);
+    margin-inline: auto;
+    padding: 0 6px 0 20px;
+    height: 56px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(12, 12, 12, 0.85);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
     box-shadow:
-      0 24px 60px rgba(0, 0, 0, 0.32),
-      inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(24px);
-  }
-
-  .site-header__panel::before {
-    content: '';
-    position: absolute;
-    inset: 1px;
-    border-radius: inherit;
-    background:
-      radial-gradient(circle at top left, rgba(122, 242, 152, 0.08), transparent 28%),
-      radial-gradient(circle at top right, rgba(255, 255, 255, 0.04), transparent 24%);
-    pointer-events: none;
+      0 1px 0 0 rgba(255, 255, 255, 0.03) inset,
+      0 16px 48px rgba(0, 0, 0, 0.3);
+    pointer-events: auto;
+    transition: all 0.3s ease;
   }
 
   .site-header__brand {
-    position: relative;
-    z-index: 1;
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0.82rem 1rem;
     text-decoration: none;
     color: white;
     transition: opacity 200ms ease;
+    flex-shrink: 0;
   }
 
   .site-header__brand:hover {
-    opacity: 0.8;
+    opacity: 0.75;
   }
 
   .brand-text {
-    font-size: 0.85rem;
-    font-weight: 800;
-    letter-spacing: 0.15em;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .brand-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
     background: var(--premium-accent, #7af298);
     border-radius: 50%;
+    flex-shrink: 0;
   }
 
   @media (max-width: 768px) {
     .site-header {
-      padding-top: 16px;
-    }
-    
-    .site-header__container {
-      width: min(100% - 32px, 1200px);
+      padding: 10px 0;
     }
 
-    .site-header__panel {
-      padding: 0.68rem;
-      border-radius: 1.5rem;
-    }
-
-    .site-header__brand {
-      padding: 0.72rem 0.82rem;
+    .site-header__bar {
+      width: min(100% - 24px, 1200px);
+      height: 52px;
+      padding: 0 8px 0 16px;
+      border-radius: 14px;
     }
 
     .brand-text {
       font-size: 0.75rem;
+      letter-spacing: 0.12em;
     }
   }
 </style>

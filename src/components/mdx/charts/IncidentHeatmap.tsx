@@ -1,26 +1,13 @@
-import { useState, useMemo, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Clock as ClockIcon, NavigationArrow as NavigationArrowIcon } from "@phosphor-icons/react";
-import rawData from "@/data/incident_volume_heatmap.json";
+import { useMemo, useState } from "react";
 
-// Cividis-like palette translated to hex for gradients (Dark Blue -> Teal -> Yellow)
-const colorScale = [
-  "#00204c", // min value color
-  "#273f6c",
-  "#4c556b",
-  "#757575",
-  "#928c78",
-  "#a19876",
-  "#b0a574",
-  "#c1b171",
-  "#d1bd6e",
-  "#dfc76a",
-  "#eacc65",
-  "#f3d35f",
-  "#f9da58",
-  "#fde351",
-  "#ffe945", // max value color
-];
+import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
+import {
+  chartPalette,
+  formatNumber,
+  interpolateColor,
+  interpolateDivergingColor,
+} from "@/components/case-study/chartTheme";
+import rawData from "@/data/incident_volume_heatmap.json";
 
 const daysOrder = [
   "Pazartesi",
@@ -31,225 +18,364 @@ const daysOrder = [
   "Cumartesi",
   "Pazar",
 ];
-const hoursOrder = Array.from({ length: 24 }, (_, i) => i);
+const hours = Array.from({ length: 24 }, (_, index) => index);
+type HeatmapGrid = Record<string, Record<number, number>>;
 
 export default function IncidentHeatmap() {
-  const [activeYear, setActiveYear] = useState<number>(2024);
+  const emptyGrid = useMemo<HeatmapGrid>(() => {
+    return daysOrder.reduce<HeatmapGrid>((grid, day) => {
+      grid[day] = {};
+      return grid;
+    }, {});
+  }, []);
+
+  const { years, grids } = useMemo(() => {
+    const parsed = new Map<number, HeatmapGrid>();
+
+    for (const trace of rawData as any[]) {
+      const yearMatch = trace.hovertemplate?.match(/Yıl=(\d{4})/);
+      const year = Number(yearMatch?.[1]);
+
+      if (!year) {
+        continue;
+      }
+
+      const grid: HeatmapGrid = {};
+      daysOrder.forEach((day) => {
+        grid[day] = {};
+      });
+
+      for (let index = 0; index < trace.x.length; index += 1) {
+        const day = trace.y[index];
+        const hour = trace.x[index];
+        const value = trace.z[index];
+        if (grid[day]) {
+          grid[day][hour] = value;
+        }
+      }
+
+      parsed.set(year, grid);
+    }
+
+    return {
+      years: [...parsed.keys()].sort((left, right) => left - right),
+      grids: parsed,
+    };
+  }, []);
+
+  const [activeYear, setActiveYear] = useState(years.at(-1) ?? 2024);
+  const [compareYear, setCompareYear] = useState(years[0] ?? 2021);
+  const [compareMode, setCompareMode] = useState(false);
   const [hoveredCell, setHoveredCell] = useState<{
     day: string;
     hour: number;
     value: number;
-    index: number;
+    delta?: number;
   } | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Group data by years, then structure into a grid
-  const { dataByYear, maxVal } = useMemo(() => {
-    const yearsData: Record<number, any> = {};
-    let globalMax = 0;
+  const baseGrid = grids.get(activeYear) ?? grids.values().next().value ?? emptyGrid;
+  const comparisonGrid = grids.get(compareYear) ?? baseGrid;
 
-    // rawData is an array of objects, one for each year
-    (rawData as any[]).forEach((yearTrace) => {
-      // Extract year from hovertemplate (e.g. "Yıl=2021<br>Saat=%{x}..." )
-      const yearMatch = yearTrace.hovertemplate?.match(/Yıl=(\d{4})/);
-      const year = yearMatch ? parseInt(yearMatch[1], 10) : null;
-
-      if (!year) return;
-
-      const gridData: Record<string, Record<number, number>> = {};
-      daysOrder.forEach((d) => (gridData[d] = {}));
-
-      for (let i = 0; i < (yearTrace.x?.length || 0); i++) {
-        const hour = yearTrace.x[i];
-        const day = yearTrace.y[i];
-        const value = yearTrace.z[i];
-
-        if (daysOrder.includes(day) && gridData[day]) {
-          gridData[day]![hour] = value;
-          if (value > globalMax) globalMax = value;
-        }
-      }
-
-      yearsData[year] = gridData;
-    });
-
-    return { dataByYear: yearsData, maxVal: globalMax };
-  }, []);
-
-  const years = Object.keys(dataByYear)
-    .map(Number)
-    .sort((a, b) => b - a);
-  const currentGrid = dataByYear[activeYear];
-
-  const getColor = (value: number) => {
-    if (value === 0) return "rgba(0,0,0,0.02)"; // very subtle baseline
-    const ratio = value / maxVal;
-    const index = Math.min(
-      Math.floor(ratio * colorScale.length),
-      colorScale.length - 1,
+  const matrix = useMemo(() => {
+    return daysOrder.map((day) =>
+      hours.map((hour) => {
+        const value = baseGrid?.[day]?.[hour] ?? 0;
+        const comparison = comparisonGrid?.[day]?.[hour] ?? 0;
+        return {
+          day,
+          hour,
+          value,
+          comparison,
+          delta: value - comparison,
+        };
+      }),
     );
-    return colorScale[index];
-  };
+  }, [baseGrid, comparisonGrid]);
+
+  const maxAbsolute = Math.max(
+    ...matrix.flatMap((row) => row.map((cell) => cell.value)),
+    1,
+  );
+  const maxDelta = Math.max(
+    ...matrix.flatMap((row) => row.map((cell) => Math.abs(cell.delta))),
+    1,
+  );
+
+  const dayTotals = useMemo(() => {
+    return daysOrder.map((day, dayIndex) => {
+      const row = matrix[dayIndex] ?? [];
+      const total = row.reduce(
+        (sum, cell) => sum + (compareMode ? cell.delta : cell.value),
+        0,
+      );
+      return { day, total };
+    });
+  }, [compareMode, matrix]);
+
+  const hourTotals = useMemo(() => {
+    return hours.map((hour, hourIndex) => {
+      const total = matrix.reduce(
+        (sum, row) => {
+          const cell = row[hourIndex];
+          if (!cell) {
+            return sum;
+          }
+
+          return sum + (compareMode ? cell.delta : cell.value);
+        },
+        0,
+      );
+      return { hour, total };
+    });
+  }, [compareMode, matrix]);
+
+  const maxDayTotal = Math.max(...dayTotals.map((entry) => Math.abs(entry.total)), 1);
+  const maxHourTotal = Math.max(...hourTotals.map((entry) => Math.abs(entry.total)), 1);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 sm:p-6 ring-1 ring-slate-200 dark:ring-slate-800 shadow-sm relative font-sans my-10 overflow-hidden"
-    >
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
-        <div>
-          <h3 className="text-lg sm:text-2xl font-semibold text-slate-800 dark:text-slate-100 flex items-center justify-start gap-2">
-            <ClockIcon weight="duotone" className="text-accent-500" />
-            Gün ve Saat Bazında Olay Yoğunluğu
-          </h3>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-300 mt-1">
-            Hangi saatlerde kazalar daha yoğun?
-          </p>
-        </div>
-
-        {/* Year Selector */}
-        <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
-          {years.map((y) => (
-            <button
-              key={y}
-              onClick={() => setActiveYear(y)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${
-                activeYear === y
-                  ? "bg-white dark:bg-slate-700 text-accent-600 dark:text-accent-400 shadow-sm ring-1 ring-slate-200 dark:ring-slate-600"
-                  : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
-              }`}
-            >
-              {y}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Heatmap Grid Wrapper (Scrollable on very tight screens) */}
-      <div className="w-full overflow-x-auto pb-4 custom-scrollbar">
-        <div className="min-w-[640px] lg:min-w-[800px]">
-          {/* X Axis: Hours */}
-          <div className="flex ml-16 mb-2">
-            {hoursOrder.map((h) => (
-              <div
-                key={h}
-                className="flex-1 text-center text-[10px] text-slate-400 font-mono"
+    <ArticleChartFrame
+      eyebrow="Gün içi ritim"
+      title="Risk haftanın hangi saatlerinde düğümleniyor?"
+      description="Ana ısı matrisi gün ve saat ritmini gösteriyor; üstte saat toplamları, sağda gün toplamları baskının nerede biriktiğini açıyor. Fark modu iki yılı aynı yüzeyde karşılaştırıyor."
+      controls={
+        <div className="viz-controls">
+          <div className="viz-toggle-group" role="tablist" aria-label="Aktif yıl">
+            {years.map((year) => (
+              <button
+                key={year}
+                type="button"
+                className="viz-toggle"
+                data-active={activeYear === year}
+                onClick={() => setActiveYear(year)}
               >
-                {h.toString().padStart(2, "0")}
-              </div>
+                {year}
+              </button>
             ))}
           </div>
+          <div className="viz-toggle-group" role="tablist" aria-label="Karşılaştırma modu">
+            <button
+              type="button"
+              className="viz-toggle"
+              data-active={!compareMode}
+              onClick={() => setCompareMode(false)}
+            >
+              Tek yıl
+            </button>
+            <button
+              type="button"
+              className="viz-toggle"
+              data-active={compareMode}
+              onClick={() => setCompareMode(true)}
+            >
+              Fark modu
+            </button>
+          </div>
+          {compareMode && (
+            <div className="viz-toggle-group" role="tablist" aria-label="Karşılaştırma yılı">
+              {years
+                .filter((year) => year !== activeYear)
+                .map((year) => (
+                  <button
+                    key={`compare-${year}`}
+                    type="button"
+                    className="viz-toggle"
+                    data-active={compareYear === year}
+                    onClick={() => setCompareYear(year)}
+                  >
+                    {year}
+                  </button>
+                ))}
+            </div>
+          )}
+        </div>
+      }
+      aside={
+        <div className="space-y-5">
+          <div className="viz-stat-grid">
+            <div className="viz-stat border-t-0 pt-0">
+              <span className="viz-label">Aktif okuma</span>
+              <strong>{compareMode ? `${activeYear} - ${compareYear}` : activeYear}</strong>
+            </div>
+            {hoveredCell && (
+              <div className="viz-stat">
+                <span className="viz-label">Seçili hücre</span>
+                <strong>
+                  {hoveredCell.day}, {String(hoveredCell.hour).padStart(2, "0")}:00
+                </strong>
+                <p className="viz-note mt-2">
+                  {compareMode
+                    ? `${hoveredCell.delta && hoveredCell.delta > 0 ? "+" : ""}${formatNumber(
+                        hoveredCell.delta ?? 0,
+                      )} fark`
+                    : `${formatNumber(hoveredCell.value)} olay`}
+                </p>
+              </div>
+            )}
+          </div>
 
-          {/* Grid body */}
-          <div className="flex flex-col gap-[2px]">
-            {daysOrder.map((day, dayIdx) => (
-              <div key={day} className="flex items-center group/row">
-                {/* Y Axis: Days */}
-                <div className="w-16 flex-shrink-0 text-xs font-medium text-slate-500 tracking-wide pr-2 text-right">
-                  {day.substring(0, 3)}
+          <div className="viz-divider" />
+
+          <div className="space-y-3">
+            <p className="viz-label">Renk ölçeği</p>
+            {compareMode ? (
+              <div className="space-y-2">
+                <div className="h-3 rounded-full bg-[linear-gradient(90deg,#68d3f5,rgba(255,255,255,0.06),#f46f88)]" />
+                <div className="flex justify-between text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  <span>{compareYear}'e göre daha sakin</span>
+                  <span>{activeYear}'de daha yoğun</span>
                 </div>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="h-3 rounded-full bg-[linear-gradient(90deg,#1b1b1b,#7af298)]" />
+                <div className="flex justify-between text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                  <span>Düşük</span>
+                  <span>Yüksek</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      }
+      footer={
+        <div className="viz-note">
+          Marjinal çubuklar, yoğunluğun yalnızca tek tek hücrelerde değil gün ve saat
+          toplamlarında da nasıl biriktiğini gösteriyor. Fark modu ise ritimdeki kaymayı
+          tek bakışta görünür kılıyor.
+        </div>
+      }
+    >
+      <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.015] p-4 sm:p-5">
+        <div className="overflow-x-auto pb-1">
+          <div className="grid min-w-[980px] gap-3 xl:min-w-0 xl:grid-cols-[minmax(0,1fr)_140px] xl:grid-rows-[80px_minmax(0,1fr)]">
+          <div className="col-span-1 rounded-[18px] border border-white/[0.06] bg-white/[0.02] p-3">
+            <div className="flex h-full items-end gap-1">
+              {hourTotals.map((entry) => {
+                const height = (Math.abs(entry.total) / maxHourTotal) * 100;
+                return (
+                  <div key={entry.hour} className="flex-1">
+                    <div
+                      className="mx-auto w-full rounded-t-[8px]"
+                      style={{
+                        height: `${height}%`,
+                        background: compareMode
+                          ? entry.total >= 0
+                            ? chartPalette.rose
+                            : chartPalette.cyan
+                          : chartPalette.accent,
+                        opacity: 0.84,
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
-                {/* Cells */}
-                <div className="flex flex-1 gap-[2px]">
-                  {hoursOrder.map((hour) => {
-                    const val = currentGrid?.[day]?.[hour] || 0;
-                    const cellIdx = dayIdx * 24 + hour;
-                    const isHovered = hoveredCell?.index === cellIdx;
+          <div className="col-span-1 row-span-2 grid gap-[6px] rounded-[18px] border border-white/[0.06] bg-white/[0.02] p-3">
+            {dayTotals.map((entry) => {
+              const width = (Math.abs(entry.total) / maxDayTotal) * 100;
+              return (
+                <div key={entry.day} className="flex items-center gap-2">
+                  <span className="w-8 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {entry.day.slice(0, 3)}
+                  </span>
+                  <div className="h-3 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
+                    <div
+                      className="h-full rounded-full"
+                      style={{
+                        width: `${width}%`,
+                        background: compareMode
+                          ? entry.total >= 0
+                            ? chartPalette.rose
+                            : chartPalette.cyan
+                          : chartPalette.accent,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="rounded-[18px] border border-white/[0.06] bg-white/[0.02] p-3">
+            <div className="mb-2 grid grid-cols-[72px_repeat(24,minmax(0,1fr))] gap-[4px]">
+              <div />
+              {hours.map((hour) => (
+                <div
+                  key={hour}
+                  className="text-center text-[10px] uppercase tracking-[0.12em] text-muted-foreground"
+                >
+                  {String(hour).padStart(2, "0")}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-[4px]">
+              {matrix.map((row, rowIndex) => (
+                <div
+                  key={daysOrder[rowIndex]}
+                  className="grid grid-cols-[72px_repeat(24,minmax(0,1fr))] gap-[4px]"
+                >
+                  <div className="flex items-center text-xs font-medium text-foreground">
+                    {daysOrder[rowIndex]}
+                  </div>
+                  {row.map((cell) => {
+                    const displayValue = compareMode ? cell.delta : cell.value;
+                    const color = compareMode
+                      ? interpolateDivergingColor(
+                          chartPalette.cyan,
+                          "rgba(255,255,255,0.03)",
+                          chartPalette.rose,
+                          cell.delta,
+                          maxDelta,
+                        )
+                      : interpolateColor("#1b1b1b", chartPalette.accent, cell.value / maxAbsolute);
 
                     return (
-                      <div
-                        key={`${day}-${hour}`}
-                        className="flex-1 aspect-square relative"
+                      <button
+                        key={`${cell.day}-${cell.hour}`}
+                        type="button"
+                        className="aspect-square rounded-[10px] border border-white/[0.04] transition-transform hover:scale-[1.05] focus:outline-none"
+                        style={{
+                          background: color,
+                          color:
+                            !compareMode && cell.value > maxAbsolute * 0.35
+                              ? chartPalette.text
+                              : chartPalette.dim,
+                        }}
                         onMouseEnter={() =>
                           setHoveredCell({
-                            day,
-                            hour,
-                            value: val,
-                            index: cellIdx,
+                            day: cell.day,
+                            hour: cell.hour,
+                            value: cell.value,
+                            delta: cell.delta,
                           })
                         }
                         onMouseLeave={() => setHoveredCell(null)}
+                        onFocus={() =>
+                          setHoveredCell({
+                            day: cell.day,
+                            hour: cell.hour,
+                            value: cell.value,
+                            delta: cell.delta,
+                          })
+                        }
+                        onBlur={() => setHoveredCell(null)}
                       >
-                        <motion.div
-                          layoutId={`cell-${day}-${hour}`}
-                          initial={false}
-                          animate={{
-                            backgroundColor: getColor(val),
-                            scale: isHovered ? 1.4 : 1,
-                            zIndex: isHovered ? 20 : 1,
-                            borderRadius: isHovered ? "6px" : "4px",
-                          }}
-                          transition={{ duration: 0.2 }}
-                          className={`w-full h-full border border-black/5 dark:border-white/5 cursor-crosshair transform-origin-center shadow-sm ${
-                            activeYear !== 2024 ? "filter contrast-125" : ""
-                          }`}
-                        />
-                      </div>
+                        <span className="sr-only">
+                          {cell.day} {cell.hour}:00 {displayValue}
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-
-      {/* Legend & Tooltip Overlay */}
-      <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 dark:border-slate-800 pt-4">
-        {/* Color Scale Legend */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-slate-400">Az</span>
-          <div className="flex h-3 w-32 sm:w-48 rounded-full overflow-hidden">
-            {colorScale.map((c) => (
-              <div
-                key={c}
-                className="flex-1 h-full"
-                style={{ backgroundColor: c }}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-slate-400 font-medium">Yoğun</span>
-        </div>
-
-        {/* Dynamic Data Readout */}
-        <div className="min-h-[40px] flex items-center justify-end w-full sm:w-auto">
-          <AnimatePresence mode="popLayout">
-            {hoveredCell ? (
-                <motion.div
-                  key="readout"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  className="flex items-center gap-2.5 bg-slate-900/95 dark:bg-white/95 backdrop-blur-md text-white dark:text-slate-900 py-1 px-3 rounded-lg shadow-xl border border-white/10 dark:border-slate-200"
-                >
-                  <div className="flex items-center gap-1.5 text-accent-400 dark:text-accent-600 font-bold text-xs">
-                    {hoveredCell.day}
-                    <span className="text-white/20 dark:text-slate-300 mx-0.5">•</span>
-                    <span className="font-mono">
-                      {hoveredCell.hour.toString().padStart(2, "0")}:00
-                    </span>
-                  </div>
-                  <div className="h-3 w-[1px] bg-white/10 dark:bg-slate-200" />
-                  <div className="font-black text-xs">
-                    {hoveredCell.value} Olay
-                  </div>
-                </motion.div>
-            ) : (
-              <motion.div
-                key="hint"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-xs text-slate-400 flex items-center gap-2"
-              >
-                <NavigationArrowIcon size={14} className="animate-pulse" />
-                İncelemek için harita üzerinde gezinin
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
       </div>
-
-    </div>
+    </ArticleChartFrame>
   );
 }
