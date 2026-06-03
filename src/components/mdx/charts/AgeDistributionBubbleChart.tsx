@@ -187,7 +187,7 @@ export default function AgeDistributionBubbleChart() {
           </select>
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Metric selection"
           >
             {metricOptions.map((option) => (
@@ -196,6 +196,7 @@ export default function AgeDistributionBubbleChart() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={metric === option.key}
+                aria-pressed={metric === option.key}
                 onClick={() => setMetric(option.key)}
               >
                 <span className="relative z-20">{option.label}</span>
@@ -317,6 +318,7 @@ export default function AgeDistributionBubbleChart() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
                   data-active={row.district === activeDistrict}
+                  aria-pressed={row.district === activeDistrict}
                   onClick={() => setSelectedDistrict(row.district)}
                 >
                   <span className="text-xs font-medium text-muted-foreground">

@@ -158,11 +158,16 @@ export default function ItfaiyeSeasonalityHeatmap() {
       density="compact"
       controls={
         <div className="viz-controls">
-          <div className="viz-toggle-group" role="tablist">
+          <div
+            className="viz-toggle-group"
+            role="group"
+            aria-label="Renk ölçeği"
+          >
             <button
               type="button"
               className="relative viz-toggle z-10"
               data-active={scaleMode === "relative"}
+              aria-pressed={scaleMode === "relative"}
               onClick={() => {
                 setScaleMode("relative");
                 setTooltip(null);
@@ -181,6 +186,7 @@ export default function ItfaiyeSeasonalityHeatmap() {
               type="button"
               className="relative viz-toggle z-10"
               data-active={scaleMode === "global"}
+              aria-pressed={scaleMode === "global"}
               onClick={() => {
                 setScaleMode("global");
                 setTooltip(null);

@@ -73,6 +73,7 @@ export default function ItfaiyeCategoryGrowth() {
   const activeCats = useMemo(() => {
     return activities.filter((act) => activeLines[act]);
   }, [activities, activeLines]);
+  const activeCategoryCount = activeCats.length;
 
   // Max value for active categories to scale bars
   const maxSingleVolume = useMemo(() => {
@@ -409,19 +410,63 @@ export default function ItfaiyeCategoryGrowth() {
       </div>
 
       {/* Dynamic Active Toggles */}
-      <div className="mt-3 flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl">
+      <div
+        className="mt-3 flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+        role="group"
+        aria-label="Odak yılı"
+      >
+        {years.map((year) => {
+          const isSelected = selectedYear === year;
+          return (
+            <button
+              key={`year-focus-${year}`}
+              type="button"
+              className="rounded-md border px-2.5 py-1 text-[10px] font-semibold transition-all duration-200"
+              data-active={isSelected}
+              aria-pressed={isSelected}
+              style={{
+                borderColor: isSelected
+                  ? "rgba(122,242,152,0.35)"
+                  : "rgba(255,255,255,0.05)",
+                backgroundColor: isSelected
+                  ? "rgba(122,242,152,0.08)"
+                  : "transparent",
+                color: isSelected ? "#ffffff" : "rgba(255,255,255,0.45)",
+              }}
+              onClick={() => setSelectedYear(year)}
+            >
+              {year}
+            </button>
+          );
+        })}
+      </div>
+
+      <div
+        className="mt-2 flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+        role="group"
+        aria-label="Görev kategorileri"
+      >
         {activities.map((act) => {
           const isActive = activeLines[act];
           const color = categoryColors[act] ?? "#8c98ad";
+          const isLocked = activeCategoryCount <= 1 && isActive;
           return (
             <button
               key={`legend-toggle-${act}`}
               type="button"
               className="flex items-center gap-1 px-2.5 py-1 rounded-md border text-[10px] font-semibold select-none transition-all duration-200"
+              aria-pressed={isActive}
+              aria-label={`${activityLabelsTr[act] ?? act} kategorisini ${
+                isActive ? "gizle" : "göster"
+              }`}
+              disabled={isLocked}
               style={{
                 borderColor: isActive ? `${color}40` : "rgba(255,255,255,0.05)",
                 backgroundColor: isActive ? `${color}08` : "transparent",
-                color: isActive ? "#ffffff" : "rgba(255,255,255,0.35)",
+                color: isActive
+                  ? "#ffffff"
+                  : "rgba(255,255,255,0.35)",
+                opacity: isLocked ? 0.72 : 1,
               }}
               onClick={() => toggleCategory(act)}
             >

@@ -87,7 +87,7 @@ export default function IzmirTransitRecoveryStory() {
           {/* Ridership Mode Toggles */}
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Ridership mode"
           >
             {[
@@ -99,6 +99,7 @@ export default function IzmirTransitRecoveryStory() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={trendMode === option.key}
+                aria-pressed={trendMode === option.key}
                 onClick={() =>
                   setTrendMode(option.key as "absolute" | "indexed")
                 }
@@ -117,7 +118,7 @@ export default function IzmirTransitRecoveryStory() {
           {/* Mix Mode Toggles */}
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Mix mode"
           >
             {[
@@ -129,6 +130,7 @@ export default function IzmirTransitRecoveryStory() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={mixMode === option.key}
+                aria-pressed={mixMode === option.key}
                 onClick={() => setMixMode(option.key as "absolute" | "share")}
               >
                 <span className="relative z-20">{option.label}</span>
@@ -169,6 +171,7 @@ export default function IzmirTransitRecoveryStory() {
                     type="button"
                     className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
                     data-active={activeCategory === row.institution}
+                    aria-pressed={activeCategory === row.institution}
                     onClick={() =>
                       setActiveCategory((current) =>
                         current === row.institution ? null : row.institution,

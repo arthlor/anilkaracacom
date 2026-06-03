@@ -45,7 +45,7 @@ const formatDate = (date: Date) =>
       <div class="articles-archive__controls">
         <div
           class="articles-archive__filter-group"
-          role="tablist"
+          role="group"
           aria-label="Article sections"
         >
           <button
@@ -53,6 +53,7 @@ const formatDate = (date: Date) =>
             type="button"
             data-filter="all"
             data-active="true"
+            aria-pressed="true"
           >
             All
           </button>
@@ -63,6 +64,7 @@ const formatDate = (date: Date) =>
                 type="button"
                 data-filter={section.pillar}
                 data-active="false"
+                aria-pressed="false"
               >
                 {section.shortTitle}
               </button>
@@ -167,21 +169,42 @@ const formatDate = (date: Date) =>
   if (archive instanceof HTMLElement) {
     const filterButtons = Array.from(archive.querySelectorAll("[data-filter]"));
     const sections = Array.from(archive.querySelectorAll("[data-section]"));
+    const validFilters = new Set(
+      filterButtons
+        .map((button) =>
+          button instanceof HTMLElement ? button.dataset.filter : null,
+        )
+        .filter(Boolean),
+    );
 
-    const applyFilter = (filter) => {
+    const applyFilter = (filter, { updateUrl = true } = {}) => {
+      const nextFilter = validFilters.has(filter) ? filter : "all";
+
       filterButtons.forEach((button) => {
         if (button instanceof HTMLElement) {
-          button.dataset.active = String(button.dataset.filter === filter);
+          const isActive = button.dataset.filter === nextFilter;
+          button.dataset.active = String(isActive);
+          button.setAttribute("aria-pressed", String(isActive));
         }
       });
 
       sections.forEach((section) => {
         if (section instanceof HTMLElement) {
           const visible =
-            filter === "all" || section.dataset.section === filter;
+            nextFilter === "all" || section.dataset.section === nextFilter;
           section.toggleAttribute("hidden", !visible);
         }
       });
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (nextFilter === "all") {
+          url.searchParams.delete("section");
+        } else {
+          url.searchParams.set("section", nextFilter);
+        }
+        window.history.pushState({ section: nextFilter }, "", url);
+      }
     };
 
     filterButtons.forEach((button) => {
@@ -190,6 +213,18 @@ const formatDate = (date: Date) =>
           applyFilter(button.dataset.filter);
         }
       });
+    });
+
+    const initialFilter = new URL(window.location.href).searchParams.get(
+      "section",
+    );
+    if (initialFilter) {
+      applyFilter(initialFilter, { updateUrl: false });
+    }
+
+    window.addEventListener("popstate", () => {
+      const filter = new URL(window.location.href).searchParams.get("section");
+      applyFilter(filter || "all", { updateUrl: false });
     });
   }
 </script>

@@ -206,6 +206,7 @@ export default function StreetFrequencyLineChart() {
                   type="button"
                   className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
                   data-active={row.name === activeStreetName}
+                  aria-pressed={row.name === activeStreetName}
                   onClick={() => setSelectedStreet(row.name)}
                   onMouseEnter={() => setHoveredStreet(row.name)}
                   onMouseLeave={() => setHoveredStreet(null)}

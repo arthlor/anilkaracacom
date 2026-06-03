@@ -2,6 +2,7 @@ import type { ImageMetadata } from "astro";
 
 import aiFitCheckIcon from "../assets/images/projects/aifitcheckicon.webp";
 import anilKaracaSite from "../assets/images/projects/anilkaraca-site.webp";
+import bohcaIcon from "../assets/images/projects/bohca-icon.png";
 import choreusIcon from "../assets/images/projects/choreusicon.webp";
 import dresinTuncaySite from "../assets/images/projects/dresintuncay-site.webp";
 import pimlicoImage from "../assets/images/projects/pimlico.webp";
@@ -60,6 +61,21 @@ export type AppProject = {
 };
 
 export const appProjects: AppProject[] = [
+  {
+    name: "Bohça",
+    tagline: "Çeyiz planner",
+    description:
+      "A Turkish wedding-prep app for shared çeyiz lists, budgets, item notes, and partner coordination.",
+    technicalSummary:
+      "Built with React Native and Expo around authenticated shared workspaces, media-backed item records, Pro limits, and App Store delivery.",
+    role: "Product design, React Native implementation, backend integration, release workflow",
+    impact:
+      "Shows full ownership of a culturally specific consumer app with real data, collaboration, and subscription surfaces.",
+    stack: ["React Native", "Expo", "Supabase", "RevenueCat"],
+    appStoreUrl:
+      "https://apps.apple.com/us/app/%C3%A7eyiz-planlay%C4%B1c%C4%B1-boh%C3%A7a/id6763038436",
+    image: bohcaIcon,
+  },
   {
     name: "Yeşer",
     tagline: "Gratitude journal",
@@ -129,6 +145,7 @@ export type ProjectShowcaseSection = {
 };
 
 export const primaryProductProjectSlugs = [
+  "bohca",
   "yeser",
   "choreus",
   "ai-fit-check",
@@ -145,6 +162,20 @@ export const projectShowcaseSections: ProjectShowcaseSection[] = [
     description:
       "Shipped iOS products collected in one place for fast portfolio scanning.",
     entries: [
+      {
+        title: "Bohça",
+        description:
+          "A Turkish çeyiz planning app for shared lists, budget tracking, item media, and partner coordination.",
+        href: "/projects/bohca",
+        eyebrow: "Mobile app",
+        meta: "iOS case study",
+        role: "Product design, React Native implementation, backend integration, release workflow",
+        impact:
+          "Shows a production consumer app with collaboration, data ownership, and subscription logic.",
+        tags: ["React Native", "Expo", "Supabase"],
+        image: bohcaIcon,
+        ctaLabel: "Open case study",
+      },
       {
         title: "Yeşer",
         description:
@@ -306,9 +337,9 @@ export const experienceEntries: ExperienceEntry[] = [
     ],
   },
   {
-    period: "2024",
+    period: "2019 - 2025",
     role: "Communications advisor",
-    organization: "Izmir Metropolitan Municipality and Izbeton",
+    organization: "İzmir Büyükşehir Belediyesi and İZBETON",
     context:
       "Civic communications, digital content, and documentary production",
     summary:
@@ -320,9 +351,9 @@ export const experienceEntries: ExperienceEntry[] = [
     ],
   },
   {
-    period: "2014 - 2024",
+    period: "2014 - 2019",
     role: "Senior digital journalist",
-    organization: "BirGun, dokuz8HABER, and Egede SonSoz",
+    organization: "BirGün, dokuz8HABER, and Ege'de Sonsöz",
     context: "Digital reporting, live publishing, and visual storytelling",
     summary:
       "Built a decade-long newsroom foundation across reporting, publishing, analysis, and multi-format storytelling, with a strong focus on politics, cities, and public systems.",

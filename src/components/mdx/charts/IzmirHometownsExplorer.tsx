@@ -109,21 +109,22 @@ export default function IzmirHometownsExplorer() {
   // Card ref mapping for horizontal mobile carousel scroll sync
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const carouselRef = useRef<HTMLDivElement | null>(null);
-  const isScrollingRef = useRef(false);
+  const isProgrammaticScrollRef = useRef(false);
 
   useEffect(() => {
-    if (isScrollingRef.current) return;
     const activeCard = cardRefs.current[selectedDistrict];
     if (activeCard && carouselRef.current) {
-      isScrollingRef.current = true;
+      isProgrammaticScrollRef.current = true;
       activeCard.scrollIntoView({
-        behavior: "smooth",
+        behavior: "auto",
         block: "nearest",
         inline: "center",
       });
-      setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 500);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          isProgrammaticScrollRef.current = false;
+        });
+      });
     }
   }, [selectedDistrict]);
 
@@ -419,7 +420,7 @@ export default function IzmirHometownsExplorer() {
             ref={carouselRef}
             className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-none"
             onScroll={(e) => {
-              if (isScrollingRef.current) return;
+              if (isProgrammaticScrollRef.current) return;
               const container = e.currentTarget;
               const scrollLeft = container.scrollLeft;
               const containerWidth = container.offsetWidth;

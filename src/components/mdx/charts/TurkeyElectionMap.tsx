@@ -31,6 +31,15 @@ const partyColors: Record<string, string> = {
   Unchanged: "#4b5563",
 };
 
+const provinceDisplayNames: Record<string, string> = {
+  Canakkale: "Çanakkale",
+  Istanbul: "İstanbul",
+  Izmir: "İzmir",
+};
+
+const getProvinceLabel = (province: string) =>
+  provinceDisplayNames[province] ?? province;
+
 export default function TurkeyElectionMap() {
   const features = useMemo(() => {
     return (turkeyGeoJson.features as GeoFeature[]).map((feature, index) => ({
@@ -68,21 +77,22 @@ export default function TurkeyElectionMap() {
   // Card ref mapping for horizontal mobile carousel scroll sync
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const carouselRef = useRef<HTMLDivElement | null>(null);
-  const isScrollingRef = useRef(false);
+  const isProgrammaticScrollRef = useRef(false);
 
   useEffect(() => {
-    if (isScrollingRef.current) return;
     const activeCard = cardRefs.current[selectedProvince];
     if (activeCard && carouselRef.current) {
-      isScrollingRef.current = true;
+      isProgrammaticScrollRef.current = true;
       activeCard.scrollIntoView({
-        behavior: "smooth",
+        behavior: "auto",
         block: "nearest",
         inline: "center",
       });
-      setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 500);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          isProgrammaticScrollRef.current = false;
+        });
+      });
     }
   }, [selectedProvince]);
 
@@ -97,7 +107,7 @@ export default function TurkeyElectionMap() {
       description="Select a province to read the winning party, candidate, vote share, and control change below the map."
       takeaway="The national result becomes concrete when the province map shows where control changed hands."
       primaryMetric={{
-        label: activeProvince.id,
+        label: getProvinceLabel(activeProvince.id),
         value: activeProvince.status,
         detail: activeProvince.details.change,
       }}
@@ -113,7 +123,7 @@ export default function TurkeyElectionMap() {
           >
             {features.map((feature) => (
               <option key={feature.id} value={feature.id}>
-                {feature.id}
+                {getProvinceLabel(feature.id)}
               </option>
             ))}
           </select>
@@ -124,7 +134,7 @@ export default function TurkeyElectionMap() {
           <div className="viz-stat-grid">
             <div className="viz-stat border-t-0 pt-0">
               <span className="viz-label">Province</span>
-              <strong>{activeProvince.id}</strong>
+              <strong>{getProvinceLabel(activeProvince.id)}</strong>
             </div>
             <div className="viz-stat">
               <span className="viz-label">Winning party</span>
@@ -220,7 +230,7 @@ export default function TurkeyElectionMap() {
             ref={carouselRef}
             className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-3 scrollbar-none"
             onScroll={(e) => {
-              if (isScrollingRef.current) return;
+              if (isProgrammaticScrollRef.current) return;
               const container = e.currentTarget;
               const scrollLeft = container.scrollLeft;
               const containerWidth = container.offsetWidth;
@@ -266,7 +276,7 @@ export default function TurkeyElectionMap() {
                 >
                   <div className="flex items-center justify-between gap-2 mb-2">
                     <span className="text-sm font-bold text-foreground">
-                      {feature.id}
+                      {getProvinceLabel(feature.id)}
                     </span>
                     <span
                       className="text-[9px] px-2 py-0.5 rounded-full font-bold"

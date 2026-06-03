@@ -111,7 +111,7 @@ export default function AccidentTypesBarChart() {
           {/* Sliding segment for year selection */}
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Year selector"
           >
             {parsed.years.map((year) => (
@@ -120,6 +120,7 @@ export default function AccidentTypesBarChart() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={selectedYear === year}
+                aria-pressed={selectedYear === year}
                 onClick={() => setSelectedYear(year)}
               >
                 <span className="relative z-20">{year}</span>
@@ -136,7 +137,7 @@ export default function AccidentTypesBarChart() {
           {/* Sliding segment for count selection */}
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Visible category count"
           >
             {[8, 10, 12].map((count) => (
@@ -145,6 +146,7 @@ export default function AccidentTypesBarChart() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={topCount === count}
+                aria-pressed={topCount === count}
                 onClick={() => setTopCount(count)}
               >
                 <span className="relative z-20">Top {count}</span>

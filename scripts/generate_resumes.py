@@ -405,8 +405,8 @@ RESUME = {
         },
         {
             "role": "Communications advisor",
-            "org": "Izmir Metropolitan Municipality & Izbeton",
-            "date": "2024",
+            "org": "İzmir Büyükşehir Belediyesi & İZBETON",
+            "date": "2019 – 2025",
             "bullets": [
                 "Produced digital communication assets and documentary work inside a civic institution with public accountability.",
                 "Bridged reporting instincts with message clarity across video, web, and editorial delivery.",
@@ -414,8 +414,8 @@ RESUME = {
         },
         {
             "role": "Senior digital journalist",
-            "org": "BirGun  ·  dokuz8HABER  ·  Egede SonSoz",
-            "date": "2014 – 2024",
+            "org": "BirGün  ·  dokuz8HABER  ·  Ege'de Sonsöz",
+            "date": "2014 – 2019",
             "bullets": [
                 "Covered elections, civic systems, transportation, and political accountability across multiple newsrooms.",
                 "Worked across fast-paced newsroom publishing and deeper analytical formats including visual explainers.",
@@ -522,9 +522,12 @@ def main():
 
     build_resume(RESUME)
 
-    # master copy at project root
-    master = ROOT / "anilkaraca.pdf"
-    master.write_bytes(RESUME["path"].read_bytes())
+    # Keep both public resume URLs and the project-root master in sync.
+    public_master = PUBLIC / "anilkaraca.pdf"
+    root_master = ROOT / "anilkaraca.pdf"
+    pdf_bytes = RESUME["path"].read_bytes()
+    public_master.write_bytes(pdf_bytes)
+    root_master.write_bytes(pdf_bytes)
 
 
 if __name__ == "__main__":

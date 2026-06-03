@@ -188,12 +188,14 @@ export default function ItfaiyeAnimalRescueFocus() {
     .x((d) => xScale(d.monthNum) ?? 0)
     .y((d) => yScale(d.value));
 
-  // Multi-line tooltip display on hovering columns
-  const handleXHover = (e: React.MouseEvent, monthNum: number) => {
-    const svgElement = e.currentTarget.closest("svg");
+  const activeYearCount = years.filter((yr) => activeYears[yr]).length;
+
+  // Multi-line tooltip display on hovering or focusing columns
+  const showMonthTooltip = (target: SVGElement, monthNum: number) => {
+    const svgElement = target.closest("svg");
     if (!svgElement) return;
     const svgRect = svgElement.getBoundingClientRect();
-    const elemRect = e.currentTarget.getBoundingClientRect();
+    const elemRect = target.getBoundingClientRect();
 
     const items: Array<{ year: number; value: number; color: string }> = [];
     years.forEach((yr) => {
@@ -218,6 +220,21 @@ export default function ItfaiyeAnimalRescueFocus() {
       monthNum,
       items,
     });
+  };
+
+  const handleXHover = (e: React.MouseEvent<SVGRectElement>, monthNum: number) => {
+    showMonthTooltip(e.currentTarget, monthNum);
+  };
+
+  const handleMonthKeyDown = (
+    e: React.KeyboardEvent<SVGRectElement>,
+    monthNum: number,
+  ) => {
+    if (e.key !== "Enter" && e.key !== " ") {
+      return;
+    }
+    e.preventDefault();
+    showMonthTooltip(e.currentTarget, monthNum);
   };
 
   const handleLeave = () => {
@@ -376,9 +393,16 @@ export default function ItfaiyeAnimalRescueFocus() {
                   width={innerWidth / 12}
                   height={innerHeight}
                   fill="transparent"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${fullMonthNames[monthNum - 1]} ayı karşılaştırmasını göster`}
                   style={{ cursor: "pointer" }}
                   onMouseEnter={(e) => handleXHover(e, monthNum)}
+                  onFocus={(e) => showMonthTooltip(e.currentTarget, monthNum)}
+                  onClick={(e) => showMonthTooltip(e.currentTarget, monthNum)}
+                  onKeyDown={(e) => handleMonthKeyDown(e, monthNum)}
                   onMouseLeave={handleLeave}
+                  onBlur={handleLeave}
                 />
               </g>
             );
@@ -440,17 +464,25 @@ export default function ItfaiyeAnimalRescueFocus() {
       </div>
 
       {/* Interactive Legend with Highlights */}
-      <div className="mt-3 flex flex-wrap gap-2.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl">
+      <div
+        className="mt-3 flex flex-wrap gap-2.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+        role="group"
+        aria-label="Yıl görünürlüğü ve odak yılı"
+      >
         {years.map((yr) => {
           const isActive = activeYears[yr];
           const isSelected = selectedYear === yr;
           const color = yearColors[yr] ?? "#8c98ad";
+          const isLocked = activeYearCount <= 1 && isActive;
 
           return (
             <div key={`legend-${yr}`} className="flex items-center gap-1">
               <button
                 type="button"
                 className="w-3.5 h-3.5 rounded border border-white/20 flex items-center justify-center text-[8px] text-foreground hover:bg-white/10 transition-colors"
+                aria-pressed={isActive}
+                aria-label={`${yr} yılını ${isActive ? "gizle" : "göster"}`}
+                disabled={isLocked}
                 onClick={() => toggleYear(yr)}
               >
                 {isActive ? "✓" : ""}
@@ -466,6 +498,8 @@ export default function ItfaiyeAnimalRescueFocus() {
                     : "transparent",
                 }}
                 disabled={!isActive}
+                aria-pressed={isSelected}
+                aria-label={`${yr} yılını odakla`}
                 onClick={() => setSelectedYear(yr)}
               >
                 <span

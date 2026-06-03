@@ -88,6 +88,7 @@ export default function IzmirTransportUsageExplorer() {
                     type="button"
                     className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
                     data-active={activeCategory === row.institution}
+                    aria-pressed={activeCategory === row.institution}
                     onClick={() =>
                       setActiveCategory((current) =>
                         current === row.institution ? null : row.institution,

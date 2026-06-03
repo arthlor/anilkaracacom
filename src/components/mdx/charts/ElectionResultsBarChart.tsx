@@ -49,13 +49,14 @@ export default function ElectionResultsBarChart() {
         <div className="viz-controls">
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Sort mode"
           >
             <button
               type="button"
               className="relative viz-toggle z-10"
               data-active={sortMode === "share"}
+              aria-pressed={sortMode === "share"}
               onClick={() => setSortMode("share")}
             >
               <span className="relative z-20">Vote share</span>
@@ -71,6 +72,7 @@ export default function ElectionResultsBarChart() {
               type="button"
               className="relative viz-toggle z-10"
               data-active={sortMode === "delta"}
+              aria-pressed={sortMode === "delta"}
               onClick={() => setSortMode("delta")}
             >
               <span className="relative z-20">Change vs 2019</span>

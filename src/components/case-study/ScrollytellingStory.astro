@@ -29,6 +29,7 @@ const { steps } = Astro.props;
               data-story-nav
               data-story-target={step.id}
               data-active={index === 0 ? "true" : "false"}
+              aria-current={index === 0 ? "step" : undefined}
               class:list={[
                 "whitespace-nowrap border-b px-1.5 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition-all duration-300 sm:px-2.5 sm:text-[11px]",
                 index === 0
@@ -89,6 +90,11 @@ const { steps } = Astro.props;
 
         const isActive = link.dataset.storyTarget === stepId;
         link.dataset.active = String(isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "step");
+        } else {
+          link.removeAttribute("aria-current");
+        }
         link.classList.toggle("border-primary/60", isActive);
         link.classList.toggle("text-primary", isActive);
         link.classList.toggle("border-transparent", !isActive);

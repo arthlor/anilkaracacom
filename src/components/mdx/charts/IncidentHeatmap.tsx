@@ -181,7 +181,7 @@ export default function IncidentHeatmap() {
         <div className="viz-controls">
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Active year"
           >
             {years.map((year) => (
@@ -190,6 +190,7 @@ export default function IncidentHeatmap() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={activeYear === year}
+                aria-pressed={activeYear === year}
                 onClick={() => setActiveYear(year)}
               >
                 <span className="relative z-20">{year}</span>
@@ -205,13 +206,14 @@ export default function IncidentHeatmap() {
           </div>
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Comparison mode"
           >
             <button
               type="button"
               className="relative viz-toggle z-10"
               data-active={!compareMode}
+              aria-pressed={!compareMode}
               onClick={() => setCompareMode(false)}
             >
               <span className="relative z-20">Single year</span>
@@ -227,6 +229,7 @@ export default function IncidentHeatmap() {
               type="button"
               className="relative viz-toggle z-10"
               data-active={compareMode}
+              aria-pressed={compareMode}
               onClick={() => setCompareMode(true)}
             >
               <span className="relative z-20">Difference</span>
@@ -242,7 +245,7 @@ export default function IncidentHeatmap() {
           {compareMode && (
             <div
               className="viz-toggle-group"
-              role="tablist"
+              role="group"
               aria-label="Comparison year"
             >
               {years
@@ -253,6 +256,7 @@ export default function IncidentHeatmap() {
                     type="button"
                     className="relative viz-toggle z-10"
                     data-active={compareYear === year}
+                    aria-pressed={compareYear === year}
                     onClick={() => setCompareYear(year)}
                   >
                     <span className="relative z-20">{year}</span>
@@ -357,43 +361,159 @@ export default function IncidentHeatmap() {
         </div>
       }
     >
-      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
-        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_140px] xl:grid-rows-[80px_minmax(0,1fr)]">
-          {/* Marginal hour totals */}
-          <div className="col-span-1 rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3 h-20">
-            <div className="flex h-full items-end gap-1 px-1 sm:px-1.5 pl-[48px]">
-              {hourTotals.map((entry) => {
-                const height = (Math.abs(entry.total) / maxHourTotal) * 100;
-                return (
-                  <div
-                    key={entry.hour}
-                    className="flex-1 h-full flex items-end"
-                  >
-                    <motion.div
-                      className="mx-auto w-full rounded-t-[4px]"
-                      animate={{ height: `${height}%` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15,
-                      }}
-                      style={{
-                        background: compareMode
-                          ? entry.total >= 0
-                            ? chartPalette.rose
-                            : chartPalette.cyan
-                          : chartPalette.accent,
-                        opacity: 0.84,
-                      }}
-                    />
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 shadow-[0_12px_40px_rgba(0,0,0,0.2)] sm:p-6">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_140px] xl:items-stretch">
+          <div
+            className="min-w-0 overflow-x-auto pb-2 scrollbar-thin focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background xl:pb-0"
+            role="region"
+            aria-label="Hourly incident heatmap"
+            tabIndex={0}
+          >
+            <div className="min-w-[680px] space-y-4">
+              {/* Marginal hour totals */}
+              <div className="h-20 rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3">
+                <div className="flex h-full items-end gap-1 px-1 pl-[48px] sm:px-1.5">
+                  {hourTotals.map((entry) => {
+                    const height =
+                      (Math.abs(entry.total) / maxHourTotal) * 100;
+                    return (
+                      <div
+                        key={entry.hour}
+                        className="flex h-full flex-1 items-end"
+                      >
+                        <motion.div
+                          className="mx-auto w-full rounded-t-[4px]"
+                          animate={{ height: `${height}%` }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 15,
+                          }}
+                          style={{
+                            background: compareMode
+                              ? entry.total >= 0
+                                ? chartPalette.rose
+                                : chartPalette.cyan
+                              : chartPalette.accent,
+                            opacity: 0.84,
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Matrix Grid */}
+              <div className="group relative min-w-0 overflow-visible rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3">
+                {/* Scroll hints */}
+                <div className="pointer-events-none absolute bottom-0 left-[48px] top-0 z-10 w-6 bg-gradient-to-r from-[#111111] to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+                <div className="pointer-events-none absolute bottom-0 right-0 top-0 z-10 w-6 bg-gradient-to-l from-[#111111] to-transparent opacity-100 transition-opacity duration-200" />
+
+                <div className="p-1">
+                  {/* Hours header */}
+                  <div className="relative mb-2 grid grid-cols-[48px_repeat(24,minmax(24px,1fr))] gap-[4px]">
+                    <div className="sticky left-0 z-20 bg-[#111111] pr-2" />
+                    {hours.map((hour) => (
+                      <div
+                        key={hour}
+                        className="text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+                      >
+                        {String(hour).padStart(2, "0")}
+                      </div>
+                    ))}
                   </div>
-                );
-              })}
+
+                  {/* Day rows */}
+                  <div className="grid gap-[4px]">
+                    {matrix.map((row, rowIndex) => {
+                      const dayKey = daysOrder[rowIndex] ?? "";
+                      const dayLabel = dayLabels[dayKey] ?? dayKey;
+
+                      return (
+                        <div
+                          key={dayKey}
+                          className="relative grid grid-cols-[48px_repeat(24,minmax(24px,1fr))] gap-[4px]"
+                        >
+                          <div className="sticky left-0 z-10 flex items-center border-r border-white/[0.08] bg-[#111111]/96 pr-2 text-xs font-semibold leading-none text-foreground backdrop-blur">
+                            {dayLabel.slice(0, 3)}
+                          </div>
+                          {row.map((cell) => {
+                            const color = compareMode
+                              ? interpolateDivergingColor(
+                                  chartPalette.cyan,
+                                  "rgba(255,255,255,0.03)",
+                                  chartPalette.rose,
+                                  cell.delta,
+                                  maxDelta,
+                                )
+                              : interpolateColor(
+                                  "#1b1b1b",
+                                  chartPalette.accent,
+                                  cell.value / maxAbsolute,
+                                );
+                            const isSelected =
+                              cell.day === selectedDay &&
+                              cell.hour === selectedHour;
+
+                            return (
+                              <motion.div
+                                key={`${cell.day}-${cell.hour}`}
+                                role="presentation"
+                                className="z-0 aspect-square cursor-pointer rounded-[6px] border transition-transform hover:z-10 hover:scale-[1.1]"
+                                animate={{
+                                  background: color,
+                                  borderColor: isSelected
+                                    ? "rgba(122,242,152,0.85)"
+                                    : "rgba(255,255,255,0.04)",
+                                }}
+                                transition={{
+                                  type: "spring",
+                                  stiffness: 100,
+                                  damping: 15,
+                                }}
+                                style={{
+                                  boxShadow: isSelected
+                                    ? "0 0 0 1px rgba(122,242,152,0.2), 0 4px 12px rgba(0,0,0,0.15)"
+                                    : undefined,
+                                }}
+                                onMouseEnter={() =>
+                                  setHoveredCell({
+                                    day: cell.day,
+                                    hour: cell.hour,
+                                    value: cell.value,
+                                    delta: cell.delta,
+                                  })
+                                }
+                                onMouseLeave={() => setHoveredCell(null)}
+                                onTouchStart={() => {
+                                  setHoveredCell({
+                                    day: cell.day,
+                                    hour: cell.hour,
+                                    value: cell.value,
+                                    delta: cell.delta,
+                                  });
+                                  setSelectedDay(cell.day);
+                                  setSelectedHour(cell.hour);
+                                }}
+                                onClick={() => {
+                                  setSelectedDay(cell.day);
+                                  setSelectedHour(cell.hour);
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Marginal day totals */}
-          <div className="col-span-1 row-span-2 grid gap-[6px] rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3">
+          <div className="col-span-1 grid gap-[6px] rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3 xl:col-start-2">
             {dayTotals.map((entry) => {
               const width = (Math.abs(entry.total) / maxDayTotal) * 100;
               return (
@@ -422,114 +542,6 @@ export default function IncidentHeatmap() {
                 </div>
               );
             })}
-          </div>
-
-          {/* Matrix Grid */}
-          <div className="rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3 overflow-visible relative group">
-            {/* Scroll hints */}
-            <div className="pointer-events-none absolute left-[48px] top-0 bottom-0 w-6 bg-gradient-to-r from-[#111111] to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#111111] to-transparent z-10 opacity-100 transition-opacity duration-200" />
-
-            <div className="overflow-x-auto pb-2 scrollbar-thin">
-              <div className="min-w-[680px] p-1">
-                {/* Hours header */}
-                <div className="mb-2 grid grid-cols-[48px_repeat(24,minmax(24px,1fr))] gap-[4px] relative">
-                  <div className="sticky left-0 z-20 bg-[#111111] pr-2" />
-                  {hours.map((hour) => (
-                    <div
-                      key={hour}
-                      className="text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
-                    >
-                      {String(hour).padStart(2, "0")}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Day rows */}
-                <div className="grid gap-[4px]">
-                  {matrix.map((row, rowIndex) => {
-                    const dayKey = daysOrder[rowIndex] ?? "";
-                    const dayLabel = dayLabels[dayKey] ?? dayKey;
-
-                    return (
-                      <div
-                        key={dayKey}
-                        className="grid grid-cols-[48px_repeat(24,minmax(24px,1fr))] gap-[4px] relative"
-                      >
-                        <div className="sticky left-0 z-10 flex items-center text-xs font-semibold text-foreground bg-[#111111]/96 pr-2 border-r border-white/[0.08] backdrop-blur leading-none">
-                          {dayLabel.slice(0, 3)}
-                        </div>
-                        {row.map((cell) => {
-                          const color = compareMode
-                            ? interpolateDivergingColor(
-                                chartPalette.cyan,
-                                "rgba(255,255,255,0.03)",
-                                chartPalette.rose,
-                                cell.delta,
-                                maxDelta,
-                              )
-                            : interpolateColor(
-                                "#1b1b1b",
-                                chartPalette.accent,
-                                cell.value / maxAbsolute,
-                              );
-                          const isSelected =
-                            cell.day === selectedDay &&
-                            cell.hour === selectedHour;
-
-                          return (
-                            <motion.div
-                              key={`${cell.day}-${cell.hour}`}
-                              role="presentation"
-                              className="aspect-square cursor-pointer rounded-[6px] border transition-transform hover:scale-[1.1] z-0 hover:z-10"
-                              animate={{
-                                background: color,
-                                borderColor: isSelected
-                                  ? "rgba(122,242,152,0.85)"
-                                  : "rgba(255,255,255,0.04)",
-                              }}
-                              transition={{
-                                type: "spring",
-                                stiffness: 100,
-                                damping: 15,
-                              }}
-                              style={{
-                                boxShadow: isSelected
-                                  ? "0 0 0 1px rgba(122,242,152,0.2), 0 4px 12px rgba(0,0,0,0.15)"
-                                  : undefined,
-                              }}
-                              onMouseEnter={() =>
-                                setHoveredCell({
-                                  day: cell.day,
-                                  hour: cell.hour,
-                                  value: cell.value,
-                                  delta: cell.delta,
-                                })
-                              }
-                              onMouseLeave={() => setHoveredCell(null)}
-                              onTouchStart={() => {
-                                setHoveredCell({
-                                  day: cell.day,
-                                  hour: cell.hour,
-                                  value: cell.value,
-                                  delta: cell.delta,
-                                });
-                                setSelectedDay(cell.day);
-                                setSelectedHour(cell.hour);
-                              }}
-                              onClick={() => {
-                                setSelectedDay(cell.day);
-                                setSelectedHour(cell.hour);
-                              }}
-                            />
-                          );
-                        })}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -186,6 +186,8 @@ export default function BirthMetricsTimeline() {
 
           <CustomTimelineScrubber
             index={selectedIndex}
+            minYear={firstYear}
+            selectedYear={activePoint.year}
             maxIndex={birthIndicatorSeries.length - 1}
             onSelect={setSelectedIndex}
           />
@@ -379,6 +381,7 @@ function MetricStrip({
             width={672}
             height={80}
             fill="transparent"
+            aria-hidden="true"
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const clientX = e.clientX - rect.left;
@@ -427,10 +430,14 @@ function MetricStrip({
 
 function CustomTimelineScrubber({
   index,
+  minYear,
+  selectedYear,
   maxIndex,
   onSelect,
 }: {
   index: number;
+  minYear: number;
+  selectedYear: number;
   maxIndex: number;
   onSelect: (index: number) => void;
 }) {
@@ -451,6 +458,48 @@ function CustomTimelineScrubber({
     e.currentTarget.releasePointerCapture(e.pointerId);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const step =
+      e.key === "PageUp" || e.key === "PageDown"
+        ? 5
+        : e.shiftKey
+          ? 3
+          : 1;
+
+    if (
+      ![
+        "ArrowLeft",
+        "ArrowDown",
+        "ArrowRight",
+        "ArrowUp",
+        "Home",
+        "End",
+        "PageUp",
+        "PageDown",
+      ].includes(e.key)
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+
+    if (e.key === "Home") {
+      onSelect(0);
+      return;
+    }
+
+    if (e.key === "End") {
+      onSelect(maxIndex);
+      return;
+    }
+
+    const direction =
+      e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "PageUp"
+        ? 1
+        : -1;
+    onSelect(Math.max(0, Math.min(maxIndex, index + direction * step)));
+  };
+
   const updateValue = (e: React.PointerEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
@@ -464,9 +513,17 @@ function CustomTimelineScrubber({
   return (
     <div
       className="relative mt-6 h-6 flex items-center cursor-pointer select-none group touch-none"
+      role="slider"
+      tabIndex={0}
+      aria-label="Select year"
+      aria-valuemin={minYear}
+      aria-valuemax={minYear + maxIndex}
+      aria-valuenow={selectedYear}
+      aria-valuetext={`${selectedYear}`}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onKeyDown={handleKeyDown}
     >
       <div className="absolute inset-0 flex items-center">
         <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative overflow-hidden">

@@ -42,7 +42,7 @@ export default function PartyChangesChart() {
         <div className="viz-controls">
           <div
             className="viz-toggle-group"
-            role="tablist"
+            role="group"
             aria-label="Administrative level"
           >
             {levels.map((level) => (
@@ -51,6 +51,7 @@ export default function PartyChangesChart() {
                 type="button"
                 className="relative viz-toggle z-10"
                 data-active={activeLevel === level}
+                aria-pressed={activeLevel === level}
                 onClick={() => setActiveLevel(level)}
               >
                 <span className="relative z-20">{level}</span>
