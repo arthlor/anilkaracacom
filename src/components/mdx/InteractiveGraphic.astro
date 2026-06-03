@@ -15,66 +15,96 @@ const { src, title, height = "500px" } = Astro.props;
     aria-label="Tam Ekranda Aç"
     title="Tam Ekranda Aç"
   >
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path
+        d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"
+      ></path>
     </svg>
   </button>
 
   <!-- Iframe Container -->
-  <div class="iframe-container bg-white/[0.02] rounded-xl overflow-hidden border border-white/[0.06] transition-all duration-300">
+  <div
+    class="iframe-container bg-white/[0.02] rounded-xl overflow-hidden border border-white/[0.06] transition-all duration-300"
+  >
     <iframe
       src={src}
       title={title}
       style={`height: ${height}; width: 100%; border: none;`}
       loading="lazy"
-      class="w-full"
-    ></iframe>
+      class="w-full"></iframe>
   </div>
 </div>
 
 <script>
   // Add fullscreen functionality
-  document.querySelectorAll('.interactive-graphic-wrapper').forEach(wrapper => {
-    const btn = wrapper.querySelector('.fullscreen-btn');
-    const iframe = wrapper.querySelector('iframe') as HTMLIFrameElement;
-    
-    if (btn && iframe) {
-      btn.addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-          wrapper.requestFullscreen().catch(err => {
-            console.error(`Error attempting to enable fullscreen: ${err.message}`);
-          });
-        } else {
-          document.exitFullscreen();
-        }
-      });
-    }
-  });
+  document
+    .querySelectorAll(".interactive-graphic-wrapper")
+    .forEach((wrapper) => {
+      const btn = wrapper.querySelector(".fullscreen-btn");
+      const iframe = wrapper.querySelector("iframe") as HTMLIFrameElement;
+
+      if (btn && iframe) {
+        btn.addEventListener("click", () => {
+          if (!document.fullscreenElement) {
+            wrapper.requestFullscreen().catch((err) => {
+              console.error(
+                `Error attempting to enable fullscreen: ${err.message}`,
+              );
+            });
+          } else {
+            document.exitFullscreen();
+          }
+        });
+      }
+    });
 
   // Handle fullscreen change events to adjust styling
-  document.addEventListener('fullscreenchange', () => {
+  document.addEventListener("fullscreenchange", () => {
     const fullscreenElement = document.fullscreenElement;
-    if (fullscreenElement && fullscreenElement.classList.contains('interactive-graphic-wrapper')) {
-      const iframe = fullscreenElement.querySelector('iframe') as HTMLIFrameElement;
+    if (
+      fullscreenElement &&
+      fullscreenElement.classList.contains("interactive-graphic-wrapper")
+    ) {
+      const iframe = fullscreenElement.querySelector(
+        "iframe",
+      ) as HTMLIFrameElement;
       if (iframe) {
         // Store original height
         iframe.dataset.originalHeight = iframe.style.height;
-        iframe.style.height = '100vh';
-        fullscreenElement.classList.add('bg-[#111111]', 'p-4');
-        fullscreenElement.querySelector('.iframe-container')?.classList.remove('rounded-xl', 'border');
+        iframe.style.height = "100vh";
+        fullscreenElement.classList.add("bg-[#111111]", "p-4");
+        fullscreenElement
+          .querySelector(".iframe-container")
+          ?.classList.remove("rounded-xl", "border");
       }
     } else {
       // Revert styles when exiting fullscreen
-      document.querySelectorAll('.interactive-graphic-wrapper iframe').forEach(iframeEl => {
-        const iframe = iframeEl as HTMLIFrameElement;
-        if (iframe.dataset.originalHeight) {
-          iframe.style.height = iframe.dataset.originalHeight;
-        }
-      });
-      document.querySelectorAll('.interactive-graphic-wrapper').forEach(wrapper => {
-        wrapper.classList.remove('bg-[#111111]', 'p-4');
-        wrapper.querySelector('.iframe-container')?.classList.add('rounded-xl', 'border');
-      });
+      document
+        .querySelectorAll(".interactive-graphic-wrapper iframe")
+        .forEach((iframeEl) => {
+          const iframe = iframeEl as HTMLIFrameElement;
+          if (iframe.dataset.originalHeight) {
+            iframe.style.height = iframe.dataset.originalHeight;
+          }
+        });
+      document
+        .querySelectorAll(".interactive-graphic-wrapper")
+        .forEach((wrapper) => {
+          wrapper.classList.remove("bg-[#111111]", "p-4");
+          wrapper
+            .querySelector(".iframe-container")
+            ?.classList.add("rounded-xl", "border");
+        });
     }
   });
 </script>

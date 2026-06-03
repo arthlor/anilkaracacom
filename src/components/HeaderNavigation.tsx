@@ -71,7 +71,10 @@ export default function HeaderNavigation({
   return (
     <div ref={navRef} className="relative flex items-center gap-1">
       {/* Desktop Navigation — flat inline links, no nested containers */}
-      <nav className="hidden md:flex items-center gap-0.5" aria-label="Main navigation">
+      <nav
+        className="hidden md:flex items-center gap-0.5"
+        aria-label="Main navigation"
+      >
         {links.map((link, idx) => (
           <a
             key={link.href}
@@ -120,7 +123,9 @@ export default function HeaderNavigation({
             className="w-full h-[1.5px] bg-current rounded-full block origin-center"
           />
           <motion.span
-            animate={isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+            animate={
+              isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }
+            }
             transition={{ duration: 0.2 }}
             className="w-full h-[1.5px] bg-current rounded-full block"
           />

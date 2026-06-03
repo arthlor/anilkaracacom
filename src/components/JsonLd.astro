@@ -7,8 +7,12 @@ const { schema } = Astro.props;
 
 const jsonLd = {
   "@context": "https://schema.org",
-  ...schema
+  ...schema,
 };
 ---
 
-<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+<script
+  is:inline
+  type="application/ld+json"
+  set:html={JSON.stringify(jsonLd)}
+/>

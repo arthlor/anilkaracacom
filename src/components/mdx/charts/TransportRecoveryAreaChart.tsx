@@ -32,10 +32,10 @@ export default function TransportRecoveryAreaChart() {
   // Calculate stacked data
   const { stackedSeries, maxTotal } = useMemo(() => {
     const weekTotals = new Array(weeks.length).fill(0);
-    
+
     // Reverse categories to stack appropriately (usually biggest on bottom)
     const reversedCats = [...categories].reverse();
-    
+
     const stackedData = reversedCats.map((cat) => {
       const values = series[cat] || [];
       const points = values.map((val, i) => {
@@ -53,16 +53,20 @@ export default function TransportRecoveryAreaChart() {
     };
   }, [categories, series, weeks.length]);
 
-  const getX = (index: number) => padding.left + (index / Math.max(weeks.length - 1, 1)) * plotWidth;
-  const getY = (value: number) => padding.top + plotHeight - (value / maxTotal) * plotHeight;
+  const getX = (index: number) =>
+    padding.left + (index / Math.max(weeks.length - 1, 1)) * plotWidth;
+  const getY = (value: number) =>
+    padding.top + plotHeight - (value / maxTotal) * plotHeight;
 
   // Generate SVG Area Paths
   const areas = useMemo(() => {
     return stackedSeries.map((s) => {
       // Area path: y1 line then reversed y0 line to close the shape
       const topPoints = s.points.map((p, i) => `${getX(i)},${getY(p.y1)}`);
-      const bottomPoints = s.points.map((p, i) => `${getX(i)},${getY(p.y0)}`).reverse();
-      
+      const bottomPoints = s.points
+        .map((p, i) => `${getX(i)},${getY(p.y0)}`)
+        .reverse();
+
       const pathData = `M${topPoints.join(" L")} L${bottomPoints.join(" L")} Z`;
       return { category: s.category, pathData };
     });
@@ -72,11 +76,13 @@ export default function TransportRecoveryAreaChart() {
     const svg = e.currentTarget;
     const rect = svg.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    
+
     // Scale local X to plot X
-    const relativeX = (x - (padding.left * (rect.width / svgWidth))) / (plotWidth * (rect.width / svgWidth));
+    const relativeX =
+      (x - padding.left * (rect.width / svgWidth)) /
+      (plotWidth * (rect.width / svgWidth));
     const index = Math.round(relativeX * (weeks.length - 1));
-    
+
     if (index >= 0 && index < weeks.length) {
       setHoveredWeekIndex(index);
       setMousePos({ x: e.clientX, y: e.clientY });
@@ -156,7 +162,7 @@ export default function TransportRecoveryAreaChart() {
                 textAnchor="middle"
                 className="text-[10px] fill-[#71717a] font-mono"
               >
-                {week.split('-')[0]}
+                {week.split("-")[0]}
               </text>
             );
           })}
@@ -196,11 +202,14 @@ export default function TransportRecoveryAreaChart() {
             </div>
             <div className="flex flex-col gap-1">
               {categories.map((cat) => (
-                <div key={cat} className="flex justify-between items-center gap-4">
+                <div
+                  key={cat}
+                  className="flex justify-between items-center gap-4"
+                >
                   <div className="flex items-center gap-1.5">
-                    <div 
-                      className="w-1.5 h-1.5 rounded-full" 
-                      style={{ backgroundColor: categoryColors[cat] }} 
+                    <div
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: categoryColors[cat] }}
                     />
                     <span className="text-[10px] font-bold text-[#a1a1aa] uppercase">
                       {cat}
@@ -217,10 +226,15 @@ export default function TransportRecoveryAreaChart() {
       </AnimatePresence>
 
       <div className="mt-6 flex flex-wrap gap-4 pt-4 border-t border-white/[0.06]">
-        {categories.map(cat => (
+        {categories.map((cat) => (
           <div key={cat} className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: categoryColors[cat] }} />
-            <span className="text-[11px] font-medium text-[#a1a1aa] uppercase tracking-wider">{cat}</span>
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: categoryColors[cat] }}
+            />
+            <span className="text-[11px] font-medium text-[#a1a1aa] uppercase tracking-wider">
+              {cat}
+            </span>
           </div>
         ))}
       </div>

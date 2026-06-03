@@ -9,8 +9,8 @@ import yeserIcon from "../assets/images/projects/yesericon.webp";
 
 // Workplace Logos
 import izmirBsbLogo from "../assets/images/workplaces/izmir-bsb.webp";
-import izbetonLogo from "../assets/images/workplaces/birgun.webp";
-import birgunLogo from "../assets/images/workplaces/izbeton.webp";
+import izbetonLogo from "../assets/images/workplaces/izbeton.webp";
+import birgunLogo from "../assets/images/workplaces/birgun.webp";
 import dokuz8Logo from "../assets/images/workplaces/dokuz8.webp";
 import sonsozLogo from "../assets/images/workplaces/sonsoz.webp";
 

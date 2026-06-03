@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
 import { formatNumber } from "@/components/case-study/chartTheme";
@@ -16,7 +17,9 @@ export default function PartyChangesChart() {
 
   const totals = useMemo(() => {
     return {
-      leaders: [...rows].sort((left, right) => right.counts2024 - left.counts2024).slice(0, 3),
+      leaders: [...rows]
+        .sort((left, right) => right.counts2024 - left.counts2024)
+        .slice(0, 3),
     };
   }, [rows]);
 
@@ -25,18 +28,39 @@ export default function PartyChangesChart() {
       eyebrow="Control shift"
       title="Where municipal control actually changed hands"
       description="The diverging bars show gain or loss against 2019, while the total on the right keeps the 2024 scale of control in view."
+      takeaway="Net change shows the swing; 2024 control shows how much local power each party still holds."
+      primaryMetric={{
+        label: activeLevel,
+        value: totals.leaders[0]?.party ?? "Control",
+        detail: totals.leaders[0]
+          ? `${formatNumber(totals.leaders[0].counts2024, "en-US")} controlled`
+          : undefined,
+      }}
+      interactionHint="Toggle the administrative level to compare city, district, and provincial control."
+      density="explorer"
       controls={
         <div className="viz-controls">
-          <div className="viz-toggle-group" role="tablist" aria-label="Administrative level">
+          <div
+            className="viz-toggle-group"
+            role="tablist"
+            aria-label="Administrative level"
+          >
             {levels.map((level) => (
               <button
                 key={level}
                 type="button"
-                className="viz-toggle"
+                className="relative viz-toggle z-10"
                 data-active={activeLevel === level}
                 onClick={() => setActiveLevel(level)}
               >
-                {level}
+                <span className="relative z-20">{level}</span>
+                {activeLevel === level && (
+                  <motion.div
+                    layoutId="level-highlight"
+                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </button>
             ))}
           </div>
@@ -71,59 +95,105 @@ export default function PartyChangesChart() {
       }
       footer={
         <div className="viz-note">
-          Net change shows the direction of travel; the 2024 total shows how much local
-          power each party still holds after the shift.
+          Net change shows the direction of travel; the 2024 total shows how
+          much local power each party still holds after the shift.
         </div>
       }
     >
-      <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.015] p-4 sm:p-5">
-        <div className="space-y-3">
-          {rows.map((row) => {
-            const width = (Math.abs(row.netChange) / maxAbs) * 50;
-            const isPositive = row.netChange >= 0;
-            return (
-              <div
-                key={`${activeLevel}-${row.party}`}
-                className="grid gap-3 rounded-[20px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 sm:grid-cols-[80px_minmax(0,1fr)_90px] sm:items-center"
-              >
-                <div>
-                  <p className="text-lg font-semibold text-foreground">{row.party}</p>
-                </div>
-                <div className="relative flex h-10 items-center">
-                  <div className="absolute left-1/2 top-0 h-full w-px bg-white/[0.12]" />
-                  <div className="flex h-full w-1/2 items-center justify-end pr-[2px]">
-                    {!isPositive && (
-                      <div
-                        className="h-4 rounded-l-full"
-                        style={{ width: `${width}%`, background: row.color }}
-                      />
-                    )}
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+        <motion.div layout className="space-y-3">
+          <AnimatePresence mode="popLayout">
+            {rows.map((row) => {
+              const width = (Math.abs(row.netChange) / maxAbs) * 50;
+              const isPositive = row.netChange >= 0;
+              return (
+                <motion.div
+                  layout
+                  key={`${activeLevel}-${row.party}`}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 120, damping: 15 }}
+                  className="flex flex-col gap-2 sm:grid sm:grid-cols-[80px_minmax(0,1fr)_90px] sm:items-center rounded-[20px] border border-white/[0.05] bg-white/[0.015] px-4 py-3.5 hover:bg-white/[0.03] hover:border-white/[0.08] hover:translate-y-[-1px] transition-all duration-200"
+                >
+                  <div className="flex justify-between items-center sm:block">
+                    <p className="text-lg font-bold text-foreground leading-none">
+                      {row.party}
+                    </p>
+                    <div className="sm:hidden text-right">
+                      <span className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground mr-1">
+                        2024:
+                      </span>
+                      <span className="text-sm font-bold text-foreground">
+                        {formatNumber(row.counts2024, "en-US")}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex h-full w-1/2 items-center justify-start pl-[2px]">
-                    {isPositive && (
-                      <div
-                        className="h-4 rounded-r-full"
-                        style={{ width: `${width}%`, background: row.color }}
-                      />
-                    )}
+
+                  <div className="relative flex h-10 items-center w-full">
+                    {/* Centered zero line */}
+                    <div className="absolute left-1/2 top-0 h-full w-px bg-white/[0.15]" />
+
+                    {/* Negative changes (Left) */}
+                    <div className="flex h-full w-1/2 items-center justify-end pr-[2px]">
+                      {!isPositive && (
+                        <motion.div
+                          className="h-4 rounded-l-full shadow-inner"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${width}%` }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 15,
+                          }}
+                          style={{
+                            background: row.color,
+                            boxShadow: `0 0 6px ${row.color}33`,
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    {/* Positive changes (Right) */}
+                    <div className="flex h-full w-1/2 items-center justify-start pl-[2px]">
+                      {isPositive && (
+                        <motion.div
+                          className="h-4 rounded-r-full shadow-inner"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${width}%` }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 100,
+                            damping: 15,
+                          }}
+                          style={{
+                            background: row.color,
+                            boxShadow: `0 0 6px ${row.color}33`,
+                          }}
+                        />
+                      )}
+                    </div>
+
+                    {/* Number Overlay */}
+                    <div className="absolute inset-x-0 flex items-center justify-center text-[11px] font-bold text-[#f3f1eb]">
+                      {row.netChange > 0 ? "+" : ""}
+                      {row.netChange}
+                    </div>
                   </div>
-                  <div className="absolute inset-x-0 flex items-center justify-center text-[11px] font-semibold text-foreground">
-                    {row.netChange > 0 ? "+" : ""}
-                    {row.netChange}
+
+                  <div className="hidden sm:block text-right">
+                    <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground leading-none">
+                      2024 total
+                    </p>
+                    <p className="text-lg font-bold text-foreground mt-1 leading-none">
+                      {formatNumber(row.counts2024, "en-US")}
+                    </p>
                   </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    2024 control
-                  </p>
-                  <p className="text-lg font-semibold text-foreground">
-                    {formatNumber(row.counts2024, "en-US")}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </ArticleChartFrame>
   );

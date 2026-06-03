@@ -11,7 +11,13 @@ draft: false
 track: "data-journalism"
 language: "en"
 pillar: "geopolitical-network-analysis"
-techStack: ["Election result tables", "Province-level map system", "React comparison views", "International political reporting"]
+techStack:
+  [
+    "Election result tables",
+    "Province-level map system",
+    "React comparison views",
+    "International political reporting",
+  ]
 metrics:
   - label: "Election comparison"
     value: "2019 vs 2024"
@@ -47,13 +53,7 @@ import TurkeyElectionMap from "../../components/mdx/charts/TurkeyElectionMap.tsx
 import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
 import StoryStep from "@/components/case-study/StoryStep.astro";
 
-# Turkey's local elections: how the opposition redrew the map
-
-Turkey's 2024 local elections did not produce a routine opposition win. They produced a territorial realignment. Provinces and metropolitan areas long treated as safe ground for the ruling bloc shifted toward the Republican People's Party (CHP), and the scale of that spread made the result feel bigger than a single election-night upset.
-
-For international readers, headline vote share alone is not enough. Turkey's local system is layered: metropolitan municipalities, city municipalities, districts, and towns do not all behave in the same way. That is why this story moves through three linked views instead of one summary chart.
-
-## Reading the result in sequence
+Turkey's 2024 local elections produced a territorial realignment. The sequence below starts with national vote share, moves to the province map, then separates vote momentum from actual municipal control.
 
 <ScrollytellingStory
   steps={[
@@ -111,27 +111,11 @@ For international readers, headline vote share alone is not enough. Turkey's loc
   </StoryStep>
 </ScrollytellingStory>
 
-## Why the first chart matters
+## What to notice
 
-The opening view stays centered on 2024 vote share, but each row carries a delta marker against the 2019 baseline. That matters because a party can still be large while losing ground, or gain momentum without becoming the dominant force nationally. In 2024, CHP managed to do both: it led the national municipal vote and expanded beyond its traditional map.
-
-AKP remained a major force, but the result showed visible erosion in parts of the country that had long been treated as politically stable. Smaller parties such as YRP also became part of the explanation, not necessarily by winning vast territory, but by reshaping conservative vote competition.
-
-## Why the map mattered
-
-The province map is where the election starts to feel historic. Hovering and locking provinces makes it easier to read candidate, vote share, and control change without chasing a tooltip around the screen. More importantly, the geography shows the opposition move spreading far beyond the familiar coastal strongholds.
-
-Cities such as Bursa, Adıyaman, and Amasya mattered because they signaled that the shift was not only urban and western. It carried into places that had been described for years as dependable AKP territory. That broader spread is what turned the result into a national story rather than a metropolitan one.
-
-## Beyond vote share
-
-The final chart moves from votes to control. Tabs separate metropolitan municipalities, city municipalities, districts, and towns so readers can see where the real administrative turnover happened. A party's net gain can be strong even when its absolute footprint remains smaller than an older rival, which is why 2024 totals sit beside the diverging bars.
-
-This is especially useful for understanding AKP's mixed outcome: the party lost headline prestige and important strategic ground, but it did not disappear from the local map. CHP's advance was decisive, yet the layered control structure shows a more nuanced balance beneath the national narrative.
-
-## Conclusion
-
-The 2024 local elections changed more than a scoreboard. They altered the territorial story of Turkish politics. By reading national share, provincial spread, and administrative control together, the result becomes easier to understand for anyone following Turkey from outside the country.
+- CHP led the national municipal vote while also gaining momentum against 2019.
+- The province map shows why the result felt broader than a coastal or metropolitan win.
+- The control-shift chart adds nuance: headline loss and remaining local footprint can be true at the same time.
 
 ---
 

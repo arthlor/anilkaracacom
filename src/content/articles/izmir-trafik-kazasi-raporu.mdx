@@ -1,40 +1,45 @@
 ---
-title: "İzmir'in trafik riski: kaza ve arıza kayıtları ne söylüyor?"
-description: "İzmir'deki trafik olaylarını 17 binden fazla kayıt üzerinden okuyarak riskin hangi arterlerde, olay türlerinde ve saatlerde yoğunlaştığını gösteren çalışma."
+title: "Izmir's traffic risk: what crash and breakdown records reveal"
+description: "An investigation of more than 17,000 traffic incident records in Izmir, showing where risk concentrates by corridor, incident type, day, and hour."
 pubDate: 2024-12-15
 heroImage: "../../assets/images/articles/izmir-trafik-kazasi-2025.webp"
-tags: ["izmir", "trafik", "veri-analizi", "python", "plotly"]
+tags: ["izmir", "traffic", "data-analysis", "python", "plotly"]
 category: "data-journalism"
 featured: true
 published: true
 draft: false
 track: "data-journalism"
-language: "tr"
+language: "en"
 pillar: "data-journalism-civic-tech"
 techStack:
-  ["İzmir Ulaşım Merkezi verisi", "Zaman yoğunluğu modelleme", "React scrollytelling grafikleri", "Astro haber akışı"]
+  [
+    "Izmir Traffic Center records",
+    "Time-density modeling",
+    "React scrollytelling graphics",
+    "Astro editorial flow",
+  ]
 metrics:
-  - label: "Kayıt sayısı"
+  - label: "Records analyzed"
     value: "17K+"
-    detail: "İzmir Ulaşım Merkezi kaynaklı olay kayıtları işlendi."
-  - label: "İncelenen dönem"
-    value: "2+ yıl"
-    detail: "Kazaların gün, saat ve yıllara göre dağılımı karşılaştırıldı."
-  - label: "Etkileşimli görünüm"
+    detail: "Incident records sourced from the Izmir Traffic Center were cleaned and modeled."
+  - label: "Time span"
+    value: "2+ years"
+    detail: "Crash and breakdown patterns were compared by year, day, and hour."
+  - label: "Interactive views"
     value: "3"
-    detail: "Arter sıralaması, olay türleri ve karşılaştırmalı zaman matrisi birlikte sunuldu."
+    detail: "Street ranking, incident categories, and a comparative time matrix work together."
 summaryEn: "An investigation into Izmir traffic collisions built from more than 17,000 civic records, with charts and a citywide heatmap."
-role: "Veri temizleme, kentsel risk analizi, etkileşimli anlatı tasarımı"
+role: "Data cleaning, urban risk analysis, interactive story design"
 impact: "Turns a large municipal dataset into a public-facing explanation of when and where traffic risk rises."
-executiveSummary: "İzmir'deki trafik olaylarını 17 binden fazla kayıt üzerinden inceleyen bu çalışma, riskin hangi günlerde, saatlerde ve olay türlerinde yoğunlaştığını etkileşimli grafiklerle gösteriyor."
-context: "Trafik yoğunluğu üzerine yapılan gündelik yorumlar çoğu zaman sezgisel kalıyor. Bu çalışma, belediyenin açık veri kayıtlarını kullanarak İzmir'deki trafik riskinin ritmini veriyle görünür kılmayı amaçlıyor."
+executiveSummary: "This investigation turns more than 17,000 traffic incident records from Izmir into a guided visual story about which streets, incident types, days, and hours carry the highest risk."
+context: "Public conversations about traffic pressure often stay anecdotal. This piece uses municipal open records to make the rhythm of traffic risk in Izmir observable rather than guessed."
 methodology:
-  - "Kaza ve arıza kayıtları zaman, yön ve olay türüne göre temizlenip sınıflandırıldı."
-  - "Arter sıralaması için bump/slope görünümü, olay türleri için top-N lollipop listesi ve zaman yoğunluğu için karşılaştırmalı ısı matrisi kuruldu."
-  - "Scrollytelling akışı, okuru önce sokak bazlı baskıya, sonra olay türlerinin dağılımına, son olarak da gün-saat ritmine indiriyor."
-challenge: "Veri seti farklı olay türlerini aynı yapıda taşıdığı için hem sınıflandırma hem de görsel önceliklendirme gerekiyordu. Her şeyi aynı anda gösteren kalabalık grafikler yerine, her adımın tek bir soruya cevap verdiği bir akış kurmak zorundaydım."
-codeProof: "Grafikler, aynı editoryal çerçeveyi paylaşan özel React bileşenleri olarak yeniden yazıldı. Böylece scrollytelling içinde dolaşan okur, ayrı panel kutuları ya da dış gömüler olmadan veriyi adım adım çözebiliyor."
-conclusion: "Bu proje, yerel açık veriyi kamu yararı odaklı bir kent hikâyesine dönüştürüyor ve trafik riskini sezgiden çıkarıp gözlemlenebilir örüntülere indiriyor."
+  - "Crash and breakdown records were cleaned and classified by time, direction, and incident type."
+  - "A rank-flow view was built for street pressure, a top-N view for incident types, and a comparative heatmap for day-hour density."
+  - "The scrollytelling sequence moves from street-level pressure to incident mix, then down into the weekly time rhythm."
+challenge: "The dataset mixed different incident types in one structure, so the work needed both careful classification and strong visual prioritization. Instead of one crowded chart, each step was designed to answer one concrete question."
+codeProof: "The visuals were rebuilt as custom React components that share one editorial frame. Readers can move through the story without relying on external embeds or disconnected chart panels."
+conclusion: "The project turns local open data into a public-interest city story, moving traffic risk away from intuition and toward measurable patterns."
 relatedContent:
   - collection: "articles"
     slug: "izmir-coronavirus-toplu-tasima"
@@ -48,63 +53,57 @@ import StreetFrequencyLineChart from "@/components/mdx/charts/StreetFrequencyLin
 import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
 import StoryStep from "@/components/case-study/StoryStep.astro";
 
-İzmir'de artan trafik yoğunluğu, ana arterleri daha kırılgan hale getiriyor. Küçük bir olay bile dakikalar içinde daha geniş bir düğüme dönüşebiliyor.
-
-Bu çalışma, İzmir Ulaşım Merkezi tarafından kayıt altına alınan kaza ve arıza olaylarını veriyle yeniden okuyor. **17 bin satırdan** oluşan ve **iki yılı aşkın bir süreyi kapsayan** veri seti; riskin hangi arterlerde biriktiğini, hangi olay türlerinin tabloyu domine ettiğini ve günün hangi saatlerinde yoğunlaştığını birlikte gösteriyor.
-
-Yeni görsel sistemde amaç, aynı bilgiyi üç ayrı kutuya bölmek yerine tek bir hikâye akışı içinde çözmek. İlk adımda hangi arterlerin üst sıralara tırmandığı, ikinci adımda hangi olay türlerinin baskınlaştığı, son adımda ise gün ve saat ritmi görülüyor.
-
-[**2021 Aralık ayından bugüne incelenen verilere**](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri) bakınca, baskının kent geneline eşit dağılmadığı görülüyor. Bazı ana arterler neredeyse her yıl üst sıralarda kalırken, bazıları son dönemde daha hızlı yükseliyor.
+Izmir's traffic risk is patterned, not random. The sequence below starts with fragile corridors, then narrows into incident types and the weekly hours where pressure tightens.
 
 <ScrollytellingStory
   steps={[
     {
       id: "trafik-zaman",
-      label: "Adım 1",
-      title: "Riskli arterler",
-      summary: "İlk adımda hangi caddelerin üst sıralara tırmandığını görüyoruz.",
+      label: "Step 1",
+      title: "High-risk corridors",
+      summary: "Start with the streets that climb or stay high in the incident rankings.",
     },
     {
       id: "trafik-turler",
-      label: "Adım 2",
-      title: "Olay türleri",
-      summary: "İkinci adım, toplam baskıyı oluşturan olay başlıklarını ayırıyor.",
+      label: "Step 2",
+      title: "Incident types",
+      summary: "Then separate the categories that carry the overall pressure.",
     },
     {
       id: "trafik-isiharitasi",
-      label: "Adım 3",
-      title: "Gün ve saat yoğunluğu",
-      summary: "Son adımda riskin haftanın hangi anlarında biriktiğine iniyoruz.",
+      label: "Step 3",
+      title: "Day and hour density",
+      summary: "Finally, move into the exact weekly moments where risk clusters.",
     },
   ]}
 >
   <StoryStep
     id="trafik-zaman"
-    label="Adım 1"
-    title="Arterlerin sıralama yarışı"
-    summary="İlk görsel, her yılı ayrı çizgi gibi göstermek yerine cadde sıralamasını izleyerek riskin hangi arterlerde kalıcılaştığını ortaya koyuyor."
+    label="Step 1"
+    title="The ranking race between corridors"
+    summary="The first view follows street rankings instead of treating each year as a separate static chart, making persistent risk easier to see."
   >
     <Fragment slot="visual">
       <StreetFrequencyLineChart client:visible />
     </Fragment>
   </StoryStep>
 
-  <StoryStep
-    id="trafik-turler"
-    label="Adım 2"
-    title="Baskın olay kategorileri"
-    summary="İkinci adım, uzun kuyruklu olay listesini sadeleştirerek hangi başlıkların tabloyu gerçekten sürüklediğini gösteriyor."
-  >
-    <Fragment slot="visual">
-      <AccidentTypesBarChart client:visible />
-    </Fragment>
-  </StoryStep>
+<StoryStep
+  id="trafik-turler"
+  label="Step 2"
+  title="Dominant incident categories"
+  summary="The second step simplifies the long incident list so the categories driving the record become visible."
+>
+  <Fragment slot="visual">
+    <AccidentTypesBarChart client:visible />
+  </Fragment>
+</StoryStep>
 
   <StoryStep
     id="trafik-isiharitasi"
-    label="Adım 3"
-    title="Gün ve saat bazında yoğunluk"
-    summary="Son görsel, gün-saat matrisini marjinal toplamlar ve fark modu ile açarak yoğunluğun tam olarak hangi zamanlarda düğümlendiğini gösteriyor."
+    label="Step 3"
+    title="Density by day and hour"
+    summary="The final view adds marginal totals and comparison mode to show exactly when the weekly rhythm tightens."
   >
     <Fragment slot="visual">
       <IncidentHeatmap client:visible />
@@ -112,20 +111,12 @@ Yeni görsel sistemde amaç, aynı bilgiyi üç ayrı kutuya bölmek yerine tek 
   </StoryStep>
 </ScrollytellingStory>
 
-## Öne Çıkan Bulgular
+## What to notice
 
-- Arter sıralaması, bazı caddelerin yalnızca yoğun değil aynı zamanda yapısal olarak kırılgan olduğunu gösteriyor. Her yıl üst sıralarda kalan akslar, müdahale ve önleyici planlama açısından özel izleme gerektiriyor.
-- Olay türü görünümü, birkaç kategori dışındaki başlıkların daha sınırlı bir ağırlık taşıdığını netleştiriyor. Bu da kaynak dağılımında genel değil hedefli önceliklendirmeyi mümkün kılıyor.
-- Gün ve saat matrisi, işe gidiş ve dönüş ritmini güçlü biçimde yansıtıyor. Fark modu açıldığında ise iki yıl arasındaki değişim, yoğunluğun sadece toplamda değil zaman paterninde de kaydığını gösteriyor.
-
-## Neden Önemli?
-
-Bu veriler, trafik güvenliğini sadece "çok kaza oluyor" düzeyinde değil, "hangi arter, hangi kategori, hangi saat" düzeyinde tartışmayı mümkün kılıyor. Böyle bir okuma; ekip planlaması, sinyalizasyon, yol tasarımı ve kamu iletişimi gibi alanlarda daha somut kararlar üretmek için kullanılabilir.
-
-## **Sonuç**
-
-İzmir'in trafik verisi, riskin rastlantısal değil örüntülü olduğunu gösteriyor. Hangi arterlerin sürekli üst sıralarda kaldığını, hangi olay türlerinin toplam baskıyı taşıdığını ve günün hangi saatlerinin daha kırılgan olduğunu görünür kıldığınızda, kentsel güvenlik sezgiye değil ölçülebilir bir ritme dayanıyor.
+- The street-ranking view shows that some corridors are not only busy, but structurally fragile. Streets that stay high every year deserve special monitoring for response planning and prevention.
+- The incident-type view shows that a few categories carry most of the record, while the long tail remains secondary.
+- The day-hour matrix exposes commute rhythm and lets year-to-year timing shifts appear without adding another chart.
 
 ---
 
-_Kaynak: [İzmir Büyükşehir Belediyesi Açık Veri Portalı](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri)_
+_Data source: [Izmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/tr/dataset/izmir-ili-arizali-kazali-arac-verileri)_

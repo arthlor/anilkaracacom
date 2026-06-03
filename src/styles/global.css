@@ -333,7 +333,13 @@ pre {
 
 .section-divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06) 20%, rgba(255,255,255,0.06) 80%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06) 20%,
+    rgba(255, 255, 255, 0.06) 80%,
+    transparent
+  );
   margin: 3rem 0;
 }
 
@@ -510,7 +516,12 @@ pre {
 .prose-article h2 {
   @apply font-display font-bold text-text text-3xl mt-16 mb-6 pb-3;
   border-bottom: 1px solid transparent;
-  border-image: linear-gradient(90deg, hsl(var(--primary) / 0.25), transparent 70%) 1;
+  border-image: linear-gradient(
+      90deg,
+      hsl(var(--primary) / 0.25),
+      transparent 70%
+    )
+    1;
 }
 
 .prose-article h3 {
@@ -728,6 +739,12 @@ pre {
   justify-content: flex-end;
 }
 
+@media (max-width: 720px) {
+  .viz-controls {
+    justify-content: flex-start;
+  }
+}
+
 .viz-toggle-group {
   display: inline-flex;
   align-items: center;
@@ -775,6 +792,30 @@ pre {
   color: hsl(var(--foreground));
   padding: 0 0.95rem;
   font-size: 0.84rem;
+}
+
+.viz-select {
+  min-height: 2.5rem;
+  max-width: 100%;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  color: hsl(var(--foreground));
+  padding: 0 2rem 0 0.95rem;
+  font-size: 0.84rem;
+}
+
+.viz-select:focus {
+  outline: none;
+  border-color: rgba(122, 242, 152, 0.24);
+  box-shadow: 0 0 0 1px rgba(122, 242, 152, 0.16);
+}
+
+.viz-insight {
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.018);
+  padding: 0.85rem;
 }
 
 .viz-search::placeholder {
@@ -857,4 +898,28 @@ pre {
     rgba(255, 255, 255, 0.08) 84%,
     transparent
   );
+}
+
+.article-chart-readout .viz-stat-grid {
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.55rem 0.9rem;
+}
+
+.article-chart-readout .viz-stat {
+  border-top: 0;
+  border-left: 1px solid rgba(122, 242, 152, 0.16);
+  padding: 0.15rem 0 0.2rem 0.8rem;
+}
+
+.article-chart-readout .viz-stat strong {
+  margin-top: 0.25rem;
+  font-size: 1rem;
+}
+
+.article-chart-readout .viz-divider {
+  display: none;
+}
+
+.article-chart-readout .viz-note {
+  max-width: 68rem;
 }

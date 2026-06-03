@@ -1,6 +1,6 @@
 ---
-import Icon from './Icon.astro';
-import { themeStorageKey } from '../lib/site';
+import Icon from "./Icon.astro";
+import { themeStorageKey } from "../lib/site";
 ---
 
 <button
@@ -20,19 +20,19 @@ import { themeStorageKey } from '../lib/site';
 
 <script define:vars={{ themeStorageKey }} is:inline>
   const root = document.documentElement;
-  const toggle = document.querySelector('[data-theme-toggle]');
+  const toggle = document.querySelector("[data-theme-toggle]");
   const darkIcon = toggle?.querySelector('[data-theme-icon="dark"]');
   const lightIcon = toggle?.querySelector('[data-theme-icon="light"]');
 
   const syncIcons = () => {
-    const isDark = root.classList.contains('dark');
-    darkIcon?.classList.toggle('hidden', !isDark);
-    lightIcon?.classList.toggle('hidden', isDark);
+    const isDark = root.classList.contains("dark");
+    darkIcon?.classList.toggle("hidden", !isDark);
+    lightIcon?.classList.toggle("hidden", isDark);
   };
 
-  toggle?.addEventListener('click', () => {
-    const isDark = root.classList.toggle('dark');
-    localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light');
+  toggle?.addEventListener("click", () => {
+    const isDark = root.classList.toggle("dark");
+    localStorage.setItem(themeStorageKey, isDark ? "dark" : "light");
     syncIcons();
   });
 

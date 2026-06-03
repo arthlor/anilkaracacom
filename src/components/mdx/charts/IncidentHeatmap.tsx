@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
 import {
@@ -18,6 +19,17 @@ const daysOrder = [
   "Cumartesi",
   "Pazar",
 ];
+
+const dayLabels: Record<string, string> = {
+  Pazartesi: "Monday",
+  Salı: "Tuesday",
+  Çarşamba: "Wednesday",
+  Perşembe: "Thursday",
+  Cuma: "Friday",
+  Cumartesi: "Saturday",
+  Pazar: "Sunday",
+};
+
 const hours = Array.from({ length: 24 }, (_, index) => index);
 type HeatmapGrid = Record<string, Record<number, number>>;
 
@@ -66,6 +78,8 @@ export default function IncidentHeatmap() {
   const [activeYear, setActiveYear] = useState(years.at(-1) ?? 2024);
   const [compareYear, setCompareYear] = useState(years[0] ?? 2021);
   const [compareMode, setCompareMode] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("Cuma");
+  const [selectedHour, setSelectedHour] = useState(17);
   const [hoveredCell, setHoveredCell] = useState<{
     day: string;
     hour: number;
@@ -73,7 +87,8 @@ export default function IncidentHeatmap() {
     delta?: number;
   } | null>(null);
 
-  const baseGrid = grids.get(activeYear) ?? grids.values().next().value ?? emptyGrid;
+  const baseGrid =
+    grids.get(activeYear) ?? grids.values().next().value ?? emptyGrid;
   const comparisonGrid = grids.get(compareYear) ?? baseGrid;
 
   const matrix = useMemo(() => {
@@ -114,100 +129,197 @@ export default function IncidentHeatmap() {
 
   const hourTotals = useMemo(() => {
     return hours.map((hour, hourIndex) => {
-      const total = matrix.reduce(
-        (sum, row) => {
-          const cell = row[hourIndex];
-          if (!cell) {
-            return sum;
-          }
+      const total = matrix.reduce((sum, row) => {
+        const cell = row[hourIndex];
+        if (!cell) {
+          return sum;
+        }
 
-          return sum + (compareMode ? cell.delta : cell.value);
-        },
-        0,
-      );
+        return sum + (compareMode ? cell.delta : cell.value);
+      }, 0);
       return { hour, total };
     });
   }, [compareMode, matrix]);
 
-  const maxDayTotal = Math.max(...dayTotals.map((entry) => Math.abs(entry.total)), 1);
-  const maxHourTotal = Math.max(...hourTotals.map((entry) => Math.abs(entry.total)), 1);
+  const maxDayTotal = Math.max(
+    ...dayTotals.map((entry) => Math.abs(entry.total)),
+    1,
+  );
+  const maxHourTotal = Math.max(
+    ...hourTotals.map((entry) => Math.abs(entry.total)),
+    1,
+  );
+  const selectedCell =
+    matrix
+      .flat()
+      .find((cell) => cell.day === selectedDay && cell.hour === selectedHour) ??
+    matrix[0]?.[0];
+  const activeCell = hoveredCell ?? selectedCell ?? null;
 
   return (
     <ArticleChartFrame
-      eyebrow="Gün içi ritim"
-      title="Risk haftanın hangi saatlerinde düğümleniyor?"
-      description="Ana ısı matrisi gün ve saat ritmini gösteriyor; üstte saat toplamları, sağda gün toplamları baskının nerede biriktiğini açıyor. Fark modu iki yılı aynı yüzeyde karşılaştırıyor."
+      eyebrow="Daily rhythm"
+      title="When does weekly risk tighten?"
+      description="The heatmap shows the weekly rhythm, while day/hour selectors keep the exact read accessible without hundreds of cell buttons."
+      takeaway="Look for darker weekday commute blocks first, then switch to difference mode to spot timing shifts."
+      primaryMetric={
+        activeCell
+          ? {
+              label: `${dayLabels[activeCell.day] ?? activeCell.day} ${String(activeCell.hour).padStart(2, "0")}:00`,
+              value: compareMode
+                ? `${(activeCell.delta ?? 0) > 0 ? "+" : ""}${formatNumber(activeCell.delta ?? 0, "en-US")}`
+                : formatNumber(activeCell.value, "en-US"),
+              detail: compareMode
+                ? `${activeYear} compared with ${compareYear}`
+                : `${activeYear} incidents`,
+            }
+          : undefined
+      }
+      interactionHint="Use year, mode, day, and hour controls for keyboard reading; the heatmap cells are visual marks."
+      density="explorer"
       controls={
         <div className="viz-controls">
-          <div className="viz-toggle-group" role="tablist" aria-label="Aktif yıl">
+          <div
+            className="viz-toggle-group"
+            role="tablist"
+            aria-label="Active year"
+          >
             {years.map((year) => (
               <button
                 key={year}
                 type="button"
-                className="viz-toggle"
+                className="relative viz-toggle z-10"
                 data-active={activeYear === year}
                 onClick={() => setActiveYear(year)}
               >
-                {year}
+                <span className="relative z-20">{year}</span>
+                {activeYear === year && (
+                  <motion.div
+                    layoutId="heatmap-year-highlight"
+                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </button>
             ))}
           </div>
-          <div className="viz-toggle-group" role="tablist" aria-label="Karşılaştırma modu">
+          <div
+            className="viz-toggle-group"
+            role="tablist"
+            aria-label="Comparison mode"
+          >
             <button
               type="button"
-              className="viz-toggle"
+              className="relative viz-toggle z-10"
               data-active={!compareMode}
               onClick={() => setCompareMode(false)}
             >
-              Tek yıl
+              <span className="relative z-20">Single year</span>
+              {!compareMode && (
+                <motion.div
+                  layoutId="heatmap-mode-highlight"
+                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
             <button
               type="button"
-              className="viz-toggle"
+              className="relative viz-toggle z-10"
               data-active={compareMode}
               onClick={() => setCompareMode(true)}
             >
-              Fark modu
+              <span className="relative z-20">Difference</span>
+              {compareMode && (
+                <motion.div
+                  layoutId="heatmap-mode-highlight"
+                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           </div>
           {compareMode && (
-            <div className="viz-toggle-group" role="tablist" aria-label="Karşılaştırma yılı">
+            <div
+              className="viz-toggle-group"
+              role="tablist"
+              aria-label="Comparison year"
+            >
               {years
                 .filter((year) => year !== activeYear)
                 .map((year) => (
                   <button
                     key={`compare-${year}`}
                     type="button"
-                    className="viz-toggle"
+                    className="relative viz-toggle z-10"
                     data-active={compareYear === year}
                     onClick={() => setCompareYear(year)}
                   >
-                    {year}
+                    <span className="relative z-20">{year}</span>
+                    {compareYear === year && (
+                      <motion.div
+                        layoutId="heatmap-compare-year-highlight"
+                        className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                        transition={{
+                          type: "spring",
+                          stiffness: 380,
+                          damping: 30,
+                        }}
+                      />
+                    )}
                   </button>
                 ))}
             </div>
           )}
+          <select
+            value={selectedDay}
+            className="viz-select"
+            aria-label="Select day"
+            onChange={(event) => setSelectedDay(event.target.value)}
+          >
+            {daysOrder.map((day) => (
+              <option key={day} value={day}>
+                {dayLabels[day] ?? day}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedHour}
+            className="viz-select"
+            aria-label="Select hour"
+            onChange={(event) => setSelectedHour(Number(event.target.value))}
+          >
+            {hours.map((hour) => (
+              <option key={hour} value={hour}>
+                {String(hour).padStart(2, "0")}:00
+              </option>
+            ))}
+          </select>
         </div>
       }
       aside={
         <div className="space-y-5">
           <div className="viz-stat-grid">
             <div className="viz-stat border-t-0 pt-0">
-              <span className="viz-label">Aktif okuma</span>
-              <strong>{compareMode ? `${activeYear} - ${compareYear}` : activeYear}</strong>
+              <span className="viz-label">Active read</span>
+              <strong>
+                {compareMode ? `${activeYear} - ${compareYear}` : activeYear}
+              </strong>
             </div>
-            {hoveredCell && (
+            {activeCell && (
               <div className="viz-stat">
-                <span className="viz-label">Seçili hücre</span>
+                <span className="viz-label">Selected cell</span>
                 <strong>
-                  {hoveredCell.day}, {String(hoveredCell.hour).padStart(2, "0")}:00
+                  {dayLabels[activeCell.day] ?? activeCell.day},{" "}
+                  {String(activeCell.hour).padStart(2, "0")}:00
                 </strong>
                 <p className="viz-note mt-2">
                   {compareMode
-                    ? `${hoveredCell.delta && hoveredCell.delta > 0 ? "+" : ""}${formatNumber(
-                        hoveredCell.delta ?? 0,
-                      )} fark`
-                    : `${formatNumber(hoveredCell.value)} olay`}
+                    ? `${activeCell.delta && activeCell.delta > 0 ? "+" : ""}${formatNumber(
+                        activeCell.delta ?? 0,
+                        "en-US",
+                      )} difference`
+                    : `${formatNumber(activeCell.value, "en-US")} incidents`}
                 </p>
               </div>
             )}
@@ -216,21 +328,21 @@ export default function IncidentHeatmap() {
           <div className="viz-divider" />
 
           <div className="space-y-3">
-            <p className="viz-label">Renk ölçeği</p>
+            <p className="viz-label">Color scale</p>
             {compareMode ? (
               <div className="space-y-2">
                 <div className="h-3 rounded-full bg-[linear-gradient(90deg,#68d3f5,rgba(255,255,255,0.06),#f46f88)]" />
                 <div className="flex justify-between text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  <span>{compareYear}'e göre daha sakin</span>
-                  <span>{activeYear}'de daha yoğun</span>
+                  <span>Quieter than {compareYear}</span>
+                  <span>Busier in {activeYear}</span>
                 </div>
               </div>
             ) : (
               <div className="space-y-2">
                 <div className="h-3 rounded-full bg-[linear-gradient(90deg,#1b1b1b,#7af298)]" />
                 <div className="flex justify-between text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                  <span>Düşük</span>
-                  <span>Yüksek</span>
+                  <span>Low</span>
+                  <span>High</span>
                 </div>
               </div>
             )}
@@ -239,25 +351,33 @@ export default function IncidentHeatmap() {
       }
       footer={
         <div className="viz-note">
-          Marjinal çubuklar, yoğunluğun yalnızca tek tek hücrelerde değil gün ve saat
-          toplamlarında da nasıl biriktiğini gösteriyor. Fark modu ise ritimdeki kaymayı
-          tek bakışta görünür kılıyor.
+          Marginal bars show how density accumulates not only in individual
+          cells, but also across day and hour totals. Difference mode makes
+          timing shifts visible at a glance.
         </div>
       }
     >
-      <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.015] p-4 sm:p-5">
-        <div className="overflow-x-auto pb-1">
-          <div className="grid min-w-[980px] gap-3 xl:min-w-0 xl:grid-cols-[minmax(0,1fr)_140px] xl:grid-rows-[80px_minmax(0,1fr)]">
-          <div className="col-span-1 rounded-[18px] border border-white/[0.06] bg-white/[0.02] p-3">
-            <div className="flex h-full items-end gap-1">
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+        <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_140px] xl:grid-rows-[80px_minmax(0,1fr)]">
+          {/* Marginal hour totals */}
+          <div className="col-span-1 rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3 h-20">
+            <div className="flex h-full items-end gap-1 px-1 sm:px-1.5 pl-[48px]">
               {hourTotals.map((entry) => {
                 const height = (Math.abs(entry.total) / maxHourTotal) * 100;
                 return (
-                  <div key={entry.hour} className="flex-1">
-                    <div
-                      className="mx-auto w-full rounded-t-[8px]"
+                  <div
+                    key={entry.hour}
+                    className="flex-1 h-full flex items-end"
+                  >
+                    <motion.div
+                      className="mx-auto w-full rounded-t-[4px]"
+                      animate={{ height: `${height}%` }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 15,
+                      }}
                       style={{
-                        height: `${height}%`,
                         background: compareMode
                           ? entry.total >= 0
                             ? chartPalette.rose
@@ -272,19 +392,25 @@ export default function IncidentHeatmap() {
             </div>
           </div>
 
-          <div className="col-span-1 row-span-2 grid gap-[6px] rounded-[18px] border border-white/[0.06] bg-white/[0.02] p-3">
+          {/* Marginal day totals */}
+          <div className="col-span-1 row-span-2 grid gap-[6px] rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3">
             {dayTotals.map((entry) => {
               const width = (Math.abs(entry.total) / maxDayTotal) * 100;
               return (
                 <div key={entry.day} className="flex items-center gap-2">
-                  <span className="w-8 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {entry.day.slice(0, 3)}
+                  <span className="w-8 text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">
+                    {(dayLabels[entry.day] ?? entry.day).slice(0, 3)}
                   </span>
-                  <div className="h-3 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
-                    <div
+                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
+                    <motion.div
                       className="h-full rounded-full"
+                      animate={{ width: `${width}%` }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 15,
+                      }}
                       style={{
-                        width: `${width}%`,
                         background: compareMode
                           ? entry.total >= 0
                             ? chartPalette.rose
@@ -298,82 +424,113 @@ export default function IncidentHeatmap() {
             })}
           </div>
 
-          <div className="rounded-[18px] border border-white/[0.06] bg-white/[0.02] p-3">
-            <div className="mb-2 grid grid-cols-[72px_repeat(24,minmax(0,1fr))] gap-[4px]">
-              <div />
-              {hours.map((hour) => (
-                <div
-                  key={hour}
-                  className="text-center text-[10px] uppercase tracking-[0.12em] text-muted-foreground"
-                >
-                  {String(hour).padStart(2, "0")}
-                </div>
-              ))}
-            </div>
+          {/* Matrix Grid */}
+          <div className="rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3 overflow-visible relative group">
+            {/* Scroll hints */}
+            <div className="pointer-events-none absolute left-[48px] top-0 bottom-0 w-6 bg-gradient-to-r from-[#111111] to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[#111111] to-transparent z-10 opacity-100 transition-opacity duration-200" />
 
-            <div className="grid gap-[4px]">
-              {matrix.map((row, rowIndex) => (
-                <div
-                  key={daysOrder[rowIndex]}
-                  className="grid grid-cols-[72px_repeat(24,minmax(0,1fr))] gap-[4px]"
-                >
-                  <div className="flex items-center text-xs font-medium text-foreground">
-                    {daysOrder[rowIndex]}
-                  </div>
-                  {row.map((cell) => {
-                    const displayValue = compareMode ? cell.delta : cell.value;
-                    const color = compareMode
-                      ? interpolateDivergingColor(
-                          chartPalette.cyan,
-                          "rgba(255,255,255,0.03)",
-                          chartPalette.rose,
-                          cell.delta,
-                          maxDelta,
-                        )
-                      : interpolateColor("#1b1b1b", chartPalette.accent, cell.value / maxAbsolute);
+            <div className="overflow-x-auto pb-2 scrollbar-thin">
+              <div className="min-w-[680px] p-1">
+                {/* Hours header */}
+                <div className="mb-2 grid grid-cols-[48px_repeat(24,minmax(24px,1fr))] gap-[4px] relative">
+                  <div className="sticky left-0 z-20 bg-[#111111] pr-2" />
+                  {hours.map((hour) => (
+                    <div
+                      key={hour}
+                      className="text-center text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground"
+                    >
+                      {String(hour).padStart(2, "0")}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Day rows */}
+                <div className="grid gap-[4px]">
+                  {matrix.map((row, rowIndex) => {
+                    const dayKey = daysOrder[rowIndex] ?? "";
+                    const dayLabel = dayLabels[dayKey] ?? dayKey;
 
                     return (
-                      <button
-                        key={`${cell.day}-${cell.hour}`}
-                        type="button"
-                        className="aspect-square rounded-[10px] border border-white/[0.04] transition-transform hover:scale-[1.05] focus:outline-none"
-                        style={{
-                          background: color,
-                          color:
-                            !compareMode && cell.value > maxAbsolute * 0.35
-                              ? chartPalette.text
-                              : chartPalette.dim,
-                        }}
-                        onMouseEnter={() =>
-                          setHoveredCell({
-                            day: cell.day,
-                            hour: cell.hour,
-                            value: cell.value,
-                            delta: cell.delta,
-                          })
-                        }
-                        onMouseLeave={() => setHoveredCell(null)}
-                        onFocus={() =>
-                          setHoveredCell({
-                            day: cell.day,
-                            hour: cell.hour,
-                            value: cell.value,
-                            delta: cell.delta,
-                          })
-                        }
-                        onBlur={() => setHoveredCell(null)}
+                      <div
+                        key={dayKey}
+                        className="grid grid-cols-[48px_repeat(24,minmax(24px,1fr))] gap-[4px] relative"
                       >
-                        <span className="sr-only">
-                          {cell.day} {cell.hour}:00 {displayValue}
-                        </span>
-                      </button>
+                        <div className="sticky left-0 z-10 flex items-center text-xs font-semibold text-foreground bg-[#111111]/96 pr-2 border-r border-white/[0.08] backdrop-blur leading-none">
+                          {dayLabel.slice(0, 3)}
+                        </div>
+                        {row.map((cell) => {
+                          const color = compareMode
+                            ? interpolateDivergingColor(
+                                chartPalette.cyan,
+                                "rgba(255,255,255,0.03)",
+                                chartPalette.rose,
+                                cell.delta,
+                                maxDelta,
+                              )
+                            : interpolateColor(
+                                "#1b1b1b",
+                                chartPalette.accent,
+                                cell.value / maxAbsolute,
+                              );
+                          const isSelected =
+                            cell.day === selectedDay &&
+                            cell.hour === selectedHour;
+
+                          return (
+                            <motion.div
+                              key={`${cell.day}-${cell.hour}`}
+                              role="presentation"
+                              className="aspect-square cursor-pointer rounded-[6px] border transition-transform hover:scale-[1.1] z-0 hover:z-10"
+                              animate={{
+                                background: color,
+                                borderColor: isSelected
+                                  ? "rgba(122,242,152,0.85)"
+                                  : "rgba(255,255,255,0.04)",
+                              }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 100,
+                                damping: 15,
+                              }}
+                              style={{
+                                boxShadow: isSelected
+                                  ? "0 0 0 1px rgba(122,242,152,0.2), 0 4px 12px rgba(0,0,0,0.15)"
+                                  : undefined,
+                              }}
+                              onMouseEnter={() =>
+                                setHoveredCell({
+                                  day: cell.day,
+                                  hour: cell.hour,
+                                  value: cell.value,
+                                  delta: cell.delta,
+                                })
+                              }
+                              onMouseLeave={() => setHoveredCell(null)}
+                              onTouchStart={() => {
+                                setHoveredCell({
+                                  day: cell.day,
+                                  hour: cell.hour,
+                                  value: cell.value,
+                                  delta: cell.delta,
+                                });
+                                setSelectedDay(cell.day);
+                                setSelectedHour(cell.hour);
+                              }}
+                              onClick={() => {
+                                setSelectedDay(cell.day);
+                                setSelectedHour(cell.hour);
+                              }}
+                            />
+                          );
+                        })}
+                      </div>
                     );
                   })}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
     </ArticleChartFrame>

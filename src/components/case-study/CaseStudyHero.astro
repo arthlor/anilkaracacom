@@ -1,15 +1,15 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 
-import Icon from '../Icon.astro';
-import OptimizedImage from '../OptimizedImage.astro';
-import MetricCard from '../ui/MetricCard.astro';
-import PillarTag from '../ui/PillarTag.astro';
-import TechBadge from '../ui/TechBadge.astro';
+import Icon from "../Icon.astro";
+import OptimizedImage from "../OptimizedImage.astro";
+import MetricCard from "../ui/MetricCard.astro";
+import PillarTag from "../ui/PillarTag.astro";
+import TechBadge from "../ui/TechBadge.astro";
 
 interface Props {
-  entry: CollectionEntry<'articles'> | CollectionEntry<'projects'>;
-  collection: 'articles' | 'projects';
+  entry: CollectionEntry<"articles"> | CollectionEntry<"projects">;
+  collection: "articles" | "projects";
   locale: {
     backLabel: string;
     publishedLabel: string;
@@ -21,23 +21,36 @@ interface Props {
 }
 
 const { entry, collection, locale } = Astro.props;
-const backHref = collection === 'articles' ? '/articles' : '/projects';
-const formattedDate = entry.data.pubDate.toLocaleDateString(entry.data.language === 'tr' ? 'tr-TR' : 'en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
-const demoUrl = 'demoUrl' in entry.data ? entry.data.demoUrl || entry.data.liveUrl : undefined;
-const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
+const backHref = collection === "articles" ? "/articles" : "/projects";
+const isPublishedArticle = collection === "articles" && entry.data.published;
+const formattedDate = entry.data.pubDate.toLocaleDateString(
+  entry.data.language === "tr" ? "tr-TR" : "en-US",
+  {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  },
+);
+const demoUrl =
+  "demoUrl" in entry.data
+    ? entry.data.demoUrl || entry.data.liveUrl
+    : undefined;
+const githubUrl = "githubUrl" in entry.data ? entry.data.githubUrl : undefined;
+const heroSummary = isPublishedArticle
+  ? entry.data.executiveSummary.split(/[.!?]/).filter(Boolean)[0]?.trim() ||
+    entry.data.executiveSummary
+  : entry.data.executiveSummary;
 ---
 
-<section class="relative overflow-hidden pt-28 pb-16">
+<section
+  class:list={[
+    "relative overflow-hidden pt-24 pb-10 md:pt-28 md:pb-16",
+    isPublishedArticle && "case-study-hero-shell--article",
+  ]}
+>
   <div class="container-standard">
     <div class="case-study-hero">
-      <a
-        href={backHref}
-        class="case-study-hero__back"
-      >
+      <a href={backHref} class="case-study-hero__back">
         <Icon name="arrow-left" size={16} />
         {locale.backLabel}
       </a>
@@ -55,79 +68,103 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
           <p class="case-study-hero__lede">{entry.data.description}</p>
 
           <div class="case-study-hero__stack">
-            {entry.data.techStack.map((item) => (
-              <TechBadge label={item} />
-            ))}
+            {entry.data.techStack.map((item) => <TechBadge label={item} />)}
           </div>
 
           <div class="case-study-hero__summary">
             <p class="case-study-hero__label">{locale.summaryLabel}</p>
-            <p class="case-study-hero__summary-copy">{entry.data.executiveSummary}</p>
+            <p class="case-study-hero__summary-copy">{heroSummary}</p>
 
-            {(entry.data.role || entry.data.impact) && (
-              <div class="case-study-hero__facts">
-                {entry.data.role && (
-                  <div class="case-study-hero__fact">
-                    <p class="case-study-hero__fact-label">{locale.roleLabel}</p>
-                    <p class="case-study-hero__fact-copy">{entry.data.role}</p>
-                  </div>
-                )}
-                {entry.data.impact && (
-                  <div class="case-study-hero__fact">
-                    <p class="case-study-hero__fact-label">{locale.impactLabel}</p>
-                    <p class="case-study-hero__fact-copy">{entry.data.impact}</p>
-                  </div>
-                )}
-              </div>
-            )}
+            {
+              !isPublishedArticle && (entry.data.role || entry.data.impact) && (
+                <div class="case-study-hero__facts">
+                  {entry.data.role && (
+                    <div class="case-study-hero__fact">
+                      <p class="case-study-hero__fact-label">
+                        {locale.roleLabel}
+                      </p>
+                      <p class="case-study-hero__fact-copy">
+                        {entry.data.role}
+                      </p>
+                    </div>
+                  )}
+                  {entry.data.impact && (
+                    <div class="case-study-hero__fact">
+                      <p class="case-study-hero__fact-label">
+                        {locale.impactLabel}
+                      </p>
+                      <p class="case-study-hero__fact-copy">
+                        {entry.data.impact}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )
+            }
 
-            {(demoUrl || githubUrl) && (
-              <div class="case-study-hero__actions">
-                {demoUrl && (
-                  <a
-                    href={demoUrl}
-                    target={demoUrl.startsWith('http') ? '_blank' : undefined}
-                    rel={demoUrl.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    class="case-study-hero__action case-study-hero__action--primary"
-                  >
-                    Open live project
-                    <Icon name="arrow-right" size={16} />
-                  </a>
-                )}
-                {githubUrl && (
-                  <a
-                    href={githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="case-study-hero__action case-study-hero__action--secondary"
-                  >
-                    View source
-                    <Icon name="external-link" size={16} />
-                  </a>
-                )}
-              </div>
-            )}
+            {
+              (demoUrl || githubUrl) && (
+                <div class="case-study-hero__actions">
+                  {demoUrl && (
+                    <a
+                      href={demoUrl}
+                      target={demoUrl.startsWith("http") ? "_blank" : undefined}
+                      rel={
+                        demoUrl.startsWith("http")
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      class="case-study-hero__action case-study-hero__action--primary"
+                    >
+                      Open live project
+                      <Icon name="arrow-right" size={16} />
+                    </a>
+                  )}
+                  {githubUrl && (
+                    <a
+                      href={githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="case-study-hero__action case-study-hero__action--secondary"
+                    >
+                      View source
+                      <Icon name="external-link" size={16} />
+                    </a>
+                  )}
+                </div>
+              )
+            }
           </div>
         </div>
 
         <div class="case-study-hero__side">
-          {entry.data.heroImage && (
-            <div class="case-study-hero__media">
-              <OptimizedImage
-                src={entry.data.heroImage}
-                alt={entry.data.title}
-                class="aspect-[16/11] h-full w-full object-cover"
-                loading="eager"
-                width={1200}
-                height={825}
-              />
-            </div>
-          )}
+          {
+            entry.data.heroImage && (
+              <div class="case-study-hero__media">
+                <OptimizedImage
+                  src={entry.data.heroImage}
+                  alt={entry.data.title}
+                  class="aspect-[16/11] h-full w-full object-cover"
+                  loading="eager"
+                  width={1200}
+                  height={825}
+                />
+              </div>
+            )
+          }
 
           <div class="case-study-hero__metrics">
-            {entry.data.metrics.map((metric) => (
-              <MetricCard label={metric.label} value={metric.value} detail={metric.detail} />
-            ))}
+            {
+              entry.data.metrics
+                .slice(0, isPublishedArticle ? 2 : entry.data.metrics.length)
+                .map((metric) => (
+                  <MetricCard
+                    label={metric.label}
+                    value={metric.value}
+                    detail={metric.detail}
+                  />
+                ))
+            }
           </div>
         </div>
       </div>
@@ -160,8 +197,8 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
   .case-study-hero__grid {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
-    gap: 2.5rem;
-    margin-top: 1.5rem;
+    gap: 2rem;
+    margin-top: 1.25rem;
     align-items: start;
   }
 
@@ -183,20 +220,20 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
 
   .case-study-hero h1 {
     max-width: 14ch;
-    margin-top: 1.35rem;
+    margin-top: 1.15rem;
     font-family: var(--font-display);
-    font-size: clamp(3rem, 7vw, 5.6rem);
+    font-size: 5rem;
     font-weight: 700;
     line-height: 0.94;
-    letter-spacing: -0.05em;
+    letter-spacing: 0;
     color: hsl(var(--foreground));
   }
 
   .case-study-hero__lede {
     max-width: 44rem;
-    margin-top: 1.25rem;
+    margin-top: 1rem;
     font-size: 1.05rem;
-    line-height: 1.95;
+    line-height: 1.75;
     color: hsl(var(--muted-foreground));
   }
 
@@ -204,12 +241,12 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
     display: flex;
     flex-wrap: wrap;
     gap: 0.65rem;
-    margin-top: 1.5rem;
+    margin-top: 1.15rem;
   }
 
   .case-study-hero__summary {
-    margin-top: 1.75rem;
-    padding: 1.4rem 0;
+    margin-top: 1.35rem;
+    padding: 1rem 0 0;
     border-top: 1px solid rgba(255, 255, 255, 0.04);
   }
 
@@ -226,9 +263,9 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
   }
 
   .case-study-hero__summary-copy {
-    margin-top: 0.95rem;
+    margin-top: 0.65rem;
     font-size: 1rem;
-    line-height: 1.9;
+    line-height: 1.65;
     color: hsl(var(--foreground));
   }
 
@@ -322,6 +359,37 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
 
     .case-study-hero h1 {
       max-width: 100%;
+      font-size: 4rem;
+    }
+  }
+
+  :global(.case-study-hero-shell--article) .case-study-hero {
+    padding-block: clamp(1rem, 1.6vw, 1.5rem);
+  }
+
+  :global(.case-study-hero-shell--article) .case-study-hero h1 {
+    max-width: 16ch;
+  }
+
+  :global(.case-study-hero-shell--article) .case-study-hero__lede {
+    max-width: 38rem;
+  }
+
+  :global(.case-study-hero-shell--article) .case-study-hero__summary {
+    max-width: 44rem;
+  }
+
+  @media (max-width: 760px) {
+    :global(.case-study-hero-shell--article) .case-study-hero__side {
+      display: none;
+    }
+
+    :global(.case-study-hero-shell--article) .case-study-hero__stack {
+      display: none;
+    }
+
+    :global(.case-study-hero-shell--article) .case-study-hero__summary {
+      margin-top: 1rem;
     }
   }
 
@@ -331,8 +399,13 @@ const githubUrl = 'githubUrl' in entry.data ? entry.data.githubUrl : undefined;
     }
 
     .case-study-hero h1 {
-      font-size: clamp(2.3rem, 14vw, 3.4rem);
+      font-size: 2.5rem;
       line-height: 0.98;
+    }
+
+    .case-study-hero__lede {
+      font-size: 0.98rem;
+      line-height: 1.6;
     }
 
     .case-study-hero__facts,

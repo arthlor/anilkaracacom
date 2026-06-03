@@ -1,36 +1,42 @@
 ---
-title: "Türkiye'nin doğum ritmi: \"3 çocuk\" söylemi neden karşılık bulmadı?"
-description: "Türkiye'de 2001-2020 arasındaki doğum ritmini kaba doğum hızı, toplam doğurganlık ve anne yaşı üzerinden okuyan etkileşimli analiz."
+title: 'Turkey''s birth rhythm: why the "three children" slogan did not land'
+description: "An interactive analysis of Turkey's birth rhythm between 2001 and 2020 through crude birth rate, total fertility, and maternal age."
 pubDate: 2024-05-15
 heroImage: "../../assets/images/articles/turkiye-dogum-istatistikleri-2025.webp"
-tags: ["türkiye", "demografik", "veri-analizi", "tuik"]
+tags: ["turkey", "demographics", "data-analysis", "tuik"]
 category: "data-journalism"
 featured: false
 published: true
 draft: false
 track: "data-journalism"
-language: "tr"
+language: "en"
 pillar: "scientific-environmental-modeling"
-techStack: ["TÜİK doğurganlık serileri", "Zaman ekseninde gösterge eşleştirme", "Bağlı React grafik sistemi", "Astro anlatı düzeni"]
+techStack:
+  [
+    "TUIK fertility series",
+    "Time-axis indicator matching",
+    "Linked React chart system",
+    "Astro narrative layout",
+  ]
 metrics:
-  - label: "Kapsanan dönem"
+  - label: "Period covered"
     value: "2001-2020"
-    detail: "Doğum verileri yirmi yıllık zaman aralığında incelendi."
-  - label: "Ana gösterge"
-    value: "3 seri"
-    detail: "Kaba doğum hızı, toplam doğurganlık ve anne yaşı aynı zaman ekseninde okunuyor."
-executiveSummary: "Türkiye'nin doğum verilerini yirmi yıllık perspektifle ele alan bu çalışma, kaba doğum hızındaki gerilemeyi, doğurganlık eşiğindeki düşüşü ve anne yaşındaki artışı tek bir nüfus hikâyesinde topluyor."
-context: "Doğum istatistikleri kamuoyunda çoğu zaman siyasi sloganlarla tartışılıyor. Bu çalışma, TÜİK'in temel göstergelerini aynı anlatı içinde birleştirerek sayıların gerçekten ne söylediğini görünür kılmak için üretildi."
+    detail: "Birth indicators were analyzed across a twenty-year window."
+  - label: "Core indicators"
+    value: "3 series"
+    detail: "Crude birth rate, total fertility, and maternal age are read on the same timeline."
+executiveSummary: "This twenty-year view of Turkey's birth data brings declining birth intensity, fertility below replacement level, and rising maternal age into one demographic story."
+context: "Birth statistics are often discussed through political slogans. This work brings TUIK's core indicators into one narrative so the numbers can be read on their own terms."
 methodology:
-  - "TÜİK'in yıllık doğum göstergeleri tek bir zaman serisi kümesine dönüştürüldü."
-  - "Ham tabloyu tekrar etmeyen üç bağlı küçük görünüm kuruldu; scrubber aynı yılı bütün panellerde eşzamanlı sabitliyor."
-  - "Anlatı notları, geçici toparlanmaları ve uzun dönemli kırılmayı siyasi söylemden ayrıştıracak şekilde yerleştirildi."
-challenge: "Doğum sayısını tek başına göstermek bu dönüşümü eksik bırakıyordu. Yoğunluk, aile büyüklüğü ve annelik yaşı aynı yüzde buluşmalı; ama grafik yine de sade kalmalıydı."
-codeProof: "Eski gömülü HTML grafiği yerine yerel veri modülüyle çalışan üç senkronize React zaman serisi kuruldu. Böylece okuyucu tek yüzeyde hem trendi hem de belirli bir yılın kırılımını okuyabiliyor."
-conclusion: "Bu çalışma, Türkiye'nin nüfus dinamiklerinin siyasi sloganlardan daha karmaşık olduğunu gösteriyor; veriler hem doğum oranındaki düşüşü hem de annelik yaşındaki artışı açık biçimde ortaya koyuyor."
+  - "TUIK's annual birth indicators were converted into one time-series dataset."
+  - "Three linked compact views were built instead of repeating the raw table; the scrubber locks the same year across every panel."
+  - "Narrative notes were placed to separate short-lived rebounds from the longer structural break."
+challenge: "Showing birth counts alone would miss the transformation. Birth intensity, family-size behavior, and maternal age needed to meet on one surface without turning the chart into a dense dashboard."
+codeProof: "The old embedded HTML graphic was replaced by three synchronized React time series backed by a local data module. Readers can inspect both the long trend and the selected year's values in one surface."
+conclusion: "The study shows that Turkey's demographic dynamics are more complex than political slogans suggest. The data clearly exposes both falling fertility and rising maternal age."
 summaryEn: "A long-range birth statistics explainer showing how Turkey's fertility and maternal-age trends changed over two decades."
-role: "Veri doğrulama, demografik yorumlama, etkileşim tasarımı"
-impact: "Demografik veriyi politik tartışmanın ötesine taşıyarak uzun dönemli eğilimi görünür kılıyor."
+role: "Data validation, demographic interpretation, interaction design"
+impact: "Moves demographic data beyond political debate by making the long-term trend visible."
 relatedContent:
   - collection: "articles"
     slug: "izmir-yas-analizi"
@@ -40,39 +46,14 @@ relatedContent:
 
 import BirthMetricsTimeline from "../../components/mdx/charts/BirthMetricsTimeline";
 
-Türkiye İstatistik Kurumu'nun yayımladığı doğum göstergeleri, son yirmi yılda ülkenin nüfus ritminin nasıl değiştiğini açık biçimde gösteriyor. Ancak tek başına doğum sayısı bu dönüşümü anlatmaya yetmiyor; yoğunluk, aile büyüklüğü ve annelik yaşı birlikte okunduğunda daha net bir tablo ortaya çıkıyor.
-
-Bu nedenle eski gömülü grafik kaldırıldı ve üç bağlı zaman serisinden oluşan yerel bir görsel sistem kuruldu. Üstte kaba doğum hızı, ortada toplam doğurganlık hızı, altta ise annelerin ortalama yaşı yer alıyor. Yıl seçici, seçilen dönemi üç görünümde birden sabitleyerek hangi kırılmanın ne zaman hızlandığını izlemeyi kolaylaştırıyor.
+Turkey's birth data is clearer when birth intensity, fertility, and maternal age move on the same timeline. The selector below locks all three indicators to one year so the long-term break is easier to see.
 
 <BirthMetricsTimeline client:load />
 
-## Grafiğin anlattığı üç kırılma
+## What to notice
 
-- Kaba doğum hızı neredeyse kesintisiz bir aşağı yönlü hat izliyor.
-- Toplam doğurganlık hızı, 2010'ların ortasındaki kısa soluklanmaya rağmen yenilenme eşiğinin altındaki yeni düzeye yerleşiyor.
-- Annelerin ortalama yaşı düzenli biçimde yükseliyor; bu da doğumun zamanlamasının değiştiğini gösteriyor.
+- Crude birth rate follows an almost uninterrupted downward line.
+- Total fertility rate settles below replacement level despite a brief pause in the mid-2010s.
+- Average maternal age rises steadily, showing that the timing of birth is changing.
 
-## Siyasi söylem ile veri neden ayrışıyor?
-
-Bu örüntü, kamuoyunda sık tekrarlanan "3 çocuk" söyleminin veride neden karşılık bulmadığını da açıklıyor. Ailelerin davranışı, siyasi çağrıdan çok ekonomik koşullar, eğitim süresi, kentleşme ve yaşam planı tarafından belirleniyor. Kısacası mesele yalnızca kaç çocuk yapıldığı değil; ne zaman, hangi koşulda ve hangi toplumsal beklenti içinde çocuk sahibi olunduğu.
-
-## Neyi okuyoruz?
-
-- Kaba doğum hızı, nüfusun genel doğum yoğunluğunu gösteriyor.
-- Toplam doğurganlık hızı, aile büyüklüğü davranışındaki uzun dönemli değişimi ölçüyor.
-- Annelerin ortalama yaşı ise doğumun yaşam döngüsünde daha geç bir döneme kaydığını anlatıyor.
-
-Bu üç seri birlikte okunduğunda, Türkiye'nin giderek daha düşük doğurganlık ve daha geç annelik yaşına sahip bir demografik rejime yaklaştığı görülüyor. Bu da sosyal politika, bakım ekonomisi, eğitim ve çalışma hayatı açısından daha uzun vadeli sonuçlar doğuruyor.
-
-## 2023 haritası neyi tamamlıyor?
-
-2023 il haritası, bu dönüşümün mekânsal tarafını hatırlatıyor: ilk doğumdaki ortalama anne yaşı ülke içinde de homojen değil. Büyükşehirler, eğitim ve çalışma hayatının daha uzun sürdüğü iller ve yaşam maliyetinin daha yüksek olduğu bölgeler bu gecikmeyi daha belirgin taşıyor.
-
-![Ortalama Anne Yaşı Haritası](/uploads/2024/05/indir.webp)
-_2023 yılına ait doğum istatistikleri verileri, ilk doğumdaki ortalama anne yaşının en yüksek ve en düşük olduğu 10 ili göstermektedir. (TÜİK)_
-
-## Kaynak ve not
-
-Kaynak: [**TÜİK**](https://www.tuik.gov.tr/)
-
-Bu çalışma, TÜİK'in temel doğurganlık göstergelerini tek bir okuma yüzeyinde birleştirerek Türkiye'deki demografik değişimi daha net okumayı amaçlıyor. Detaylı veri tabloları ve resmî bültenler için TÜİK'in yayımlarına bakılabilir.
+Source: [**TUIK**](https://www.tuik.gov.tr/)

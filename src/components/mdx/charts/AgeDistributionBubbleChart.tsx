@@ -5,6 +5,7 @@ import {
   useState,
   type CSSProperties,
 } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
 import {
@@ -27,10 +28,10 @@ type AgePoint = {
 };
 
 const metricOptions: Array<{ key: MetricMode; label: string }> = [
-  { key: "total", label: "Toplam" },
-  { key: "female", label: "Kadın" },
-  { key: "male", label: "Erkek" },
-  { key: "gap", label: "Cinsiyet farkı" },
+  { key: "total", label: "Total" },
+  { key: "female", label: "Female" },
+  { key: "male", label: "Male" },
+  { key: "gap", label: "Gender gap" },
 ];
 
 const orderedAgeGroups = [...rawData.ageGroups].reverse();
@@ -88,7 +89,11 @@ export default function AgeDistributionBubbleChart() {
 
     return {
       maxValue: Math.max(...positives, 1),
-      maxAbsGap: Math.max(...negatives.map((value) => Math.abs(value)), ...positives, 1),
+      maxAbsGap: Math.max(
+        ...negatives.map((value) => Math.abs(value)),
+        ...positives,
+        1,
+      ),
     };
   }, [metric, points]);
 
@@ -132,29 +137,75 @@ export default function AgeDistributionBubbleChart() {
 
   return (
     <ArticleChartFrame
-      eyebrow="Demografik tarama"
-      title="İlçe ilçe yaş yoğunluğu ve cinsiyet dengesi"
-      description="Sol taraftaki ısı matrisi hangi yaş bandının hangi ilçede yoğunlaştığını tarıyor; sağ panel aynı anda seçili ilçenin kadın-erkek dağılımını açıyor."
-      helper="Hücre üzerinde gezinmek hızlı okuma sağlar, tıklamak ise ilçe ve yaş bandını sabitler. Arama kutusu matriste kaybolmadan ilçe bulmak için eklendi."
+      eyebrow="Demographic scan"
+      title="Age density and gender balance by district"
+      description="Start with a district and age band, then use the ranking to see where that same segment is concentrated across İzmir."
+      takeaway="The matrix is a backdrop; the selectors and ranking are the main reading path."
+      primaryMetric={
+        activePoint
+          ? {
+              label: `${activeDistrict} ${activeAgeGroup.replace("-", "–")}`,
+              value: formatCompactNumber(activePoint.total, "en-US"),
+              detail: `${Math.round((activePoint.female / activePoint.total) * 100)}% female share`,
+            }
+          : undefined
+      }
+      interactionHint="Keyboard users can move through district, age-band, and metric controls without tabbing through every cell."
+      density="explorer"
       controls={
         <div className="viz-controls">
           <input
             value={searchValue}
             onChange={(event) => setSearchValue(event.target.value)}
             className="viz-search"
-            placeholder="İlçe ara"
-            aria-label="İlçe ara"
+            placeholder="Search district"
+            aria-label="Search district"
           />
-          <div className="viz-toggle-group" role="tablist" aria-label="Metrik seçimi">
+          <select
+            value={selectedDistrict}
+            className="viz-select"
+            aria-label="Select district"
+            onChange={(event) => setSelectedDistrict(event.target.value)}
+          >
+            {districts.map((district) => (
+              <option key={district} value={district}>
+                {district}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedAgeGroup}
+            className="viz-select"
+            aria-label="Select age band"
+            onChange={(event) => setSelectedAgeGroup(event.target.value)}
+          >
+            {orderedAgeGroups.map((ageGroup) => (
+              <option key={ageGroup} value={ageGroup}>
+                {ageGroup.replace("-", "–")}
+              </option>
+            ))}
+          </select>
+          <div
+            className="viz-toggle-group"
+            role="tablist"
+            aria-label="Metric selection"
+          >
             {metricOptions.map((option) => (
               <button
                 key={option.key}
                 type="button"
-                className="viz-toggle"
+                className="relative viz-toggle z-10"
                 data-active={metric === option.key}
                 onClick={() => setMetric(option.key)}
               >
-                {option.label}
+                <span className="relative z-20">{option.label}</span>
+                {metric === option.key && (
+                  <motion.div
+                    layoutId="age-metric-highlight"
+                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </button>
             ))}
           </div>
@@ -164,20 +215,22 @@ export default function AgeDistributionBubbleChart() {
         <div className="space-y-5">
           <div className="viz-stat-grid">
             <div className="viz-stat border-t-0 pt-0">
-              <span className="viz-label">Seçili ilçe</span>
+              <span className="viz-label">Selected district</span>
               <strong>{activeDistrict}</strong>
             </div>
             <div className="viz-stat">
-              <span className="viz-label">Toplam nüfus</span>
-              <strong>{formatNumber(selectedDistrictTotal)}</strong>
+              <span className="viz-label">Total population</span>
+              <strong>{formatNumber(selectedDistrictTotal, "en-US")}</strong>
             </div>
             {activePoint && (
               <div className="viz-stat">
-                <span className="viz-label">Seçili yaş bandı</span>
-                <strong>{activeAgeGroup}</strong>
+                <span className="viz-label">Selected age band</span>
+                <strong>{activeAgeGroup.replace("-", "–")}</strong>
                 <p className="viz-note mt-2">
-                  Bu bantta {formatNumber(activePoint.total)} kişi var. Kadın payı{" "}
-                  {Math.round((activePoint.female / activePoint.total) * 100)}%, erkek payı{" "}
+                  This band contains {formatNumber(activePoint.total, "en-US")}{" "}
+                  people. Female share is{" "}
+                  {Math.round((activePoint.female / activePoint.total) * 100)}%,
+                  male share is{" "}
                   {Math.round((activePoint.male / activePoint.total) * 100)}.
                 </p>
               </div>
@@ -187,7 +240,12 @@ export default function AgeDistributionBubbleChart() {
           <div className="viz-divider" />
 
           <div>
-            <p className="viz-label">İlçe nüfus piramidi</p>
+            <div className="flex items-center justify-between mb-3 gap-2">
+              <p className="viz-label">District age pyramid</p>
+              <span className="text-[10px] font-semibold text-primary/80 uppercase tracking-wider">
+                {activeDistrict}
+              </span>
+            </div>
             <PopulationPyramid
               rows={districtSeries}
               highlightedAgeGroup={activeAgeGroup}
@@ -198,113 +256,165 @@ export default function AgeDistributionBubbleChart() {
       footer={
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
           <div>
-            <p className="viz-label">Seçili yaş bandı sıralaması</p>
+            <p className="viz-label">Selected age-band ranking</p>
             <p className="viz-note mt-1">
-              {activeAgeGroup} bandında öne çıkan ilçeleri, seçtiğiniz metriğe göre
-              karşılaştırın.
+              Compare the leading districts in the{" "}
+              {activeAgeGroup.replace("-", "–")} band by the selected metric.
             </p>
           </div>
           <div className="text-right text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-            Merkez ile çeper ilçeler aynı yaş ritmini taşımıyor.
+            Central and peripheral districts do not share the same age rhythm.
           </div>
         </div>
       }
     >
       <div className="space-y-5">
-        <div className="overflow-x-auto rounded-[24px] border border-white/[0.07] bg-white/[0.015] pb-1">
-          <div className="grid min-w-[920px]" style={gridStyle(filteredDistricts.length)}>
-            <div className="sticky left-0 z-20 border-r border-white/[0.07] bg-[#111111]/96 px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
-              Yaş
-            </div>
-            {filteredDistricts.map((district) => {
-              const isSelected = district === activeDistrict;
-
-              return (
-                <button
-                  key={district}
-                  type="button"
-                  onClick={() => {
-                    startTransition(() => {
-                      setSelectedDistrict(district);
-                    });
-                  }}
-                  className="border-b border-white/[0.07] px-2 py-3 text-center text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
-                  style={{
-                    color: isSelected ? chartPalette.text : undefined,
-                    background: isSelected ? "rgba(255,255,255,0.03)" : undefined,
-                  }}
-                >
-                  {district}
-                </button>
-              );
-            })}
-
-            {orderedAgeGroups.map((ageGroup) => (
-              <FragmentRow
-                key={ageGroup}
-                ageGroup={ageGroup}
-                districts={filteredDistricts}
-                lookup={lookup}
-                metric={metric}
-                maxValue={heatmapValues.maxValue}
-                maxAbsGap={heatmapValues.maxAbsGap}
-                selectedDistrict={selectedDistrict}
-                selectedAgeGroup={selectedAgeGroup}
-                hoveredCell={hoveredCell}
-                onCellEnter={setHoveredCell}
-                onCellLeave={() => setHoveredCell(null)}
-                onCellSelect={(district, nextAgeGroup) => {
-                  startTransition(() => {
-                    setSelectedDistrict(district);
-                    setSelectedAgeGroup(nextAgeGroup);
-                  });
-                }}
-              />
-            ))}
+        <div className="grid gap-3 lg:hidden">
+          <div className="viz-insight rounded-xl border border-white/[0.07] bg-white/[0.015] p-4">
+            <p className="viz-label">Current read</p>
+            <p className="mt-2 text-base font-semibold text-foreground">
+              {activeDistrict} has{" "}
+              {formatCompactNumber(activePoint?.total ?? 0, "en-US")} people in
+              the {activeAgeGroup.replace("-", "–")} band.
+            </p>
+            {activePoint && (
+              <p className="viz-note mt-2">
+                Female: {formatCompactNumber(activePoint.female, "en-US")} ·
+                Male: {formatCompactNumber(activePoint.male, "en-US")}
+              </p>
+            )}
           </div>
         </div>
 
         <div className="space-y-3">
           <div className="flex items-end justify-between gap-3">
             <div>
-              <p className="viz-label">Yaş bandı sıralaması</p>
+              <p className="viz-label">Age-band ranking</p>
               <p className="viz-note mt-1">
-                {activeAgeGroup} bandında en yoğun ilçeler.
+                Districts with the highest density in the{" "}
+                {activeAgeGroup.replace("-", "–")} band.
               </p>
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground hidden sm:block">
               {metric === "gap"
-                ? "Pozitif değer kadınların, negatif değer erkeklerin daha yüksek olduğu bandı gösterir."
-                : "Yoğunluk, seçtiğiniz metrikteki gerçek değerlerle sıralanır."}
+                ? "Positive values indicate higher female counts; negative values indicate higher male counts."
+                : "Density is ranked by the actual values for the selected metric."}
             </div>
           </div>
 
-          <div className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
-            {ranking.slice(0, 6).map((row, index) => (
-              <button
-                key={row.district}
-                type="button"
-                className="viz-ranking-item text-left"
-                data-active={row.district === activeDistrict}
-                onClick={() => setSelectedDistrict(row.district)}
+          <motion.div
+            layout
+            className="grid gap-2 md:grid-cols-2 xl:grid-cols-3"
+          >
+            <AnimatePresence mode="popLayout">
+              {ranking.slice(0, 6).map((row, index) => (
+                <motion.button
+                  layout
+                  key={row.district}
+                  type="button"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
+                  data-active={row.district === activeDistrict}
+                  onClick={() => setSelectedDistrict(row.district)}
+                >
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-foreground">
+                      {row.district}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      Segment total: {formatCompactNumber(row.total, "en-US")}
+                    </p>
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">
+                    {metric === "gap" && row.value > 0 ? "+" : ""}
+                    {formatCompactNumber(row.value, "en-US")}
+                  </span>
+                </motion.button>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+
+        {/* Matrix - now fully visible and horizontally scrollable on mobile! */}
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.012] p-4 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+          <div className="mb-4 flex items-end justify-between gap-3">
+            <div>
+              <p className="viz-label">Full district-age matrix</p>
+              <p className="viz-note mt-1">
+                Secondary scan surface for the complete 30-district by
+                19-age-band grid.
+              </p>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {filteredDistricts.length} districts shown
+            </div>
+          </div>
+          <div className="relative group">
+            {/* Scroll indicators */}
+            <div className="pointer-events-none absolute left-[90px] top-0 bottom-0 w-8 bg-gradient-to-r from-[#111111] to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-[#111111] to-transparent z-10 opacity-100 transition-opacity duration-200" />
+
+            <div className="overflow-x-auto pb-2 scrollbar-thin">
+              <div
+                className="grid min-w-[800px]"
+                style={gridStyle(filteredDistricts.length)}
               >
-                <span className="text-xs font-medium text-muted-foreground">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-foreground">
-                    {row.district}
-                  </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    Toplam segment: {formatCompactNumber(row.total)}
-                  </p>
+                <div className="sticky left-0 z-20 border-r border-white/[0.07] bg-[#111111]/96 px-2 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground backdrop-blur">
+                  Age
                 </div>
-                <span className="text-sm font-semibold text-foreground">
-                  {metric === "gap" && row.value > 0 ? "+" : ""}
-                  {formatCompactNumber(row.value)}
-                </span>
-              </button>
-            ))}
+                {filteredDistricts.map((district) => {
+                  const isSelected = district === activeDistrict;
+
+                  return (
+                    <div
+                      key={district}
+                      onClick={() => {
+                        startTransition(() => {
+                          setSelectedDistrict(district);
+                        });
+                      }}
+                      className="cursor-pointer border-b border-white/[0.07] px-1 py-2 text-center text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
+                      style={{
+                        color: isSelected ? chartPalette.text : undefined,
+                        background: isSelected
+                          ? "rgba(255,255,255,0.03)"
+                          : undefined,
+                      }}
+                    >
+                      {district}
+                    </div>
+                  );
+                })}
+
+                {orderedAgeGroups.map((ageGroup) => (
+                  <FragmentRow
+                    key={ageGroup}
+                    ageGroup={ageGroup}
+                    districts={filteredDistricts}
+                    lookup={lookup}
+                    metric={metric}
+                    maxValue={heatmapValues.maxValue}
+                    maxAbsGap={heatmapValues.maxAbsGap}
+                    selectedDistrict={selectedDistrict}
+                    selectedAgeGroup={selectedAgeGroup}
+                    hoveredCell={hoveredCell}
+                    onCellEnter={setHoveredCell}
+                    onCellLeave={() => setHoveredCell(null)}
+                    onCellSelect={(district, nextAgeGroup) => {
+                      startTransition(() => {
+                        setSelectedDistrict(district);
+                        setSelectedAgeGroup(nextAgeGroup);
+                      });
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -341,8 +451,8 @@ function FragmentRow({
 }) {
   return (
     <>
-      <div className="sticky left-0 z-10 border-r border-t border-white/[0.07] bg-[#111111]/96 px-3 py-3 text-sm font-semibold text-foreground backdrop-blur">
-        {ageGroup}
+      <div className="sticky left-0 z-10 border-r border-t border-white/[0.07] bg-[#111111]/96 px-2 py-2 text-xs font-semibold text-foreground backdrop-blur">
+        {ageGroup.replace("-", "–")}
       </div>
       {districts.map((district) => {
         const point = lookup.get(`${district}__${ageGroup}`);
@@ -350,28 +460,30 @@ function FragmentRow({
         const isSelected =
           district === selectedDistrict && ageGroup === selectedAgeGroup;
         const isHovered =
-          hoveredCell?.district === district && hoveredCell?.ageGroup === ageGroup;
+          hoveredCell?.district === district &&
+          hoveredCell?.ageGroup === ageGroup;
 
         return (
-          <button
+          <div
             key={`${district}-${ageGroup}`}
-            type="button"
-            className="group relative border-t border-white/[0.07] px-1 py-1 focus:outline-none"
+            role="presentation"
+            className="group relative cursor-pointer border-t border-white/[0.07] px-[2px] py-[2px]"
             onMouseEnter={() => onCellEnter({ district, ageGroup })}
             onMouseLeave={onCellLeave}
-            onFocus={() => onCellEnter({ district, ageGroup })}
-            onBlur={onCellLeave}
             onClick={() => onCellSelect(district, ageGroup)}
           >
-            <span
-              className="relative flex h-12 items-center justify-center rounded-[16px] border border-transparent text-[11px] font-medium transition-transform duration-150 group-hover:scale-[1.02]"
-              style={{
+            <motion.span
+              animate={{
                 background: getCellColor(value, metric, maxValue, maxAbsGap),
                 borderColor: isSelected
                   ? "rgba(122,242,152,0.85)"
                   : isHovered
                     ? "rgba(255,255,255,0.22)"
                     : "transparent",
+              }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              className="relative flex h-8 items-center justify-center rounded-[8px] border text-[10px] font-medium transition-transform duration-150 group-hover:scale-[1.02]"
+              style={{
                 boxShadow: isSelected
                   ? "0 0 0 1px rgba(122,242,152,0.2), 0 16px 36px rgba(0,0,0,0.16)"
                   : undefined,
@@ -386,9 +498,9 @@ function FragmentRow({
               }}
             >
               {metric === "gap" && value > 0 ? "+" : ""}
-              {formatCompactNumber(value)}
-            </span>
-          </button>
+              {formatCompactNumber(value, "en-US")}
+            </motion.span>
+          </div>
         );
       })}
     </>
@@ -399,71 +511,91 @@ function PopulationPyramid({
   rows,
   highlightedAgeGroup,
 }: {
-  rows: Array<{ ageGroup: string; female: number; male: number; total: number }>;
+  rows: Array<{
+    ageGroup: string;
+    female: number;
+    male: number;
+    total: number;
+  }>;
   highlightedAgeGroup: string;
 }) {
-  const maxValue = Math.max(...rows.map((row) => Math.max(row.female, row.male)), 1);
-  const chartHeight = rows.length * 24;
+  const maxValue = Math.max(
+    ...rows.map((row) => Math.max(row.female, row.male)),
+    1,
+  );
+  const chartHeight = rows.length * 15;
   const width = 320;
   const center = width / 2;
   const barMaxWidth = 118;
 
   return (
-    <svg viewBox={`0 0 ${width} ${chartHeight + 24}`} className="w-full">
+    <svg viewBox={`0 0 ${width} ${chartHeight + 20}`} className="w-full">
       <text
         x={center - 70}
-        y={14}
+        y={12}
         textAnchor="middle"
-        className="fill-[rgba(243,241,235,0.5)] text-[10px] uppercase tracking-[0.24em]"
+        className="fill-[rgba(243,241,235,0.5)] text-[9px] uppercase tracking-[0.24em]"
       >
-        Erkek
+        Male
       </text>
       <text
         x={center + 70}
-        y={14}
+        y={12}
         textAnchor="middle"
-        className="fill-[rgba(243,241,235,0.5)] text-[10px] uppercase tracking-[0.24em]"
+        className="fill-[rgba(243,241,235,0.5)] text-[9px] uppercase tracking-[0.24em]"
       >
-        Kadın
+        Female
       </text>
       <line
         x1={center}
         x2={center}
-        y1={22}
-        y2={chartHeight + 18}
+        y1={18}
+        y2={chartHeight + 14}
         stroke="rgba(255,255,255,0.12)"
       />
       {rows.map((row, index) => {
-        const y = 28 + index * 24;
+        const y = 26 + index * 15;
         const maleWidth = (row.male / maxValue) * barMaxWidth;
         const femaleWidth = (row.female / maxValue) * barMaxWidth;
         const isHighlighted = row.ageGroup === highlightedAgeGroup;
 
         return (
           <g key={row.ageGroup}>
-            <rect
-              x={center - maleWidth}
-              y={y - 8}
+            <motion.rect
+              layout
+              x={center - 15 - maleWidth}
+              y={y - 5}
               width={maleWidth}
-              height={16}
-              rx={8}
-              fill={isHighlighted ? chartPalette.cyan : "rgba(104, 211, 245, 0.35)"}
+              height={10}
+              rx={3}
+              initial={{ width: 0, x: center - 15 }}
+              animate={{ width: maleWidth, x: center - 15 - maleWidth }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              fill={
+                isHighlighted ? chartPalette.cyan : "rgba(104, 211, 245, 0.35)"
+              }
             />
-            <rect
-              x={center}
-              y={y - 8}
+            <motion.rect
+              layout
+              x={center + 15}
+              y={y - 5}
               width={femaleWidth}
-              height={16}
-              rx={8}
-              fill={isHighlighted ? chartPalette.rose : "rgba(244, 111, 136, 0.35)"}
+              height={10}
+              rx={3}
+              initial={{ width: 0 }}
+              animate={{ width: femaleWidth }}
+              transition={{ type: "spring", stiffness: 100, damping: 15 }}
+              fill={
+                isHighlighted ? chartPalette.rose : "rgba(244, 111, 136, 0.35)"
+              }
             />
             <text
               x={center}
-              y={y + 4}
+              y={y + 3.5}
               textAnchor="middle"
-              className={`text-[10px] ${isHighlighted ? "fill-[#f3f1eb]" : "fill-[rgba(243,241,235,0.58)]"}`}
+              className={`text-[9px] ${isHighlighted ? "fill-[#f3f1eb] font-semibold" : "fill-[rgba(243,241,235,0.58)]"}`}
             >
-              {row.ageGroup}
+              {row.ageGroup.replace("-", "–")}
             </text>
           </g>
         );
@@ -507,6 +639,6 @@ function getCellColor(
 
 function gridStyle(columnCount: number): CSSProperties {
   return {
-    gridTemplateColumns: `120px repeat(${columnCount}, minmax(92px, 1fr))`,
+    gridTemplateColumns: `90px repeat(${columnCount}, minmax(64px, 1fr))`,
   };
 }

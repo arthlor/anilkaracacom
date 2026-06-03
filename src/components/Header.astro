@@ -1,7 +1,7 @@
 ---
-import { resumeLinks } from '../data/portfolio';
-import { navigationLinks } from '../lib/site';
-import HeaderNavigation from './HeaderNavigation';
+import { resumeLinks } from "../data/portfolio";
+import { navigationLinks } from "../lib/site";
+import HeaderNavigation from "./HeaderNavigation";
 
 const currentPath = Astro.url.pathname;
 ---
@@ -13,9 +13,9 @@ const currentPath = Astro.url.pathname;
       <span class="brand-dot"></span>
     </a>
 
-    <HeaderNavigation 
-      client:load 
-      links={navigationLinks} 
+    <HeaderNavigation
+      client:load
+      links={navigationLinks}
       currentPath={currentPath}
       resumeHref={resumeLinks.master}
     />

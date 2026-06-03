@@ -1,6 +1,6 @@
 ---
-import { siteConfig } from '../lib/site';
-import { getDefaultOgImageUrl } from '../lib/seo';
+import { siteConfig } from "../lib/site";
+import { getDefaultOgImageUrl } from "../lib/seo";
 
 interface Props {
   title: string;
@@ -10,8 +10,8 @@ interface Props {
   noindex?: boolean | undefined;
 }
 
-const { 
-  title, 
+const {
+  title,
   description = siteConfig.description,
   image = getDefaultOgImageUrl(),
   article = false,
@@ -30,7 +30,7 @@ const socialImageURL = new URL(image, Astro.site || siteConfig.url);
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Open Graph -->
-<meta property="og:type" content={article ? 'article' : 'website'} />
+<meta property="og:type" content={article ? "article" : "website"} />
 <meta property="og:site_name" content={siteConfig.name} />
 <meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />

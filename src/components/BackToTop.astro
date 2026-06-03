@@ -5,13 +5,13 @@
  */
 ---
 
-<button
-  id="back-to-top"
-  class="site-back-to-top"
-  aria-label="Back to top"
->
+<button id="back-to-top" class="site-back-to-top" aria-label="Back to top">
   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
   </svg>
 </button>
 
@@ -54,15 +54,15 @@
 </style>
 
 <script>
-  const backToTopButton = document.getElementById('back-to-top');
-  
+  const backToTopButton = document.getElementById("back-to-top");
+
   if (backToTopButton) {
     // Show/hide button based on scroll position
     const toggleVisibility = () => {
       if (window.scrollY > 400) {
-        backToTopButton.classList.add('visible');
+        backToTopButton.classList.add("visible");
       } else {
-        backToTopButton.classList.remove('visible');
+        backToTopButton.classList.remove("visible");
       }
     };
 
@@ -70,13 +70,13 @@
     const scrollToTop = () => {
       window.scrollTo({
         top: 0,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
     };
 
     // Event listeners
-    window.addEventListener('scroll', toggleVisibility, { passive: true });
-    backToTopButton.addEventListener('click', scrollToTop);
+    window.addEventListener("scroll", toggleVisibility, { passive: true });
+    backToTopButton.addEventListener("click", scrollToTop);
 
     // Initial check
     toggleVisibility();

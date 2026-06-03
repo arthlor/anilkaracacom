@@ -1,7 +1,11 @@
 import { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
-import { formatNumber, formatPercent } from "@/components/case-study/chartTheme";
+import {
+  formatNumber,
+  formatPercent,
+} from "@/components/case-study/chartTheme";
 import { electionComparisonSeries } from "@/data/electionComparison";
 
 export default function ElectionResultsBarChart() {
@@ -18,9 +22,11 @@ export default function ElectionResultsBarChart() {
   const maxShare = Math.max(...ranked.map((entry) => entry.share2024), 1);
   const fallbackEntry = ranked[0] ?? electionComparisonSeries[0];
   const biggestGain =
-    [...ranked].sort((left, right) => right.deltaShare - left.deltaShare)[0] ?? fallbackEntry;
+    [...ranked].sort((left, right) => right.deltaShare - left.deltaShare)[0] ??
+    fallbackEntry;
   const biggestLoss =
-    [...ranked].sort((left, right) => left.deltaShare - right.deltaShare)[0] ?? fallbackEntry;
+    [...ranked].sort((left, right) => left.deltaShare - right.deltaShare)[0] ??
+    fallbackEntry;
 
   if (!fallbackEntry || !biggestGain || !biggestLoss) {
     return null;
@@ -28,27 +34,53 @@ export default function ElectionResultsBarChart() {
 
   return (
     <ArticleChartFrame
-      eyebrow="National vote"
-      title="The 2024 result, with the 2019 baseline still in view"
-      description="Each row stays anchored to 2024 vote share, while the delta marker shows how far the party moved against the last local-election cycle."
+      eyebrow="Top displayed parties"
+      title="The leading 2024 parties, with the 2019 baseline still in view"
+      description="Each displayed row stays anchored to 2024 vote share, while the delta marker shows movement from the last local-election cycle."
+      takeaway="CHP’s national lead is clearer when the 2019 movement sits beside the 2024 bar; smaller parties are not included in this view."
+      primaryMetric={{
+        label: "Largest gain",
+        value: biggestGain.party,
+        detail: `+${formatPercent(biggestGain.deltaShare, 2, "en-US")} pts`,
+      }}
+      interactionHint="Switch sorting between current vote share and change from 2019."
+      density="explorer"
       controls={
         <div className="viz-controls">
-          <div className="viz-toggle-group" role="tablist" aria-label="Sort mode">
+          <div
+            className="viz-toggle-group"
+            role="tablist"
+            aria-label="Sort mode"
+          >
             <button
               type="button"
-              className="viz-toggle"
+              className="relative viz-toggle z-10"
               data-active={sortMode === "share"}
               onClick={() => setSortMode("share")}
             >
-              Vote share
+              <span className="relative z-20">Vote share</span>
+              {sortMode === "share" && (
+                <motion.div
+                  layoutId="election-sort-highlight"
+                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
             <button
               type="button"
-              className="viz-toggle"
+              className="relative viz-toggle z-10"
               data-active={sortMode === "delta"}
               onClick={() => setSortMode("delta")}
             >
-              Change vs 2019
+              <span className="relative z-20">Change vs 2019</span>
+              {sortMode === "delta" && (
+                <motion.div
+                  layoutId="election-sort-highlight"
+                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
             </button>
           </div>
         </div>
@@ -59,75 +91,114 @@ export default function ElectionResultsBarChart() {
             <div className="viz-stat border-t-0 pt-0">
               <span className="viz-label">Largest gain</span>
               <strong>{biggestGain.party}</strong>
-              <p className="viz-note mt-2">+{formatPercent(biggestGain.deltaShare, 2, "en-US")} pts</p>
+              <p className="viz-note mt-2">
+                +{formatPercent(biggestGain.deltaShare, 2, "en-US")} pts
+              </p>
             </div>
             <div className="viz-stat">
               <span className="viz-label">Steepest loss</span>
               <strong>{biggestLoss.party}</strong>
-              <p className="viz-note mt-2">{formatPercent(biggestLoss.deltaShare, 2, "en-US")} pts</p>
+              <p className="viz-note mt-2">
+                {formatPercent(biggestLoss.deltaShare, 2, "en-US")} pts
+              </p>
             </div>
           </div>
           <div className="viz-divider" />
           <p className="viz-note">
-            DEM is measured against the 2019 HDP result so the shift stays comparable
-            across the party rebrand.
+            DEM is measured against the 2019 HDP result so the shift stays
+            comparable across the party rebrand.
           </p>
         </div>
       }
       footer={
         <div className="viz-note">
-          The baseline uses nationwide local-election vote share in 2019, while the
-          2024 bar reflects the result table used throughout this project.
+          The baseline uses nationwide local-election vote share in 2019. The
+          2024 bars show the top displayed parties in this chart, which sum to
+          90.14% rather than the full electorate.
         </div>
       }
     >
-      <div className="rounded-[24px] border border-white/[0.07] bg-white/[0.015] p-4 sm:p-5">
-        <div className="space-y-3">
-          {ranked.map((entry) => {
-            const width = (entry.share2024 / maxShare) * 100;
-            return (
-              <div
-                key={entry.party}
-                className="grid gap-3 rounded-[20px] border border-white/[0.06] bg-white/[0.02] px-4 py-3 sm:grid-cols-[92px_minmax(0,1fr)_auto] sm:items-center"
-              >
-                <div>
-                  <p className="text-lg font-semibold text-foreground">{entry.party}</p>
-                  <p className="text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                    {entry.baselineLabel ? `2019 ${entry.baselineLabel}` : "2019 baseline"}
-                  </p>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between gap-3 text-sm">
-                    <span className="text-muted-foreground">{entry.fullName}</span>
-                    <span className="font-semibold text-foreground">
-                      {formatPercent(entry.share2024, 2, "en-US")}%
-                    </span>
-                  </div>
-                  <div className="mt-2 h-3 overflow-hidden rounded-full bg-white/[0.04]">
-                    <div
-                      className="h-full rounded-full"
-                      style={{ width: `${width}%`, background: entry.color }}
-                    />
-                  </div>
-                  <div className="mt-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                    <span>{formatNumber(entry.votes2024, "en-US")} votes</span>
+      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+        <motion.div layout className="space-y-3">
+          <AnimatePresence mode="popLayout">
+            {ranked.map((entry) => {
+              const width = (entry.share2024 / maxShare) * 100;
+              return (
+                <motion.div
+                  layout
+                  key={entry.party}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 120, damping: 15 }}
+                  className="grid gap-4 rounded-[20px] border border-white/[0.05] bg-white/[0.015] px-4 py-4 sm:grid-cols-[100px_minmax(0,1fr)_auto] sm:items-center hover:bg-white/[0.03] hover:border-white/[0.08] hover:translate-y-[-1px] transition-all duration-200"
+                >
+                  <div className="flex items-center gap-2">
                     <span
-                      className="rounded-full px-2 py-1 font-semibold"
+                      className="h-3 w-3 rounded-full flex-shrink-0"
                       style={{
-                        background:
-                          entry.deltaShare >= 0 ? "rgba(122,242,152,0.12)" : "rgba(244,111,136,0.12)",
-                        color: entry.deltaShare >= 0 ? "#7af298" : "#f46f88",
+                        background: entry.color,
+                        boxShadow: `0 0 8px ${entry.color}`,
                       }}
-                    >
-                      {entry.deltaShare > 0 ? "+" : ""}
-                      {formatPercent(entry.deltaShare, 2, "en-US")} pts
-                    </span>
+                    />
+                    <div>
+                      <p className="text-lg font-bold text-foreground leading-none">
+                        {entry.party}
+                      </p>
+                      <p className="text-[10px] mt-1 uppercase tracking-[0.12em] text-muted-foreground whitespace-nowrap">
+                        {entry.baselineLabel
+                          ? `2019 ${entry.baselineLabel}`
+                          : "2019 baseline"}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center justify-between gap-3 text-sm mb-1.5">
+                      <span className="text-muted-foreground truncate">
+                        {entry.fullName}
+                      </span>
+                      <span className="font-bold text-foreground">
+                        {formatPercent(entry.share2024, 2, "en-US")}%
+                      </span>
+                    </div>
+                    <div className="h-3 overflow-hidden rounded-full bg-white/[0.04] relative">
+                      <motion.div
+                        className="h-full rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${width}%` }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 100,
+                          damping: 15,
+                        }}
+                        style={{ background: entry.color }}
+                      />
+                    </div>
+                    <div className="mt-2 flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                      <span>
+                        {formatNumber(entry.votes2024, "en-US")} votes
+                      </span>
+                      <span
+                        className="rounded-full px-2.5 py-0.5 font-semibold text-[11px]"
+                        style={{
+                          background:
+                            entry.deltaShare >= 0
+                              ? "rgba(122,242,152,0.1)"
+                              : "rgba(244,111,136,0.1)",
+                          color: entry.deltaShare >= 0 ? "#7af298" : "#f46f88",
+                        }}
+                      >
+                        {entry.deltaShare > 0 ? "+" : ""}
+                        {formatPercent(entry.deltaShare, 2, "en-US")} pts
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </ArticleChartFrame>
   );

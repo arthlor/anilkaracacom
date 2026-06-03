@@ -1,8 +1,8 @@
 ---
-import BaseLayout from './BaseLayout.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import BackToTop from '../components/BackToTop.astro';
+import BaseLayout from "./BaseLayout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import BackToTop from "../components/BackToTop.astro";
 
 interface Props {
   title: string;
@@ -13,10 +13,24 @@ interface Props {
   lang?: string | undefined;
 }
 
-const { title, description, image, noindex, article = false, lang = 'en' } = Astro.props;
+const {
+  title,
+  description,
+  image,
+  noindex,
+  article = false,
+  lang = "en",
+} = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} image={image} noindex={noindex} article={article} lang={lang}>
+<BaseLayout
+  title={title}
+  description={description}
+  image={image}
+  noindex={noindex}
+  article={article}
+  lang={lang}
+>
   <div class="portfolio-shell">
     <div class="portfolio-shell__texture" aria-hidden="true"></div>
     <Header />

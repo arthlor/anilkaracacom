@@ -28,7 +28,9 @@ const groupLabels: Record<string, string> = {
 
 export default function TransportDemographicsStackedBarChart() {
   const { months, groups, series } = rawData as DemoData;
-  const [hoveredMonthIndex, setHoveredMonthIndex] = useState<number | null>(null);
+  const [hoveredMonthIndex, setHoveredMonthIndex] = useState<number | null>(
+    null,
+  );
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   // Dimensions
@@ -57,9 +59,11 @@ export default function TransportDemographicsStackedBarChart() {
     };
   }, [groups, series, months.length]);
 
-  const getX = (index: number) => padding.left + (index / Math.max(months.length, 1)) * plotWidth;
+  const getX = (index: number) =>
+    padding.left + (index / Math.max(months.length, 1)) * plotWidth;
   const barWidth = (plotWidth / Math.max(months.length, 1)) * 0.8;
-  const getY = (value: number) => padding.top + plotHeight - (value / maxTotal) * plotHeight;
+  const getY = (value: number) =>
+    padding.top + plotHeight - (value / maxTotal) * plotHeight;
 
   return (
     <div className="w-full bg-white/[0.02] rounded-2xl p-4 sm:p-6 border border-white/[0.06] relative font-sans my-10 overflow-hidden">
@@ -107,7 +111,7 @@ export default function TransportDemographicsStackedBarChart() {
 
           {/* Bar Segments */}
           {monthStacks.map((stack, mIdx) => (
-            <g 
+            <g
               key={mIdx}
               onMouseEnter={(e) => {
                 setHoveredMonthIndex(mIdx);
@@ -124,7 +128,7 @@ export default function TransportDemographicsStackedBarChart() {
                 height={plotHeight}
                 fill="transparent"
               />
-              
+
               {stack.segments.map((seg, sIdx) => (
                 <motion.rect
                   key={seg.group}
@@ -134,10 +138,13 @@ export default function TransportDemographicsStackedBarChart() {
                   height={(seg.val / maxTotal) * plotHeight}
                   fill={groupColors[seg.group] || "#ccc"}
                   initial={{ opacity: 0, height: 0, y: getY(seg.y0) }}
-                  animate={{ 
-                    opacity: hoveredMonthIndex === null || hoveredMonthIndex === mIdx ? 1 : 0.3,
+                  animate={{
+                    opacity:
+                      hoveredMonthIndex === null || hoveredMonthIndex === mIdx
+                        ? 1
+                        : 0.3,
                     height: (seg.val / maxTotal) * plotHeight,
-                    y: getY(seg.y1)
+                    y: getY(seg.y1),
                   }}
                   transition={{ delay: mIdx * 0.02 + sIdx * 0.05 }}
                   className="transition-opacity"
@@ -184,11 +191,14 @@ export default function TransportDemographicsStackedBarChart() {
             </div>
             <div className="flex flex-col gap-1">
               {groups.map((group) => (
-                <div key={group} className="flex justify-between items-center gap-4">
+                <div
+                  key={group}
+                  className="flex justify-between items-center gap-4"
+                >
                   <div className="flex items-center gap-1.5">
-                    <div 
-                      className="w-1.5 h-1.5 rounded-full" 
-                      style={{ backgroundColor: groupColors[group] }} 
+                    <div
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: groupColors[group] }}
                     />
                     <span className="text-[10px] font-bold text-[#a1a1aa] uppercase">
                       {groupLabels[group] || group}
@@ -200,8 +210,14 @@ export default function TransportDemographicsStackedBarChart() {
                 </div>
               ))}
               <div className="mt-1 pt-1 border-t border-white/[0.08] flex justify-between items-center bg-white/5 px-1 rounded">
-                <span className="text-[9px] font-black uppercase text-[#71717a]">TOPLAM</span>
-                <span className="text-[11px] font-black">{(monthStacks?.[hoveredMonthIndex]?.total || 0).toLocaleString()}</span>
+                <span className="text-[9px] font-black uppercase text-[#71717a]">
+                  TOPLAM
+                </span>
+                <span className="text-[11px] font-black">
+                  {(
+                    monthStacks?.[hoveredMonthIndex]?.total || 0
+                  ).toLocaleString()}
+                </span>
               </div>
             </div>
           </motion.div>
@@ -210,10 +226,15 @@ export default function TransportDemographicsStackedBarChart() {
 
       {/* Legend */}
       <div className="mt-8 flex flex-wrap gap-4 pt-4 border-t border-white/[0.06]">
-        {groups.map(group => (
+        {groups.map((group) => (
           <div key={group} className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: groupColors[group] }} />
-            <span className="text-[11px] font-medium text-[#a1a1aa] uppercase tracking-wider">{groupLabels[group] || group}</span>
+            <div
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ backgroundColor: groupColors[group] }}
+            />
+            <span className="text-[11px] font-medium text-[#a1a1aa] uppercase tracking-wider">
+              {groupLabels[group] || group}
+            </span>
           </div>
         ))}
       </div>

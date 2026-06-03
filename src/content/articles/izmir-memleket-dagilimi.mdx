@@ -1,36 +1,42 @@
 ---
-title: "İzmir ilçelerinde hangi memleketler öne çıkıyor?"
-description: "İzmir'in ilçelerinde hangi dış köken kümelerinin öne çıktığını ilçe lokatörü ve karşılaştırmalı analizle gösteren çalışma."
+title: "Which hometown origins stand out across Izmir's districts?"
+description: "A district locator and comparative analysis showing which non-Izmir origin groups stand out across the city."
 pubDate: 2024-01-20
 heroImage: "../../assets/images/articles/izmir-memleket-dagilimi-2025.webp"
-tags: ["izmir", "demografik", "veri-analizi", "python", "folium", "harita"]
+tags: ["izmir", "demographics", "data-analysis", "python", "folium", "map"]
 category: "data-journalism"
 featured: false
 published: true
 draft: false
 track: "data-journalism"
-language: "tr"
+language: "en"
 pillar: "data-journalism-civic-tech"
-techStack: ["Belediye memleket verisi", "İlçe lokasyon modeli", "Yerel JSON veri modülü", "React karşılaştırma yüzeyi"]
+techStack:
+  [
+    "Municipal hometown-origin data",
+    "District locator model",
+    "Local JSON data module",
+    "React comparison surface",
+  ]
 metrics:
-  - label: "İlçe sayısı"
+  - label: "Districts"
     value: "30"
-    detail: "İzmir'in tüm ilçeleri lokatör görünümü ve sıralı köken paneliyle işlendi."
-  - label: "Veri hacmi"
-    value: "2.5K+ satır"
-    detail: "İlçe bazlı memleket dağılımı yerel veri modülüne dönüştürülerek yeniden kullanıldı."
-executiveSummary: "İzmir'in ilçelerinde yoğunlaşan dış köken kümelerini, ilçe lokatörü ve kent geneli kıyaslamasıyla görünür hale getiren bir çalışma."
-context: "Ham veri tablosu, ilçe bazlı memleket dağılımını anlamayı güçleştiriyordu. Hangi ilçede hangi köken gruplarının yoğunlaştığını görebilmek için mekânsal yön bulma ile sıralı kıyaslamayı aynı yüzeyde birleştirmek gerekiyordu."
+    detail: "All Izmir districts are represented through a locator view and ranked origin panel."
+  - label: "Origin scope"
+    value: "80 citywide"
+    detail: "The local module keeps 30 district profiles and 80 citywide origin totals aligned."
+executiveSummary: "This study makes non-Izmir origin clusters visible across the city's districts by combining a district locator with citywide comparison."
+context: "The raw table made district-level hometown-origin patterns hard to understand. To see where origin groups concentrate, the work needed to combine spatial orientation with ranked comparison in one surface."
 methodology:
-  - "Belediye açık veri seti temizlenerek ilçe bazlı sıralamalar ve kent geneli köken dağılımı çıkarıldı."
-  - "Legacy HTML export içindeki coğrafi veri ve memleket sıralamaları yerel JSON modülüne dönüştürüldü."
-  - "İlçe seçimi, ilk 10 köken paneli ve kent geneli karşılaştırması aynı etkileşim akışına bağlandı."
-challenge: "Asıl zorluk, tablo mantığındaki yoğun veriyi kullanıcıyı yormadan mekânsal bir deneyime dönüştürmekti. Tam teşekküllü katmanlı harita yerine yön bulmayı hızlandıran ilçe lokatörü ve sabit karşılaştırma paneli bu yüzden tercih edildi."
-codeProof: "Eski dış harita ve ayrı grafik yerine yerel veri modülüyle çalışan tek bir React görseli kuruldu. İlçe seçimi artık aynı anda hem köken sıralamasını hem de kent geneli farkını güncelliyor."
-conclusion: "Çalışma, İzmir'in demografik çeşitliliğini tek bakışta anlaşılır hale getiriyor ve açık verinin sade bir harita arayüzüyle çok daha erişilebilir olabileceğini gösteriyor."
-summaryEn: "A district-level map of İzmir that makes migration patterns legible by matching municipal demographic data with custom GeoJSON boundaries."
-role: "Veri temizleme, mekânsal arayüz kurgusu, karşılaştırmalı görselleştirme"
-impact: "Tablo halinde okunması zor bir veri setini kamuya açık, keşfedilebilir bir haritaya dönüştürüyor."
+  - "The municipal open dataset was cleaned to extract district rankings and citywide origin distribution."
+  - "Geographic data and origin rankings from the legacy HTML export were converted into a local JSON module."
+  - "District selection, top-10 origin ranking, and citywide comparison were connected in one interaction flow."
+challenge: "The main challenge was turning dense table data into a spatial experience without overwhelming the reader. A full layered map was less useful than a fast district locator paired with a stable comparison panel."
+codeProof: "The old external map and separate comparison chart were replaced with one React visual backed by a local data module. District selection now updates both origin rankings and citywide differences at the same time."
+conclusion: "The study makes Izmir's demographic diversity understandable at a glance and shows how open data can become more accessible through a focused map interface."
+summaryEn: "A district-level map of Izmir that makes migration patterns legible by matching municipal demographic data with custom GeoJSON boundaries."
+role: "Data cleaning, spatial interface design, comparative visualization"
+impact: "Turns a table-heavy dataset into a public, explorable map experience."
 relatedContent:
   - collection: "articles"
     slug: "izmir-yas-analizi"
@@ -40,24 +46,16 @@ relatedContent:
 
 import IzmirHometownsExplorer from "../../components/mdx/charts/IzmirHometownsExplorer";
 
-İzmir, Türkiye'nin hemen her bölgesinden göç almış bir metropol. Bu nedenle "memleket" bilgisi yalnızca biyografik bir ayrıntı değil; kentin hangi ilçelerinde hangi hemşehri ağlarının yoğunlaştığını gösteren güçlü bir sosyal ipucu.
-
-[İzmir Büyükşehir Belediyesi Açık Veri Portalı'nda](https://acikveri.bizizmir.com/) yer alan ve son güncellemesi 2023'e ait olan veri seti, ilçe bazlı memleket yoğunluklarını içeriyor. Bu sürümde eski gömülü harita ve ayrı karşılaştırma grafiği kaldırıldı; bunun yerine solda ilçe lokatörü, sağda ilk 10 memleket paneli, altta ise seçili ilçenin kent geneliyle farkını gösteren tek bir editoryal yüzey kuruldu.
+Izmir's hometown-origin data shows where shared-origin networks become visible at district scale. Start by selecting a district, then compare its strongest external-origin groups with the citywide pattern.
 
 <IzmirHometownsExplorer client:load />
 
-## Veride öne çıkan kümeler
+## What to notice
 
-Kent geneli sıralamada İzmir doğumlular açık ara ilk sırada yer alıyor. Ancak İzmir dışı köken akışına bakıldığında Manisa, Mardin, Erzurum ve Konya gibi iller daha belirgin hale geliyor. Bu nedenle görselde özellikle dış köken dağılımı öne çıkarılıyor; ilçe farklarını okunur kılan asıl katman burada ortaya çıkıyor.
+- Izmir-born residents dominate citywide totals, so the useful comparison is the non-Izmir origin mix.
+- Some districts show balanced external-origin profiles, while others are shaped by stronger hometown clusters.
+- The map is orientation; the ranking and citywide comparison carry the main read.
 
-İlçelere göre kıyaslama yapıldığında, aynı şehirden ya da aynı bölgeden gelen insanların belirli kümeler oluşturduğu görülüyor. Bu durum, yerleşik hemşehri ağlarının, ekonomik bağların ve yakın çevre etkisinin kentsel mekânda nasıl çalıştığını hatırlatıyor.
+## Data note
 
-Merkez ilçeler ile çeper ilçeler arasındaki farklar da bu noktada önem kazanıyor. Bazı ilçelerde dış köken çeşitliliği daha dengeli dağılırken, bazılarında belirli memleket kümeleri çok daha baskın hale geliyor.
-
-## Veri notu
-
-Veri setinin bazı satırlarında eksik rakamlar bulunduğu için sayısal değeri olmayan hücreler görselleştirme dışında bırakıldı. Bu nedenle sonuçlar kesin nüfus muhasebesi olarak değil, kamu verisi üzerinden örüntü okumaya yarayan bir çerçeve olarak değerlendirilmelidir.
-
-## Neden önemli?
-
-Bu dağılım, kentsel aidiyetin yalnızca ikamet adresiyle değil sosyal ağlarla da kurulduğunu gösteriyor. Aynı veri, yerel yönetimlerin mahalle ölçeğindeki kültürel çeşitliliği, iletişim stratejilerini ve kamusal hizmet ihtiyacını daha somut okumalarına da yardımcı olabilir.
+The local module contains 30 district profiles, 300 ranked district-origin entries, and 80 citywide origin totals. The explorer should be read as a pattern-finding view over those local public-data extracts, not as a complete population accounting table.

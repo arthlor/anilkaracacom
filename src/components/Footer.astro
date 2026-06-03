@@ -1,6 +1,6 @@
 ---
-import { resumeLinks } from '../data/portfolio';
-import { navigationLinks, siteConfig, socialLinks } from '../lib/site';
+import { resumeLinks } from "../data/portfolio";
+import { navigationLinks, siteConfig, socialLinks } from "../lib/site";
 
 interface Props {
   hideCTA?: boolean;
@@ -10,51 +10,78 @@ const { hideCTA = false } = Astro.props;
 
 const socialLinkMap = new Map(
   socialLinks.map((link) => [
-    link.label === 'X (Twitter)' ? 'X' : link.label,
+    link.label === "X (Twitter)" ? "X" : link.label,
     {
       ...link,
-      label: link.label === 'X (Twitter)' ? 'X' : link.label,
+      label: link.label === "X (Twitter)" ? "X" : link.label,
     },
   ]),
 );
 
-const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
+const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
   .map((label) => socialLinkMap.get(label))
-  .filter((link): link is NonNullable<(typeof socialLinks)[number]> => Boolean(link));
+  .filter((link): link is NonNullable<(typeof socialLinks)[number]> =>
+    Boolean(link),
+  );
 ---
 
 <footer class="site-footer">
   <div class="site-footer__container">
-    {!hideCTA && (
-      <div class="site-footer__cta">
-        <div class="site-footer__cta-content">
-          <h2 class="site-footer__cta-title">
-            Let's build <br />
-            <span>something great.</span>
-          </h2>
-          <a href="/contact" class="site-footer__cta-button">
-            Start a project
-            <svg viewBox="0 0 16 16" fill="none" class="w-4 h-4" stroke="currentColor" stroke-width="1.5">
-              <path d="M3.33331 8H12.6666" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M8 3.33331L12.6667 7.99998L8 12.6666" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </a>
+    {
+      !hideCTA && (
+        <div class="site-footer__cta">
+          <div class="site-footer__cta-content">
+            <h2 class="site-footer__cta-title">
+              Let's build <br />
+              <span>something great.</span>
+            </h2>
+            <a href="/contact" class="site-footer__cta-button">
+              Start a project
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                class="w-4 h-4"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M3.33331 8H12.6666"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M8 3.33331L12.6667 7.99998L8 12.6666"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <div class="site-footer__main">
       <div class="site-footer__brand-col">
         <div class="site-footer__brand-id">
           <span class="site-footer__tag">{siteConfig.personName}</span>
-          <p class="site-footer__tag-desc">Data Journalist & Product Engineer</p>
+          <p class="site-footer__tag-desc">
+            Data Journalist & Product Engineer
+          </p>
         </div>
         <div class="site-footer__social-pills">
-          {footerSocialLinks.map((link) => (
-            <a href={link.href} target="_blank" rel="noopener noreferrer" class="site-footer__social-pill">
-              {link.label}
-            </a>
-          ))}
+          {
+            footerSocialLinks.map((link) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="site-footer__social-pill"
+              >
+                {link.label}
+              </a>
+            ))
+          }
         </div>
       </div>
 
@@ -62,9 +89,11 @@ const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
         <div class="site-footer__nav-col">
           <p class="site-footer__nav-label">Navigate</p>
           <div class="site-footer__nav-links">
-            {navigationLinks.map(link => (
-              <a href={link.href}>{link.label}</a>
-            ))}
+            {
+              navigationLinks.map((link) => (
+                <a href={link.href}>{link.label}</a>
+              ))
+            }
           </div>
         </div>
         <div class="site-footer__nav-col">
@@ -81,7 +110,10 @@ const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
     <div class="site-footer__bottom">
       <div class="site-footer__legal">
         <span>© {new Date().getFullYear()}</span>
-        <a href={`mailto:${siteConfig.contactEmail}`} class="site-footer__contact-link">{siteConfig.contactEmail}</a>
+        <a
+          href={`mailto:${siteConfig.contactEmail}`}
+          class="site-footer__contact-link">{siteConfig.contactEmail}</a
+        >
       </div>
       <div class="site-footer__status">
         <span class="site-footer__status-dot"></span>
@@ -142,7 +174,9 @@ const footerSocialLinks = ['X', 'LinkedIn', 'GitHub', 'YouTube']
     font-size: 0.9rem;
     font-weight: 700;
     text-decoration: none;
-    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 300ms ease;
+    transition:
+      transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 300ms ease;
   }
 
   .site-footer__cta-button:hover {

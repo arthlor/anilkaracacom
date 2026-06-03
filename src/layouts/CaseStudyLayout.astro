@@ -1,57 +1,67 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 
-import MainLayout from './MainLayout.astro';
-import JsonLd from '../components/JsonLd.astro';
-import CaseStudyHero from '../components/case-study/CaseStudyHero.astro';
-import RelatedContent from '../components/RelatedContent.astro';
-import { mdxComponents } from '../components/mdx/mdxComponents';
-import { buildArticleSchema, buildProjectSchema, getEntrySeo } from '../lib/seo';
+import MainLayout from "./MainLayout.astro";
+import JsonLd from "../components/JsonLd.astro";
+import CaseStudyHero from "../components/case-study/CaseStudyHero.astro";
+import RelatedContent from "../components/RelatedContent.astro";
+import { mdxComponents } from "../components/mdx/mdxComponents";
+import {
+  buildArticleSchema,
+  buildProjectSchema,
+  getEntrySeo,
+} from "../lib/seo";
 
 interface Props {
-  entry: CollectionEntry<'articles'> | CollectionEntry<'projects'>;
-  collection: 'articles' | 'projects';
+  entry: CollectionEntry<"articles"> | CollectionEntry<"projects">;
+  collection: "articles" | "projects";
   Content: any;
 }
 
 const { entry, collection, Content } = Astro.props;
-const isTurkish = entry.data.language === 'tr';
+const isTurkish = entry.data.language === "tr";
+const isPublishedArticle = collection === "articles" && entry.data.published;
 const seo = getEntrySeo(collection, entry);
-const noindex = collection === 'articles' && !entry.data.published;
+const noindex = collection === "articles" && !entry.data.published;
 const contentGridClass =
-  collection === 'articles'
-    ? 'mx-auto grid w-full max-w-[1580px] gap-12 px-4 sm:px-6 lg:px-8 min-w-0'
-    : 'mx-auto grid w-full max-w-[1440px] gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.5fr)] lg:px-8 min-w-0';
+  collection === "articles"
+    ? "mx-auto w-full max-w-[1660px] px-4 sm:px-6 lg:px-8 min-w-0"
+    : "mx-auto grid w-full max-w-[1440px] gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.5fr)] lg:px-8 min-w-0";
 
 const copy = isTurkish
   ? {
-      backLabel: collection === 'articles' ? 'Yazılara geri dön' : 'Projelere geri dön',
-      publishedLabel: 'Yayın',
-      roleLabel: 'Rol',
-      impactLabel: 'Etkisi',
-      summaryLabel: 'Kısa Özet',
-      methodologyLabel: 'Üretim Akışı',
-      contextLabel: 'Bağlam ve Problem Alanı',
-      challengeLabel: 'Üretim Zorluğu',
-      codeLabel: 'Etkileşimli Sistem Notu',
-      conclusionLabel: 'Sonuç ve Değer',
-      narrativeLabel: 'Makale ve Görsel Okuma',
+      backLabel:
+        collection === "articles" ? "Yazılara geri dön" : "Projelere geri dön",
+      publishedLabel: "Yayın",
+      roleLabel: "Rol",
+      impactLabel: "Etkisi",
+      summaryLabel: "Kısa Özet",
+      methodologyLabel: "Üretim Akışı",
+      contextLabel: "Bağlam ve Problem Alanı",
+      challengeLabel: "Üretim Zorluğu",
+      codeLabel: "Etkileşimli Sistem Notu",
+      conclusionLabel: "Sonuç ve Değer",
+      narrativeLabel: "Makale ve Görsel Okuma",
     }
   : {
-      backLabel: collection === 'articles' ? 'Back to articles' : 'Back to projects',
-      publishedLabel: 'Published',
-      roleLabel: 'Role',
-      impactLabel: 'Impact',
-      summaryLabel: 'Executive Summary',
-      methodologyLabel: 'Reporting Workflow',
-      contextLabel: 'Context & Problem Space',
-      challengeLabel: 'Production Challenge',
-      codeLabel: 'Interactive System Note',
-      conclusionLabel: 'Conclusion & Value',
-      narrativeLabel: 'Article & Visual Analysis',
+      backLabel:
+        collection === "articles" ? "Back to articles" : "Back to projects",
+      publishedLabel: "Published",
+      roleLabel: "Role",
+      impactLabel: "Impact",
+      summaryLabel: "Executive Summary",
+      methodologyLabel: "Reporting Workflow",
+      contextLabel: "Context & Problem Space",
+      challengeLabel: "Production Challenge",
+      codeLabel: "Interactive System Note",
+      conclusionLabel: "Conclusion & Value",
+      narrativeLabel: "Article & Visual Analysis",
     };
 
-const schema = collection === 'articles' ? buildArticleSchema(entry as CollectionEntry<'articles'>) : buildProjectSchema(entry as CollectionEntry<'projects'>);
+const schema =
+  collection === "articles"
+    ? buildArticleSchema(entry as CollectionEntry<"articles">)
+    : buildProjectSchema(entry as CollectionEntry<"projects">);
 ---
 
 <MainLayout
@@ -59,7 +69,7 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
   description={seo.description}
   image={seo.image}
   noindex={noindex}
-  article={collection === 'articles'}
+  article={collection === "articles"}
   lang={entry.data.language}
 >
   <JsonLd schema={schema} />
@@ -70,30 +80,71 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
     <div class={contentGridClass}>
       <div>
         <div class="case-study-layout__panel case-study-layout__panel--main">
-          <div class="grid gap-8">
-            <section>
-              <p class="case-study-layout__label">{copy.contextLabel}</p>
-              <p class="case-study-layout__copy mt-4">{entry.data.context}</p>
-            </section>
+          {
+            isPublishedArticle ? (
+              <div class="article-dashboard">
+                <section class="article-snapshot" id="story-snapshot">
+                  <div class="article-snapshot__copy">
+                    <p class="case-study-layout__label">
+                      {isTurkish ? "Özet" : "Story Snapshot"}
+                    </p>
+                    <p>{entry.data.executiveSummary}</p>
+                  </div>
 
-            {entry.data.methodology.length > 0 && (
-              <section>
-                <p class="case-study-layout__label">{copy.methodologyLabel}</p>
-                <ul class="case-study-layout__methodology mt-4">
-                  {entry.data.methodology.map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            )}
+                  <div
+                    class="article-snapshot__metrics"
+                    aria-label="Story metrics"
+                  >
+                    {entry.data.metrics.slice(0, 3).map((metric) => (
+                      <div>
+                        <span>{metric.label}</span>
+                        <strong>{metric.value}</strong>
+                      </div>
+                    ))}
+                  </div>
 
-            <section>
-              <p class="case-study-layout__label">{copy.narrativeLabel}</p>
-              <div class="prose-article mt-5 max-w-none">
-                <Content components={mdxComponents} />
+                  <a href="#visual-analysis" class="article-snapshot__jump">
+                    {isTurkish ? "Grafikle Başla" : "Start with the graphic"}
+                  </a>
+                </section>
+
+                <section id="visual-analysis">
+                  <div class="prose-article max-w-none">
+                    <Content components={mdxComponents} />
+                  </div>
+                </section>
               </div>
-            </section>
-          </div>
+            ) : (
+              <div class="grid gap-8">
+                <section>
+                  <p class="case-study-layout__label">{copy.contextLabel}</p>
+                  <p class="case-study-layout__copy mt-4">
+                    {entry.data.context}
+                  </p>
+                </section>
+
+                {entry.data.methodology.length > 0 && (
+                  <section>
+                    <p class="case-study-layout__label">
+                      {copy.methodologyLabel}
+                    </p>
+                    <ul class="case-study-layout__methodology mt-4">
+                      {entry.data.methodology.map((item) => (
+                        <li>{item}</li>
+                      ))}
+                    </ul>
+                  </section>
+                )}
+
+                <section>
+                  <p class="case-study-layout__label">{copy.narrativeLabel}</p>
+                  <div class="prose-article mt-5 max-w-none">
+                    <Content components={mdxComponents} />
+                  </div>
+                </section>
+              </div>
+            )
+          }
         </div>
 
         <RelatedContent
@@ -105,26 +156,36 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
         />
       </div>
 
-      <aside class="case-study-layout__sidebar">
-        {entry.data.challenge && (
-          <div class="case-study-layout__panel">
-            <p class="case-study-layout__label">{copy.challengeLabel}</p>
-            <p class="case-study-layout__sidebar-copy">{entry.data.challenge}</p>
-          </div>
-        )}
+      {
+        collection === "projects" && (
+          <aside class="case-study-layout__sidebar">
+            {entry.data.challenge && (
+              <div class="case-study-layout__panel">
+                <p class="case-study-layout__label">{copy.challengeLabel}</p>
+                <p class="case-study-layout__sidebar-copy">
+                  {entry.data.challenge}
+                </p>
+              </div>
+            )}
 
-        {entry.data.codeProof && (
-          <div class="case-study-layout__panel">
-            <p class="case-study-layout__label">{copy.codeLabel}</p>
-            <p class="case-study-layout__sidebar-copy">{entry.data.codeProof}</p>
-          </div>
-        )}
+            {entry.data.codeProof && (
+              <div class="case-study-layout__panel">
+                <p class="case-study-layout__label">{copy.codeLabel}</p>
+                <p class="case-study-layout__sidebar-copy">
+                  {entry.data.codeProof}
+                </p>
+              </div>
+            )}
 
-        <div class="case-study-layout__panel">
-          <p class="case-study-layout__label">{copy.conclusionLabel}</p>
-          <p class="case-study-layout__sidebar-copy">{entry.data.conclusion}</p>
-        </div>
-      </aside>
+            <div class="case-study-layout__panel">
+              <p class="case-study-layout__label">{copy.conclusionLabel}</p>
+              <p class="case-study-layout__sidebar-copy">
+                {entry.data.conclusion}
+              </p>
+            </div>
+          </aside>
+        )
+      }
     </div>
   </section>
 </MainLayout>
@@ -136,7 +197,7 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
 
   .case-study-layout__panel {
     padding: clamp(1.25rem, 2vw, 1.9rem);
-    border-radius: 20px;
+    border-radius: 12px;
   }
 
   .case-study-layout__panel--main {
@@ -193,35 +254,152 @@ const schema = collection === 'articles' ? buildArticleSchema(entry as Collectio
     color: hsl(var(--muted-foreground));
   }
 
-  .case-study-layout[data-case-study='articles'] .case-study-layout__sidebar {
-    margin-top: 0.5rem;
+  .article-dashboard {
+    display: grid;
+    gap: 1.25rem;
   }
 
-  .case-study-layout[data-case-study='articles'] .case-study-layout__panel--main {
+  .article-snapshot {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 0.85rem;
+    align-items: center;
+    padding: 0.4rem 0.8rem;
+    border-block: 1px solid rgba(255, 255, 255, 0.055);
+    background: rgba(255, 255, 255, 0.01);
+    scroll-margin-top: 7rem;
+  }
+
+  .article-snapshot__copy {
+    min-width: 0;
+  }
+
+  .article-snapshot__copy p:not(.case-study-layout__label) {
+    margin-top: 0.15rem;
+    max-width: 50rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .article-snapshot__metrics {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    white-space: nowrap;
+  }
+
+  .article-snapshot__metrics > div {
+    min-width: 0;
+    padding-left: 0.75rem;
+    border-left: 1px solid rgba(122, 242, 152, 0.18);
+  }
+
+  .article-snapshot__metrics span {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--premium-accent);
+  }
+
+  .article-snapshot__metrics strong {
+    display: block;
+    margin-top: 0.25rem;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    line-height: 1;
+    color: hsl(var(--foreground));
+  }
+
+  .article-snapshot__jump {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    color: var(--premium-accent);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-underline-offset: 0.25rem;
+    transition: color 180ms ease;
+  }
+
+  .article-snapshot__jump:hover {
+    color: hsl(var(--foreground));
+    text-decoration: underline;
+  }
+
+  .case-study-layout[data-case-study="articles"]
+    .case-study-layout__panel--main {
     padding-inline: clamp(1.1rem, 1.8vw, 1.7rem);
   }
 
-  .case-study-layout[data-case-study='articles'] :global(.prose-article > :where(p, h2, h3, h4, ul, ol, blockquote, pre, hr, img)) {
+  .case-study-layout[data-case-study="articles"] .case-study-layout__panel {
+    border: 1px solid rgba(255, 255, 255, 0.055);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.018),
+      rgba(255, 255, 255, 0.006)
+    );
+  }
+
+  .case-study-layout[data-case-study="articles"]
+    .case-study-layout__panel--main {
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .case-study-layout[data-case-study="articles"]
+    :global(
+      .prose-article > :where(p, h2, h3, h4, ul, ol, blockquote, pre, hr, img)
+    ) {
     max-width: 52rem;
     margin-left: auto;
     margin-right: auto;
   }
 
-  .case-study-layout[data-case-study='articles'] :global(.prose-article > :where(.article-visual-frame, [data-story-root])) {
+  .case-study-layout[data-case-study="articles"]
+    :global(.prose-article > :where(.article-visual-frame, [data-story-root])) {
     max-width: none;
     scroll-margin-top: 7rem;
   }
 
   @media (min-width: 1024px) {
-    .case-study-layout[data-case-study='articles'] :global(.prose-article > :where(.article-visual-frame, [data-story-root])) {
-      margin-left: clamp(-2.75rem, -1.8vw, -1.25rem);
-      margin-right: clamp(-2.75rem, -1.8vw, -1.25rem);
+    .case-study-layout[data-case-study="articles"]
+      :global(
+        .prose-article > :where(.article-visual-frame, [data-story-root])
+      ) {
+      margin-left: -2rem;
+      margin-right: -2rem;
     }
   }
 
-  @media (min-width: 1536px) {
-    .case-study-layout[data-case-study='articles'] > div {
-      grid-template-columns: minmax(0, 1.58fr) minmax(300px, 0.42fr);
+  @media (max-width: 1080px) {
+    .article-snapshot {
+      grid-template-columns: 1fr;
+      gap: 0.7rem;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .article-dashboard {
+      gap: 1rem;
+    }
+
+    .article-snapshot {
+      padding: 0.7rem 0.1rem;
+    }
+
+    .article-snapshot__metrics {
+      overflow-x: auto;
+      padding-bottom: 0.1rem;
+    }
+
+    .article-snapshot__jump {
+      justify-content: flex-start;
     }
   }
 </style>

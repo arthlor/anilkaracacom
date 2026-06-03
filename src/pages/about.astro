@@ -1,149 +1,742 @@
 ---
-import Icon from '../components/Icon.astro';
+import Icon from "../components/Icon.astro";
 import {
   credibilityHighlights,
   educationEntries,
   experienceEntries,
   publicationEntries,
   resumeLinks,
-} from '../data/portfolio';
-import MainLayout from '../layouts/MainLayout.astro';
+} from "../data/portfolio";
+import MainLayout from "../layouts/MainLayout.astro";
 ---
 
-<MainLayout title="About" description="Full profile for Anil Karaca, including experience, education, and publications.">
-  <section class="pt-28 pb-14">
-    <div class="container-standard">
-      <div class="page-frame p-6 md:p-8">
-        <span class="page-kicker">About</span>
-        <h1 class="mt-4 max-w-5xl text-4xl font-display font-medium tracking-tight text-foreground/90 sm:text-5xl">
-          One profile across journalism, civic communication, and shipped product work.
-        </h1>
-        <p class="mt-5 max-w-3xl text-sm leading-relaxed text-muted-foreground/90 sm:text-base">
-          This page holds the full story in one place: the role history, the education background, and the graduate
-          research that shaped how I think about audiences, media, and interface decisions.
+<MainLayout
+  title="About"
+  description="Full profile for Anil Karaca, including experience, education, and publications."
+>
+  <section class="about-hero">
+    <div class="about-hero__shell">
+      <header class="about-hero__copy">
+        <p class="about-hero__eyebrow">About</p>
+        <h1>About Me</h1>
+        <p class="about-hero__subtitle">
+          One profile across journalism, civic communication, and shipped
+          product engineering.
         </p>
-        <div class="mt-10 flex flex-col gap-4 sm:flex-row">
+        <p class="about-hero__description">
+          This page holds the full story in one place: the role history, the
+          education background, and the graduate research that shaped how I
+          think about audiences, media, and interface decisions.
+        </p>
+        <div class="about-hero__actions">
           <a
             href={resumeLinks.master}
-            class="page-button"
+            class="about-action-btn"
             data-track-event="download_resume"
             data-track-label="About Resume"
           >
-            <Icon name="download" size={18} />
+            <Icon name="download" size={16} />
             Download resume
           </a>
-          <a href="/contact" class="page-button page-button--secondary">
+          <a
+            href="/contact"
+            class="about-action-btn about-action-btn--secondary"
+          >
             Contact me
-            <Icon name="arrow-right" size={18} />
+            <Icon name="arrow-right" size={16} />
           </a>
         </div>
+      </header>
+    </div>
+  </section>
+
+  <section class="about-credibility">
+    <div class="about-credibility__shell">
+      <div class="about-credibility__grid">
+        {
+          credibilityHighlights.map((highlight) => (
+            <div class="about-credibility__card">
+              <span class="about-credibility__dot" />
+              <p>{highlight}</p>
+            </div>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <section class="py-14">
-    <div class="container-standard">
-      <div class="grid gap-4 md:grid-cols-3">
-        {credibilityHighlights.map((highlight) => (
-          <div class="page-frame-soft p-6 text-sm leading-relaxed text-muted-foreground">
-            {highlight}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="py-16">
-    <div class="container-standard">
-      <div class="page-section-head max-w-3xl">
-        <span class="page-kicker">Experience</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Role history, with the employer context attached</h2>
+  <section class="about-section" id="experience">
+    <div class="about-section__shell">
+      <div class="about-section__head">
+        <span class="about-section__kicker">Experience</span>
+        <h2>Role history, with the employer context attached</h2>
       </div>
 
-      <div class="space-y-6">
-        {experienceEntries.map((entry) => (
-          <article class="page-frame p-7 md:p-8">
-            <div class="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-              <div class="max-w-xl">
-                <span class="page-kicker">{entry.period}</span>
-                <h3 class="mt-3 text-2xl font-display font-bold text-foreground">{entry.role}</h3>
-                <p class="mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-primary">{entry.organization}</p>
-                <p class="mt-4 text-sm leading-relaxed text-muted-foreground">{entry.context}</p>
+      <div class="about-timeline">
+        {
+          experienceEntries.map((entry) => (
+            <article class="about-timeline__item">
+              <div class="about-timeline__side">
+                <span class="about-timeline__period">{entry.period}</span>
+                <p class="about-timeline__org">{entry.organization}</p>
               </div>
 
-              <div class="max-w-2xl">
-                <p class="text-sm leading-relaxed text-muted-foreground">{entry.summary}</p>
-                <div class="mt-5 flex flex-wrap gap-3">
-                  {entry.highlights.map((highlight) => (
-                    <span class="page-chip !normal-case !tracking-[0.02em]">{highlight}</span>
-                  ))}
+              <div class="about-timeline__main">
+                <div class="about-timeline__connector">
+                  <span class="about-timeline__node" />
+                </div>
+
+                <div class="about-timeline__content-card">
+                  <h3 class="about-timeline__role">{entry.role}</h3>
+                  <p class="about-timeline__context">{entry.context}</p>
+                  <p class="about-timeline__summary">{entry.summary}</p>
+
+                  <div class="about-timeline__tags">
+                    {entry.highlights.map((highlight) => (
+                      <span class="about-timeline__tag">{highlight}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <section class="py-16">
-    <div class="container-standard">
-      <div class="page-section-head max-w-3xl">
-        <span class="page-kicker">Education</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Academic background behind the work</h2>
+  <section class="about-section" id="education">
+    <div class="about-section__shell">
+      <div class="about-section__head">
+        <span class="about-section__kicker">Education</span>
+        <h2>Academic background behind the work</h2>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-3">
-        {educationEntries.map((entry) => (
-          <article class="page-frame-soft flex h-full flex-col p-6">
-            <span class="page-kicker">{entry.period}</span>
-            <h3 class="mt-3 text-2xl font-display font-bold text-foreground">{entry.institution}</h3>
-            <p class="mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-primary">{entry.degree}</p>
-            <p class="mt-5 text-sm leading-relaxed text-muted-foreground">{entry.grade}</p>
-            {entry.notes && <p class="mt-3 text-sm leading-relaxed text-muted-foreground">{entry.notes}</p>}
-            {entry.skills && (
-              <div class="mt-5 flex flex-wrap gap-3">
-                {entry.skills.map((skill) => (
-                  <span class="page-chip !normal-case !tracking-[0.02em]">{skill}</span>
-                ))}
-              </div>
-            )}
-          </article>
-        ))}
+      <div class="about-education-grid">
+        {
+          educationEntries.map((entry) => (
+            <article class="about-education-card">
+              <span class="about-education-card__period">{entry.period}</span>
+              <h3 class="about-education-card__institution">
+                {entry.institution}
+              </h3>
+              <p class="about-education-card__degree">{entry.degree}</p>
+              <p class="about-education-card__grade">{entry.grade}</p>
+              {entry.notes && (
+                <p class="about-education-card__notes">{entry.notes}</p>
+              )}
+              {entry.skills && (
+                <div class="about-education-card__skills">
+                  {entry.skills.map((skill) => (
+                    <span class="about-education-card__skill">{skill}</span>
+                  ))}
+                </div>
+              )}
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 
-  <section class="pb-24 pt-16">
-    <div class="container-standard">
-      <div class="page-section-head max-w-3xl">
-        <span class="page-kicker">Publication</span>
-        <h2 class="mt-3 text-3xl font-display font-bold text-foreground">Graduate research that belongs in the profile story</h2>
+  <section class="about-section about-section--last" id="publications">
+    <div class="about-section__shell">
+      <div class="about-section__head">
+        <span class="about-section__kicker">Publication</span>
+        <h2>Graduate research that belongs in the profile story</h2>
       </div>
 
-      <div class="space-y-6">
-        {publicationEntries.map((entry) => (
-          <article class="page-frame p-7 md:p-8">
-            <div class="flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
-              <div class="max-w-2xl">
-                <span class="page-kicker">{entry.type}</span>
-                <h3 class="mt-3 text-3xl font-display font-bold text-foreground">{entry.title}</h3>
-                <p class="mt-3 text-sm font-semibold uppercase tracking-[0.14em] text-primary">
+      <div class="about-publication-list">
+        {
+          publicationEntries.map((entry) => (
+            <article class="about-publication-card">
+              <div class="about-publication-card__body">
+                <span class="about-publication-card__kicker">{entry.type}</span>
+                <h3 class="about-publication-card__title">{entry.title}</h3>
+                <p class="about-publication-card__meta">
                   {entry.publisher} · {entry.year}
                 </p>
-                <p class="mt-5 text-sm leading-relaxed text-muted-foreground">{entry.summary}</p>
+                <p class="about-publication-card__summary">{entry.summary}</p>
               </div>
 
-              <div class="flex shrink-0 items-start">
-                <a href={entry.href} target="_blank" rel="noopener noreferrer" class="page-button">
+              <div class="about-publication-card__action">
+                <a
+                  href={entry.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="about-action-btn"
+                >
                   Open thesis
-                  <Icon name="arrow-right" size={18} />
+                  <Icon name="arrow-right" size={16} />
                 </a>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))
+        }
       </div>
     </div>
   </section>
 </MainLayout>
+
+<style>
+  /* Base & Hero */
+  .about-hero {
+    padding: 7.5rem 0 3.5rem;
+  }
+
+  .about-hero__shell {
+    width: min(100% - 2rem, 1200px);
+    margin-inline: auto;
+  }
+
+  .about-hero__copy {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 3.5rem;
+  }
+
+  .about-hero__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--premium-accent, #7af298);
+  }
+
+  .about-hero h1 {
+    margin-top: 0.6rem;
+    font-size: 4.8rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: hsl(var(--foreground));
+  }
+
+  .about-hero__subtitle {
+    max-width: 38rem;
+    margin-top: 1.2rem;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .about-hero__description {
+    max-width: 38rem;
+    margin-top: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.75;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .about-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .about-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.6rem;
+    padding: 0 1.25rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 180ms ease;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .about-action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .about-action-btn--secondary {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.05);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .about-action-btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.02);
+    color: white;
+  }
+
+  /* Highlights Card Grid */
+  .about-credibility {
+    padding: 1.5rem 0 3.5rem;
+  }
+
+  .about-credibility__shell {
+    width: min(100% - 2rem, 1200px);
+    margin-inline: auto;
+  }
+
+  .about-credibility__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .about-credibility__card {
+    display: flex;
+    gap: 0.85rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.015);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: hsl(var(--muted-foreground));
+    align-items: flex-start;
+  }
+
+  .about-credibility__dot {
+    width: 6px;
+    height: 6px;
+    background: var(--premium-accent, #7af298);
+    border-radius: 999px;
+    margin-top: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  /* Generic Section Layout */
+  .about-section {
+    padding: 4.5rem 0;
+  }
+
+  .about-section--last {
+    padding-bottom: 8.5rem;
+  }
+
+  .about-section__shell {
+    width: min(100% - 2rem, 1200px);
+    margin-inline: auto;
+  }
+
+  .about-section__head {
+    margin-bottom: 3.5rem;
+    max-width: 44rem;
+  }
+
+  .about-section__kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--premium-accent, #7af298);
+  }
+
+  .about-section__head h2 {
+    margin-top: 0.6rem;
+    font-size: 2.2rem;
+    line-height: 1.2;
+    font-family: var(--font-display);
+    font-weight: 800;
+    color: hsl(var(--foreground));
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .about-hero,
+  .about-credibility,
+  .about-section {
+    animation: fadeIn 450ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  /* Experience Timeline */
+  .about-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .about-timeline__item {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+  }
+
+  .about-timeline__side {
+    padding-top: 2rem;
+    text-align: right;
+  }
+
+  .about-timeline__period {
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--premium-accent, #7af298);
+  }
+
+  .about-timeline__org {
+    margin-top: 0.4rem;
+    font-size: 1rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: hsl(var(--foreground));
+  }
+
+  .about-timeline__main {
+    position: relative;
+    display: flex;
+    gap: 2rem;
+  }
+
+  .about-timeline__connector {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 20px;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .about-timeline__item:last-child .about-timeline__connector {
+    bottom: auto;
+    height: 2.2rem;
+  }
+
+  .about-timeline__node {
+    position: absolute;
+    top: 2.2rem;
+    left: -4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: #111;
+    border: 2px solid rgba(122, 242, 152, 0.4);
+    box-shadow: 0 0 8px rgba(122, 242, 152, 0.2);
+    transition: all 180ms ease;
+  }
+
+  .about-timeline__item:hover .about-timeline__node {
+    border-color: var(--premium-accent, #7af298);
+    box-shadow: 0 0 12px rgba(122, 242, 152, 0.5);
+    background: var(--premium-accent, #7af298);
+  }
+
+  .about-timeline__content-card {
+    flex: 1;
+    margin-left: 2rem;
+    padding: 1.75rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.01);
+    transition: all 200ms ease;
+  }
+
+  .about-timeline__item:hover .about-timeline__content-card {
+    border-color: rgba(122, 242, 152, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .about-timeline__role {
+    font-size: 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 750;
+    color: hsl(var(--foreground));
+  }
+
+  .about-timeline__context {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .about-timeline__summary {
+    margin-top: 1rem;
+    font-size: 0.94rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .about-timeline__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .about-timeline__tag {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.6rem;
+    padding: 0 0.65rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.74rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Education Cards */
+  .about-education-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .about-education-card {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.01);
+    transition: all 200ms ease;
+  }
+
+  .about-education-card:hover {
+    border-color: rgba(122, 242, 152, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .about-education-card__period {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--premium-accent, #7af298);
+  }
+
+  .about-education-card__institution {
+    margin-top: 0.8rem;
+    font-size: 1.4rem;
+    font-family: var(--font-display);
+    font-weight: 750;
+    color: hsl(var(--foreground));
+  }
+
+  .about-education-card__degree {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .about-education-card__grade {
+    margin-top: 1rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .about-education-card__notes {
+    margin-top: 0.5rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .about-education-card__skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1.25rem;
+  }
+
+  .about-education-card__skill {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.6rem;
+    padding: 0 0.65rem;
+    border-radius: 8px;
+    background: rgba(122, 242, 152, 0.05);
+    border: 1px solid rgba(122, 242, 152, 0.12);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--premium-accent, #7af298);
+  }
+
+  /* Publications */
+  .about-publication-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .about-publication-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 3rem;
+    padding: 2.25rem 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.01);
+    transition: all 200ms ease;
+  }
+
+  .about-publication-card:hover {
+    border-color: rgba(122, 242, 152, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .about-publication-card__body {
+    flex: 1;
+  }
+
+  .about-publication-card__kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--premium-accent, #7af298);
+  }
+
+  .about-publication-card__title {
+    margin-top: 0.6rem;
+    font-size: 1.8rem;
+    line-height: 1.2;
+    font-family: var(--font-display);
+    font-weight: 750;
+    color: hsl(var(--foreground));
+  }
+
+  .about-publication-card__meta {
+    margin-top: 0.35rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .about-publication-card__summary {
+    margin-top: 1.25rem;
+    font-size: 0.94rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.65);
+    max-width: 52rem;
+  }
+
+  .about-publication-card__action {
+    display: flex;
+    align-items: center;
+    align-self: center;
+    flex-shrink: 0;
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 1024px) {
+    .about-hero h1 {
+      font-size: 3.8rem;
+    }
+
+    .about-credibility__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-timeline__item {
+      grid-template-columns: 200px 1fr;
+      gap: 1.5rem;
+    }
+
+    .about-education-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .about-publication-card {
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 1.75rem 2rem;
+    }
+
+    .about-publication-card__action {
+      align-self: flex-start;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .about-hero {
+      padding-top: 6.5rem;
+    }
+
+    .about-hero h1 {
+      font-size: 2.8rem;
+    }
+
+    .about-credibility__grid {
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+
+    .about-section__head h2 {
+      font-size: 1.6rem;
+    }
+
+    .about-timeline__item {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .about-timeline__side {
+      text-align: left;
+      padding-top: 1rem;
+      padding-bottom: 0.25rem;
+      margin-left: 2rem;
+    }
+
+    .about-timeline__connector {
+      left: 6px;
+    }
+
+    .about-timeline__node {
+      top: 0.25rem;
+      left: -18px;
+    }
+
+    .about-timeline__content-card {
+      margin-left: 1rem;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .about-education-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .about-education-card {
+      padding: 1.5rem;
+    }
+
+    .about-publication-card {
+      padding: 1.5rem;
+    }
+
+    .about-publication-card__title {
+      font-size: 1.4rem;
+    }
+  }
+</style>
