@@ -71,70 +71,72 @@ const heroSummary = isPublishedArticle
             {entry.data.techStack.map((item) => <TechBadge label={item} />)}
           </div>
 
-          <div class="case-study-hero__summary">
-            <p class="case-study-hero__label">{locale.summaryLabel}</p>
-            <p class="case-study-hero__summary-copy">{heroSummary}</p>
+          {
+            !isPublishedArticle && (
+              <div class="case-study-hero__summary">
+                <p class="case-study-hero__label">{locale.summaryLabel}</p>
+                <p class="case-study-hero__summary-copy">{heroSummary}</p>
 
-            {
-              !isPublishedArticle && (entry.data.role || entry.data.impact) && (
-                <div class="case-study-hero__facts">
-                  {entry.data.role && (
-                    <div class="case-study-hero__fact">
-                      <p class="case-study-hero__fact-label">
-                        {locale.roleLabel}
-                      </p>
-                      <p class="case-study-hero__fact-copy">
-                        {entry.data.role}
-                      </p>
-                    </div>
-                  )}
-                  {entry.data.impact && (
-                    <div class="case-study-hero__fact">
-                      <p class="case-study-hero__fact-label">
-                        {locale.impactLabel}
-                      </p>
-                      <p class="case-study-hero__fact-copy">
-                        {entry.data.impact}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )
-            }
+                {(entry.data.role || entry.data.impact) && (
+                  <div class="case-study-hero__facts">
+                    {entry.data.role && (
+                      <div class="case-study-hero__fact">
+                        <p class="case-study-hero__fact-label">
+                          {locale.roleLabel}
+                        </p>
+                        <p class="case-study-hero__fact-copy">
+                          {entry.data.role}
+                        </p>
+                      </div>
+                    )}
+                    {entry.data.impact && (
+                      <div class="case-study-hero__fact">
+                        <p class="case-study-hero__fact-label">
+                          {locale.impactLabel}
+                        </p>
+                        <p class="case-study-hero__fact-copy">
+                          {entry.data.impact}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
-            {
-              (demoUrl || githubUrl) && (
-                <div class="case-study-hero__actions">
-                  {demoUrl && (
-                    <a
-                      href={demoUrl}
-                      target={demoUrl.startsWith("http") ? "_blank" : undefined}
-                      rel={
-                        demoUrl.startsWith("http")
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                      class="case-study-hero__action case-study-hero__action--primary"
-                    >
-                      Open live project
-                      <Icon name="arrow-right" size={16} />
-                    </a>
-                  )}
-                  {githubUrl && (
-                    <a
-                      href={githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="case-study-hero__action case-study-hero__action--secondary"
-                    >
-                      View source
-                      <Icon name="external-link" size={16} />
-                    </a>
-                  )}
-                </div>
-              )
-            }
-          </div>
+                {(demoUrl || githubUrl) && (
+                  <div class="case-study-hero__actions">
+                    {demoUrl && (
+                      <a
+                        href={demoUrl}
+                        target={
+                          demoUrl.startsWith("http") ? "_blank" : undefined
+                        }
+                        rel={
+                          demoUrl.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                        class="case-study-hero__action case-study-hero__action--primary"
+                      >
+                        Open live project
+                        <Icon name="arrow-right" size={16} />
+                      </a>
+                    )}
+                    {githubUrl && (
+                      <a
+                        href={githubUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="case-study-hero__action case-study-hero__action--secondary"
+                      >
+                        View source
+                        <Icon name="external-link" size={16} />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          }
         </div>
 
         <div class="case-study-hero__side">
@@ -153,19 +155,19 @@ const heroSummary = isPublishedArticle
             )
           }
 
-          <div class="case-study-hero__metrics">
-            {
-              entry.data.metrics
-                .slice(0, isPublishedArticle ? 2 : entry.data.metrics.length)
-                .map((metric) => (
+          {
+            !isPublishedArticle && (
+              <div class="case-study-hero__metrics">
+                {entry.data.metrics.map((metric) => (
                   <MetricCard
                     label={metric.label}
                     value={metric.value}
                     detail={metric.detail}
                   />
-                ))
-            }
-          </div>
+                ))}
+              </div>
+            )
+          }
         </div>
       </div>
     </div>
