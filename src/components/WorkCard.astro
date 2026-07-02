@@ -17,6 +17,7 @@ interface Props {
   impact?: string | undefined;
   tags?: string[] | undefined;
   image?: string | ImageMetadata | undefined;
+  imageFit?: "cover" | "contain" | undefined;
   imageAlt?: string | undefined;
   ctaLabel?: string | undefined;
   external?: boolean | undefined;
@@ -33,6 +34,7 @@ const {
   impact,
   tags = [],
   image,
+  imageFit = "cover",
   imageAlt = title,
   ctaLabel = "View details",
   external = false,
@@ -54,7 +56,12 @@ const imageSrc = image;
         <OptimizedImage
           src={imageSrc}
           alt={imageAlt}
-          class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          class:list={[
+            "h-full w-full transition-transform duration-700 group-hover:scale-[1.03]",
+            imageFit === "contain"
+              ? "object-contain p-6 sm:p-8 scale-[1.1]"
+              : "object-cover",
+          ]}
           loading="lazy"
           width={800}
           height={500}

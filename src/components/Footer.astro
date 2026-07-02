@@ -1,5 +1,5 @@
 ---
-import { resumeLinks } from "../data/portfolio";
+import { resumeUrl } from "../lib/resume";
 import { navigationLinks, siteConfig, socialLinks } from "../lib/site";
 
 interface Props {
@@ -66,7 +66,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
         <div class="site-footer__brand-id">
           <span class="site-footer__tag">{siteConfig.personName}</span>
           <p class="site-footer__tag-desc">
-            Data Journalist & Product Engineer
+            Product Specialist, Data Journalist & Corporate Communications Expert
           </p>
         </div>
         <div class="site-footer__social-pills">
@@ -99,7 +99,10 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
         <div class="site-footer__nav-col">
           <p class="site-footer__nav-label">Explore</p>
           <div class="site-footer__nav-links">
-            <a href={resumeLinks.master}>Resume</a>
+            <a
+              href={resumeUrl}
+              data-track-event="navigate_cv"
+              data-track-label="Footer Resume">Resumes / CVs</a>
             <a href="/articles">Articles</a>
             <a href={siteConfig.githubUrl} target="_blank">GitHub</a>
           </div>

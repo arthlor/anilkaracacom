@@ -5,8 +5,8 @@ import {
   educationEntries,
   experienceEntries,
   publicationEntries,
-  resumeLinks,
 } from "../data/portfolio";
+import { resumeUrl } from "../lib/resume";
 import MainLayout from "../layouts/MainLayout.astro";
 ---
 
@@ -20,23 +20,20 @@ import MainLayout from "../layouts/MainLayout.astro";
         <p class="about-hero__eyebrow">About</p>
         <h1>About Me</h1>
         <p class="about-hero__subtitle">
-          One profile across journalism, civic communication, and shipped
-          product engineering.
+          Bridging product development, data journalism, and corporate communications to build clear, impactful digital systems.
         </p>
         <p class="about-hero__description">
-          This page holds the full story in one place: the role history, the
-          education background, and the graduate research that shaped how I
-          think about audiences, media, and interface decisions.
+          This page outlines my professional history, academic background, and graduate research that define my approach to product strategy, user experience, and communications.
         </p>
         <div class="about-hero__actions">
           <a
-            href={resumeLinks.master}
+            href={resumeUrl}
             class="about-action-btn"
-            data-track-event="download_resume"
+            data-track-event="navigate_cv"
             data-track-label="About Resume"
           >
-            <Icon name="download" size={16} />
-            Download resume
+            <Icon name="arrow-right" size={16} />
+            View Resumes / CVs
           </a>
           <a
             href="/contact"
@@ -69,7 +66,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     <div class="about-section__shell">
       <div class="about-section__head">
         <span class="about-section__kicker">Experience</span>
-        <h2>Role history, with the employer context attached</h2>
+        <h2>Professional timeline and organizational impact</h2>
       </div>
 
       <div class="about-timeline">

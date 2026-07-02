@@ -11,6 +11,9 @@ import {
   buildProjectSchema,
   getEntrySeo,
 } from "../lib/seo";
+import { isPublicEntry } from "../lib/content";
+import { setStorySteps } from "../lib/storyStepContext";
+import { pillarConfig, siteConfig } from "../lib/site";
 
 interface Props {
   entry: CollectionEntry<"articles"> | CollectionEntry<"projects">;
@@ -20,9 +23,12 @@ interface Props {
 
 const { entry, collection, Content } = Astro.props;
 const isTurkish = entry.data.language === "tr";
-const isPublishedArticle = collection === "articles" && entry.data.published;
+const isPublishedArticle =
+  collection === "articles" && isPublicEntry(entry);
 const seo = getEntrySeo(collection, entry);
-const noindex = collection === "articles" && !entry.data.published;
+const noindex = collection === "articles" && !isPublicEntry(entry);
+
+setStorySteps(entry.data.storySteps ?? []);
 const contentGridClass =
   collection === "articles"
     ? "mx-auto w-full max-w-[1660px] px-4 sm:px-6 lg:px-8 min-w-0"
@@ -71,6 +77,20 @@ const schema =
   noindex={noindex}
   article={collection === "articles"}
   lang={entry.data.language}
+  articlePublishedTime={
+    collection === "articles" ? entry.data.pubDate.toISOString() : undefined
+  }
+  articleModifiedTime={
+    collection === "articles"
+      ? (entry.data.updatedDate ?? entry.data.pubDate).toISOString()
+      : undefined
+  }
+  articleAuthor={siteConfig.personName}
+  articleSection={
+    collection === "articles"
+      ? pillarConfig[entry.data.pillar].title
+      : undefined
+  }
 >
   <JsonLd schema={schema} />
 

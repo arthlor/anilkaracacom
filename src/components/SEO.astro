@@ -8,6 +8,10 @@ interface Props {
   image?: string | undefined;
   article?: boolean | undefined;
   noindex?: boolean | undefined;
+  articlePublishedTime?: string | undefined;
+  articleModifiedTime?: string | undefined;
+  articleAuthor?: string | undefined;
+  articleSection?: string | undefined;
 }
 
 const {
@@ -16,6 +20,10 @@ const {
   image = getDefaultOgImageUrl(),
   article = false,
   noindex = false,
+  articlePublishedTime,
+  articleModifiedTime,
+  articleAuthor = siteConfig.personName,
+  articleSection,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteConfig.url);
@@ -27,6 +35,12 @@ const socialImageURL = new URL(image, Astro.site || siteConfig.url);
 <meta name="description" content={description} />
 <meta name="theme-color" content="#0a0a0a" />
 <link rel="canonical" href={canonicalURL} />
+<link
+  rel="alternate"
+  type="application/rss+xml"
+  title={`${siteConfig.personName} Articles`}
+  href={new URL("/rss.xml", Astro.site || siteConfig.url)}
+/>
 {noindex && <meta name="robots" content="noindex, nofollow" />}
 
 <!-- Open Graph -->
@@ -37,6 +51,26 @@ const socialImageURL = new URL(image, Astro.site || siteConfig.url);
 <meta property="og:description" content={description} />
 <meta property="og:image" content={socialImageURL} />
 <meta property="og:image:alt" content={title} />
+{
+  article && articlePublishedTime && (
+    <meta property="article:published_time" content={articlePublishedTime} />
+  )
+}
+{
+  article && articleModifiedTime && (
+    <meta property="article:modified_time" content={articleModifiedTime} />
+  )
+}
+{
+  article && articleAuthor && (
+    <meta property="article:author" content={articleAuthor} />
+  )
+}
+{
+  article && articleSection && (
+    <meta property="article:section" content={articleSection} />
+  )
+}
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />

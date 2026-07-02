@@ -14,15 +14,16 @@ import {
   getEntrySummary,
   getEntryTags,
   getEntryTypeLabel,
+  isPublicEntryData,
   sortEntriesByDateDesc,
   sortEntriesByFeatureAndDate,
 } from "../../lib/content";
 import MainLayout from "../../layouts/MainLayout.astro";
 
 const [projects, latestArticles] = await Promise.all([
-  getCollection("projects", ({ data }) => data.published),
-  getCollection("articles", ({ data }) => data.published).then((entries) =>
-    sortEntriesByDateDesc(entries).slice(0, 3),
+  getCollection("projects", ({ data }) => isPublicEntryData(data)),
+  getCollection("articles", ({ data }) => isPublicEntryData(data)).then(
+    (entries) => sortEntriesByDateDesc(entries).slice(0, 3),
   ),
 ]);
 
@@ -90,8 +91,7 @@ const featuredDocumentaryVideoUrl =
           <p class="projects-archive__eyebrow">Project archive</p>
           <h1>Projects</h1>
           <p class="projects-archive__subtitle">
-            One archive for shipped mobile apps, custom websites, documentary
-            work, and reporting-led digital case studies.
+            A comprehensive archive of shipped mobile apps, data visualizations, municipal communications, and interactive case studies.
           </p>
         </div>
       </header>
@@ -168,6 +168,7 @@ const featuredDocumentaryVideoUrl =
                         impact={entry.impact}
                         tags={entry.tags}
                         image={entry.image}
+                        imageFit={entry.imageFit ?? "cover"}
                         ctaLabel={entry.ctaLabel}
                       />
                     ))}
@@ -205,6 +206,7 @@ const featuredDocumentaryVideoUrl =
                         impact={entry.impact}
                         tags={entry.tags}
                         image={entry.image}
+                        imageFit={entry.imageFit ?? "cover"}
                         ctaLabel={entry.ctaLabel}
                       />
                     ))}
@@ -367,6 +369,11 @@ const featuredDocumentaryVideoUrl =
                       external={false}
                       tags={entry.data.techStack}
                       image={entry.data.heroImage}
+                      imageFit={
+                        entry.id === "yeser" || entry.id === "ai-fit-check"
+                          ? "contain"
+                          : "cover"
+                      }
                       ctaLabel="Open case study"
                     />
                   ))}

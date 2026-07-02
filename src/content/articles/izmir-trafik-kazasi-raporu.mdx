@@ -1,6 +1,6 @@
 ---
-title: "Izmir's traffic risk: what crash and breakdown records reveal"
-description: "An investigation of more than 17,000 traffic incident records in Izmir, showing where risk concentrates by corridor, incident type, day, and hour."
+title: "Arteries of Risk: What 17,000 Traffic Incidents Reveal About Izmir's Infrastructure Equity"
+description: "An investigation into Izmir’s traffic data shows that crash hotspots and transit disruptions are not random accidents, but the predictable consequences of urban design and commuter pressure."
 pubDate: 2024-12-15
 heroImage: "../../assets/images/articles/izmir-trafik-kazasi-2025.webp"
 tags: ["izmir", "traffic", "data-analysis", "python", "plotly"]
@@ -31,91 +31,86 @@ metrics:
 summaryEn: "An investigation into Izmir traffic collisions built from more than 17,000 civic records, with charts and a citywide heatmap."
 role: "Data cleaning, urban risk analysis, interactive story design"
 impact: "Turns a large municipal dataset into a public-facing explanation of when and where traffic risk rises."
-executiveSummary: "This investigation turns more than 17,000 traffic incident records from Izmir into a guided visual story about which streets, incident types, days, and hours carry the highest risk."
-context: "Public conversations about traffic pressure often stay anecdotal. This piece uses municipal open records to make the rhythm of traffic risk in Izmir observable rather than guessed."
+executiveSummary: "This investigation analyzes more than 17,000 traffic incident records in Izmir, revealing how systemic design bottlenecks and peak work hours concentrate safety risks for daily transit riders, pedestrians, and drivers alike."
+context: "Public conversations about road safety often stay anecdotal. This project cleans and visualizes municipal open records to expose the structural rhythm of risk across Izmir’s critical arteries."
 methodology:
-  - "Crash and breakdown records were cleaned and classified by time, direction, and incident type."
-  - "A rank-flow view was built for street pressure, a top-N view for incident types, and a comparative heatmap for day-hour density."
-  - "The scrollytelling sequence moves from street-level pressure to incident mix, then down into the weekly time rhythm."
-challenge: "The dataset mixed different incident types in one structure, so the work needed both careful classification and strong visual prioritization. Instead of one crowded chart, each step was designed to answer one concrete question."
-codeProof: "The visuals were rebuilt as custom React components that share one editorial frame. Readers can move through the story without relying on external embeds or disconnected chart panels."
-conclusion: "The project turns local open data into a public-interest city story, moving traffic risk away from intuition and toward measurable patterns."
+  - "Cleaned and classified over 17,000 incident logs from the Izmir Traffic Center by street, time, and category."
+  - "Developed an interactive bump chart to trace corridor risk over time, a category rank to isolate crash types, and a day-hour density heatmap."
+  - "Mapped the data into a scrollytelling narrative to let readers explore the relationship between infrastructure pressure and commuter timing."
+challenge: "Integrating different incident formats required a unified taxonomy. To avoid visual overload, we structured the interface into three distinct, scroll-synchronized views that focus the reader's attention on one key question at a time."
+codeProof: "Custom-engineered React charts are bound directly to the Astro editorial lifecycle, using Framer Motion to animate transitions dynamically as the reader scrolls."
+conclusion: "By visualizing civic open data, this story transitions traffic safety from a narrative of individual accidents to one of collective infrastructure responsibility."
 relatedContent:
   - collection: "articles"
     slug: "izmir-coronavirus-toplu-tasima"
   - collection: "projects"
     slug: "parliament-analysis"
+storySteps:
+  - id: trafik-zaman
+    label: Step 1
+    title: The Fragile Corridors
+    summary: A few critical arteries consistently rank as the highest-risk zones year after year, suggesting systemic layout issues.
+  - id: trafik-turler
+    label: Step 2
+    title: The Breakdown Burden
+    summary: While severe crashes claim lives, thousands of mechanical breakdowns and minor collisions create a daily tax on public transit commuters.
+  - id: trafik-isiharitasi
+    label: Step 3
+    title: The Commuter Rhythm
+    summary: Plotting incidents by hour exposes how closely traffic risk is bound to the rigid schedules of the industrial and commercial work week.
 ---
 
-import AccidentTypesBarChart from "@/components/mdx/charts/AccidentTypesBarChart";
-import IncidentHeatmap from "@/components/mdx/charts/IncidentHeatmap";
-import StreetFrequencyLineChart from "@/components/mdx/charts/StreetFrequencyLineChart";
-import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
-import StoryStep from "@/components/case-study/StoryStep.astro";
+import StickyScrollytelling from "@/components/case-study/StickyScrollytelling.astro";
+import StickyStep from "@/components/case-study/StickyStep.astro";
+import IzmirTrafficStoryVisual from "@/components/mdx/charts/IzmirTrafficStoryVisual.tsx";
 
-Izmir's traffic risk is patterned, not random. The sequence below starts with fragile corridors, then narrows into incident types and the weekly hours where pressure tightens.
+Every day, thousands of commuters, public transit riders, and logistics workers navigate Izmir’s arterial corridors. But their journeys are shaped by an invisible map of risk. By examining over 17,000 traffic incident records from the Izmir Traffic Center spanning more than two years, we reveal that traffic delays and collisions are not random mishaps—they are the predictable results of structural bottlenecks and systemic pressure points. This data tells the story of who bears the burden of road safety, where the city's infrastructure fractures under peak demand, and when risk spikes for everyday citizens.
 
-<ScrollytellingStory
-  steps={[
-    {
-      id: "trafik-zaman",
-      label: "Step 1",
-      title: "High-risk corridors",
-      summary: "Start with the streets that climb or stay high in the incident rankings.",
-    },
-    {
-      id: "trafik-turler",
-      label: "Step 2",
-      title: "Incident types",
-      summary: "Then separate the categories that carry the overall pressure.",
-    },
-    {
-      id: "trafik-isiharitasi",
-      label: "Step 3",
-      title: "Day and hour density",
-      summary: "Finally, move into the exact weekly moments where risk clusters.",
-    },
-  ]}
->
-  <StoryStep
+<StickyScrollytelling>
+  <Fragment slot="visual">
+    <IzmirTrafficStoryVisual client:visible />
+  </Fragment>
+
+  <StickyStep
     id="trafik-zaman"
     label="Step 1"
-    title="The ranking race between corridors"
-    summary="The first view follows street rankings instead of treating each year as a separate static chart, making persistent risk easier to see."
+    title="The Fragile Corridors"
+    summary="A few critical arteries consistently rank as the highest-risk zones year after year, suggesting systemic layout issues."
   >
-    <Fragment slot="visual">
-      <StreetFrequencyLineChart client:visible />
-    </Fragment>
-  </StoryStep>
+    Yeşildere Caddesi and Anadolu Caddesi aren't just busy routes; they are structural bottlenecks where traffic risk remains stubbornly high year after year. For transit riders and logistics drivers, these corridors represent daily anxiety. The data shows Yeşildere Caddesi alone logged over 600 crashes in 2024 and nearly 1,000 in 2022. Rather than isolated events, these persistent rankings reveal systemic infrastructure challenges that demand targeted urban design interventions—such as dedicated transit lanes and safer pedestrian crossings—to protect vulnerable road users.
+  </StickyStep>
 
-<StoryStep
-  id="trafik-turler"
-  label="Step 2"
-  title="Dominant incident categories"
-  summary="The second step simplifies the long incident list so the categories driving the record become visible."
->
-  <Fragment slot="visual">
-    <AccidentTypesBarChart client:visible />
-  </Fragment>
-</StoryStep>
+  <StickyStep
+    id="trafik-turler"
+    label="Step 2"
+    title="The Breakdown Burden"
+    summary="While severe crashes claim lives, thousands of mechanical breakdowns and minor collisions create a daily tax on public transit commuters."
+  >
+    While fatal and injury crashes are the most tragic aspect of road risk—with 30 lives lost in 2023 alone—the daily reality of Izmir's roads is dominated by mechanical breakdowns (*Arızalı*) and property damage collisions (*Maddi Hasarlı*). In 2023, there were over 2,300 vehicle breakdowns and 2,900 property damage incidents. For a working-class commuter relying on buses, a single breakdown in a bottleneck like Mürselpaşa Bulvarı doesn't just mean a delay; it ripples across the network, leading to missed shifts, docked wages, and systemic inequality in transit access. Addressing vehicle maintenance support and rapid incident clearance is as crucial for economic mobility as it is for traffic flow.
+  </StickyStep>
 
-  <StoryStep
+  <StickyStep
     id="trafik-isiharitasi"
     label="Step 3"
-    title="Density by day and hour"
-    summary="The final view adds marginal totals and comparison mode to show exactly when the weekly rhythm tightens."
+    title="The Commuter Rhythm"
+    summary="Plotting incidents by hour exposes how closely traffic risk is bound to the rigid schedules of the industrial and commercial work week."
   >
-    <Fragment slot="visual">
-      <IncidentHeatmap client:visible />
-    </Fragment>
-  </StoryStep>
-</ScrollytellingStory>
+    Traffic safety in Izmir is bound to the clock. Plotting 17,000 incidents by day and hour exposes a stark temporal pattern: risk is not distributed evenly, but tightly packed around the morning and evening rush hours. Friday afternoons—particularly between 17:00 and 19:00—emerge as the absolute peak of danger, where fatigue, dense weekend-bound travel, and regular commuter traffic collide. This peak is not just a statistical curiosity; it represents the precise window when emergency services are most stretched, and when transit passengers face the highest probability of disruption, highlighting the need for flexible work hours and enhanced peak-hour transit capacity.
+  </StickyStep>
+</StickyScrollytelling>
 
-## What to notice
+## Civic Safety and Infrastructure Equity: Key Takeaways
 
-- The street-ranking view shows that some corridors are not only busy, but structurally fragile. Streets that stay high every year deserve special monitoring for response planning and prevention.
-- The incident-type view shows that a few categories carry most of the record, while the long tail remains secondary.
-- The day-hour matrix exposes commute rhythm and lets year-to-year timing shifts appear without adding another chart.
+Urban mobility is a public good, but its risks are unevenly shared. Analyzing Izmir’s traffic incident records yields critical lessons for civic planners, transit advocates, and residents:
+
+1. **Prioritize Fragile Corridors over General Expansion**
+   Instead of widening roads, municipal efforts should focus on safety retrofits and transit priority lanes on structurally vulnerable corridors like **Yeşildere Caddesi** and **Anadolu Caddesi**. These corridors consistently rank as the highest-risk zones year after year, suggesting that their current layout is fundamentally incompatible with safe speed limits and mixed traffic.
+
+2. **The Economic Cost of Transit Disruptions**
+   With thousands of mechanical breakdowns (*Arızalı*) and minor collisions blocking roads each year, the primary victim of traffic congestion is often the bus commuter. When a single lane on a major boulevard is blocked, it delays public transit lines, disproportionately affecting shift workers who lack private vehicles. Expanding rapid-response towing services and establishing bus-only lanes can mitigate this hidden economic tax.
+
+3. **Targeted Peak-Hour Interventions**
+   The dramatic concentration of incidents during Friday evening commute hours suggests that safety campaigns, traffic enforcement, and emergency responder staging should be dynamically adjusted. Rather than uniform city-wide patrol schedules, resources should be concentrated at known bottlenecks during the high-density Friday 17:00–19:00 window.
 
 ---
 

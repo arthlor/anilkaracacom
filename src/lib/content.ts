@@ -11,6 +11,8 @@ type EntryWithDate = {
   data: {
     pubDate: Date;
     published?: boolean | undefined;
+    draft?: boolean | undefined;
+    tags?: string[] | undefined;
     track?: "data-journalism" | "developer" | "supporting" | undefined;
     pillar?: PillarKey | undefined;
     summaryEn?: string | undefined;
@@ -50,8 +52,22 @@ export function sortEntriesByFeatureAndDate<
   });
 }
 
+type PublicEntryData = {
+  published?: boolean | undefined;
+  draft?: boolean | undefined;
+};
+
+export function isPublicEntry<T extends { data: PublicEntryData }>(entry: T) {
+  return entry.data.published === true && entry.data.draft !== true;
+}
+
+export function isPublicEntryData(data: PublicEntryData) {
+  return data.published === true && data.draft !== true;
+}
+
+/** @deprecated Use isPublicEntry or isPublicEntryData */
 export function isPublished<T extends EntryWithDate>(entry: T) {
-  return entry.data.published !== false;
+  return isPublicEntry(entry);
 }
 
 export function filterEntriesByTrack<T extends EntryWithDate>(
@@ -75,8 +91,20 @@ export function getEntrySummary<T extends EntryWithDate>(entry: T) {
   return entry.data.summaryEn || entry.data.description;
 }
 
+export function getEntryTopics<T extends EntryWithDate>(entry: T) {
+  if (entry.collection === "articles") {
+    return entry.data.tags ?? [];
+  }
+
+  return entry.data.techStack ?? entry.data.technologies ?? [];
+}
+
 export function getEntryTags<T extends EntryWithDate>(entry: T) {
-  return entry.data.techStack || entry.data.technologies || [];
+  return getEntryTopics(entry);
+}
+
+export function getEntryTechStack<T extends EntryWithDate>(entry: T) {
+  return entry.data.techStack ?? entry.data.technologies ?? [];
 }
 
 export function getProjectHref(entry: CollectionEntry<"projects">) {

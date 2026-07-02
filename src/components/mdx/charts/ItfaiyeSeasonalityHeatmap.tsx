@@ -43,7 +43,11 @@ const turkishMonthNames = [
   "Aralık",
 ];
 
-export default function ItfaiyeSeasonalityHeatmap() {
+export default function ItfaiyeSeasonalityHeatmap({
+  pureCanvas = false,
+}: {
+  pureCanvas?: boolean;
+}) {
   const activities = useMemo(() => data.activity_columns, []);
   const monthlyData = useMemo(() => data.monthly_totals, []);
   const months = useMemo(() => turkishMonthNames, []);
@@ -133,15 +137,194 @@ export default function ItfaiyeSeasonalityHeatmap() {
       const catMax = limits.categoryMaxes[activity] ?? 1;
       ratio = value / catMax;
     }
-
     const scaleRatio = Math.sqrt(ratio);
-    const opacity = 0.04 + scaleRatio * 0.92;
-
     return {
       fill: baseColor,
-      opacity,
+      opacity: 0.04 + scaleRatio * 0.92,
     };
   };
+
+  const chartCore = (
+    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+      <p className="viz-scroll-hint">Kaydırarak tüm ayları görün →</p>
+      {/* HTML Tooltip */}
+      <AnimatePresence>
+        {tooltip && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3.5 py-1.5 text-[11px] shadow-2xl backdrop-blur-md max-w-[200px]"
+            style={{
+              left: tooltip.x,
+              top: tooltip.y,
+              transform: "translate(-50%, -100%)",
+            }}
+          >
+            <div className="font-bold text-foreground mb-1 pb-0.5 border-b border-white/10">
+              {tooltip.title}
+            </div>
+            <div className="text-[11px] text-zinc-300">
+              {tooltip.content}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="min-w-[620px] h-[340px] relative mt-4">
+        {/* Draw SVG Heatmap */}
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="h-full w-full overflow-visible"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          {/* Month headers */}
+          {months.map((mName, mIdx) => {
+            const x = padding.left + mIdx * cellWidth + cellWidth / 2;
+            return (
+              <text
+                key={`month-hdr-${mName}`}
+                x={x}
+                y={padding.top - 8}
+                textAnchor="middle"
+                className="fill-[rgba(243,241,235,0.65)] text-[10px] font-semibold"
+              >
+                {mName.slice(0, 3)}
+              </text>
+            );
+          })}
+
+          {/* Heatmap Rows */}
+          {activities.map((activity, rIdx) => {
+            const y = padding.top + rIdx * rowHeight;
+            const values = monthlyData.map((d: any) => d[activity] ?? 0);
+
+            return (
+              <g key={`heatmap-row-${activity}`}>
+                {/* Row label */}
+                <text
+                  x={padding.left - 10}
+                  y={y + rowHeight / 2 + 4}
+                  textAnchor="end"
+                  className="fill-[rgba(243,241,235,0.55)] text-[9px] font-bold uppercase tracking-wider"
+                >
+                  {activityLabelsTr[activity] ?? activity}
+                </text>
+
+                {/* Heatmap cells */}
+                {values.map((val: number, mIdx: number) => {
+                  const x = padding.left + mIdx * cellWidth;
+                  const isHovered =
+                    hoveredCell?.activity === activity &&
+                    hoveredCell?.monthIndex === mIdx;
+                  const style = getCellColor(activity, val);
+
+                  return (
+                    <g key={`cell-${activity}-${mIdx}`}>
+                      <motion.rect
+                        x={x}
+                        y={y}
+                        width={cellWidth - 2}
+                        height={rowHeight - 2}
+                        rx={3}
+                        fill={style.fill}
+                        animate={{
+                          fillOpacity: style.opacity,
+                        }}
+                        transition={{ duration: 0.15 }}
+                      />
+
+                      {/* Stroke border overlay for hover */}
+                      <motion.rect
+                        x={x}
+                        y={y}
+                        width={cellWidth - 2}
+                        height={rowHeight - 2}
+                        rx={3}
+                        fill="transparent"
+                        animate={{
+                          stroke: isHovered ? "#ffffff" : "transparent",
+                          strokeWidth: isHovered ? 1.5 : 0,
+                        }}
+                      />
+
+                      {/* Interactive area */}
+                      <rect
+                        x={x}
+                        y={y}
+                        width={cellWidth}
+                        height={rowHeight}
+                        fill="transparent"
+                        className="cursor-pointer"
+                        onMouseEnter={(e) => handleCellEnter(e, activity, months[mIdx] ?? "", mIdx, val)}
+                        onMouseLeave={handleCellLeave}
+                      />
+                    </g>
+                  );
+                })}
+              </g>
+            );
+          })}
+        </svg>
+      </div>
+    </div>
+  );
+
+  const chartBody = (
+    <div className="w-full flex flex-col gap-3">
+      {pureCanvas && (
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl text-xs pointer-events-auto">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Renk Ölçeği</span>
+          <div
+            className="viz-toggle-group"
+            role="group"
+            aria-label="Renk ölçeği"
+          >
+            <button
+              key="btn-relative-pure"
+              type="button"
+              className="relative viz-toggle z-10 text-[10px] px-3 py-1 font-semibold"
+              data-active={scaleMode === "relative"}
+              aria-pressed={scaleMode === "relative"}
+              onClick={() => setScaleMode("relative")}
+            >
+              <span className="relative z-20">Göreli</span>
+              {scaleMode === "relative" && (
+                <motion.div
+                  layoutId="itfaiye-scale-highlight-pure"
+                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+            <button
+              key="btn-global-pure"
+              type="button"
+              className="relative viz-toggle z-10 text-[10px] px-3 py-1 font-semibold"
+              data-active={scaleMode === "global"}
+              aria-pressed={scaleMode === "global"}
+              onClick={() => setScaleMode("global")}
+            >
+              <span className="relative z-20">Mutlak</span>
+              {scaleMode === "global" && (
+                <motion.div
+                  layoutId="itfaiye-scale-highlight-pure"
+                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+      {chartCore}
+    </div>
+  );
+
+  if (pureCanvas) {
+    return chartBody;
+  }
 
   return (
     <ArticleChartFrame
@@ -164,38 +347,34 @@ export default function ItfaiyeSeasonalityHeatmap() {
             aria-label="Renk ölçeği"
           >
             <button
+              key="btn-relative"
               type="button"
               className="relative viz-toggle z-10"
               data-active={scaleMode === "relative"}
               aria-pressed={scaleMode === "relative"}
-              onClick={() => {
-                setScaleMode("relative");
-                setTooltip(null);
-              }}
+              onClick={() => setScaleMode("relative")}
             >
-              <span className="relative z-20">Kategoriye Göre Ölçekle</span>
+              <span className="relative z-20">Göreli</span>
               {scaleMode === "relative" && (
                 <motion.div
-                  layoutId="itfaiye-heatmap-scale"
+                  layoutId="itfaiye-scale-highlight"
                   className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
             </button>
             <button
+              key="btn-global"
               type="button"
               className="relative viz-toggle z-10"
               data-active={scaleMode === "global"}
               aria-pressed={scaleMode === "global"}
-              onClick={() => {
-                setScaleMode("global");
-                setTooltip(null);
-              }}
+              onClick={() => setScaleMode("global")}
             >
-              <span className="relative z-20">Genel Ölçekle</span>
+              <span className="relative z-20">Mutlak</span>
               {scaleMode === "global" && (
                 <motion.div
-                  layoutId="itfaiye-heatmap-scale"
+                  layoutId="itfaiye-scale-highlight"
                   className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
@@ -205,46 +384,35 @@ export default function ItfaiyeSeasonalityHeatmap() {
         </div>
       }
       aside={
-        <div className="space-y-3">
-          <div className="text-[11px] leading-relaxed text-muted-foreground space-y-2">
-            <p>
-              <strong className="text-foreground">
-                Kategoriye Göre Ölçeklendirme:
-              </strong>{" "}
-              Her satırı kendi içinde derecelendirerek, su tahliyeleri gibi
-              görece düşük hacimli ama mevsimsel açıdan belirgin faaliyetlerin
-              yoğunlaştığı dönemleri analiz etmeyi kolaylaştırır.
-            </p>
-            <p>
-              <strong className="text-foreground">Genel Ölçeklendirme:</strong>{" "}
-              Tüm verileri aynı ölçekte karşılaştırarak, hayvan kurtarma ve
-              müdahalesiz sonuçlanan sevklerin mutlak hacimsel ağırlığını ortaya
-              koyar.
-            </p>
-          </div>
-
-          <div className="viz-divider" />
-
-          {hoveredCell ? (
-            <div className="p-2.5 bg-white/[0.02] border border-white/[0.05] rounded-xl space-y-0.5">
-              <span className="viz-label">Seçim Detayı</span>
-              <p className="text-xs font-bold truncate text-foreground">
-                {activityLabelsTr[hoveredCell.activity] ?? hoveredCell.activity}
-              </p>
-              <p className="text-[10px] text-muted-foreground font-medium">
-                {months[hoveredCell.monthIndex]} Ayı Ortalaması:
-              </p>
-              <strong className="text-xs font-display text-foreground">
-                {formatNumber(hoveredCell.value, "tr-TR")} görev
+        <div className="space-y-4">
+          <div className="viz-stat-grid">
+            <div className="viz-stat border-t-0 pt-0">
+              <span className="viz-label">Ölçeklendirme</span>
+              <strong className="text-xs">
+                {scaleMode === "relative" ? "Göreli (Kategori İçi)" : "Mutlak (Tüm Hacim)"}
               </strong>
             </div>
-          ) : (
-            <div className="p-3 bg-white/[0.01] border border-white/[0.03] border-dashed rounded-xl text-center py-4">
-              <p className="text-xs text-muted-foreground italic">
-                Ortalamaları incelemek için hücrelerin üzerine gelin.
-              </p>
-            </div>
-          )}
+            {hoveredCell ? (
+              <div className="viz-stat border-t pt-3">
+                <span className="viz-label">Seçim Detayı</span>
+                <p className="text-xs font-bold truncate text-foreground">
+                  {activityLabelsTr[hoveredCell.activity] ?? hoveredCell.activity}
+                </p>
+                <p className="text-[10px] text-muted-foreground font-medium">
+                  {months[hoveredCell.monthIndex]} Ayı Ortalaması:
+                </p>
+                <strong className="text-xs font-display text-foreground">
+                  {formatNumber(hoveredCell.value, "tr-TR")} görev
+                </strong>
+              </div>
+            ) : (
+              <div className="p-3 bg-white/[0.01] border border-white/[0.03] border-dashed rounded-xl text-center py-4">
+                <p className="text-xs text-muted-foreground italic">
+                  Ortalamaları incelemek için hücrelerin üzerine gelin.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       }
       footer={
@@ -255,131 +423,7 @@ export default function ItfaiyeSeasonalityHeatmap() {
         </div>
       }
     >
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto">
-        {/* HTML Tooltip */}
-        <AnimatePresence>
-          {tooltip && (
-            <motion.div
-              initial={{ opacity: 0, y: 6, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 350, damping: 25 }}
-              className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3 py-1.5 shadow-2xl backdrop-blur-md whitespace-nowrap text-xs"
-              style={{
-                left: tooltip.x,
-                top: tooltip.y,
-                transform: "translate(-50%, -100%)",
-              }}
-            >
-              <div className="font-bold text-foreground">{tooltip.title}</div>
-              <div className="text-muted-foreground text-[10px] mt-0.5">
-                {tooltip.content}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="h-auto w-full min-w-[660px] overflow-visible"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {/* Month Column Headers */}
-          {months.map((month, mIdx) => {
-            const x = padding.left + mIdx * cellWidth + cellWidth / 2;
-            return (
-              <text
-                key={`month-hdr-${month}`}
-                x={x}
-                y={padding.top - 10}
-                textAnchor="middle"
-                className="fill-[rgba(243,241,235,0.6)] text-[9px] font-semibold tracking-wider"
-              >
-                {month.slice(0, 3)}
-              </text>
-            );
-          })}
-
-          {/* Grid Rows */}
-          {activities.map((activity, aIdx) => {
-            const y = padding.top + aIdx * rowHeight;
-            const activityLabel = activityLabelsTr[activity] ?? activity;
-
-            return (
-              <g key={`row-${activity}`}>
-                {/* Row label */}
-                <text
-                  x={padding.left - 12}
-                  y={y + rowHeight / 2 + 3}
-                  textAnchor="end"
-                  className="fill-foreground text-[10px] font-semibold"
-                >
-                  {activityLabel}
-                </text>
-
-                {/* Grid cells */}
-                {monthlyData.map((monthRow: any, mIdx: number) => {
-                  const val = monthRow[activity] ?? 0;
-                  const x = padding.left + mIdx * cellWidth;
-                  const style = getCellColor(activity, val);
-                  const isHovered =
-                    hoveredCell?.activity === activity &&
-                    hoveredCell?.monthIndex === mIdx;
-
-                  return (
-                    <g key={`cell-${activity}-${mIdx}`}>
-                      {/* Base background tile */}
-                      <rect
-                        x={x + 1}
-                        y={y + 1}
-                        width={cellWidth - 2}
-                        height={rowHeight - 2}
-                        fill="rgba(255,255,255,0.02)"
-                        rx={2}
-                      />
-
-                      {/* Heat tile */}
-                      <motion.rect
-                        x={x + 1}
-                        y={y + 1}
-                        width={cellWidth - 2}
-                        height={rowHeight - 2}
-                        fill={style.fill}
-                        opacity={style.opacity}
-                        rx={2}
-                        animate={{
-                          stroke: isHovered ? "#ffffff" : "transparent",
-                          strokeWidth: isHovered ? 1.5 : 0,
-                        }}
-                      />
-
-                      {/* Interactive capture overlay */}
-                      <rect
-                        x={x}
-                        y={y}
-                        width={cellWidth}
-                        height={rowHeight}
-                        fill="transparent"
-                        style={{ cursor: "pointer" }}
-                        onMouseEnter={(e) =>
-                          handleCellEnter(
-                            e,
-                            activity,
-                            months[mIdx] ?? "",
-                            mIdx,
-                            val,
-                          )
-                        }
-                        onMouseLeave={handleCellLeave}
-                      />
-                    </g>
-                  );
-                })}
-              </g>
-            );
-          })}
-        </svg>
-      </div>
+      {chartBody}
     </ArticleChartFrame>
   );
 }

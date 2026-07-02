@@ -247,6 +247,13 @@ export default function IzmirTransitRecoveryStory() {
           locale="en"
         />
 
+        {/* Dedicated Timeline Scrubber (especially useful for mobile) */}
+        <CustomMonthScrubber
+          index={selectedIndex}
+          months={transport.months}
+          onSelect={setSelectedIndex}
+        />
+
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(220px,0.6fr)]">
           <PassengerMixPanel
             months={demographics.months}
@@ -278,5 +285,91 @@ export default function IzmirTransitRecoveryStory() {
         </div>
       </div>
     </ArticleChartFrame>
+  );
+}
+
+function CustomMonthScrubber({
+  index,
+  months,
+  onSelect,
+}: {
+  index: number;
+  months: string[];
+  onSelect: (index: number) => void;
+}) {
+  const maxIndex = months.length - 1;
+  const percentage = (index / maxIndex) * 100;
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    updateValue(e);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      updateValue(e);
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  const updateValue = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(clickX / rect.width, 1));
+    const nextIndex = Math.round(ratio * maxIndex);
+    if (nextIndex >= 0 && nextIndex <= maxIndex) {
+      onSelect(nextIndex);
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-3 w-full bg-white/[0.01] border border-white/[0.06] rounded-2xl p-3 sm:px-6 shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
+      <button
+        type="button"
+        disabled={index === 0}
+        onClick={() => onSelect(index - 1)}
+        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        aria-label="Previous month"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <div
+        className="relative flex-grow h-6 flex items-center cursor-pointer select-none group touch-none"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+      >
+        <div className="absolute inset-0 flex items-center">
+          <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative overflow-hidden">
+            <motion.div
+              className="absolute left-0 top-0 bottom-0 rounded-full bg-[#7af298]"
+              animate={{ width: `${percentage}%` }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            />
+          </div>
+        </div>
+
+        <motion.div
+          className="absolute w-5 h-5 rounded-full bg-[#7af298] border-4 border-[#111111] shadow-[0_0_12px_rgba(122,242,152,0.4)] z-10"
+          animate={{ left: `calc(${percentage}% - 10px)` }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          whileHover={{ scale: 1.2 }}
+        />
+      </div>
+
+      <button
+        type="button"
+        disabled={index === maxIndex}
+        onClick={() => onSelect(index + 1)}
+        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        aria-label="Next month"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
+    </div>
   );
 }

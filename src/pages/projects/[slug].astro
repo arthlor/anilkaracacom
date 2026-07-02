@@ -2,11 +2,11 @@
 import { getCollection, render } from "astro:content";
 
 import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import { isPublicEntryData } from "../../lib/content";
 
 export async function getStaticPaths() {
-  const projects = await getCollection(
-    "projects",
-    ({ data }) => data.published,
+  const projects = await getCollection("projects", ({ data }) =>
+    isPublicEntryData(data),
   );
   return projects.map((project) => ({
     params: { slug: project.id },

@@ -235,10 +235,6 @@ function MetricStrip({
         .y((value) => yScale(value))(values) ?? ""
     );
   }, [values, xScale, yScale, years]);
-
-  const activeX = xScale(years[activeIndex] ?? years[0] ?? 2001) ?? 24;
-  const activeY = yScale(values[activeIndex] ?? min);
-
   return (
     <div className="rounded-2xl border border-white/[0.07] bg-white/[0.012] backdrop-blur-md px-4 py-4 sm:px-6 shadow-[0_12px_40px_rgba(0,0,0,0.15)] hover:bg-white/[0.02] hover:border-white/[0.09] transition-all duration-300">
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
@@ -254,175 +250,131 @@ function MetricStrip({
         </div>
       </div>
 
-      <div className="mt-4 relative overflow-visible">
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="h-auto w-full max-w-full overflow-visible"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {[0, 0.5, 1].map((tick) => {
-            const y = yScale(min + (max - min) * tick);
-            return (
-              <line
-                key={tick}
-                x1={24}
-                x2={696}
-                y1={y}
-                y2={y}
-                stroke="rgba(255,255,255,0.08)"
-                strokeDasharray="4 6"
-              />
-            );
-          })}
-
-          <path
-            d={path}
-            fill="none"
-            stroke={color}
-            strokeWidth={3}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          {birthIndicatorSeries.map((point, index) => {
-            if (!calloutYears.has(point.year)) {
-              return null;
-            }
-
-            const x = xScale(point.year) ?? 24;
-            const y = yScale(values[index] ?? min);
-            const textAnchor =
-              point.year === years[0]
-                ? "start"
-                : point.year === years.at(-1)
-                  ? "end"
-                  : "middle";
-            const textX =
-              point.year === years[0]
-                ? x + 4
-                : point.year === years.at(-1)
-                  ? x - 4
-                  : x;
-
-            return (
-              <g key={`${label}-callout-${point.year}`} aria-hidden="true">
+      <div className="mt-4 viz-scroll-region overflow-x-auto scrollbar-thin select-none relative focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+        <p className="viz-scroll-hint">Swipe to explore timeline →</p>
+        <div className="min-w-[620px]">
+          <svg
+            viewBox={`0 0 ${width} ${height}`}
+            className="h-auto w-full max-w-full overflow-visible"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            {[0, 0.5, 1].map((tick) => {
+              const y = yScale(min + (max - min) * tick);
+              return (
                 <line
-                  x1={x}
-                  x2={x}
-                  y1={18}
-                  y2={90}
-                  stroke="rgba(255,255,255,0.13)"
-                  strokeDasharray="3 6"
+                  key={tick}
+                  x1={24}
+                  x2={696}
+                  y1={y}
+                  y2={y}
+                  stroke="rgba(255,255,255,0.08)"
+                  strokeDasharray="4 6"
                 />
-                <circle
-                  cx={x}
-                  cy={y}
-                  r={6}
-                  fill="rgba(17,17,17,0.94)"
-                  stroke={color}
-                  strokeWidth={2}
-                />
+              );
+            })}
+
+            <path
+              d={path}
+              fill="none"
+              stroke={color}
+              strokeWidth={3}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+
+            {birthIndicatorSeries.map((point, index) => {
+              if (!calloutYears.has(point.year)) {
+                return null;
+              }
+
+              const x = xScale(point.year) ?? 24;
+              const y = yScale(values[index] ?? min);
+              const textAnchor =
+                point.year === years[0]
+                  ? "start"
+                  : point.year === years.at(-1)
+                    ? "end"
+                    : "middle";
+              const textX =
+                point.year === years[0]
+                  ? x + 6
+                  : point.year === years.at(-1)
+                    ? x - 6
+                    : x;
+              const textY = y > 60 ? y - 12 : y + 18;
+
+              return (
+                <g key={`${label}-marker-${point.year}`}>
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r={5}
+                    fill={color}
+                    stroke="rgba(17,17,17,0.92)"
+                    strokeWidth={2}
+                  />
+                  <text
+                    x={textX}
+                    y={textY}
+                    textAnchor={textAnchor}
+                    className="fill-white font-bold text-[9px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+                  >
+                    {point.year}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Interactive mouse capture rect */}
+            <rect
+              x={24}
+              y={12}
+              width={672}
+              height={80}
+              fill="transparent"
+              aria-hidden="true"
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clientX = e.clientX - rect.left;
+                const ratio = Math.max(0, Math.min(clientX / rect.width, 1));
+                const index = Math.round(ratio * (years.length - 1));
+                if (index >= 0 && index < years.length) {
+                  onSelect(index);
+                }
+              }}
+              onTouchMove={(e) => {
+                const touch = e.touches[0];
+                if (!touch) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                const clientX = touch.clientX - rect.left;
+                const ratio = Math.max(0, Math.min(clientX / rect.width, 1));
+                const index = Math.round(ratio * (years.length - 1));
+                if (index >= 0 && index < years.length) {
+                  onSelect(index);
+                }
+              }}
+              style={{ cursor: "crosshair" }}
+            />
+
+            {birthIndicatorSeries.map((point, index) => {
+              const x = xScale(point.year) ?? 24;
+              const showLabel = point.year % 5 === 0 || point.year === 2001;
+              if (!showLabel) return null;
+
+              return (
                 <text
-                  x={textX}
-                  y={12}
-                  textAnchor={textAnchor}
-                  className="fill-[#f3f1eb] text-[10px] font-semibold"
+                  key={`${label}-axis-${point.year}`}
+                  x={x}
+                  y={101}
+                  textAnchor="middle"
+                  className={`text-[10px] ${index === activeIndex ? "fill-[#f3f1eb] font-semibold" : "fill-[rgba(243,241,235,0.45)]"}`}
                 >
                   {point.year}
                 </text>
-              </g>
-            );
-          })}
-
-          {/* Static dots for each year point */}
-          {values.map((value, index) => {
-            const x = xScale(years[index] ?? years[0] ?? 2001) ?? 24;
-            const y = yScale(value);
-            return (
-              <circle
-                key={`${label}-dot-${index}`}
-                cx={x}
-                cy={y}
-                r={3}
-                fill={color}
-                opacity={0.4}
-              />
-            );
-          })}
-
-          {/* Single glowing spring active tracker thumb */}
-          <line
-            x1={activeX}
-            x2={activeX}
-            y1={18}
-            y2={90}
-            stroke="rgba(255,255,255,0.15)"
-            strokeWidth={1.5}
-            strokeDasharray="4 4"
-          />
-          <motion.circle
-            cx={activeX}
-            cy={activeY}
-            r={8}
-            fill={color}
-            stroke="rgba(17,17,17,0.92)"
-            strokeWidth={3}
-            animate={{ cx: activeX, cy: activeY }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            style={{
-              filter: `drop-shadow(0 0 6px ${color})`,
-            }}
-          />
-
-          {/* Interactive Scrub Overlay */}
-          <rect
-            x={24}
-            y={12}
-            width={672}
-            height={80}
-            fill="transparent"
-            aria-hidden="true"
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const clientX = e.clientX - rect.left;
-              const ratio = Math.max(0, Math.min(clientX / rect.width, 1));
-              const index = Math.round(ratio * (years.length - 1));
-              if (index >= 0 && index < years.length) {
-                onSelect(index);
-              }
-            }}
-            onTouchMove={(e) => {
-              const touch = e.touches[0];
-              if (!touch) return;
-              const rect = e.currentTarget.getBoundingClientRect();
-              const clientX = touch.clientX - rect.left;
-              const ratio = Math.max(0, Math.min(clientX / rect.width, 1));
-              const index = Math.round(ratio * (years.length - 1));
-              if (index >= 0 && index < years.length) {
-                onSelect(index);
-              }
-            }}
-            style={{ cursor: "crosshair" }}
-          />
-
-          {birthIndicatorSeries.map((point, index) => {
-            const x = xScale(point.year) ?? 24;
-            const showLabel = point.year % 5 === 0 || point.year === 2001;
-            if (!showLabel) return null;
-
-            return (
-              <text
-                key={`${label}-axis-${point.year}`}
-                x={x}
-                y={101}
-                textAnchor="middle"
-                className={`text-[10px] ${index === activeIndex ? "fill-[#f3f1eb] font-semibold" : "fill-[rgba(243,241,235,0.45)]"}`}
-              >
-                {point.year}
-              </text>
-            );
-          })}
-        </svg>
+              );
+            })}
+          </svg>
+        </div>
       </div>
     </div>
   );
@@ -511,36 +463,58 @@ function CustomTimelineScrubber({
   };
 
   return (
-    <div
-      className="relative mt-6 h-6 flex items-center cursor-pointer select-none group touch-none"
-      role="slider"
-      tabIndex={0}
-      aria-label="Select year"
-      aria-valuemin={minYear}
-      aria-valuemax={minYear + maxIndex}
-      aria-valuenow={selectedYear}
-      aria-valuetext={`${selectedYear}`}
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onKeyDown={handleKeyDown}
-    >
-      <div className="absolute inset-0 flex items-center">
-        <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative overflow-hidden">
-          <motion.div
-            className="absolute left-0 top-0 bottom-0 rounded-full bg-[#7af298]"
-            animate={{ width: `${percentage}%` }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          />
+    <div className="flex items-center gap-3 mt-4 select-none">
+      <button
+        type="button"
+        disabled={index === 0}
+        onClick={() => onSelect(index - 1)}
+        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        aria-label="Previous year"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+
+      <div
+        className="relative flex-grow h-6 flex items-center cursor-pointer select-none group touch-none"
+        role="slider"
+        tabIndex={0}
+        aria-label="Select year"
+        aria-valuemin={minYear}
+        aria-valuemax={minYear + maxIndex}
+        aria-valuenow={selectedYear}
+        aria-valuetext={`${selectedYear}`}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onKeyDown={handleKeyDown}
+      >
+        <div className="absolute inset-0 flex items-center">
+          <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative overflow-hidden">
+            <motion.div
+              className="absolute left-0 top-0 bottom-0 rounded-full bg-[#7af298]"
+              animate={{ width: `${percentage}%` }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            />
+          </div>
         </div>
+
+        <motion.div
+          className="absolute w-5 h-5 rounded-full bg-[#7af298] border-4 border-[#111111] shadow-[0_0_12px_rgba(122,242,152,0.4)] z-10"
+          animate={{ left: `calc(${percentage}% - 10px)` }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          whileHover={{ scale: 1.2 }}
+        />
       </div>
 
-      <motion.div
-        className="absolute w-5 h-5 rounded-full bg-[#7af298] border-4 border-[#111111] shadow-[0_0_12px_rgba(122,242,152,0.4)] z-10"
-        animate={{ left: `calc(${percentage}% - 10px)` }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        whileHover={{ scale: 1.2 }}
-      />
+      <button
+        type="button"
+        disabled={index === maxIndex}
+        onClick={() => onSelect(index + 1)}
+        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        aria-label="Next year"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
     </div>
   );
 }

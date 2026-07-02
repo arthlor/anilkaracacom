@@ -40,6 +40,11 @@ const heroSummary = isPublishedArticle
   ? entry.data.executiveSummary.split(/[.!?]/).filter(Boolean)[0]?.trim() ||
     entry.data.executiveSummary
   : entry.data.executiveSummary;
+const heroImageFit =
+  collection === "projects" &&
+  (entry.id === "yeser" || entry.id === "ai-fit-check")
+    ? "contain"
+    : "cover";
 ---
 
 <section
@@ -146,7 +151,12 @@ const heroSummary = isPublishedArticle
                 <OptimizedImage
                   src={entry.data.heroImage}
                   alt={entry.data.title}
-                  class="aspect-[16/11] h-full w-full object-cover"
+                  class:list={[
+                    "aspect-[16/11] h-full w-full",
+                    heroImageFit === "contain"
+                      ? "object-contain p-8 sm:p-10 scale-[1.1]"
+                      : "object-cover",
+                  ]}
                   loading="eager"
                   width={1200}
                   height={825}

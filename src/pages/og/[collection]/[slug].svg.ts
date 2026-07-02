@@ -2,13 +2,14 @@ import type { APIRoute } from "astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 
 import { renderOgSvg } from "../../../lib/og";
+import { getEntryTopics, isPublicEntryData } from "../../../lib/content";
 
 type Entry = CollectionEntry<"articles"> | CollectionEntry<"projects">;
 
 export async function getStaticPaths() {
   const [articles, projects] = await Promise.all([
-    getCollection("articles", ({ data }) => data.published),
-    getCollection("projects", ({ data }) => data.published),
+    getCollection("articles", ({ data }) => isPublicEntryData(data)),
+    getCollection("projects", ({ data }) => isPublicEntryData(data)),
   ]);
 
   return [...articles, ...projects].map((entry) => ({
@@ -37,8 +38,7 @@ export const GET: APIRoute = async ({ props }) => {
     description: entry.data.summaryEn || entry.data.description,
     pillar: entry.data.pillar,
     typeLabel: getTypeLabel(entry),
-    techStack:
-      entry.collection === "projects" ? entry.data.techStack : entry.data.tags,
+    techStack: getEntryTopics(entry),
   });
 
   return new Response(svg, {

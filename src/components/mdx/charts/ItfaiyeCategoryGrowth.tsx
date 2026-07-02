@@ -29,7 +29,11 @@ const activityLabelsTr: Record<string, string> = {
   no_action: "Faaliyet Yapılmadı (Boş İhbar)",
 };
 
-export default function ItfaiyeCategoryGrowth() {
+export default function ItfaiyeCategoryGrowth({
+  pureCanvas = false,
+}: {
+  pureCanvas?: boolean;
+}) {
   const years = useMemo(() => data.yearly_totals.map((d: any) => d.year), []);
   const activities = useMemo(() => data.activity_columns, []);
 
@@ -155,6 +159,278 @@ export default function ItfaiyeCategoryGrowth() {
     setTooltip(null);
   };
 
+  const chartCore = (
+    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+      <p className="viz-scroll-hint">Kaydırarak tüm yılları görün →</p>
+      {/* HTML Tooltip */}
+      <AnimatePresence>
+        {tooltip && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 350, damping: 25 }}
+            className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3 py-2 text-xs shadow-2xl backdrop-blur-md max-w-[240px]"
+            style={{
+              left: tooltip.x,
+              top: tooltip.y,
+              transform: "translate(-50%, -100%)",
+            }}
+          >
+            <div className="font-bold text-foreground mb-1 pb-0.5 border-b border-white/10">
+              {tooltip.title}
+            </div>
+            <div className="space-y-0.5 max-h-[140px] overflow-y-auto pr-1">
+              {tooltip.items.map((item) => (
+                <div
+                  key={item.label}
+                  className="flex items-center justify-between gap-4"
+                >
+                  <div className="flex items-center gap-1 min-w-0">
+                    <span
+                      className="w-1.5 h-1.5 rounded-full shrink-0"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="truncate text-muted-foreground text-[10px]">
+                      {item.label}
+                    </span>
+                  </div>
+                  <span className="font-bold text-foreground shrink-0">
+                    {formatNumber(item.value, "tr-TR")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="h-auto w-full min-w-[500px] overflow-visible"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        {/* Y Axis Grid Lines */}
+        {[0, 0.25, 0.5, 0.75, 1].map((p) => {
+          const val = maxSingleVolume * p;
+          const y = yScale(val);
+          return (
+            <g key={`grid-y-${p}`}>
+              <line
+                x1={padding.left}
+                x2={width - padding.right}
+                y1={y}
+                y2={y}
+                stroke="rgba(255,255,255,0.06)"
+                strokeDasharray="4 6"
+              />
+              <text
+                x={padding.left - 8}
+                y={y + 3}
+                textAnchor="end"
+                className="fill-[rgba(243,241,235,0.45)] text-[9px] font-mono"
+              >
+                {formatNumber(Math.round(val / 500) * 500, "tr-TR")}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* X Axis Labels */}
+        {years.map((year) => {
+          const x = xScale(year) ?? 0;
+          return (
+            <g key={`grid-x-${year}`}>
+              <line
+                x1={x}
+                x2={x}
+                y1={padding.top}
+                y2={height - padding.bottom}
+                stroke="rgba(255,255,255,0.02)"
+              />
+              <text
+                x={x}
+                y={height - 6}
+                textAnchor="middle"
+                className="fill-[rgba(243,241,235,0.65)] text-[10px] font-semibold"
+              >
+                {year}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Grouped Bar Chart Rendering */}
+        <g>
+          {data.yearly_totals.map((yearRow: any) => {
+            const x = xScale(yearRow.year) ?? 0;
+            const groupWidth = 48; // width of group
+            const barGap = 1.5; // gap between bars
+            const totalGaps = barGap * (activeCats.length - 1);
+            const barWidth = Math.max(
+              3,
+              (groupWidth - totalGaps) / activeCats.length,
+            );
+
+            return (
+              <g key={`year-group-${yearRow.year}`}>
+                {activeCats.map((cat, idx) => {
+                  const value = yearRow[cat] ?? 0;
+                  const barHeight = Math.max(
+                    0.5,
+                    height - padding.bottom - yScale(value),
+                  );
+                  const y = yScale(value);
+                  const color = categoryColors[cat] ?? "#8c98ad";
+
+                  // Offset calculation
+                  const offset =
+                    (idx - (activeCats.length - 1) / 2) * (barWidth + barGap);
+                  const barX = x + offset - barWidth / 2;
+
+                  const isSelectedYear = selectedYear === yearRow.year;
+                  const isAnyBarHovered = hoveredBar !== null;
+                  const isThisBarHovered =
+                    hoveredBar?.year === yearRow.year &&
+                    hoveredBar?.category === cat;
+
+                  // Opacity setup
+                  let opacity = 0.82;
+                  if (isAnyBarHovered) {
+                    opacity = isThisBarHovered ? 1.0 : 0.35;
+                  } else if (isSelectedYear) {
+                    opacity = 0.95;
+                  }
+
+                  return (
+                    <g key={`bar-${yearRow.year}-${cat}`}>
+                      <motion.rect
+                        x={barX}
+                        y={y}
+                        width={barWidth}
+                        height={barHeight}
+                        fill={color}
+                        opacity={opacity}
+                        rx={barWidth > 4 ? 2 : 0}
+                        layout
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 26,
+                        }}
+                      />
+                      {/* Interactive Hover capture overlay */}
+                      <rect
+                        x={barX - 1}
+                        y={padding.top}
+                        width={barWidth + 2}
+                        height={innerHeight}
+                        fill="transparent"
+                        style={{ cursor: "pointer" }}
+                        onMouseEnter={(e) => {
+                          setHoveredBar({
+                            year: yearRow.year,
+                            category: cat,
+                          });
+                          handleBarEnter(e, yearRow.year, cat, value);
+                        }}
+                        onMouseLeave={() => {
+                          setHoveredBar(null);
+                          handleLeave();
+                        }}
+                        onClick={() => setSelectedYear(yearRow.year)}
+                      />
+                    </g>
+                  );
+                })}
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+     </div>
+  );
+
+  const chartBody = (
+    <div className="w-full flex flex-col gap-3">
+      {chartCore}
+      {pureCanvas && (
+        <>
+          {/* Dynamic Active Toggles */}
+          <div
+            className="flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+            role="group"
+            aria-label="Odak yılı"
+          >
+            {years.map((year) => {
+              const isSelected = selectedYear === year;
+              return (
+                <button
+                  key={`year-focus-pure-${year}`}
+                  type="button"
+                  className="rounded-md border px-2.5 py-1 text-[10px] font-semibold transition-all duration-200"
+                  style={{
+                    borderColor: isSelected
+                      ? "rgba(122,242,152,0.35)"
+                      : "rgba(255,255,255,0.05)",
+                    backgroundColor: isSelected
+                      ? "rgba(122,242,152,0.08)"
+                      : "transparent",
+                    color: isSelected ? "#ffffff" : "rgba(255,255,255,0.45)",
+                  }}
+                  onClick={() => setSelectedYear(year)}
+                >
+                  {year}
+                </button>
+              );
+            })}
+          </div>
+
+          <div
+            className="flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl font-sans"
+            role="group"
+            aria-label="Görev kategorileri"
+          >
+            {activities.map((act) => {
+              const isActive = activeLines[act];
+              const color = categoryColors[act] ?? "#8c98ad";
+              const isLocked = activeCategoryCount <= 1 && isActive;
+              return (
+                <button
+                  key={`legend-toggle-pure-${act}`}
+                  type="button"
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-md border text-[10px] font-semibold select-none transition-all duration-200"
+                  aria-pressed={isActive}
+                  disabled={isLocked}
+                  style={{
+                    borderColor: isActive ? `${color}40` : "rgba(255,255,255,0.05)",
+                    backgroundColor: isActive ? `${color}08` : "transparent",
+                    color: isActive
+                      ? "#ffffff"
+                      : "rgba(255,255,255,0.35)",
+                    opacity: isLocked ? 0.72 : 1,
+                  }}
+                  onClick={() => toggleCategory(act)}
+                >
+                  <span
+                    className="w-1.5 h-1.5 rounded-full"
+                    style={{
+                      backgroundColor: color,
+                      opacity: isActive ? 1 : 0.2,
+                    }}
+                  />
+                  {activityLabelsTr[act] ?? act}
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+
+  if (pureCanvas) return chartBody;
+
   return (
     <ArticleChartFrame
       eyebrow="GÖREV DAĞILIMI ANALİZİ"
@@ -220,194 +496,7 @@ export default function ItfaiyeCategoryGrowth() {
         </div>
       }
     >
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto">
-        {/* HTML Tooltip */}
-        <AnimatePresence>
-          {tooltip && (
-            <motion.div
-              initial={{ opacity: 0, y: 6, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 350, damping: 25 }}
-              className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3 py-2 text-xs shadow-2xl backdrop-blur-md max-w-[240px]"
-              style={{
-                left: tooltip.x,
-                top: tooltip.y,
-                transform: "translate(-50%, -100%)",
-              }}
-            >
-              <div className="font-bold text-foreground mb-1 pb-0.5 border-b border-white/10">
-                {tooltip.title}
-              </div>
-              <div className="space-y-0.5 max-h-[140px] overflow-y-auto pr-1">
-                {tooltip.items.map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between gap-4"
-                  >
-                    <div className="flex items-center gap-1 min-w-0">
-                      <span
-                        className="w-1.5 h-1.5 rounded-full shrink-0"
-                        style={{ backgroundColor: item.color }}
-                      />
-                      <span className="truncate text-muted-foreground text-[10px]">
-                        {item.label}
-                      </span>
-                    </div>
-                    <span className="font-bold text-foreground shrink-0">
-                      {formatNumber(item.value, "tr-TR")}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="h-auto w-full min-w-[500px] overflow-visible"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          {/* Y Axis Grid Lines */}
-          {[0, 0.25, 0.5, 0.75, 1].map((p) => {
-            const val = maxSingleVolume * p;
-            const y = yScale(val);
-            return (
-              <g key={`grid-y-${p}`}>
-                <line
-                  x1={padding.left}
-                  x2={width - padding.right}
-                  y1={y}
-                  y2={y}
-                  stroke="rgba(255,255,255,0.06)"
-                  strokeDasharray="4 6"
-                />
-                <text
-                  x={padding.left - 8}
-                  y={y + 3}
-                  textAnchor="end"
-                  className="fill-[rgba(243,241,235,0.45)] text-[9px] font-mono"
-                >
-                  {formatNumber(Math.round(val / 500) * 500, "tr-TR")}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* X Axis Labels */}
-          {years.map((year) => {
-            const x = xScale(year) ?? 0;
-            return (
-              <g key={`grid-x-${year}`}>
-                <line
-                  x1={x}
-                  x2={x}
-                  y1={padding.top}
-                  y2={height - padding.bottom}
-                  stroke="rgba(255,255,255,0.02)"
-                />
-                <text
-                  x={x}
-                  y={height - 6}
-                  textAnchor="middle"
-                  className="fill-[rgba(243,241,235,0.65)] text-[10px] font-semibold"
-                >
-                  {year}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* Grouped Bar Chart Rendering */}
-          <g>
-            {data.yearly_totals.map((yearRow: any) => {
-              const x = xScale(yearRow.year) ?? 0;
-              const groupWidth = 48; // width of group
-              const barGap = 1.5; // gap between bars
-              const totalGaps = barGap * (activeCats.length - 1);
-              const barWidth = Math.max(
-                3,
-                (groupWidth - totalGaps) / activeCats.length,
-              );
-
-              return (
-                <g key={`year-group-${yearRow.year}`}>
-                  {activeCats.map((cat, idx) => {
-                    const value = yearRow[cat] ?? 0;
-                    const barHeight = Math.max(
-                      0.5,
-                      height - padding.bottom - yScale(value),
-                    );
-                    const y = yScale(value);
-                    const color = categoryColors[cat] ?? "#8c98ad";
-
-                    // Offset calculation
-                    const offset =
-                      (idx - (activeCats.length - 1) / 2) * (barWidth + barGap);
-                    const barX = x + offset - barWidth / 2;
-
-                    const isSelectedYear = selectedYear === yearRow.year;
-                    const isAnyBarHovered = hoveredBar !== null;
-                    const isThisBarHovered =
-                      hoveredBar?.year === yearRow.year &&
-                      hoveredBar?.category === cat;
-
-                    // Opacity setup
-                    let opacity = 0.82;
-                    if (isAnyBarHovered) {
-                      opacity = isThisBarHovered ? 1.0 : 0.35;
-                    } else if (isSelectedYear) {
-                      opacity = 0.95;
-                    }
-
-                    return (
-                      <g key={`bar-${yearRow.year}-${cat}`}>
-                        <motion.rect
-                          x={barX}
-                          y={y}
-                          width={barWidth}
-                          height={barHeight}
-                          fill={color}
-                          opacity={opacity}
-                          rx={barWidth > 4 ? 2 : 0}
-                          layout
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 26,
-                          }}
-                        />
-                        {/* Interactive Hover capture overlay */}
-                        <rect
-                          x={barX - 1}
-                          y={padding.top}
-                          width={barWidth + 2}
-                          height={innerHeight}
-                          fill="transparent"
-                          style={{ cursor: "pointer" }}
-                          onMouseEnter={(e) => {
-                            setHoveredBar({
-                              year: yearRow.year,
-                              category: cat,
-                            });
-                            handleBarEnter(e, yearRow.year, cat, value);
-                          }}
-                          onMouseLeave={() => {
-                            setHoveredBar(null);
-                            handleLeave();
-                          }}
-                          onClick={() => setSelectedYear(yearRow.year)}
-                        />
-                      </g>
-                    );
-                  })}
-                </g>
-              );
-            })}
-          </g>
-        </svg>
-      </div>
+      {chartBody}
 
       {/* Dynamic Active Toggles */}
       <div

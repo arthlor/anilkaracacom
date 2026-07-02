@@ -6,12 +6,13 @@ import {
   getArticleHref,
   getEntrySummary,
   groupEntriesByPillar,
+  isPublicEntryData,
   sortEntriesByFeatureAndDate,
 } from "../../lib/content";
 import MainLayout from "../../layouts/MainLayout.astro";
 
 const articles = sortEntriesByFeatureAndDate(
-  await getCollection("articles", ({ data }) => data.published),
+  await getCollection("articles", ({ data }) => isPublicEntryData(data)),
 );
 const grouped = groupEntriesByPillar(articles).filter(
   (section) => section.entries.length > 0,
@@ -27,7 +28,7 @@ const formatDate = (date: Date) =>
 
 <MainLayout
   title="Articles"
-  description="Published article archive for Anil Karaca, translated into English and grouped by data journalism, systems analysis, and political reporting."
+  description="Published article archive for Anil Karaca in English and Turkish, grouped by data journalism, systems analysis, and political reporting."
 >
   <section class="articles-archive" data-articles-archive>
     <div class="articles-archive__shell">
@@ -36,8 +37,8 @@ const formatDate = (date: Date) =>
           <p class="articles-archive__eyebrow">Published archive</p>
           <h1>Articles</h1>
           <p class="articles-archive__subtitle">
-            Data journalism, civic analysis, and political reporting translated
-            into a compact English reading archive.
+            Data journalism, civic analysis, and political reporting in English
+            and Turkish, grouped by topic and reading depth.
           </p>
         </div>
       </header>
@@ -71,6 +72,40 @@ const formatDate = (date: Date) =>
             ))
           }
         </div>
+
+        <div
+          class="articles-archive__filter-group"
+          role="group"
+          aria-label="Article languages"
+        >
+          <button
+            class="articles-archive__filter"
+            type="button"
+            data-lang-filter="all"
+            data-active="true"
+            aria-pressed="true"
+          >
+            All languages
+          </button>
+          <button
+            class="articles-archive__filter"
+            type="button"
+            data-lang-filter="en"
+            data-active="false"
+            aria-pressed="false"
+          >
+            English
+          </button>
+          <button
+            class="articles-archive__filter"
+            type="button"
+            data-lang-filter="tr"
+            data-active="false"
+            aria-pressed="false"
+          >
+            Turkish
+          </button>
+        </div>
       </div>
 
       <div class="articles-archive__content">
@@ -98,6 +133,7 @@ const formatDate = (date: Date) =>
                         class="article-card"
                         data-article-card
                         data-pillar={section.pillar}
+                        data-language={entry.data.language}
                         data-featured={String(entry.data.featured)}
                       >
                         <a
@@ -168,7 +204,11 @@ const formatDate = (date: Date) =>
 
   if (archive instanceof HTMLElement) {
     const filterButtons = Array.from(archive.querySelectorAll("[data-filter]"));
+    const languageButtons = Array.from(
+      archive.querySelectorAll("[data-lang-filter]"),
+    );
     const sections = Array.from(archive.querySelectorAll("[data-section]"));
+    const cards = Array.from(archive.querySelectorAll("[data-article-card]"));
     const validFilters = new Set(
       filterButtons
         .map((button) =>
@@ -176,55 +216,112 @@ const formatDate = (date: Date) =>
         )
         .filter(Boolean),
     );
+    const validLanguages = new Set(["all", "en", "tr"]);
 
-    const applyFilter = (filter, { updateUrl = true } = {}) => {
-      const nextFilter = validFilters.has(filter) ? filter : "all";
+    const applyFilters = (
+      sectionFilter,
+      languageFilter,
+      { updateUrl = true } = {},
+    ) => {
+      const nextSection = validFilters.has(sectionFilter)
+        ? sectionFilter
+        : "all";
+      const nextLanguage = validLanguages.has(languageFilter)
+        ? languageFilter
+        : "all";
 
       filterButtons.forEach((button) => {
         if (button instanceof HTMLElement) {
-          const isActive = button.dataset.filter === nextFilter;
+          const isActive = button.dataset.filter === nextSection;
+          button.dataset.active = String(isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        }
+      });
+
+      languageButtons.forEach((button) => {
+        if (button instanceof HTMLElement) {
+          const isActive = button.dataset.langFilter === nextLanguage;
           button.dataset.active = String(isActive);
           button.setAttribute("aria-pressed", String(isActive));
         }
       });
 
       sections.forEach((section) => {
-        if (section instanceof HTMLElement) {
-          const visible =
-            nextFilter === "all" || section.dataset.section === nextFilter;
-          section.toggleAttribute("hidden", !visible);
-        }
+        if (!(section instanceof HTMLElement)) return;
+
+        const sectionVisible =
+          nextSection === "all" || section.dataset.section === nextSection;
+        let visibleCards = 0;
+
+        cards.forEach((card) => {
+          if (!(card instanceof HTMLElement)) return;
+          if (!section.contains(card)) return;
+
+          const languageMatches =
+            nextLanguage === "all" || card.dataset.language === nextLanguage;
+          const cardVisible = sectionVisible && languageMatches;
+          card.toggleAttribute("hidden", !cardVisible);
+          if (cardVisible) visibleCards += 1;
+        });
+
+        section.toggleAttribute("hidden", !sectionVisible || visibleCards === 0);
       });
 
       if (updateUrl) {
         const url = new URL(window.location.href);
-        if (nextFilter === "all") {
+        if (nextSection === "all") {
           url.searchParams.delete("section");
         } else {
-          url.searchParams.set("section", nextFilter);
+          url.searchParams.set("section", nextSection);
         }
-        window.history.pushState({ section: nextFilter }, "", url);
+
+        if (nextLanguage === "all") {
+          url.searchParams.delete("lang");
+        } else {
+          url.searchParams.set("lang", nextLanguage);
+        }
+
+        window.history.pushState(
+          { section: nextSection, lang: nextLanguage },
+          "",
+          url,
+        );
       }
     };
 
     filterButtons.forEach((button) => {
       button.addEventListener("click", () => {
-        if (button instanceof HTMLElement && button.dataset.filter) {
-          applyFilter(button.dataset.filter);
-        }
+        if (!(button instanceof HTMLElement) || !button.dataset.filter) return;
+        const currentLanguage =
+          new URL(window.location.href).searchParams.get("lang") || "all";
+        applyFilters(button.dataset.filter, currentLanguage);
       });
     });
 
-    const initialFilter = new URL(window.location.href).searchParams.get(
-      "section",
-    );
-    if (initialFilter) {
-      applyFilter(initialFilter, { updateUrl: false });
-    }
+    languageButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!(button instanceof HTMLElement) || !button.dataset.langFilter) {
+          return;
+        }
+        const currentSection =
+          new URL(window.location.href).searchParams.get("section") || "all";
+        applyFilters(currentSection, button.dataset.langFilter);
+      });
+    });
+
+    const initialSection =
+      new URL(window.location.href).searchParams.get("section") || "all";
+    const initialLanguage =
+      new URL(window.location.href).searchParams.get("lang") || "all";
+    applyFilters(initialSection, initialLanguage, { updateUrl: false });
 
     window.addEventListener("popstate", () => {
-      const filter = new URL(window.location.href).searchParams.get("section");
-      applyFilter(filter || "all", { updateUrl: false });
+      const url = new URL(window.location.href);
+      applyFilters(
+        url.searchParams.get("section") || "all",
+        url.searchParams.get("lang") || "all",
+        { updateUrl: false },
+      );
     });
   }
 </script>

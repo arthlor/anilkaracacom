@@ -1,0 +1,351 @@
+---
+import Icon from "@components/Icon.astro";
+import MainLayout from "@layouts/MainLayout.astro";
+
+const resumeVariants = [
+  {
+    title: "Product Specialist & Developer CV",
+    subtitle: "Mobil Ürün Uzmanı & Geliştirici",
+    subtitleEn: "Mobile Product Specialist & Developer",
+    description: "Focused on end-to-end product delivery, React Native mobile UX, onboarding experiences, and retention strategies.",
+    descriptionTr: "Uçtan uca özellik setlerinin teslimi, React Native mobil UX, işe uyum (onboarding) deneyimleri ve kullanıcıyı elde tutma stratejileri odaklı.",
+    tags: ["Product Discovery", "React Native", "Expo", "UX Design", "RevenueCat", "Agile"],
+    pathEn: "/cvs/Anil_Karaca_Product_Specialist.pdf",
+    pathTr: "/cvs/Anil_Karaca_Product_Specialist_TR.pdf",
+    filenameEn: "Anil_Karaca_Product_Specialist.pdf",
+    filenameTr: "Anil_Karaca_Product_Specialist_TR.pdf"
+  },
+  {
+    title: "Data Journalist & Analyst CV",
+    subtitle: "Veri Gazetecisi & Veri Analisti",
+    subtitleEn: "Data Journalist & Data Analyst",
+    description: "Geared towards complex dataset modeling, ETL pipelines, geospatial analysis, scrollytelling, and newsroom visualizations.",
+    descriptionTr: "Karmaşık veri setlerinin modellenmesi, ETL süreçleri, coğrafi bilgi sistemleri (QGIS) ve scrollytelling veri hikayeleri odaklı.",
+    tags: ["Python", "SQL", "Pandas", "ETL", "QGIS", "D3.js", "Plotly"],
+    pathEn: "/cvs/Anil_Karaca_Data_CV.pdf",
+    pathTr: "/cvs/Anil_Karaca_Data_CV_TR.pdf",
+    filenameEn: "Anil_Karaca_Data_CV.pdf",
+    filenameTr: "Anil_Karaca_Data_CV_TR.pdf"
+  },
+  {
+    title: "Corporate Communications Specialist CV",
+    subtitle: "Kurumsal İletişim Uzmanı",
+    subtitleEn: "Corporate Communications Specialist",
+    description: "Tailored for stakeholder management, digital media campaigns, video production, and strategic brand storytelling.",
+    descriptionTr: "Paydaş yönetimi, kurumsal dijital medya kampanyaları, video prodüksiyonu ve stratejik marka hikayeciliği odaklı.",
+    tags: ["Communications Strategy", "Social Media", "Agency Briefing", "Video Production", "Copywriting"],
+    pathEn: "/cvs/Anil_Karaca_Communications_Manager.pdf",
+    pathTr: "/cvs/Anil_Karaca_Communications_Manager_TR.pdf",
+    filenameEn: "Anil_Karaca_Communications_Manager.pdf",
+    filenameTr: "Anil_Karaca_Communications_Manager_TR.pdf"
+  }
+];
+---
+
+<MainLayout
+  title="Resumes"
+  description="Download specialized versions of Anil Karaca's resume tailored to different career paths: Product Specialist, Data Analyst, and Corporate Communications."
+>
+  <section class="cv-page">
+    <div class="cv-page__shell">
+      <header class="cv-page__header">
+        <p class="cv-page__eyebrow">Curriculum Vitae</p>
+        <h1>Select a Resume</h1>
+        <p class="cv-page__subtitle">
+          Download a specialized version of my resume tailored to the role you are hiring for, in either English or Turkish.
+        </p>
+      </header>
+
+      <div class="cv-page__grid">
+        {
+          resumeVariants.map((variant) => (
+            <div class="cv-card">
+              <div class="cv-card__glow" />
+              <div class="cv-card__content">
+                <div class="cv-card__header-block">
+                  <h2 class="cv-card__title">{variant.title}</h2>
+                  <p class="cv-card__subtitle">{variant.subtitleEn} <span class="cv-card__subtitle-sep">·</span> {variant.subtitle}</p>
+                </div>
+                
+                <div class="cv-card__body-block">
+                  <p class="cv-card__desc">{variant.description}</p>
+                  <p class="cv-card__desc-tr">{variant.descriptionTr}</p>
+                </div>
+
+                <div class="cv-card__tags">
+                  {variant.tags.map((tag) => (
+                    <span class="cv-card__tag">{tag}</span>
+                  ))}
+                </div>
+
+                <div class="cv-card__actions">
+                  <a
+                    href={variant.pathEn}
+                    download={variant.filenameEn}
+                    class="cv-btn cv-btn--primary"
+                    data-track-event="download_resume"
+                    data-track-label={`CV Page - ${variant.title} - EN`}
+                  >
+                    <Icon name="download" size={14} />
+                    English PDF
+                  </a>
+                  <a
+                    href={variant.pathTr}
+                    download={variant.filenameTr}
+                    class="cv-btn cv-btn--secondary"
+                    data-track-event="download_resume"
+                    data-track-label={`CV Page - ${variant.title} - TR`}
+                  >
+                    <Icon name="download" size={14} />
+                    Türkçe PDF
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</MainLayout>
+
+<style>
+  .cv-page {
+    padding: 7.5rem 0 5rem;
+    min-height: 85vh;
+  }
+
+  .cv-page__shell {
+    width: min(100% - 2rem, 1200px);
+    margin-inline: auto;
+  }
+
+  .cv-page__header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 3rem;
+    margin-bottom: 4rem;
+  }
+
+  .cv-page__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--premium-accent, #7af298);
+  }
+
+  .cv-page__header h1 {
+    margin-top: 0.6rem;
+    font-size: 4rem;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-family: var(--font-display, "Space Grotesk", sans-serif);
+    font-weight: 800;
+    color: hsl(var(--foreground));
+  }
+
+  .cv-page__subtitle {
+    max-width: 38rem;
+    margin-top: 1.2rem;
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Grid & Cards */
+  .cv-page__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    gap: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .cv-page__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .cv-card {
+    position: relative;
+    border-radius: var(--radius, 12px);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .cv-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(122, 242, 152, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .cv-card__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(122, 242, 152, 0.06), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+  }
+
+  .cv-card:hover .cv-card__glow {
+    opacity: 1;
+  }
+
+  .cv-card__content {
+    padding: 2.25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 22rem;
+  }
+
+  .cv-card__header-block {
+    margin-bottom: 1.25rem;
+  }
+
+  .cv-card__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-display, "Space Grotesk", sans-serif);
+    color: hsl(var(--foreground));
+    letter-spacing: -0.01em;
+  }
+
+  .cv-card__subtitle {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--premium-accent, #7af298);
+    margin-top: 0.4rem;
+  }
+
+  .cv-card__subtitle-sep {
+    color: rgba(255, 255, 255, 0.25);
+    margin-inline: 0.4rem;
+  }
+
+  .cv-card__body-block {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .cv-card__desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: hsl(var(--foreground));
+    opacity: 0.85;
+  }
+
+  .cv-card__desc-tr {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: hsl(var(--muted-foreground));
+    font-style: italic;
+  }
+
+  .cv-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .cv-card__tag {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: hsl(var(--muted-foreground));
+  }
+
+  .cv-card__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: auto;
+  }
+
+  .cv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .cv-btn--primary {
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+  }
+
+  .cv-btn--primary:hover {
+    background: #ffffff;
+    transform: translateY(-1px);
+  }
+
+  .cv-btn--secondary {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: hsl(var(--foreground));
+  }
+
+  .cv-btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+  }
+</style>
+
+<script>
+  // Dynamic glow effect that tracks cursor coordinates over cards, including scroll updates to prevent stalling
+  const cards = document.querySelectorAll(".cv-card") as NodeListOf<HTMLElement>;
+  let lastClientX = 0;
+  let lastClientY = 0;
+  let hoveredCard: HTMLElement | null = null;
+
+  function updateCardGlow(card: HTMLElement, clientX: number, clientY: number) {
+    const rect = card.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+    card.style.setProperty("--x", `${x}px`);
+    card.style.setProperty("--y", `${y}px`);
+  }
+
+  cards.forEach((card) => {
+    card.addEventListener("mouseenter", () => {
+      hoveredCard = card;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      if (hoveredCard === card) {
+        hoveredCard = null;
+      }
+    });
+
+    card.addEventListener("mousemove", (e: MouseEvent) => {
+      lastClientX = e.clientX;
+      lastClientY = e.clientY;
+      hoveredCard = card;
+      updateCardGlow(card, e.clientX, e.clientY);
+    });
+  });
+
+  window.addEventListener("scroll", () => {
+    if (hoveredCard) {
+      updateCardGlow(hoveredCard, lastClientX, lastClientY);
+    }
+  }, { passive: true });
+</script>

@@ -743,6 +743,108 @@ pre {
   .viz-controls {
     justify-content: flex-start;
   }
+
+  .viz-toggle {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding-inline: 0.95rem;
+  }
+
+  .viz-select {
+    min-height: 2.75rem;
+  }
+}
+
+.viz-controls-drawer {
+  width: 100%;
+}
+
+.viz-controls-drawer__trigger {
+  display: flex;
+  min-height: 2.75rem;
+  width: 100%;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.65rem 1rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--foreground));
+}
+
+.viz-controls-drawer__trigger::-webkit-details-marker {
+  display: none;
+}
+
+.viz-controls-drawer__trigger::after {
+  content: "▾";
+  color: hsl(var(--primary));
+  transition: transform 180ms ease;
+}
+
+.viz-controls-drawer[open] .viz-controls-drawer__trigger::after {
+  transform: rotate(180deg);
+}
+
+.viz-controls-drawer__panel {
+  margin-top: 0.65rem;
+}
+
+.viz-controls-drawer__panel .viz-controls {
+  justify-content: flex-start;
+}
+
+.viz-scroll-region {
+  position: relative;
+}
+
+.viz-scroll-region::before,
+.viz-scroll-region::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 12;
+  width: 1.75rem;
+  pointer-events: none;
+}
+
+.viz-scroll-region::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(10, 10, 10, 0.92), transparent);
+}
+
+.viz-scroll-region::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(10, 10, 10, 0.92), transparent);
+}
+
+.viz-scroll-hint {
+  display: none;
+  margin-bottom: 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+@media (max-width: 1024px) {
+  .viz-scroll-hint {
+    display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .article-chart-mobile-readout span[aria-hidden="true"] {
+    transition: none;
+  }
 }
 
 .viz-toggle-group {

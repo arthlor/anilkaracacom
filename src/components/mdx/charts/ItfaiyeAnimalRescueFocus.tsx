@@ -47,7 +47,11 @@ const fullMonthNames = [
   "Aralık",
 ];
 
-export default function ItfaiyeAnimalRescueFocus() {
+export default function ItfaiyeAnimalRescueFocus({
+  pureCanvas = false,
+}: {
+  pureCanvas?: boolean;
+}) {
   const years = useMemo(() => [2021, 2022, 2023, 2024, 2025], []);
 
   // States
@@ -241,56 +245,10 @@ export default function ItfaiyeAnimalRescueFocus() {
     setTooltip(null);
   };
 
-  return (
-    <ArticleChartFrame
-      eyebrow="GÖREV KONSANTRASYONU"
-      title="Haziran Ayındaki Kurtarma Yoğunluğu"
-      description="Hayvan kurtarma vakaları her yıl Haziran ayında belirgin bir yükseliş göstererek aylık 3.000 seviyesini aşmaktadır. Bu yoğunluk, yaz mevsiminin başlamasıyla birlikte sokaktaki hareketliliğin artmasından kaynaklanmaktadır."
-      takeaway="Mevsimsel artışların öngörülebilir olması, yerel yönetimlerin operasyonel planlamayı ve kaynak dağılımını bu dönemlere göre optimize etmesine olanak tanır."
-      primaryMetric={{
-        label: `${selectedYear} Toplam Kurtarma`,
-        value: formatNumber(yearStats.total, "tr-TR"),
-        detail: `Toplam görevlerin %${yearStats.share}'i`,
-      }}
-      interactionHint="Yılları karşılaştırmak için ayların üzerine gelin. Odaklanmak istediğiniz yılı göstergeden seçebilirsiniz."
-      density="compact"
-      aside={
-        <div className="space-y-3">
-          <div className="viz-stat-grid">
-            <div className="viz-stat border-t-0 pt-0">
-              <span className="viz-label">Odak Yıl</span>
-              <strong>{selectedYear}</strong>
-            </div>
-            <div className="viz-stat">
-              <span className="viz-label">Haziran Vakaları</span>
-              <strong>{formatNumber(yearStats.juneVal, "tr-TR")}</strong>
-            </div>
-            <div className="viz-stat">
-              <span className="viz-label">Yaz / Kış Oranı</span>
-              <strong>{yearStats.ratio} Kat Zirve</strong>
-            </div>
-          </div>
-
-          <div className="viz-divider" />
-
-          <p className="text-[11px] leading-relaxed text-muted-foreground">
-            <strong>Yaz/Kış Oranı</strong>, Haziran ayındaki vaka sayısının Ocak
-            ve Şubat ayları ortalamasına oranını ifade eder. İtfaiye ekipleri,{" "}
-            {selectedYear} yılının Haziran ayında kış aylarına kıyasla{" "}
-            <strong className="text-[#0ea5e9]">{yearStats.ratio} kat</strong>{" "}
-            daha fazla hayvan kurtarma faaliyeti yürütmüştür.
-          </p>
-        </div>
-      }
-      footer={
-        <div className="viz-note flex flex-wrap gap-x-4 gap-y-1">
-          <span>5 yıllık görev döngüsü karşılaştırması</span>
-          <span>•</span>
-          <span>Yılı vurgulamak için göstergedeki noktalara tıklayın</span>
-        </div>
-      }
-    >
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto">
+  const chartBody = (
+    <div className="w-full">
+      <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+        <p className="viz-scroll-hint">Kaydırarak tüm ayları görün →</p>
         {/* HTML Tooltip */}
         <AnimatePresence>
           {tooltip && (
@@ -515,6 +473,61 @@ export default function ItfaiyeAnimalRescueFocus() {
           );
         })}
       </div>
+    </div>
+  );
+
+  if (pureCanvas) return chartBody;
+
+  return (
+    <ArticleChartFrame
+      eyebrow="GÖREV KONSANTRASYONU"
+      title="Haziran Ayındaki Kurtarma Yoğunluğu"
+      description="Hayvan kurtarma vakaları her yıl Haziran ayında belirgin bir yükseliş göstererek aylık 3.000 seviyesini aşmaktadır. Bu yoğunluk, yaz mevsiminin başlamasıyla birlikte sokaktaki hareketliliğin artmasından kaynaklanmaktadır."
+      takeaway="Mevsimsel artışların öngörülebilir olması, yerel yönetimlerin operasyonel planlamayı ve kaynak dağılımını bu dönemlere göre optimize etmesine olanak tanır."
+      primaryMetric={{
+        label: `${selectedYear} Toplam Kurtarma`,
+        value: formatNumber(yearStats.total, "tr-TR"),
+        detail: `Toplam görevlerin %${yearStats.share}'i`,
+      }}
+      interactionHint="Yılları karşılaştırmak için ayların üzerine gelin. Odaklanmak istediğiniz yılı göstergeden seçebilirsiniz."
+      density="compact"
+      aside={
+        <div className="space-y-3">
+          <div className="viz-stat-grid">
+            <div className="viz-stat border-t-0 pt-0">
+              <span className="viz-label">Odak Yıl</span>
+              <strong>{selectedYear}</strong>
+            </div>
+            <div className="viz-stat">
+              <span className="viz-label">Haziran Vakaları</span>
+              <strong>{formatNumber(yearStats.juneVal, "tr-TR")}</strong>
+            </div>
+            <div className="viz-stat">
+              <span className="viz-label">Yaz / Kış Oranı</span>
+              <strong>{yearStats.ratio} Kat Zirve</strong>
+            </div>
+          </div>
+
+          <div className="viz-divider" />
+
+          <p className="text-[11px] leading-relaxed text-muted-foreground">
+            <strong>Yaz/Kış Oranı</strong>, Haziran ayındaki vaka sayısının Ocak
+            ve Şubat ayları ortalamasına oranını ifade eder. İtfaiye ekipleri,{" "}
+            {selectedYear} yılının Haziran ayında kış aylarına kıyasla{" "}
+            <strong className="text-[#0ea5e9]">{yearStats.ratio} kat</strong>{" "}
+            daha fazla hayvan kurtarma faaliyeti yürütmüştür.
+          </p>
+        </div>
+      }
+      footer={
+        <div className="viz-note flex flex-wrap gap-x-4 gap-y-1">
+          <span>5 yıllık görev döngüsü karşılaştırması</span>
+          <span>•</span>
+          <span>Yılı vurgulamak için göstergedeki noktalara tıklayın</span>
+        </div>
+      }
+    >
+      {chartBody}
     </ArticleChartFrame>
   );
 }

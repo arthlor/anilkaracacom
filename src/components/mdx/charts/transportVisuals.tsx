@@ -298,14 +298,14 @@ export function TransportTrendPanel({
             );
           })}
 
-          {/* Interactive touch-scrub area (touch-none prevents page scroll conflict) */}
+          {/* Interactive touch-scrub area */}
           <rect
             x={padding.left}
             y={padding.top}
             width={innerWidth}
             height={innerHeight}
             fill="transparent"
-            className="touch-none"
+            className="hidden md:block"
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const clientX = e.clientX - rect.left;
@@ -517,7 +517,7 @@ export function PassengerMixPanel({
             width={innerWidth}
             height={innerHeight}
             fill="transparent"
-            className="touch-none"
+            className="hidden md:block"
             onMouseMove={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const clientX = e.clientX - rect.left;

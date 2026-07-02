@@ -11,6 +11,10 @@ interface Props {
   noindex?: boolean | undefined;
   article?: boolean | undefined;
   lang?: string | undefined;
+  articlePublishedTime?: string | undefined;
+  articleModifiedTime?: string | undefined;
+  articleAuthor?: string | undefined;
+  articleSection?: string | undefined;
 }
 
 const {
@@ -20,6 +24,10 @@ const {
   noindex,
   article = false,
   lang = "en",
+  articlePublishedTime,
+  articleModifiedTime,
+  articleAuthor,
+  articleSection,
 } = Astro.props;
 ---
 
@@ -30,6 +38,10 @@ const {
   noindex={noindex}
   article={article}
   lang={lang}
+  articlePublishedTime={articlePublishedTime}
+  articleModifiedTime={articleModifiedTime}
+  articleAuthor={articleAuthor}
+  articleSection={articleSection}
 >
   <div class="portfolio-shell">
     <div class="portfolio-shell__texture" aria-hidden="true"></div>

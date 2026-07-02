@@ -1,12 +1,19 @@
 ---
+import { getStoryStepById } from "../../lib/storyStepContext";
+
 interface Props {
   id: string;
   label?: string;
-  title: string;
-  summary: string;
+  title?: string;
+  summary?: string;
 }
 
 const { id, label, title, summary } = Astro.props;
+
+const stepMeta = getStoryStepById(id);
+const resolvedLabel = label ?? stepMeta?.label;
+const resolvedTitle = title ?? stepMeta?.title ?? id;
+const resolvedSummary = summary ?? stepMeta?.summary ?? "";
 ---
 
 <section
@@ -16,22 +23,26 @@ const { id, label, title, summary } = Astro.props;
 >
   <div class="max-w-4xl space-y-2 px-3 md:px-5">
     {
-      label && (
+      resolvedLabel && (
         <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-primary/70">
-          {label}
+          {resolvedLabel}
         </p>
       )
     }
     <h3
       class="font-display text-2xl font-bold leading-tight text-foreground sm:text-[1.7rem]"
     >
-      {title}
+      {resolvedTitle}
     </h3>
-    <p
-      class="max-w-3xl text-sm leading-6 text-muted-foreground/90 sm:text-base"
-    >
-      {summary}
-    </p>
+    {
+      resolvedSummary && (
+        <p
+          class="max-w-3xl text-sm leading-6 text-muted-foreground/90 sm:text-base"
+        >
+          {resolvedSummary}
+        </p>
+      )
+    }
     <div class="prose-article max-w-3xl text-sm leading-relaxed">
       <slot />
     </div>

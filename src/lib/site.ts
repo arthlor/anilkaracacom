@@ -15,9 +15,9 @@ export const siteConfig = {
   name: PUBLIC_SITE_NAME,
   title: "Anil Karaca",
   personName: "Anil Karaca",
-  role: "Data Journalist & Editorial Product Engineer",
+  role: "Product Specialist, Data Journalist & Corporate Communications Expert",
   description:
-    "The professional work of Anil Karaca: A synthesis of data journalism, civic analysis, and high-performance digital product engineering.",
+    "The professional portfolio of Anil Karaca, synthesising mobile product development (React Native/Expo), data journalism (SQL/Python/D3.js), and strategic corporate communications.",
   url: PUBLIC_SITE_URL,
   contactEmail: PUBLIC_CONTACT_EMAIL,
   twitterHandle: PUBLIC_TWITTER_HANDLE,

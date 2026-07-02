@@ -4,8 +4,6 @@ import aiFitCheckIcon from "../assets/images/projects/aifitcheckicon.webp";
 import anilKaracaSite from "../assets/images/projects/anilkaraca-site.webp";
 import bohcaIcon from "../assets/images/projects/bohca-icon.png";
 import choreusIcon from "../assets/images/projects/choreusicon.webp";
-import dresinTuncaySite from "../assets/images/projects/dresintuncay-site.webp";
-import pimlicoImage from "../assets/images/projects/pimlico.webp";
 import yeserIcon from "../assets/images/projects/yesericon.webp";
 
 // Workplace Logos
@@ -14,39 +12,6 @@ import izbetonLogo from "../assets/images/workplaces/izbeton.webp";
 import birgunLogo from "../assets/images/workplaces/birgun.webp";
 import dokuz8Logo from "../assets/images/workplaces/dokuz8.webp";
 import sonsozLogo from "../assets/images/workplaces/sonsoz.webp";
-
-export const resumeLinks = {
-  master: "/anilkaraca.pdf",
-} as const;
-
-export const expertiseLanes = [
-  {
-    slug: "data-journalism",
-    title: "Data Journalism",
-    kicker: "Reporting, analysis, and visual systems",
-    summary:
-      "I decode complex public datasets into investigations and interactive stories that make power, politics, and urban systems legible.",
-  },
-  {
-    slug: "developer",
-    title: "Product Engineer",
-    kicker: "Mobile, frontend, and systems delivery",
-    summary:
-      "I architect mobile apps and editorial interfaces with React Native and Astro, focused on performance and seamless product execution.",
-  },
-] as const;
-
-export const journalismMethods = [
-  "Deep investigations built from election records and civic micro-data",
-  "Interactive features that merge field reporting with rigorous analysis",
-  "Custom visual systems for making dense institutional data accessible",
-] as const;
-
-export const developerMethods = [
-  "Consumer iOS applications shipped from concept to App Store release",
-  "High-performance frontend systems and tailored editorial products",
-  "Strategic use of AI to accelerate delivery without compromising integrity",
-] as const;
 
 export type AppProject = {
   name: string;
@@ -132,6 +97,7 @@ export type ProjectShowcaseItem = {
   impact?: string;
   tags: string[];
   image: string | ImageMetadata;
+  imageFit?: "cover" | "contain";
   ctaLabel: string;
   external?: boolean;
 };
@@ -149,9 +115,7 @@ export const primaryProductProjectSlugs = [
   "yeser",
   "choreus",
   "ai-fit-check",
-  "pimlico",
   "anil-karaca",
-  "op-dr-zeynep-esin-tuncay",
 ] as const;
 
 export const projectShowcaseSections: ProjectShowcaseSection[] = [
@@ -188,6 +152,7 @@ export const projectShowcaseSections: ProjectShowcaseSection[] = [
           "Shows shipped mobile product work beyond prototypes or experiments.",
         tags: ["React Native", "Expo", "Habit Design"],
         image: yeserIcon,
+        imageFit: "contain",
         ctaLabel: "Open case study",
       },
       {
@@ -216,6 +181,7 @@ export const projectShowcaseSections: ProjectShowcaseSection[] = [
           "Shows experimentation with AI features inside a real mobile product surface.",
         tags: ["React Native", "Expo", "AI Product"],
         image: aiFitCheckIcon,
+        imageFit: "contain",
         ctaLabel: "Open case study",
       },
     ],
@@ -241,44 +207,9 @@ export const projectShowcaseSections: ProjectShowcaseSection[] = [
         image: anilKaracaSite,
         ctaLabel: "Open case study",
       },
-      {
-        title: "Pimlico",
-        description:
-          "A premium restaurant website with multilingual navigation and a maintainable, database-backed menu system.",
-        href: "/projects/pimlico",
-        eyebrow: "Restaurant website",
-        meta: "Website case study",
-        role: "Product direction, UI implementation, Next.js architecture, database-backed menu system",
-        impact:
-          "Turns a refined hospitality site into an operational product the team can keep updating.",
-        tags: ["Next.js 15", "React 19", "Prisma", "MySQL"],
-        image: pimlicoImage,
-        ctaLabel: "Open case study",
-      },
-      {
-        title: "Op.Dr. Zeynep Esin Tuncay",
-        description:
-          "A medical practice website built around trust, service discovery, and clearer patient-facing appointment paths.",
-        href: "/projects/op-dr-zeynep-esin-tuncay",
-        eyebrow: "Medical website",
-        meta: "Website case study",
-        role: "Website structure, service architecture, patient-facing UX framing, digital delivery",
-        impact:
-          "Turns specialist expertise into a clearer and more trustworthy online entry point for patients.",
-        tags: ["WordPress", "Avada", "jQuery", "Instagram Embeds"],
-        image: dresinTuncaySite,
-        ctaLabel: "Open case study",
-      },
     ],
   },
 ];
-
-export const dataJournalismProjectSlugs = [
-  "crackdown-on-chp",
-  "parliament-analysis",
-] as const;
-
-export const supportingProjectSlugs = ["attack-on-ozgur-ozel"] as const;
 
 export const featuredArticleSlugs = [
   "izmir-trafik-kazasi-raporu",
@@ -307,9 +238,9 @@ export const workplaces = [
 ] as const;
 
 export const credibilityHighlights = [
-  "A decade of experience bridging high-stakes journalism and product work",
-  "Expertise in elections, civic data, and institutional accountability",
-  "Full-stack product delivery across newsrooms and independent ventures",
+  "Proven track record of shipping real-world consumer iOS apps and digital products",
+  "Expertise in modeling complex civic datasets, SQL databases, and interactive visualizations",
+  "A decade of experience bridging high-stakes journalism, corporate communications, and product delivery",
 ] as const;
 
 export type ExperienceEntry = {
@@ -324,43 +255,46 @@ export type ExperienceEntry = {
 export const experienceEntries: ExperienceEntry[] = [
   {
     period: "2025 - Present",
-    role: "Independent app developer and data journalist",
+    role: "Independent Mobile Product Developer & Data Journalist",
     organization: "Self-directed work",
     context:
       "Mobile apps, interactive case studies, and public-interest reporting",
     summary:
-      "Building consumer iOS apps while continuing reporting, data analysis, and editorial-style product work in one portfolio.",
+      "Building and shipping consumer iOS apps to the App Store while producing interactive data journalism and public-interest reporting.",
     highlights: [
-      "Shipped React Native and Expo apps as real App Store products",
-      "Built case studies that connect reporting, interface design, and engineering",
-      "Using independent work as proof of end-to-end product ownership",
+      "Shipped collaborative and monetization-enabled consumer iOS apps (Bohça, ChoreUs) to the App Store using React Native and Expo",
+      "Owned end-to-end product delivery: scoped features, designed mobile UX, built Supabase-backed partner-sync workspaces, and integrated RevenueCat subscriptions",
+      "Built data-driven stories and interactive visualizations using Python, SQL, D3.js, and Plotly",
+      "Translated complex product and analytical ideas into clear onboarding flows, product messaging, and user-facing communications",
     ],
   },
   {
-    period: "2019 - 2025",
-    role: "Communications advisor",
-    organization: "İzmir Büyükşehir Belediyesi and İZBETON",
+    period: "2019 - 2024",
+    role: "Communications Advisor & Data Specialist",
+    organization: "İzmir Metropolitan Municipality & İZBETON",
     context:
-      "Civic communications, digital content, and documentary production",
+      "Civic communications, digital campaigns, and data dashboard modeling",
     summary:
-      "Produced public-facing communication work for municipal institutions, with a mix of editorial structure, visual communication, and delivery.",
+      "Managed public-sector communication strategy, coordinated digital campaigns, and modeled large civic datasets for municipal institutions.",
     highlights: [
-      "Worked inside a civic institution context with public accountability",
-      "Produced digital communication assets and documentary work",
-      "Bridged reporting instincts with message clarity and execution",
+      "Managed corporate social media channels, producing graphic and video content that adapted institutional messages into social-first formats",
+      "Coordinated public-sector messaging and managed external agencies and vendors through strategic briefs, creative feedback, and quality control",
+      "Modeled large-scale traffic and transit datasets, including 17K+ collision records, using Python and SQL",
+      "Designed custom web dashboards, D3.js charts, and visual reports for data stories, public communication, and decision support",
     ],
   },
   {
     period: "2014 - 2019",
-    role: "Senior digital journalist",
+    role: "Digital Journalist / Editor",
     organization: "BirGün, dokuz8HABER, and Ege'de Sonsöz",
-    context: "Digital reporting, live publishing, and visual storytelling",
+    context: "Digital reporting, live publishing, and database analysis",
     summary:
-      "Built a decade-long newsroom foundation across reporting, publishing, analysis, and multi-format storytelling, with a strong focus on politics, cities, and public systems.",
+      "Built a foundation in deadline-driven digital reporting, live publishing, and database analysis across major newsrooms.",
     highlights: [
-      "Covered elections, civic systems, transportation, and political accountability",
-      "Worked across fast newsroom publishing and deeper analytical formats",
-      "Developed the reporting habits that now shape product and interface decisions",
+      "Produced deadline-driven digital coverage across civic, political, and public-interest topics with strong editorial standards",
+      "Built real-time election results trackers, digital explainers, and newsroom graphics using SQL, Excel, and visual interfaces",
+      "Conducted investigative reporting, fact-checking, source verification, and public records research under newsroom pressure",
+      "Developed a deadline-driven product mindset through live news coverage, verification workflows, and audience-facing data tools",
     ],
   },
 ];
@@ -377,24 +311,25 @@ export type EducationEntry = {
 export const educationEntries: EducationEntry[] = [
   {
     institution: "Kadir Has University",
-    degree: "Master's degree, New Media",
+    degree: "Master's Degree, New Media",
     period: "2017 - 2019",
-    grade: "GPA 3.68",
+    grade: "GPA 3.68/4.00",
+    notes: "Focused on digital media, data analysis, and quantitative research methods.",
     skills: ["Data Analysis"],
   },
   {
     institution: "Ege University",
-    degree: "Bachelor's degree, Journalism",
+    degree: "Bachelor's Degree, Journalism",
     period: "2011 - 2015",
-    grade: "GPA 2.94",
-    notes: "Activities and societies: University club of Sci-Fi and Fantasy.",
+    grade: "GPA 2.94/4.00",
+    notes: "Completed an Erasmus exchange semester at the University of Lodz in 2014; GPA 3.75/4.00. Activities and societies: University club of Sci-Fi and Fantasy.",
   },
   {
     institution: "University of Lodz",
-    degree: "Bachelor's degree, Journalism",
+    degree: "Bachelor's Degree, Journalism (Erasmus)",
     period: "2014",
-    grade: "GPA 3.75",
-    notes: "Erasmus programme.",
+    grade: "GPA 3.75/4.00",
+    notes: "Erasmus exchange programme.",
   },
 ];
 

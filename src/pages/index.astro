@@ -1,41 +1,48 @@
 ---
 import { getCollection } from "astro:content";
 
-import JsonLd from "../components/JsonLd.astro";
+import JsonLd from "@components/JsonLd.astro";
 import {
   appProjects,
   credibilityHighlights,
-  resumeLinks,
+  featuredArticleSlugs,
   workplaces,
-} from "../data/portfolio";
+} from "@/data/portfolio";
 import {
   getEntryHref,
   getEntrySummary,
   getEntryTags,
+  isPublicEntryData,
+  pickEntriesBySlug,
   sortEntriesByFeatureAndDate,
-} from "../lib/content";
-import { buildPersonSchema } from "../lib/seo";
-import { siteConfig, socialLinks } from "../lib/site";
-import MainLayout from "../layouts/MainLayout.astro";
+} from "@/lib/content";
+import { buildPersonSchema } from "@/lib/seo";
+import { resumeUrl } from "@/lib/resume";
+import { siteConfig, socialLinks } from "@/lib/site";
+import MainLayout from "@layouts/MainLayout.astro";
 import { Image } from "astro:assets";
-import portrait from "../assets/images/anilkaraca.webp";
-import heroPortrait from "../assets/images/anilkaraca.webp";
+import portrait from "@/assets/images/anilkaraca.webp";
+import heroPortrait from "@/assets/images/anilkaraca.webp";
 
-const projects = await getCollection("projects", ({ data }) => data.published);
+const [projects, articles] = await Promise.all([
+  getCollection("projects", ({ data }) => isPublicEntryData(data)),
+  getCollection("articles", ({ data }) => isPublicEntryData(data)),
+]);
 const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 6);
+const featuredArticles = pickEntriesBySlug(articles, featuredArticleSlugs);
 
 const homeStats = [
   {
     value: "10+",
-    label: "Years across journalism, civic communication, and product work",
+    label: "Years bridging journalism, corporate communications, and product development",
   },
   {
     value: `${workplaces.length}`,
-    label: "Newsrooms and civic institutions.",
+    label: "Newsrooms and civic institutions served",
   },
   {
-    value: `${appProjects.length}+`,
-    label: "Shipped iOS apps released as real products",
+    value: `${appProjects.length}`,
+    label: "Consumer iOS apps shipped to the App Store",
   },
 ] as const;
 
@@ -154,15 +161,18 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
         <!-- Left column: all text -->
         <div class="portfolio-home__hero-copy">
           <div class="portfolio-home__eyebrow">
-            <span>Data Journalism | Product Engineering</span>
+            <span>Product Specialist</span>
+            <span class="portfolio-home__eyebrow-sep" aria-hidden="true">·</span>
+            <span>Data Journalist</span>
+            <span class="portfolio-home__eyebrow-sep" aria-hidden="true">·</span>
+            <span>Corporate Communications Expert</span>
           </div>
           <h1>ANIL<br />KARACA</h1>
         </div>
 
         <div class="portfolio-home__hero-side">
           <p class="portfolio-home__hero-summary">
-            Crafting the digital systems that make public-interest reporting
-            legible, interactive, and impactful.
+            Bridging mobile product design, data analysis, and corporate communications to ship impactful consumer apps, interactive stories, and strategic narratives.
           </p>
 
           <div class="portfolio-home__hero-meta">
@@ -184,7 +194,11 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
               <span class="portfolio-home__contact-sep" aria-hidden="true"
                 >·</span
               >
-              <a href={resumeLinks.master}>Resume ↓</a>
+              <a
+                href={resumeUrl}
+                data-track-event="navigate_cv"
+                data-track-label="Home Hero CV">CV / Resume</a
+              >
             </div>
           </div>
         </div>
@@ -242,11 +256,9 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
               <p class="portfolio-home__section-kicker">// Positioning</p>
 
               <div class="portfolio-home__positioning-copy">
-                <h2>Where reporting meets product precision.</h2>
+                <h2>Bridging product ownership, data storytelling, and strategic communications.</h2>
                 <p>
-                  High-impact work lives at the overlap: journalism for framing
-                  the right questions, analysis for making complexity legible,
-                  and engineering for shipping products people can use.
+                  High-impact digital systems require a rare mix of skills: product focus to ship clean user experiences, data literacy to model complex information, and communication expertise to build trust and reach audiences effectively.
                 </p>
               </div>
 
@@ -298,10 +310,10 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
           class="portfolio-home__section-head portfolio-home__section-head--split"
         >
           <div>
-            <p class="portfolio-home__section-kicker">// Selected Proof</p>
+            <p class="portfolio-home__section-kicker">// Shipped Products & Analysis</p>
           </div>
 
-          <h2>Featured reporting, apps, and interactive systems</h2>
+          <h2>Featured mobile apps, interactive systems, and case studies</h2>
 
           <div class="portfolio-home__section-mark" aria-hidden="true">
             <span>&lt;/</span>
@@ -326,7 +338,13 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
               >
                 <div class="portfolio-home__work-glow" aria-hidden="true" />
 
-                <div class="portfolio-home__work-image-frame">
+                <div
+                  class:list={[
+                    "portfolio-home__work-image-frame",
+                    (entry.id === "yeser" || entry.id === "ai-fit-check") &&
+                      "portfolio-home__work-image-frame--contain",
+                  ]}
+                >
                   <Image
                     src={entry.data.heroImage || portrait}
                     alt={entry.data.title}
@@ -375,6 +393,65 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       </div>
     </section>
 
+    {
+      featuredArticles.length > 0 && (
+        <section
+          class="portfolio-home__section portfolio-home__section--writing"
+          id="featured-writing"
+        >
+          <div class="portfolio-home__container">
+            <div class="portfolio-home__section-head portfolio-home__section-head--split">
+              <div>
+                <p class="portfolio-home__section-kicker">// Data Stories & Investigations</p>
+              </div>
+
+              <h2>Civic datasets and analytical writing</h2>
+              
+              <div class="portfolio-home__section-mark" aria-hidden="true">
+                <span>&lt;/</span>
+                <span>&gt;</span>
+              </div>
+            </div>
+
+            <div class="portfolio-home__section-divider" aria-hidden="true">
+              <span>&lt;/</span>
+            </div>
+
+            <div class="portfolio-home__writing-grid">
+              {featuredArticles.map((entry) => (
+                <a href={getEntryHref(entry)} class="portfolio-home__writing-card">
+                  <div class="portfolio-home__writing-copy">
+                    <p class="portfolio-home__writing-meta">
+                      {entry.data.language === "tr" ? "Turkish" : "English"} ·{" "}
+                      {entry.data.pubDate.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                      })}
+                    </p>
+                    <h3>{entry.data.title}</h3>
+                    <p>{getEntrySummary(entry)}</p>
+                  </div>
+                  <div class="portfolio-home__tag-row">
+                    {getEntryTags(entry)
+                      .slice(0, 3)
+                      .map((tag) => (
+                        <span>{tag}</span>
+                      ))}
+                  </div>
+                </a>
+              ))}
+            </div>
+
+            <div class="portfolio-home__section-cta">
+              <a href="/articles" class="portfolio-home__button">
+                View All Articles
+              </a>
+            </div>
+          </div>
+        </section>
+      )
+    }
+
     <section
       class="portfolio-home__section portfolio-home__section--proof-band"
     >
@@ -383,12 +460,11 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
           class="portfolio-home__section-head portfolio-home__section-head--split"
         >
           <div>
-            <p class="portfolio-home__section-kicker">// Experience</p>
+            <p class="portfolio-home__section-kicker">// Professional History</p>
           </div>
 
           <h2>
-            The newsrooms, institutions, and independent products behind the
-            work
+            The companies, public institutions, and independent apps shaping my career
           </h2>
 
           <div class="portfolio-home__section-mark" aria-hidden="true">
@@ -543,12 +619,17 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       display: inline-flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 8px;
-      font-size: clamp(0.95rem, 1.2vw, 1.3rem);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      color: rgba(255, 255, 255, 0.7);
+      gap: 6px;
+      font-size: clamp(0.65rem, 0.75vw, 0.8rem);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.45);
       text-transform: uppercase;
+    }
+
+    .portfolio-home__eyebrow-sep {
+      color: rgba(255, 255, 255, 0.15);
+      font-size: 0.9em;
     }
 
     .portfolio-home__wave {
@@ -1084,6 +1165,18 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
+    .portfolio-home__work-image-frame--contain .portfolio-home__work-image {
+      object-fit: contain;
+      padding: 1.5rem;
+      transform: scale(1.1);
+    }
+
+    .portfolio-home__work-card:hover
+      .portfolio-home__work-image-frame--contain
+      .portfolio-home__work-image {
+      transform: scale(1.15);
+    }
+
     .portfolio-home__work-card:hover .portfolio-home__work-image {
       transform: scale(1.05);
     }
@@ -1166,6 +1259,57 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__section--work .portfolio-home__section-cta {
       margin-top: 20px;
+    }
+
+    .portfolio-home__writing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .portfolio-home__writing-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      min-height: 240px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1.25rem;
+      background: rgba(255, 255, 255, 0.02);
+      text-decoration: none;
+      color: inherit;
+      transition:
+        border-color 180ms ease,
+        transform 180ms ease,
+        background 180ms ease;
+    }
+
+    .portfolio-home__writing-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(122, 242, 152, 0.35);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .portfolio-home__writing-meta {
+      margin: 0 0 0.75rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.48);
+    }
+
+    .portfolio-home__writing-copy h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    .portfolio-home__writing-copy p {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.65;
+      color: rgba(255, 255, 255, 0.72);
     }
 
     .portfolio-home__work-image,
@@ -1621,7 +1765,8 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       }
 
       .portfolio-home__work-grid,
-      .portfolio-home__article-grid {
+      .portfolio-home__article-grid,
+      .portfolio-home__writing-grid {
         grid-template-columns: 1fr;
       }
 
@@ -1764,19 +1909,46 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       // Since we use window, it feels more atmospheric.
     }
 
-    // Project card hover interactive effects
+    // Project card hover interactive effects with scroll-tracking to prevent stalling
     const cards = document.querySelectorAll(".portfolio-home__work-card");
+    let lastClientX = 0;
+    let lastClientY = 0;
+    let hoveredCard: HTMLElement | null = null;
+
+    function updateCardGlow(card: HTMLElement, clientX: number, clientY: number) {
+      const rect = card.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      card.style.setProperty("--mouse-x", `${x}px`);
+      card.style.setProperty("--mouse-y", `${y}px`);
+    }
 
     cards.forEach((card) => {
-      card.addEventListener("mousemove", (e) => {
-        if (!(card instanceof HTMLElement)) return;
-        const rect = card.getBoundingClientRect();
-        const x = (e as MouseEvent).clientX - rect.left;
-        const y = (e as MouseEvent).clientY - rect.top;
+      if (!(card instanceof HTMLElement)) return;
 
-        card.style.setProperty("--mouse-x", `${x}px`);
-        card.style.setProperty("--mouse-y", `${y}px`);
+      card.addEventListener("mouseenter", () => {
+        hoveredCard = card;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        if (hoveredCard === card) {
+          hoveredCard = null;
+        }
+      });
+
+      card.addEventListener("mousemove", (e) => {
+        const mouseEvent = e as MouseEvent;
+        lastClientX = mouseEvent.clientX;
+        lastClientY = mouseEvent.clientY;
+        hoveredCard = card;
+        updateCardGlow(card, mouseEvent.clientX, mouseEvent.clientY);
       });
     });
+
+    window.addEventListener("scroll", () => {
+      if (hoveredCard) {
+        updateCardGlow(hoveredCard, lastClientX, lastClientY);
+      }
+    }, { passive: true });
   </script>
 </MainLayout>

@@ -1,4 +1,6 @@
 ---
+import { getStorySteps } from "../../lib/storyStepContext";
+
 interface Step {
   id: string;
   label: string;
@@ -7,10 +9,11 @@ interface Step {
 }
 
 interface Props {
-  steps: Step[];
+  steps?: Step[];
 }
 
-const { steps } = Astro.props;
+const { steps: stepsProp } = Astro.props;
+const steps = stepsProp?.length ? stepsProp : getStorySteps();
 ---
 
 <section class="article-story-shell my-10 md:my-14" data-story-root>

@@ -23,3 +23,7 @@ npm-debug.log*
 
 # Astro
 .astro/
+
+# Python
+__pycache__/
+*.pyc

@@ -1,5 +1,4 @@
 ---
-import { resumeLinks } from "../data/portfolio";
 import { navigationLinks } from "../lib/site";
 import HeaderNavigation from "./HeaderNavigation";
 
@@ -17,7 +16,6 @@ const currentPath = Astro.url.pathname;
       client:load
       links={navigationLinks}
       currentPath={currentPath}
-      resumeHref={resumeLinks.master}
     />
   </div>
 </header>

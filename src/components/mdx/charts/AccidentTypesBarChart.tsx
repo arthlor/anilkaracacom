@@ -56,7 +56,11 @@ const incidentTypeLabels: Record<string, string> = {
   "İzsu Çalışması": "IZSU utility work",
 };
 
-export default function AccidentTypesBarChart() {
+export default function AccidentTypesBarChart({
+  pureCanvas = false,
+}: {
+  pureCanvas?: boolean;
+}) {
   const parsed = useMemo<{ years: number[]; series: AccidentSeries[] }>(() => {
     const series = (rawData as any[])
       .filter((entry) => entry.type === "bar")
@@ -90,6 +94,134 @@ export default function AccidentTypesBarChart() {
   const visibleItems = ranking.slice(0, topCount);
   const maxValue = Math.max(...visibleItems.map((item) => item.value), 1);
   const total = ranking.reduce((sum, item) => sum + item.value, 0);
+
+  const chartBody = (
+    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)] flex flex-col gap-4">
+      {pureCanvas && (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+          {/* Year selection pills */}
+          <div
+            className="viz-toggle-group"
+            role="group"
+            aria-label="Year selector"
+          >
+            {parsed.years.map((year) => (
+              <button
+                key={year}
+                type="button"
+                className="relative viz-toggle z-10"
+                data-active={selectedYear === year}
+                aria-pressed={selectedYear === year}
+                onClick={() => setSelectedYear(year)}
+              >
+                <span className="relative z-20">{year}</span>
+                {selectedYear === year && (
+                  <motion.div
+                    layoutId="accident-pure-year-highlight"
+                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+          {/* Count selection pills */}
+          <div
+            className="viz-toggle-group"
+            role="group"
+            aria-label="Visible category count"
+          >
+            {[8, 10, 12].map((count) => (
+              <button
+                key={count}
+                type="button"
+                className="relative viz-toggle z-10"
+                data-active={topCount === count}
+                aria-pressed={topCount === count}
+                onClick={() => setTopCount(count)}
+              >
+                <span className="relative z-20">Top {count}</span>
+                {topCount === count && (
+                  <motion.div
+                    layoutId="accident-pure-count-highlight"
+                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+      <motion.div layout className="space-y-3">
+        <AnimatePresence mode="popLayout">
+          {visibleItems.map((item, index) => {
+            const width = (item.value / maxValue) * 100;
+
+            return (
+              <motion.div
+                layout
+                key={item.name}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 120, damping: 15 }}
+                className="grid grid-cols-[24px_1fr_auto] sm:grid-cols-[auto_minmax(0,220px)_minmax(0,1fr)_auto] gap-x-3 gap-y-1.5 rounded-[20px] border border-white/[0.05] bg-white/[0.015] px-4 py-3 sm:items-center hover:bg-white/[0.03] hover:border-white/[0.08] hover:translate-y-[-1px] transition-all duration-200"
+              >
+                <span className="text-xs font-semibold text-muted-foreground w-6 col-start-1 row-start-1">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <p className="text-sm font-semibold text-foreground truncate col-start-2 row-start-1">
+                  {item.name}
+                </p>
+                <div className="relative flex items-center h-5 col-span-2 col-start-2 sm:col-span-1 sm:col-start-auto row-start-2 sm:row-start-auto">
+                  <div className="h-[2px] w-full bg-white/[0.06]" />
+                  {item.value > 0 && (
+                    <>
+                      <motion.div
+                        className="absolute left-0 h-[2px] rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${width}%` }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 100,
+                          damping: 15,
+                        }}
+                        style={{ background: item.color }}
+                      />
+                      <motion.div
+                        className="absolute top-1/2 -translate-y-1/2 rounded-full border-4 border-[#111111]"
+                        initial={{ left: "0%" }}
+                        animate={{ left: `calc(${width}% - 10px)` }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 100,
+                          damping: 15,
+                        }}
+                        style={{
+                          width: 14,
+                          height: 14,
+                          background: item.color,
+                          boxShadow: `0 0 10px ${item.color}40`,
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+                <span className="text-sm font-semibold text-foreground text-right w-auto sm:w-16 col-start-3 row-start-1 sm:col-start-auto sm:row-start-auto">
+                  {formatNumber(item.value, "en-US")}
+                </span>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+      </motion.div>
+    </div>
+  );
+
+  if (pureCanvas) {
+    return chartBody;
+  }
 
   return (
     <ArticleChartFrame
@@ -196,67 +328,7 @@ export default function AccidentTypesBarChart() {
         </div>
       }
     >
-      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
-        <motion.div layout className="space-y-3">
-          <AnimatePresence mode="popLayout">
-            {visibleItems.map((item, index) => {
-              const width = (item.value / maxValue) * 100;
-
-              return (
-                <motion.div
-                  layout
-                  key={item.name}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ type: "spring", stiffness: 120, damping: 15 }}
-                  className="grid gap-3 rounded-[20px] border border-white/[0.05] bg-white/[0.015] px-4 py-3 sm:grid-cols-[auto_minmax(0,220px)_minmax(0,1fr)_auto] sm:items-center hover:bg-white/[0.03] hover:border-white/[0.08] hover:translate-y-[-1px] transition-all duration-200"
-                >
-                  <span className="text-xs font-semibold text-muted-foreground w-6">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <p className="text-sm font-semibold text-foreground truncate">
-                    {item.name}
-                  </p>
-                  <div className="relative flex items-center h-5">
-                    <div className="h-[2px] w-full bg-white/[0.06]" />
-                    <motion.div
-                      className="absolute left-0 h-[2px] rounded-full"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${width}%` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15,
-                      }}
-                      style={{ background: item.color }}
-                    />
-                    <motion.div
-                      className="absolute top-1/2 -translate-y-1/2 rounded-full border-4 border-[#111111]"
-                      initial={{ left: "0%" }}
-                      animate={{ left: `calc(${width}% - 10px)` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15,
-                      }}
-                      style={{
-                        width: 14,
-                        height: 14,
-                        background: item.color,
-                        boxShadow: `0 0 10px ${item.color}40`,
-                      }}
-                    />
-                  </div>
-                  <span className="text-sm font-semibold text-foreground text-right w-16">
-                    {formatNumber(item.value, "en-US")}
-                  </span>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
-        </motion.div>
-      </div>
+      {chartBody}
     </ArticleChartFrame>
   );
 }

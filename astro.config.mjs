@@ -7,7 +7,19 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: process.env.PUBLIC_SITE_URL ?? "https://anilkaraca.com",
-  integrations: [tailwind(), react(), mdx(), sitemap()],
+  integrations: [
+    tailwind(),
+    react(),
+    mdx(),
+    sitemap({
+      filter: (page) => {
+        const pathname = new URL(page).pathname;
+        return !["/design-test/", "/developer/", "/data-journalism/"].some(
+          (blocked) => pathname.startsWith(blocked),
+        );
+      },
+    }),
+  ],
   env: {
     schema: {
       PUBLIC_SITE_URL: envField.string({
@@ -48,6 +60,7 @@ export default defineConfig({
       PUBLIC_GA_MEASUREMENT_ID: envField.string({
         context: "client",
         access: "public",
+        default: "G-E4DHYLKXW8",
         optional: true,
       }),
       PUBLIC_DEFAULT_THEME: envField.enum({

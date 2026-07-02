@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -41,10 +41,13 @@ export default function ArticleChartFrame({
   bodyClassName,
   children,
 }: ArticleChartFrameProps) {
+  const [mobileReadoutOpen, setMobileReadoutOpen] = useState(false);
+
   return (
     <section
       className={cn(
         "article-visual-frame isolate my-10 min-w-0 overflow-hidden rounded-lg border border-white/[0.075] bg-[linear-gradient(180deg,rgba(255,255,255,0.026),rgba(255,255,255,0.01))] shadow-[0_18px_70px_rgba(0,0,0,0.24)]",
+        aside && "max-lg:pb-2",
         className,
       )}
     >
@@ -124,17 +127,70 @@ export default function ArticleChartFrame({
       <div
         className={cn(
           "grid gap-5 px-4 py-4 sm:px-6 sm:py-5 lg:px-8 lg:py-6",
-          aside && "lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8 lg:items-start",
+          aside && "xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-8 xl:items-start",
           bodyClassName,
         )}
       >
         <div className="min-w-0 overflow-hidden">{children}</div>
         {aside && (
-          <div className="article-chart-readout min-w-0 border-t border-white/[0.06] pt-4 lg:sticky lg:top-[96px] lg:self-start lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+          <div
+            className="article-chart-readout hidden min-w-0 border-t border-white/[0.06] pt-4 xl:sticky xl:top-[96px] xl:block xl:self-start xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0"
+            aria-live="polite"
+          >
             {aside}
           </div>
         )}
       </div>
+
+      {aside && (
+        <div
+          className="article-chart-mobile-readout sticky bottom-0 z-20 border-t border-white/[0.1] bg-[rgba(10,10,10,0.94)] shadow-[0_-16px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl xl:hidden"
+          aria-live="polite"
+        >
+          <button
+            type="button"
+            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+            aria-expanded={mobileReadoutOpen}
+            onClick={() => setMobileReadoutOpen((open) => !open)}
+          >
+            <div className="min-w-0">
+              {primaryMetric ? (
+                <>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/80">
+                    {primaryMetric.label}
+                  </p>
+                  <p className="truncate font-display text-base font-semibold text-foreground">
+                    {primaryMetric.value}
+                  </p>
+                  {primaryMetric.detail && (
+                    <p className="truncate text-xs text-muted-foreground">
+                      {primaryMetric.detail}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p className="text-sm font-semibold text-foreground">
+                  Chart details
+                </p>
+              )}
+            </div>
+            <span
+              className={cn(
+                "shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-primary transition-transform duration-200",
+                mobileReadoutOpen && "rotate-180",
+              )}
+              aria-hidden="true"
+            >
+              ▲
+            </span>
+          </button>
+          {mobileReadoutOpen && (
+            <div className="max-h-[42vh] overflow-y-auto border-t border-white/[0.06] px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+              {aside}
+            </div>
+          )}
+        </div>
+      )}
 
       {footer && (
         <footer className="border-t border-white/[0.06] px-4 py-4 text-xs leading-6 text-muted-foreground/82 sm:px-6 lg:px-8 lg:py-5">

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { resumeUrl } from "@/lib/resume";
 
 interface NavLink {
   href: string;
@@ -11,13 +12,11 @@ interface NavLink {
 interface HeaderNavigationProps {
   links: readonly NavLink[];
   currentPath: string;
-  resumeHref: string;
 }
 
 export default function HeaderNavigation({
   links,
   currentPath,
-  resumeHref,
 }: HeaderNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
@@ -99,10 +98,12 @@ export default function HeaderNavigation({
 
       {/* Desktop Resume CTA */}
       <a
-        href={resumeHref}
+        href={resumeUrl}
+        data-track-event="navigate_cv"
+        data-track-label="Header Resume"
         className="hidden md:inline-flex items-center ml-3 px-5 py-2 rounded-full text-[0.78rem] font-semibold tracking-wide transition-all duration-200 border border-white/15 text-white/80 hover:text-white hover:border-white/30 hover:bg-white/[0.06] active:scale-[0.97]"
       >
-        Resume
+        Resumes
       </a>
 
       {/* Mobile Menu Toggle */}
@@ -214,7 +215,9 @@ export default function HeaderNavigation({
                     <div className="px-2 pb-2">
                       <div className="border-t border-white/[0.06] pt-2">
                         <a
-                          href={resumeHref}
+                          href={resumeUrl}
+                          data-track-event="navigate_cv"
+                          data-track-label="Mobile Header Resume"
                           onClick={() => setIsOpen(false)}
                           className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-[0.85rem] font-semibold tracking-wide text-white/70 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] transition-colors duration-150"
                         >

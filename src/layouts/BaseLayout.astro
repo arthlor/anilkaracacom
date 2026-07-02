@@ -1,8 +1,9 @@
 ---
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
+import { PUBLIC_GA_MEASUREMENT_ID } from "astro:env/client";
 
-const GA_MEASUREMENT_ID = "G-E4DHYLKXW8";
+const gaMeasurementId = PUBLIC_GA_MEASUREMENT_ID;
 
 interface Props {
   title: string;
@@ -11,6 +12,10 @@ interface Props {
   article?: boolean | undefined;
   noindex?: boolean | undefined;
   lang?: string | undefined;
+  articlePublishedTime?: string | undefined;
+  articleModifiedTime?: string | undefined;
+  articleAuthor?: string | undefined;
+  articleSection?: string | undefined;
 }
 
 const {
@@ -20,6 +25,10 @@ const {
   article,
   noindex = false,
   lang = "en",
+  articlePublishedTime,
+  articleModifiedTime,
+  articleAuthor,
+  articleSection,
 } = Astro.props;
 ---
 
@@ -38,23 +47,32 @@ const {
       image={image}
       article={article}
       noindex={noindex}
+      articlePublishedTime={articlePublishedTime}
+      articleModifiedTime={articleModifiedTime}
+      articleAuthor={articleAuthor}
+      articleSection={articleSection}
     />
 
-    <!-- Google tag (gtag.js) -->
-    <script
-      is:inline
-      async
-      src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-    ></script>
-    <script
-      is:inline
-      set:html={`
+    {
+      gaMeasurementId && (
+        <>
+          <script
+            is:inline
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+          />
+          <script
+            is:inline
+            set:html={`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', '${GA_MEASUREMENT_ID}');
+        gtag('config', '${gaMeasurementId}');
       `}
-    />
+          />
+        </>
+      )
+    }
 
     <!-- Custom event tracking for portfolio interactions -->
     <script is:inline>

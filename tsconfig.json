@@ -12,5 +12,5 @@
     },
     "strictNullChecks": true
   },
-  "include": ["src/**/*", ".astro/types.d.ts"]
+  "include": ["src/**/*", ".astro/types.d.ts", "modified_/**/*", "**/modified_/**/*"]
 }

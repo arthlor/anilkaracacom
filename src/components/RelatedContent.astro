@@ -7,7 +7,9 @@ import {
   getEntrySummary,
   getEntryTags,
   getEntryTypeLabel,
+  isPublicEntryData,
 } from "../lib/content";
+import { resolveRelatedEntries } from "../lib/relatedContent";
 
 interface Props {
   currentCollection: "articles" | "projects";
@@ -30,32 +32,18 @@ const {
 } = Astro.props;
 
 const [articles, projects] = await Promise.all([
-  getCollection("articles", ({ data }) => data.published),
-  getCollection("projects", ({ data }) => data.published),
+  getCollection("articles", ({ data }) => isPublicEntryData(data)),
+  getCollection("projects", ({ data }) => isPublicEntryData(data)),
 ]);
 
-const explicitEntries = relatedContent
-  .map((item) =>
-    item.collection === "articles"
-      ? articles.find((entry) => entry.id === item.slug)
-      : projects.find((entry) => entry.id === item.slug),
-  )
-  .filter(
-    (entry): entry is (typeof articles)[number] | (typeof projects)[number] =>
-      Boolean(entry),
-  );
-
-const fallbackEntries = [...projects, ...articles]
-  .filter(
-    (entry) =>
-      !(entry.collection === currentCollection && entry.id === currentSlug),
-  )
-  .filter((entry) => entry.data.pillar === currentPillar)
-  .slice(0, 3);
-
-const entries = (
-  explicitEntries.length > 0 ? explicitEntries : fallbackEntries
-).slice(0, 3);
+const entries = resolveRelatedEntries({
+  articles,
+  projects,
+  currentCollection,
+  currentSlug,
+  currentPillar,
+  relatedContent,
+});
 
 const heading = language === "tr" ? "İlgili Çalışmalar" : "Related Work";
 const description =
@@ -97,6 +85,12 @@ const description =
             impact={entry.data.impact}
             tags={getEntryTags(entry).slice(0, 4)}
             image={entry.data.heroImage}
+            imageFit={
+              entry.collection === "projects" &&
+              (entry.id === "yeser" || entry.id === "ai-fit-check")
+                ? "contain"
+                : "cover"
+            }
             ctaLabel={
               entry.collection === "projects"
                 ? "Open case study"

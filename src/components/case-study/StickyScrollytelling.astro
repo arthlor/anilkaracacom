@@ -1,0 +1,270 @@
+---
+---
+
+<div class="sticky-scrolly-container my-12 md:my-20" data-scrolly-root data-story-root>
+  <div class="sticky-scrolly-grid">
+    {/* Left Column: Scrolling Narrative Steps */}
+    <div class="scrolly-narrative-col">
+      <slot />
+    </div>
+
+    {/* Right Column: Sticky Visual Container */}
+    <div class="scrolly-visual-col">
+      <div class="sticky-visual-wrapper">
+        <slot name="visual" />
+      </div>
+      {/* Mobile Pagination Toolbar */}
+      <div class="scrolly-mobile-nav flex items-center justify-between mt-4 px-4 py-2.5 rounded-full border border-white/[0.08] bg-[#161618]/60 backdrop-blur-md shadow-lg xl:hidden select-none">
+        <button type="button" class="scrolly-nav-btn scrolly-nav-btn--prev flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200" aria-label="Previous step">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <div class="scrolly-nav-dots flex items-center gap-1.5"></div>
+        <button type="button" class="scrolly-nav-btn scrolly-nav-btn--next flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200" aria-label="Next step">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sticky-scrolly-container {
+    position: relative;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sticky-scrolly-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* Desktop Split-Screen Layout (Above xl breakpoint) */
+  @media (min-width: 1280px) {
+    .sticky-scrolly-container {
+      max-width: 1360px;
+    }
+
+    .sticky-scrolly-grid {
+      grid-template-columns: 350px 1fr;
+      gap: 4rem;
+    }
+  }
+
+  /* Scrolling Narrative Blocks */
+  .scrolly-narrative-col {
+    display: flex;
+    flex-direction: column;
+    z-index: 2;
+    position: relative;
+  }
+
+  @media (max-width: 1279px) {
+    .scrolly-narrative-col {
+      padding-top: 1rem;
+    }
+  }
+
+  /* Sticky Visuals Column */
+  .scrolly-visual-col {
+    position: relative;
+    min-height: 350px;
+    width: 100%;
+  }
+
+  @media (max-width: 1279px) {
+    .scrolly-visual-col {
+      order: -1; /* Place visual at the top on mobile/tablet viewports */
+      position: relative;
+      top: 0;
+      z-index: 10;
+      background-color: transparent;
+      backdrop-filter: none;
+      padding: 0;
+      border-bottom: none;
+      max-height: none;
+      min-height: auto;
+      overflow: visible;
+    }
+  }
+
+  .sticky-visual-wrapper {
+    position: sticky;
+    top: 140px; /* Position sticky visual nicely below header on desktop viewports */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (max-width: 1279px) {
+    .sticky-visual-wrapper {
+      position: relative;
+      top: 0;
+      max-height: 100%;
+    }
+  }
+
+  /* Dot styles */
+  :global(.scrolly-dot) {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :global(.scrolly-dot[data-active="true"]) {
+    background-color: #3b82f6;
+    transform: scale(1.3);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  }
+</style>
+
+<script is:inline>
+  document.querySelectorAll("[data-scrolly-root]").forEach((container) => {
+    if (!(container instanceof HTMLElement) || container.dataset.bound === "true") {
+      return;
+    }
+    container.dataset.bound = "true";
+
+    const steps = Array.from(container.querySelectorAll("[data-scrolly-step]"));
+    if (steps.length === 0) return;
+
+    const isMobileQuery = window.matchMedia("(max-width: 1279px)");
+    let isMobile = isMobileQuery.matches;
+    let activeIndex = 0;
+
+    // References to mobile nav UI elements
+    const mobileNav = container.querySelector(".scrolly-mobile-nav");
+    const prevBtn = container.querySelector(".scrolly-nav-btn--prev");
+    const nextBtn = container.querySelector(".scrolly-nav-btn--next");
+    const dotsContainer = container.querySelector(".scrolly-nav-dots");
+
+    // Initialize dots
+    if (dotsContainer) {
+      dotsContainer.innerHTML = "";
+      steps.forEach((_, idx) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "scrolly-dot";
+        dot.setAttribute("aria-label", `Go to step ${idx + 1}`);
+        dot.dataset.index = String(idx);
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    const dots = dotsContainer ? Array.from(dotsContainer.querySelectorAll(".scrolly-dot")) : [];
+
+    // Step navigation core logic
+    function setStep(index) {
+      if (index < 0 || index >= steps.length) return;
+      activeIndex = index;
+
+      steps.forEach((step, idx) => {
+        const isActive = idx === index;
+        step.setAttribute("data-active", String(isActive));
+      });
+
+      // Update dots
+      dots.forEach((dot, idx) => {
+        dot.setAttribute("data-active", String(idx === index));
+      });
+
+      // Update disabled states
+      if (prevBtn) prevBtn.disabled = index === 0;
+      if (nextBtn) nextBtn.disabled = index === steps.length - 1;
+
+      // Dispatch custom event to coordinate with React islands
+      const stepId = steps[index].getAttribute("data-scrolly-step");
+      window.dispatchEvent(
+        new CustomEvent("scrolly:stepchange", {
+          detail: { stepId }
+        })
+      );
+    }
+
+    // Set up IntersectionObserver for desktop
+    const observerOptions = {
+      root: null,
+      rootMargin: "-25% 0px -45% 0px",
+      threshold: 0.05
+    };
+
+    let activeStepId = null;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (isMobile) return; // Skip observer logic on mobile viewports
+
+      entries.forEach((entry) => {
+        const stepId = entry.target.getAttribute("data-scrolly-step");
+        
+        if (entry.isIntersecting) {
+          steps.forEach(s => {
+            const isTarget = s.getAttribute("data-scrolly-step") === stepId;
+            s.setAttribute("data-active", String(isTarget));
+          });
+
+          if (activeStepId !== stepId) {
+            activeStepId = stepId;
+            
+            // Find active index
+            const idx = steps.findIndex(s => s.getAttribute("data-scrolly-step") === stepId);
+            if (idx !== -1) {
+              activeIndex = idx;
+              // Sync dots if visible
+              dots.forEach((dot, dIdx) => {
+                dot.setAttribute("data-active", String(dIdx === idx));
+              });
+            }
+
+            window.dispatchEvent(
+              new CustomEvent("scrolly:stepchange", {
+                detail: { stepId }
+              })
+            );
+          }
+        }
+      });
+    }, observerOptions);
+
+    function initLayout() {
+      isMobile = isMobileQuery.matches;
+      if (isMobile) {
+        // Disconnect observer
+        steps.forEach((step) => observer.unobserve(step));
+        // Reset to active step
+        setStep(activeIndex);
+      } else {
+        // Enable observer
+        steps.forEach((step) => {
+          step.removeAttribute("style"); // Clear mobile overrides if any
+          observer.observe(step);
+        });
+        
+        // Ensure first step is styled normally if none active
+        const hasActive = steps.some(s => s.getAttribute("data-active") === "true");
+        if (!hasActive) {
+          steps[0].setAttribute("data-active", "true");
+        }
+      }
+    }
+
+    // Mobile nav click handlers
+    if (prevBtn) prevBtn.addEventListener("click", () => setStep(activeIndex - 1));
+    if (nextBtn) nextBtn.addEventListener("click", () => setStep(activeIndex + 1));
+    
+    dots.forEach((dot, idx) => {
+      dot.addEventListener("click", () => setStep(idx));
+    });
+
+    // Listen to resize
+    isMobileQuery.addEventListener("change", initLayout);
+
+    // Initial setup
+    initLayout();
+  });
+</script>

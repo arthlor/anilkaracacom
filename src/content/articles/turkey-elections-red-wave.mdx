@@ -45,71 +45,59 @@ relatedContent:
     slug: "crackdown-on-chp"
   - collection: "projects"
     slug: "parliament-analysis"
+storySteps:
+  - id: election-overall
+    label: Step 1
+    title: The aggregate picture
+    summary: The first chart anchors the story in 2024 vote share, while preserving the 2019 delta so momentum is visible next to size.
+  - id: election-map
+    label: Step 2
+    title: Where the shift spread
+    summary: The province map matters because it shows the opposition move extending beyond the usual western urban strongholds.
+  - id: election-change
+    label: Step 3
+    title: How party control changed
+    summary: The final comparison separates headline vote share from actual municipal control across administrative levels.
 ---
 
-import ElectionResultsBarChart from "../../components/mdx/charts/ElectionResultsBarChart.tsx";
-import PartyChangesChart from "../../components/mdx/charts/PartyChangesChart.tsx";
-import TurkeyElectionMap from "../../components/mdx/charts/TurkeyElectionMap.tsx";
-import ScrollytellingStory from "@/components/case-study/ScrollytellingStory.astro";
-import StoryStep from "@/components/case-study/StoryStep.astro";
+import StickyScrollytelling from "@/components/case-study/StickyScrollytelling.astro";
+import StickyStep from "@/components/case-study/StickyStep.astro";
+import TurkeyElectionsStoryVisual from "../../components/mdx/charts/TurkeyElectionsStoryVisual.tsx";
 
 Turkey's 2024 local elections produced a territorial realignment. The sequence below starts with national vote share, moves to the province map, then separates vote momentum from actual municipal control.
 
-<ScrollytellingStory
-  steps={[
-    {
-      id: "election-overall",
-      label: "Step 1",
-      title: "Overall result",
-      summary: "Start with the national result before moving into geography.",
-    },
-    {
-      id: "election-map",
-      label: "Step 2",
-      title: "Geographic spread",
-      summary: "The province map shows why the result felt larger than a normal opposition win.",
-    },
-    {
-      id: "election-change",
-      label: "Step 3",
-      title: "Net gains and losses",
-      summary: "Finally, compare how municipal control shifted by party between cycles.",
-    },
-  ]}
->
-  <StoryStep
+<StickyScrollytelling>
+  <Fragment slot="visual">
+    <TurkeyElectionsStoryVisual client:visible />
+  </Fragment>
+  
+  <StickyStep
     id="election-overall"
     label="Step 1"
     title="The aggregate picture"
     summary="The first chart anchors the story in 2024 vote share, while preserving the 2019 delta so momentum is visible next to size."
   >
-    <Fragment slot="visual">
-      <ElectionResultsBarChart client:visible />
-    </Fragment>
-  </StoryStep>
+    CHP led the national municipal vote while also gaining momentum against 2019. This aggregate visualization highlights the national realignments by showing how opposition parties drew major gains.
+  </StickyStep>
 
-<StoryStep
-  id="election-map"
-  label="Step 2"
-  title="Where the shift spread"
-  summary="The province map matters because it shows the opposition move extending beyond the usual western urban strongholds."
->
-  <Fragment slot="visual">
-    <TurkeyElectionMap client:visible />
-  </Fragment>
-</StoryStep>
+  <StickyStep
+    id="election-map"
+    label="Step 2"
+    title="Where the shift spread"
+    summary="The province map matters because it shows the opposition move extending beyond the usual western urban strongholds."
+  >
+    The province map shows why the result felt broader than a coastal or metropolitan win. The opposition spread into previously conservative Anatolian strongholds, showing territorial shifts at a granular geographic scale.
+  </StickyStep>
 
-  <StoryStep
+  <StickyStep
     id="election-change"
     label="Step 3"
     title="How party control changed"
     summary="The final comparison separates headline vote share from actual municipal control across administrative levels."
   >
-    <Fragment slot="visual">
-      <PartyChangesChart client:visible />
-    </Fragment>
-  </StoryStep>
-</ScrollytellingStory>
+    The control-shift chart adds nuance: headline loss and remaining local footprint can be true at the same time. While some parties lost significant city control, they preserved footprint in lower administrative tiers.
+  </StickyStep>
+</StickyScrollytelling>
 
 ## What to notice
 
