@@ -311,7 +311,7 @@ SHARED_EDUCATION = [
         "degree": "Lisans, Gazetecilik",
         "period": "2011 - 2015",
         "grade": "GNO: 2.94 / 4.00",
-        "notes": "2014 yılında Polonya University of Lodz bünyesinde Erasmus+ değişim programını başarıyla tamamladım (Dönem GNO: 3.75 / 4.00)."
+        "notes": "2014 yılında Polonya’daki Lodz Üniversitesi’nde Erasmus+ değişim programını başarıyla tamamladım (Dönem GNO: 3.75 / 4.00)."
     }
 ]
 
@@ -540,13 +540,13 @@ RESUMES = [
         ],
         "experience": [
             {
-                "role": "Bağımsız Mobil Uygulama Geliştiricisi ve Ürün Geliştirici",
+                "role": "Bağımsız Mobil Uygulama Geliştiricisi ve Ürün Uzmanı",
                 "org": "Serbest Zamanlı ve Bağımsız Projeler | Uzaktan",
                 "date": "2025 - Günümüz",
                 "bullets": [
                     "Uçtan Uca Ürün Teslimi: Konsept aşamasından (MVP) lansmana kadar son kullanıcı odaklı 4 iOS ürününü App Store'da yayınladım; React Native ve Expo ile geliştirme süreçlerini yöneterek aktif App Store ürünlerini başarıyla hayata geçirdim.",
                     "Mobil UX ve Gelir Optimizasyonu: Güvenli Supabase yetkilendirme (auth) ve veritabanı akışları kurguladım, RevenueCat abonelik altyapısını entegre ettim; onboarding adımlarındaki sürtünmeyi azaltan ve deneme sürümüne dönüşümü (trial conversion) destekleyen çok aşamalı abonelik ödeme duvarları (paywall) tasarladım.",
-                    "Veri Odaklı Özellik İterasyonu: Kullanıcı davranış loglarını analiz ederek ChoreUs uygulaması için oyunlaştırma döngüleri (ilerleme mekanikleri) geliştirdim; kullanıcı tutundurma (retention) oranını optimize etmek amacıyla A/B testleri koordine ettim.",
+                    "Veri Odaklı Özellik İterasyonu: Kullanıcı davranış loglarını analiz ederek ChoreUs uygulaması için oyunlaştırma döngüleri (ilerleme mekanikleri) geliştirdim; kullanıcı tutundurma (retention) oranını optimize etmek amacıyla A/B testleri yürüttüm.",
                     f"Kişisel portföyümde ürün vaka çalışmalarını ve teknik dokümantasyonları yayınladım. ({_link('anilkaraca.com', 'https://anilkaraca.com')})"
                 ]
             },
@@ -561,13 +561,13 @@ RESUMES = [
                 ]
             },
             {
-                "role": "Kıdemli Dijital Gazeteci",
+                "role": "Dijital Gazeteci / Editör",
                 "org": f"{_link('BirGün', 'https://www.birgun.net/')} | {_link('dokuz8HABER', 'https://www.dokuz8haber.net/')} | {_link('Ege\'de Sonsöz', 'https://www.egedesonsoz.com/')} | Türkiye",
                 "date": "2014 - 2019",
                 "bullets": [
                     "Canlı Veri Araçları: Hız, güvenilirlik ve yüksek görsel netlik gerektiren gerçek zamanlı canlı seçim sonuç takip sistemleri ve grafikleri geliştirdim.",
                     "Analitik Araştırmalar: Veri odaklı yayıncılık projelerini desteklemek amacıyla SQL ve Excel kullanarak seçim veritabanlarını ve kamu kayıtlarını analiz ettim.",
-                    "Teslimat Odaklı Çalışma: Yoğun haber yayını temposu ve gerçek zamanlı kitle araçları vasıtasıyla sonuç odaklı (delivery-oriented) bir ürün zihniyeti geliştirdim."
+                    "Teslimat Odaklı Çalışma: Yoğun haber yayını temposu ve kitleye dönük gerçek zamanlı araçlar sayesinde sonuç odaklı (delivery-oriented) bir ürün zihniyeti geliştirdim."
                 ]
             }
         ],

@@ -532,13 +532,13 @@ RESUMES = [
         ],
         "experience": [
             {
-                "role": "Independent App Developer and Product Developer",
+                "role": "Independent App Developer & Product Specialist",
                 "org": "Self-directed work | Remote",
                 "date": "2025 - Present",
                 "bullets": [
                     "Full Lifecycle Product Shipping: Shipped 4 consumer iOS products to the App Store from initial concept (MVP) to launch; managed cross-functional workflows using React Native and Expo, maintaining active App Store applications.",
                     "Mobile UX & Monetization Optimization: Implemented secure Supabase auth and database flows, integrating RevenueCat subscription infrastructure; designed an intuitive, multi-step subscription paywall to support trial conversion and lower onboarding funnel friction.",
-                    "Data-Driven Feature Iteration: Analyzed user behavior logs and designed gamification structures (such as mascot progression mechanics for ChoreUs); coordinated A/B tests on mobile onboarding journeys to optimize user retention.",
+                    "Data-Driven Feature Iteration: Analyzed user behavior logs and designed gamification structures (such as mascot progression mechanics for ChoreUs); ran A/B tests on mobile onboarding journeys to optimize user retention.",
                     f"Maintained product portfolio and case-study documentation at {_link('anilkaraca.com', 'https://anilkaraca.com')}."
                 ]
             },
