@@ -116,6 +116,9 @@ export function getArticleHref(entry: CollectionEntry<"articles">) {
 }
 
 export function getEntryHref(entry: CaseStudyEntry) {
+  if (entry.collection === "projects" && entry.id === "attack-on-ozgur-ozel") {
+    return "/ozgur-ozele-saldiri";
+  }
   return entry.collection === "articles"
     ? getArticleHref(entry)
     : getProjectHref(entry);

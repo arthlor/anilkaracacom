@@ -15,6 +15,11 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+
+if (entry.id === "attack-on-ozgur-ozel") {
+  return Astro.redirect("/ozgur-ozele-saldiri");
+}
+
 const { Content } = await render(entry);
 ---
 

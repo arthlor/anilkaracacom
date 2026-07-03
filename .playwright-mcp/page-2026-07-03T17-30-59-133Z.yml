@@ -1,0 +1,272 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - img "Karanlık, tiyatro dekoru gibi tasarlanmış Ölü Deniz görselinde dev bir büst, mumlar, sahne zemini ve büyük Ölü Deniz yazısı." [ref=e3]
+    - generic [ref=e4]:
+      - paragraph [ref=e5]: 3 Temmuz 2026
+      - 'heading "Ölü Deniz: Bitirilemeyen Hegemonya" [level=1] [ref=e6]'
+      - paragraph [ref=e7]: Deniz Göktaş "Ölü Deniz" stand-up gösterisini YouTube'a yükledi; günler sonra yurt dışı dönüşünde İstanbul Havalimanı'nda gözaltına alındı ve 3 Temmuz'da tutuklandı. Peki bu iş buraya nasıl geldi? İşte kamuya yansıyan haberler ve tam metin üzerinden yapılan çözümleme.
+      - generic [ref=e8]:
+        - generic [ref=e9]:
+          - text: Yazan
+          - strong [ref=e10]: Anıl Karaca
+        - generic [ref=e11]:
+          - text: Güncelleme
+          - time [ref=e12]: 3 Temmuz 2026, 17.35 TRT
+        - generic [ref=e13]: Yaklaşık 8 dakika
+  - main [ref=e14]:
+    - generic [ref=e15]:
+      - iframe [ref=e17]:
+        - generic [active] [ref=f1e1]:
+          - generic "YouTube Video Oynatıcısı" [ref=f1e3]
+          - generic [ref=f1e5]:
+            - generic:
+              - generic:
+                - button "Videoyu oynat" [ref=f1e10] [cursor=pointer]
+                - button "Oynatıcı kontrollerini gizle" [ref=f1e12] [cursor=pointer]
+                - generic [ref=f1e14]:
+                  - generic [ref=f1e19]:
+                    - generic [ref=f1e20]:
+                      - link "Deniz Göktaş - Ölü Deniz (2026)" [ref=f1e21] [cursor=pointer]:
+                        - /url: https://www.youtube.com/watch?v=ksaVzHyClto
+                      - link "Deniz Göktaş" [ref=f1e22] [cursor=pointer]:
+                        - /url: /channel/UC7KglSYUjRrLNKp__daaFFg
+                        - generic [ref=f1e23]: Deniz Göktaş
+                    - generic [ref=f1e24]:
+                      - button [ref=f1e25] [cursor=pointer]
+                      - generic [ref=f1e27]:
+                        - generic: Deniz Göktaş
+                        - generic: 287 B abone
+                  - generic [ref=f1e28]:
+                    - button "Paylaş" [ref=f1e31] [cursor=pointer]:
+                      - generic [ref=f1e35]:
+                        - img
+                    - link "YouTube'da izleyin" [ref=f1e42] [cursor=pointer]:
+                      - /url: https://www.youtube.com/watch?v=ksaVzHyClto
+                      - generic [ref=f1e45]:
+                        - text: "İzlemek için:"
+                        - img [ref=f1e47]:
+                          - generic [ref=f1e49]:
+                            - img
+      - paragraph [ref=e18]: Deniz Göktaş – "Ölü Deniz" · YouTube yayını
+    - region "Deniz Göktaş X paylaşımı" [ref=e19]:
+      - blockquote [ref=e22]:
+        - paragraph [ref=e23]:
+          - text: "Deniz Göktaş'ın X paylaşımını aç:"
+          - link "x.com/idgoktas/status/2071356182443237597" [ref=e24] [cursor=pointer]:
+            - /url: https://x.com/idgoktas/status/2071356182443237597?s=20
+    - generic [ref=e25]:
+      - heading "Süreçten Ne Anlıyoruz?" [level=2] [ref=e26]
+      - generic [ref=e27]:
+        - paragraph [ref=e29]:
+          - strong [ref=e30]: Tutuklama Dediğin Cezalandırma Değildir (Ama Bizde Öyle).
+          - text: Ceza hukukunda tutuklama aslında kaçmasınlar ya da delil karartmasınlar diye bir önlem. Kamuya yansıyan tabloda temel delil zaten çevrimiçi gösteri kaydı ve Göktaş yurt dışı dönüşünde havalimanında gözaltına alınıyor. Buna rağmen tutuklama seçilince mesele "önlem mi, peşin ceza mı?" sorusuna dönüyor.
+        - paragraph [ref=e32]:
+          - strong [ref=e33]: Şakaların Sadece Ufak Bir Kısmı Dert Olmuş.
+          - text: Tematik bölümlemeye göre savcılık sorgusunda gündeme geldiği aktarılan 10 pasaj, 34 bölümlük gösterinin sadece bir kısmına denk geliyor. Geri kalan geniş alanda Deniz; sınıf çelişkilerini, kendi ailesini, futbolu, Kadıköy nefretini ve medya figürlerini anlatıyor.
+        - paragraph [ref=e35]:
+          - strong [ref=e36]: Başka Çare Yok Muydu Sahiden?
+          - text: Delil diye tartışılan kayıt zaten yayında. Peki niye hemen en ağır koruma tedbiri seçiliyor? Yurt dışı yasağı ve imza gibi adli kontrol seçenekleri varken tutuklama kararının ölçülülüğü asıl tartışma noktası.
+    - generic [ref=e37]:
+      - paragraph [ref=e38]: Zaman Çizelgesi
+      - 'heading "YouTube’dan Hücreye: 9 Günde Neler Oldu?" [level=2] [ref=e39]'
+      - paragraph [ref=e40]: Gösteri 24 Haziran'da YouTube'a yüklendi; AP'nin aktardığına göre 2 Temmuz'da İstanbul Havalimanı'nda gözaltına alındı, 3 Temmuz'da da tutuklandı. Kamuya yansıyan takvim böylece 9 günlük bir hatta oturuyor.
+      - paragraph [ref=e41]: AP'nin 2 Temmuz haberinde, gösteriden sosyal medyaya yüklenen ve Erdoğan'a dönük şakaları da içeren bazı kesitlere daha önce erişim engeli getirildiği aktarılıyor. Aynı haber, Sabah'ın "dinî değerlere ilişkin şakalardan rahatsız olan onlarca kişinin şikâyette bulunduğu" bilgisini verdiğini yazıyor.
+      - paragraph [ref=e42]: 3 Temmuz tarihli AP haberinde dosyanın "dinî değerleri aşağılama" ve Cumhurbaşkanı Recep Tayyip Erdoğan'a hakaret iddialarıyla yürüdüğü; Göktaş'ın sorguda yaklaşımının hiciv olduğunu ve dinî değerleri veya Cumhurbaşkanı'nı aşağılama kastı taşımadığını söylediği aktarılıyor.
+      - 'figure "Çağlayan Adliyesi önünde Deniz Göktaş''a destek için toplananlardan bir kare. (Kaynak: BirGün)" [ref=e43]':
+        - img "Çağlayan Adliyesi önünde Deniz Göktaş'a destek için toplananlar arasında BirGün gazetesi tutan bir kişi." [ref=e44]
+        - generic [ref=e45]: "Çağlayan Adliyesi önünde Deniz Göktaş'a destek için toplananlardan bir kare. (Kaynak: BirGün)"
+      - generic "Ölü Deniz soruşturmasının zaman çizelgesi" [ref=e46]:
+        - article [ref=e47]:
+          - time [ref=e48]: 24 Haziran
+          - generic [ref=e49]:
+            - heading "Video YouTube’a düştü" [level=3] [ref=e50]
+            - paragraph [ref=e51]: Gösterinin kaydı YouTube’da yayımlandı; AP 3 Temmuz itibarıyla yaklaşık 9,5 milyon izlenmeden söz ediyor.
+        - article [ref=e52]:
+          - time [ref=e53]: Yayın sonrası
+          - generic [ref=e54]:
+            - heading "Kesitler ve şikâyetler" [level=3] [ref=e55]
+            - paragraph [ref=e56]: AP, sosyal medya kesitlerine erişim engeli getirildiğini ve haberlerde onlarca şikâyetten söz edildiğini aktarıyor.
+        - article [ref=e57]:
+          - time [ref=e58]: Takip eden günler
+          - generic [ref=e59]:
+            - heading "Soruşturma başladı" [level=3] [ref=e60]
+            - paragraph [ref=e61]: AP, savcıların gösteri hakkında soruşturma başlattığını ve dosyada dinî değerler ile Cumhurbaşkanına hakaret iddialarının bulunduğunu yazıyor.
+        - article [ref=e62]:
+          - time [ref=e63]: 2 Temmuz
+          - generic [ref=e64]:
+            - heading "Uçaktan indiği gibi gözaltı" [level=3] [ref=e65]
+            - paragraph [ref=e66]: Deniz, yurtdışından döner dönmez havalimanında gözaltına alındı.
+        - article [ref=e67]:
+          - time [ref=e68]: 3 Temmuz
+          - generic [ref=e69]:
+            - heading "Sorgu ve tutuklama" [level=3] [ref=e70]
+            - paragraph [ref=e71]: Savcılık sorgusunun ardından hâkimlik tutuklama kararı verdi.
+      - paragraph [ref=e72]: Olayın bu kadar hızlı gelişmesi, sosyal medya kesitleri ve şikâyetlerin yargı sürecini nasıl tetiklediğini gösteriyor. Bu dava sadece "şakanın sınırı nerede başlar" sorusunu değil, tutuklamanın ne zaman peşin cezalandırmaya dönüştüğü sorusunu da öne çıkarıyor.
+      - paragraph [ref=e73]: Hukuk kitabına göre birini tutuklamak için ortada ciddi şüphe olması yetmez; kaçma ihtimalinin bulunması veya delil karartması gerekir. Bu dosyada tartışılan ana materyal çevrimiçi gösteri kaydıysa, "başka çare yokmuş gibi en ağır yoldan içeri atmak niye?" sorusu meşru kalıyor.
+    - generic [ref=e74]:
+      - paragraph [ref=e75]: Metin anatomisi
+      - 'heading "Cımbızın Ucundaki Kelimeler: Gösterinin İçinde Neler Var?" [level=2] [ref=e76]'
+      - paragraph [ref=e77]: Sorguda gündeme geldiği aktarılan 10 pasaj, 11 bin kelimelik gösteri bölümlemesinin sadece küçük bir kısmı. Zaten mizah dediğin şey bütünüyle anlaşılır; şakaları cımbızlayıp cımbızlayıp "bak burada ne demiş" dersen, adamın asıl söylemek istediğini tamamen çarpıtmış olursun.
+      - paragraph [ref=e78]: "\"Ölü Deniz\" aslında 34 parçadan oluşan dev bir bütün. Gösterinin temalarına baktığımda, sadece siyasi şakalar yok; günlük ilişkiler, popüler kültür saçmalıkları ve kimlik kafa karışıklıkları gibi acayip geniş bir yelpaze var."
+      - complementary "Tema sınıflandırması yöntemi" [ref=e79]:
+        - strong [ref=e80]: Nasıl hesapladık?
+        - paragraph [ref=e81]: Gösteri metni önce 34 kronolojik bölüme ayrıldı. Tema etiketleri yapay zekâ destekli bir ön tasnifle üretildi; ardından her bölüm metin üzerinden yeniden kontrol edilip baskın konuya göre tek ana tema seçildi. Karma bölümlerde tek bir sert espri değil, bölümün genel odağı esas alındı. Yüzdeler, bölüm etiketlerindeki kelime sayılarının 11.208 kelimelik toplam metne oranıdır; bu sınıflandırma hukuki kanaat değil, bağlam okumasıdır.
+      - figure "Grafik, gösteriyi baştan sona kronolojik gösterir. Her renkli blok ilgili bölümü; kırmızı elmaslar savcılıkta sorulduğu aktarılan 10 pasajı açar. Sağdaki panel seçilen bölümü gösterir; bölüm seçiciden tüm metin içinde gezinebilirsin." [ref=e82]:
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: "Transkripti Temaya Göre Filtrele:"
+            - generic [ref=e86]:
+              - button "Tüm Gösteri" [ref=e87] [cursor=pointer]
+              - button "Gündelik Hayat" [ref=e88] [cursor=pointer]: Gündelik Hayat
+              - button "Kimlik ve İnanç" [ref=e90] [cursor=pointer]: Kimlik ve İnanç
+              - button "Medya ve Kültür" [ref=e92] [cursor=pointer]: Medya ve Kültür
+              - button "Siyaset ve Kurumlar" [ref=e94] [cursor=pointer]: Siyaset ve Kurumlar
+              - button "Şiddet ve Güvenlik" [ref=e96] [cursor=pointer]: Şiddet ve Güvenlik
+          - generic [ref=e98]:
+            - generic [ref=e99]:
+              - img "Gösterinin 34 bölümünü beş tema hattında gösteren etkileşimli grafik. Klavye kullanıcıları aynı bölümlere sağdaki bölüm seçiciden erişebilir." [ref=e101]
+              - generic [ref=e104]:
+                - button "← Önceki Pasaj" [disabled] [ref=e105]
+                - generic [ref=e106]: Pasaj 1 / 10
+                - button "Sonraki Pasaj →" [ref=e107] [cursor=pointer]
+              - generic [ref=e108]:
+                - heading "[P01] Canlı bomba şakası" [level=3] [ref=e109]
+                - generic [ref=e110]:
+                  - generic [ref=e111]: Bölüm 4
+                  - generic [ref=e112]: "Tema: Şiddet ve güvenlik"
+                  - generic [ref=e113]: 184 kelime
+                - generic [ref=e114]: “Hâlâ korkuyorum, canlı bombalar ama en çok da oruç tutan canlı bombalardan korkuyorum...”
+                - generic [ref=e115]:
+                  - strong [ref=e116]: "Sorgu Odak Noktası:"
+                  - text: Canlı bomba şakasının asıl amacı
+                - generic [ref=e117]:
+                  - strong [ref=e118]: "Bölüm Başlığı:"
+                  - text: Yeni Nesil Mafyalar ve Yanlış Pedagoji (Bölüm 4)
+                - generic [ref=e119]:
+                  - strong [ref=e120]: "Savunma & Bağlam:"
+                  - text: Deniz, ifadesinde amacının oruç tutanları terörle eşitlemek olmadığını söyledi. 'Nerede patlayacağı' sözündeki çift anlamla oynayarak, toplumun üzerindeki o deli korku ve gerginliği şakayla hafifletmeye çalıştığını belirtti.
+            - generic [ref=e121]:
+              - generic [ref=e122]:
+                - generic [ref=e123]:
+                  - strong [ref=e124]: Gösteri metni
+                  - text: Bir bölüm seç, ilgili kısmı burada oku
+                - generic [ref=e125]: 34 bölüm · 11.208 kelimelik tam metin
+              - generic [ref=e128]:
+                - generic [ref=e129]:
+                  - generic [ref=e130]: Bölüm seç
+                  - combobox "Bölüm seç" [ref=e131]:
+                    - option "01 — Giriş ve Seyircinin Koşulsuz Güveni"
+                    - option "02 — Yeni Tarz ve \"İyi İnsan\" İllüzyonu"
+                    - option "03 — İkinci Sıra Bilet Gelirleri ve Tetikçi Piyasası"
+                    - option "04 — Yeni Nesil Mafyalar ve Yanlış Pedagoji" [selected]
+                    - option "05 — Siyasi Gündem ve Eylem Tutkusu"
+                    - option "06 — İmamoğlu’nun Hapishane Hayatı ve Dört Kitap"
+                    - option "07 — \"Utangaç Diktatörlükten\" Kişisel Gelişime"
+                    - option "08 — Üniversiteler ve Trabzon Turnesi Şoku"
+                    - option "09 — Oxford'da Türk Egemenliği ve Ümit Özdağ Arasındaki Sıkışma"
+                    - option "10 — Fatih Altaylı Programı ve Celal Şengör’ün \"Asperger\" Muafiyeti"
+                    - option "11 — İlber Ortaylı’nın Ninni Savunması ve Tarihçilerin Linç Kültürü"
+                    - option "12 — Saç Kesimi ve Sokaktaki Sıfat Anksiyetesi"
+                    - option "13 — İlk Gösterinin Borçları ve Avukatların Sert Yorumu"
+                    - option "14 — Eylemsizlik Suçu ve Berlin Sürgünü Rüyası"
+                    - option "15 — Halkın Beni \"Anlaması\" ve Paralel Hayat İhtimalleri"
+                    - option "16 — Mayıs 2023 Seçim Travması ve Neşe Savunması"
+                    - option "17 — Orta Sınıf Tatili ve Airbnb \"Dede\" Kabusu"
+                    - option "18 — \"Siktiğimin Dalgıçları\" ve Yurt Dışı İkilemi"
+                    - option "19 — Avrupa'da \"Ortamın En Muhafazakarı\" Olmak"
+                    - option "20 — Mimari Özen ve Türkiye'nin Siyasi Birası"
+                    - option "21 — İstanbul’da Yalnızlık ve Kadıköy Nefreti"
+                    - option "22 — Kadın Hakları ve Selanikli Eleştirisi"
+                    - option "23 — Aras Bulut İynemli ve Harbiye’deki Atatürk Silüeti"
+                    - option "24 — Kadıköy’ün Devasa Boykot Kültürü ve Islak Hamburger İtirafı"
+                    - option "25 — Futbol Fanatizmi ve Voleyboldaki \"Beton Yetmez\" Estetiği"
+                    - option "26 — Bağımlılık Özentisi ve Mehmet Ağar’ın Tatil CV’si"
+                    - option "27 — Psikoloji Mezuniyeti ve Bakırköy’deki \"Ağlak\" Raporu"
+                    - option "28 — ODTÜ Psikoloji Planı ve \"Oral Fiksasyon\" Vakası"
+                    - option "29 — \"Freudian Slip\" ve Babaların Kötülük Yarışı"
+                    - option "30 — İyi Babanın Zararları ve Erkeklik Jestleri Eksikliği"
+                    - option "31 — Muhafazakar Ailelerin Seküler Çocukları ve James Hetfield Teorisi"
+                    - option "32 — \"Deniz\" İsminin Ağırlığı ve Çocukluk Kurbanı"
+                    - 'option "33 — Son Beş Dakika: Sıvılarla Mücadele ve Ayrılık Podcast''i"'
+                    - 'option "34 — Kapanış: Milliyetçilerin Fobisi ve İsyan Teşviki"'
+                - generic "Bölümler arasında gezin" [ref=e132]:
+                  - button "Önceki bölüm" [ref=e133] [cursor=pointer]:
+                    - img [ref=e134]
+                  - button "Sonraki bölüm" [ref=e136] [cursor=pointer]:
+                    - img [ref=e137]
+              - generic [ref=e139]:
+                - strong [ref=e140]: Bölüm 04 / 34
+                - generic [ref=e141]: Şiddet ve güvenlik
+                - generic [ref=e142]: 184 kelime
+                - generic [ref=e143]: P01 · sorguda soruldu
+              - generic [ref=e144]:
+                - heading "Yeni Nesil Mafyalar ve Yanlış Pedagoji" [level=3] [ref=e145]
+                - paragraph [ref=e146]: P01 · Sorguda gündeme gelen pasaj ve çevresindeki metin
+                - generic "Öncesinde metin var" [ref=e147]: ···
+                - paragraph [ref=e148]: 31 Bu yeni nesil mafyaların işleri hallediş şekilleri beni çok tedirgin ediyor. Bütün işlerini motokuryeyle hallediyorlar. Ben zaten sokağa çıkarken tedirgin bir insanım, bir de motorcular eklendi. Önümde bir motor duruyor, "Aaa" diyorum, "Deniz, buraya kadar. Bitti. O paketten AK-47 çıkacak, buraya kadarmış." Sonra içinden hamburger çıkıyor, rahatlıyorum falan.
+                - paragraph [ref=e149]: "32 Ama sokak benim için hep böyleydi işte. Çocukken çevik kuvvetten çok korkardım. Oruç tutan otobüs şoförleri çok öfkeli olabiliyorlar, hâlâ korkuyorum. Canlı bombalar... Ama en çok da oruç tutan canlı bombalardan korkuyorum. Çünkü normal canlı bombalardan Taksim'e, kalabalık yerlere, meydanlara gitmeyerek kaçabilirsiniz. Ama oruç tutan canlı bombanın nerede patlayacağı belli olmaz. Bir şeye sinirlenip Eyüp’te patlayabilir:"
+                - paragraph [ref=e150]: 33 "Bu ne trafik ya! Bir saattir bekliyoruz ya, Allahu Ekber!"
+                - paragraph [ref=e151]: 34 Canlı bombalar... Bir ara ne çok canlı bomba vardı değil mi? Neyse ki hepsi öldü. Biraz da güzel haberler verelim, hep tatsız şeyler konuşmayalım; buraya eğlenmeye geldik.
+              - button "Bölümün tamamını oku" [ref=e153] [cursor=pointer]
+        - generic [ref=e154]: Grafik, gösteriyi baştan sona kronolojik gösterir. Her renkli blok ilgili bölümü; kırmızı elmaslar savcılıkta sorulduğu aktarılan 10 pasajı açar. Sağdaki panel seçilen bölümü gösterir; bölüm seçiciden tüm metin içinde gezinebilirsin.
+      - generic "Tema bazında söz dağılımı" [ref=e155]:
+        - generic [ref=e156]:
+          - term [ref=e157]: Gündelik hayat ve ilişkiler
+          - definition [ref=e158]: 3.209 kelime
+          - definition [ref=e159]: "%28,6"
+        - generic [ref=e160]:
+          - term [ref=e161]: Medya ve kültür
+          - definition [ref=e162]: 2.912 kelime
+          - definition [ref=e163]: "%26,0"
+        - generic [ref=e164]:
+          - term [ref=e165]: Kimlik ve inanç
+          - definition [ref=e166]: 2.442 kelime
+          - definition [ref=e167]: "%21,8"
+        - generic [ref=e168]:
+          - term [ref=e169]: Siyaset ve kurumlar
+          - definition [ref=e170]: 2.240 kelime
+          - definition [ref=e171]: "%20,0"
+        - generic [ref=e172]:
+          - term [ref=e173]: Şiddet ve güvenlik
+          - definition [ref=e174]: 405 kelime
+          - definition [ref=e175]: "%3,6"
+      - paragraph [ref=e176]: "Bu sınıflandırmanın gösterdiği tablo şu: Siyaset gösterinin yaklaşık %20'sini kaplıyor. Gündelik hayat, medya ve kültür başlıkları ise birlikte %54'ün üzerinde. Yani Deniz siyasi şaka yaparken bile bunu kuru bir propaganda gibi değil; kendi hayatı, okuduğu okul, medya figürleri ve toplumdaki çelişkiler üzerinden anlatıyor. Bu tablo, gösterinin tek bir gruba veya inanca dönük düz bir metin gibi okunamayacağını gösteriyor."
+    - generic [ref=e177]:
+      - paragraph [ref=e178]: Hicvin hedef haritası
+      - 'heading "Hedef Tahtasındaki Herkes: Çok Yönlü Bir Dalga Geçme Hali" [level=2] [ref=e179]'
+      - paragraph [ref=e180]: Deniz gösteride tek bir kesime yüklenmiyor. İktidarı da, muhalefeti de, seküler tayfayı da, muhafazakarları da, ünlü hocaları da ve en çok da kendisini diline doluyor. Yani hedef tahtasında herkes var.
+      - paragraph [ref=e181]: Gösteride Ekrem İmamoğlu'ndan Ümit Özdağ'a, Fatih Altaylı'dan Celal Şengör'e kadar bir ton popüler figürün taklidini yapıyor veya onları tiye alıyor. Göçmen tartışmalarından tutun, entelektüellerin o havalı pozlarına kadar her şeye sataşıyor. Hal böyle olunca, bu mizahı alıp "belli bir halk kesimine karşı nefret yayıyor" (TCK 216) diye yorumlamak cidden zorlama kaçıyor.
+      - table [ref=e182]:
+        - rowgroup [ref=e183]:
+          - row "Kime sataşıyor? Kimler var? Mizah taktiği" [ref=e184]:
+            - columnheader "Kime sataşıyor?" [ref=e185]
+            - columnheader "Kimler var?" [ref=e186]
+            - columnheader "Mizah taktiği" [ref=e187]
+        - rowgroup [ref=e188]:
+          - row "Siyasetçiler Erdoğan, İmamoğlu, Özgür Özel, Ümit Özdağ Rolleri tersyüz etme, kişisel gelişim parodisi, hapishane ve seçim geyikleri" [ref=e189]:
+            - cell "Siyasetçiler" [ref=e190]
+            - cell "Erdoğan, İmamoğlu, Özgür Özel, Ümit Özdağ" [ref=e191]
+            - cell "Rolleri tersyüz etme, kişisel gelişim parodisi, hapishane ve seçim geyikleri" [ref=e192]
+          - row "Medya ve popüler hocalar Fatih Altaylı, Celal Şengör, İlber Ortaylı Televizyon dili, uzman havası ve \"bunlar niye linç yemiyor\" sorusu" [ref=e193]:
+            - cell "Medya ve popüler hocalar" [ref=e194]
+            - cell "Fatih Altaylı, Celal Şengör, İlber Ortaylı" [ref=e195]
+            - cell "Televizyon dili, uzman havası ve \"bunlar niye linç yemiyor\" sorusu" [ref=e196]
+          - row "Toplumsal gruplar Sekülerler, muhafazakarlar, milliyetçiler, taraftarlar Seyircinin kendi önyargılarını sahneden yüzüne vurma, ters köşeler" [ref=e197]:
+            - cell "Toplumsal gruplar" [ref=e198]
+            - cell "Sekülerler, muhafazakarlar, milliyetçiler, taraftarlar" [ref=e199]
+            - cell "Seyircinin kendi önyargılarını sahneden yüzüne vurma, ters köşeler" [ref=e200]
+          - row "Kendisi ve ailesi Psikoloji mezuniyeti, babası, sevgilisi, sınıf atlama çabası Kendini rezil etme, başarısızlık hikayeleri, otobiyografik abartılar" [ref=e201]:
+            - cell "Kendisi ve ailesi" [ref=e202]
+            - cell "Psikoloji mezuniyeti, babası, sevgilisi, sınıf atlama çabası" [ref=e203]
+            - cell "Kendini rezil etme, başarısızlık hikayeleri, otobiyografik abartılar" [ref=e204]
+      - paragraph [ref=e205]: Mizahın olayı zaten bu; seyirciyi önce bir rahatlatıp sonra kendi önyargılarıyla tokatlamak. Mahkemenin bu sanatsal üslubu görmezden gelip şakaların düz mahkeme ifadesi gibi okuması, ifade özgürlüğünü de mizahı da daracık bir alana hapsetmek demek.
+    - generic [ref=e206]:
+      - paragraph [ref=e207]: Asıl Soru
+      - heading "Keyfimiz mi Kaçtı Yoksa Tehlike mi Var?" [level=2] [ref=e208]
+      - paragraph [ref=e209]: Kamuya açık haberlerde "onlarca şikâyet" ifadesi geçiyor; tek başına şikâyet sayısı ise kamu barışının bozulduğunu göstermeye yetmez. Yasa, birilerinin canının sıkılmasını engellemeyi değil, kamu düzeninin gerçekten fiziki olarak bozulmasını engellemeyi hedefler.
+      - paragraph [ref=e210]: Cumhurbaşkanlığı makamı, ülkenin en büyük siyasi gücü. AİHM çizgisi de siyasetçilerin sıradan kişilere göre daha geniş eleştiriye katlanması gerektiğini söyler. Bu yüzden "diktatör" kelimesi gibi ağır siyasal nitelemelerde bağlam, hiciv formu ve şiddete çağrı olup olmadığı belirleyici hale gelir.
+      - paragraph [ref=e211]: Tutuklama kararı, olayı çözmek yerine henüz mahkeme bile kurulmamışken faturayı Deniz'e ödetiyor. Buradaki mesele şakaları beğenip beğenmemek değil, yargının yasayı düzgün uygulayıp uygulamadığı.
+      - paragraph [ref=e212]: Şakanın komik olup olmadığı veya ahlaki sınırları sabaha kadar tartışılabilir. Ama bir insanı mahkemesiz tutuklayıp içeri tıkmak için kelimelerin ötesinde ciddi gerekçeler olmalı. 'Ölü Deniz' dosyasında bu gerekçelerin olmaması, herkesin hukuki güvenliği açısından soru işaretleri yaratmaya devam ediyor.
+  - contentinfo [ref=e213]:
+    - generic [ref=e214]: © 2026 · Bağımsız veri incelemesi
+    - generic [ref=e215]: "Grafikler: Apache ECharts"
