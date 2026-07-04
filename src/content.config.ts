@@ -1,5 +1,6 @@
 import { glob } from "astro/loaders";
-import { defineCollection, z } from "astro:content";
+import { defineCollection } from "astro:content";
+import { z } from "zod";
 
 const pillarSchema = z.enum([
   "data-journalism-civic-tech",
