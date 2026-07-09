@@ -2376,9 +2376,10 @@ export default function IzmirTransit3DStory() {
               setIsPlaying={setIsPlaying}
             />
           </div>
+        </div>
 
-          {/* Mobile Tabbed Panel (Visible only on mobile/tablet) */}
-          <div className="block md:hidden space-y-4">
+        {/* Mobile Tabbed Panel (Visible only on mobile/tablet) */}
+        <div className="block md:hidden space-y-4">
             {/* Milestone Event Overlay (Header) */}
             {activeMilestone && (
               <motion.div
@@ -2662,7 +2663,6 @@ export default function IzmirTransit3DStory() {
                 )}
               </AnimatePresence>
             </div>
-          </div>
           </div>
       </div>
     </ArticleChartFrame>
