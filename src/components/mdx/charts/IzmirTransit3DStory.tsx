@@ -340,6 +340,17 @@ export default function IzmirTransit3DStory() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"layers" | "demographics" | "details">("layers");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleCheckMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleCheckMobile();
+    window.addEventListener("resize", handleCheckMobile);
+    return () => window.removeEventListener("resize", handleCheckMobile);
+  }, []);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -522,7 +533,7 @@ export default function IzmirTransit3DStory() {
     if (typeof window === "undefined" || !canvasRef.current || !containerRef.current) return;
 
     const width = containerRef.current.clientWidth;
-    const height = 700;
+    const height = containerRef.current.clientHeight || 700;
 
     // 1. Scene setup
     const scene = new THREE.Scene();
@@ -541,9 +552,13 @@ export default function IzmirTransit3DStory() {
     const center = new THREE.Vector3(0, -1, 0);
 
     const updateCameraPosition = () => {
+      const isMobileScreen = window.innerWidth < 768;
+      const zoomMultiplier = isMobileScreen ? 1.35 : 1.0;
+      const adjustedTargetRadius = targetRadius * zoomMultiplier;
+
       theta += (targetTheta - theta) * 0.07;
       phi += (targetPhi - phi) * 0.07;
-      radius += (targetRadius - radius) * 0.07;
+      radius += (adjustedTargetRadius - radius) * 0.07;
 
       camera.position.x = center.x + radius * Math.sin(phi) * Math.sin(theta);
       camera.position.y = center.y + radius * Math.cos(phi);
@@ -2020,11 +2035,17 @@ export default function IzmirTransit3DStory() {
           className={`relative overflow-hidden border border-white/[0.07] bg-black/40 shadow-inner group transition-all duration-300 ${
             isFullscreen ? "w-screen h-screen rounded-none border-none" : "rounded-2xl"
           }`}
-          style={isFullscreen ? { height: "100vh" } : { height: "700px" }}
+          style={
+            isFullscreen
+              ? { height: "100vh" }
+              : isMobile
+              ? { height: "400px" }
+              : { height: "700px" }
+          }
         >
           <canvas
             ref={canvasRef}
-            className="w-full h-full cursor-grab active:cursor-grabbing block"
+            className="w-full h-full cursor-grab active:cursor-grabbing block touch-none"
             onPointerDown={() => setHasInteracted(true)}
             onWheel={() => setHasInteracted(true)}
           />
@@ -2073,7 +2094,7 @@ export default function IzmirTransit3DStory() {
                 animate={{ opacity: 1, y: 0, scale: 1.0 }}
                 exit={{ opacity: 0, y: -10, scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 350, damping: 26 }}
-                className="absolute bottom-20 left-4 right-4 sm:right-auto sm:max-w-xs md:max-w-sm bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] p-4 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] z-20"
+                className="absolute bottom-20 left-4 right-4 sm:right-auto sm:max-w-xs md:max-w-sm hidden md:block bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] p-4 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] z-20"
               >
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-2 w-2">
@@ -2109,35 +2130,35 @@ export default function IzmirTransit3DStory() {
           )}
 
           {/* Floating Controls / Metric HUD in the top right */}
-          <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+          <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-1.5 sm:gap-2 z-10">
             {/* Fullscreen Toggle Button */}
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="flex items-center justify-center w-9 h-9 rounded-xl bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-all duration-200 shadow-lg active:scale-95 cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-all duration-200 shadow-lg active:scale-95 cursor-pointer"
               aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
             >
               {isFullscreen ? (
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" />
                 </svg>
               ) : (
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3M10 21v-6H4M14 3v6h6" />
                 </svg>
               )}
             </button>
 
             {/* Metric HUD Card */}
-            <div className="bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] px-4 py-2.5 rounded-xl text-right shadow-lg pointer-events-none">
-              <span className="text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7af298] block">
+            <div className="bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-xl text-right shadow-lg pointer-events-none">
+              <span className="text-[8px] sm:text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7af298] block">
                 {monthLabel} Total
               </span>
-              <span className="text-xl font-display font-bold text-foreground block mt-0.5">
+              <span className="text-base sm:text-xl font-display font-bold text-foreground block mt-0.5">
                 {formatCompactNumber(totalTrips, "en-US")}
               </span>
               {leadingMode && (
-                <span className="text-[9px] text-muted-foreground block mt-0.5">
+                <span className="text-[8px] sm:text-[9px] text-muted-foreground block mt-0.5">
                   {getTransportLabel(leadingMode.institution, "en")} leads
                 </span>
               )}
@@ -2145,7 +2166,7 @@ export default function IzmirTransit3DStory() {
           </div>
 
           {/* Demographic Mix Overlay (Fare Numbers) */}
-          <div className="absolute top-[88px] right-4 z-10 w-[220px] bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] rounded-xl p-3 shadow-lg pointer-events-auto select-none">
+          <div className="absolute top-[88px] right-4 z-10 hidden md:block w-[220px] bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] rounded-xl p-3 shadow-lg pointer-events-auto select-none">
             <div className="text-[7px] font-bold uppercase tracking-[0.18em] text-[#7af298] mb-2 px-0.5">
               Rider demographic mix (fare groups)
             </div>
@@ -2273,7 +2294,7 @@ export default function IzmirTransit3DStory() {
 
           {/* Selected Mode Detail KPI HUD Card */}
           {selectedModeDetails && (
-            <div className="absolute top-44 left-4 w-60 bg-[#09090b]/92 backdrop-blur-md border border-white/[0.08] p-3.5 rounded-xl shadow-xl z-10 text-left pointer-events-auto transition-all duration-300">
+            <div className="absolute top-44 left-4 hidden md:block w-60 bg-[#09090b]/92 backdrop-blur-md border border-white/[0.08] p-3.5 rounded-xl shadow-xl z-10 text-left pointer-events-auto transition-all duration-300">
               <div className="flex items-center justify-between">
                 <span className="text-[9px] font-bold uppercase tracking-[0.16em]" style={{ color: selectedModeDetails.color }}>
                   {selectedModeDetails.name} Details
@@ -2354,6 +2375,293 @@ export default function IzmirTransit3DStory() {
               isPlaying={isPlaying}
               setIsPlaying={setIsPlaying}
             />
+          </div>
+
+          {/* Mobile Tabbed Panel (Visible only on mobile/tablet) */}
+          <div className="block md:hidden space-y-4">
+            {/* Milestone Event Overlay (Header) */}
+            {activeMilestone && (
+              <motion.div
+                key={`mobile-milestone-${activeMilestone.title}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-[#09090b]/80 border border-white/[0.08] p-4 rounded-2xl shadow-lg backdrop-blur-md"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7af298] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7af298]"></span>
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7af298]">Milestone Event</span>
+                </div>
+                <h4 className="mt-1.5 text-sm font-semibold text-white">{activeMilestone.title}</h4>
+                <p className="mt-1 text-xs text-zinc-400 leading-relaxed">{activeMilestone.desc}</p>
+              </motion.div>
+            )}
+
+            {/* Tabbed Card */}
+            <div className="bg-[#09090b]/80 border border-white/[0.08] rounded-2xl p-4 shadow-lg backdrop-blur-md">
+              {/* Tabs Header */}
+              <div className="flex p-1 bg-white/[0.03] rounded-xl border border-white/[0.05] mb-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("layers")}
+                  className={`flex-1 py-2 text-center text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    activeTab === "layers"
+                      ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  Bay Layers
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("demographics")}
+                  className={`flex-1 py-2 text-center text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    activeTab === "demographics"
+                      ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  Demographics
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("details")}
+                  className={`flex-1 py-2 text-center text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
+                    activeTab === "details"
+                      ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  Details
+                </button>
+              </div>
+
+              {/* Tab Contents */}
+              <AnimatePresence mode="wait">
+                {activeTab === "layers" && (
+                  <motion.div
+                    key="tab-layers"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                    className="space-y-2"
+                  >
+                    <div className="text-[10px] text-zinc-400 mb-2 px-1">
+                      Select a transit mode layer to focus the 3D camera and highlight paths.
+                    </div>
+                    <div className="space-y-1.5">
+                      {modeUi.map((item) => {
+                        const isItemActive = activeCategory === item.key;
+                        const isItemDimmed = activeCategory !== null && activeCategory !== item.key;
+
+                        // Get current value and baseline for stats display
+                        const values = transport.series[item.key] ?? [];
+                        const baselineVal = values[0] || 1;
+                        const currentVal = values[selectedIndex] ?? 0;
+                        const recoveryPct = Math.round((currentVal / baselineVal) * 105);
+
+                        return (
+                          <button
+                            key={`mobile-mode-${item.key}`}
+                            type="button"
+                            onClick={() => {
+                              setActiveCategory((current) =>
+                                current === item.key ? null : item.key,
+                              );
+                              // Auto-switch to Details tab if selecting a mode
+                              if (activeCategory !== item.key) {
+                                setActiveTab("details");
+                              }
+                            }}
+                            className="group/mode flex w-full items-center justify-between gap-3 rounded-xl border border-white/[0.04] p-3 text-left transition-all duration-200 bg-white/[0.01]"
+                            style={{
+                              borderColor: isItemActive ? `${item.color}33` : "rgba(255,255,255,0.04)",
+                              background: isItemActive ? `${item.color}0a` : "rgba(255,255,255,0.01)",
+                              opacity: isItemDimmed ? 0.5 : 1,
+                            }}
+                          >
+                            <div className="flex min-w-0 items-center gap-2.5">
+                              {getTransportIcon(item.key, item.color)}
+                              <div className="min-w-0">
+                                <div className="text-xs font-semibold text-white leading-snug">
+                                  {item.label}
+                                </div>
+                                <div className="truncate text-[9px] text-zinc-500">
+                                  {item.local}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="text-right shrink-0">
+                              <div className="text-[11px] font-semibold text-white tabular-nums">
+                                {formatCompactNumber(currentVal, "en-US")}
+                              </div>
+                              <div
+                                className="text-[9px] font-bold tabular-nums"
+                                style={{ color: recoveryPct >= 100 ? "#7af298" : "#f4b76e" }}
+                              >
+                                {recoveryPct}% rec
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "demographics" && (
+                  <motion.div
+                    key="tab-demographics"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                    className="space-y-3.5"
+                  >
+                    <div className="text-[10px] text-[#7af298] font-bold uppercase tracking-[0.12em] px-0.5">
+                      Rider Fare Mix
+                    </div>
+                    <div className="space-y-2.5">
+                      {demographicMix.map((mix) => (
+                        <div key={`mobile-mix-${mix.group}`} className="px-0.5 text-left">
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span
+                                className="w-2 h-2 rounded-full shrink-0 ring-1 ring-white/10"
+                                style={{ backgroundColor: mix.color }}
+                              />
+                              <span className="text-xs text-zinc-300 truncate">
+                                {mix.label}
+                              </span>
+                            </div>
+                            <span className="text-xs font-semibold text-white tabular-nums shrink-0 ml-1">
+                              {(mix.share * 100).toFixed(0)}%
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500 ease-out"
+                              style={{
+                                width: `${mix.share * 100}%`,
+                                backgroundColor: mix.color,
+                                boxShadow: `0 0 4px ${mix.color}66`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Stacked composition bar */}
+                    <div className="pt-3 border-t border-white/[0.06]">
+                      <div className="flex h-2.5 w-full rounded-full overflow-hidden">
+                        {demographicMix.map((mix) => (
+                          <div
+                            key={`mobile-stack-${mix.group}`}
+                            className="h-full transition-all duration-500"
+                            style={{
+                              width: `${mix.share * 100}%`,
+                              backgroundColor: mix.color,
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap gap-x-3 gap-y-1.5 mt-2">
+                        {demographicMix.map((mix) => (
+                          <div key={`mobile-legend-${mix.group}`} className="flex items-center gap-1.5">
+                            <span
+                              className="w-1.5 h-1.5 rounded-full"
+                              style={{ backgroundColor: mix.color }}
+                            />
+                            <span className="text-[9px] text-zinc-400 leading-none">{mix.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === "details" && (
+                  <motion.div
+                    key="tab-details"
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    {selectedModeDetails ? (
+                      <div className="text-left space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: selectedModeDetails.color }}>
+                            {selectedModeDetails.name} Focus
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setActiveCategory(null)}
+                            className="text-[10px] text-zinc-400 hover:text-white flex items-center gap-1 px-2 py-0.5 rounded-full border border-white/[0.08] bg-white/[0.02]"
+                          >
+                            Clear Focus
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 bg-white/[0.02] border border-white/[0.04] p-3 rounded-xl">
+                          <div>
+                            <div className="text-[9px] text-zinc-500 uppercase tracking-wider">Trips this month</div>
+                            <div className="text-base font-bold font-display text-white mt-0.5">{selectedModeDetails.value}</div>
+                          </div>
+                          <div>
+                            <div className="text-[9px] text-zinc-500 uppercase tracking-wider">Baseline Recovery</div>
+                            <div
+                              className="text-base font-bold font-display mt-0.5"
+                              style={{ color: selectedModeDetails.recovery >= 100 ? "#7af298" : "#f4b76e" }}
+                            >
+                              {selectedModeDetails.recovery}%
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[10px] text-zinc-500">
+                            <span>Recovery progress relative to Jan 2021:</span>
+                            <span style={{ color: selectedModeDetails.color }}>{selectedModeDetails.recovery}%</span>
+                          </div>
+                          <div className="h-1.5 w-full rounded-full bg-white/[0.08] overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${Math.min(selectedModeDetails.recovery, 100)}%`,
+                                backgroundColor: selectedModeDetails.color,
+                                boxShadow: `0 0 8px ${selectedModeDetails.color}`,
+                              }}
+                            />
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-zinc-400 leading-relaxed pt-1.5 border-t border-white/[0.05]">
+                          {selectedModeDetails.desc}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-8 text-center border border-dashed border-white/[0.08] rounded-xl bg-white/[0.01]">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-600 mb-2">
+                          <circle cx="12" cy="12" r="10"></circle>
+                          <line x1="12" y1="16" x2="12" y2="12"></line>
+                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <div className="text-xs font-medium text-zinc-400">No transit mode focused</div>
+                        <div className="text-[10px] text-zinc-500 mt-1 max-w-[200px]">
+                          Select a mode under the <span className="text-zinc-300 font-semibold cursor-pointer underline" onClick={() => setActiveTab("layers")}>Bay Layers</span> tab to view full details.
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
           </div>
       </div>
