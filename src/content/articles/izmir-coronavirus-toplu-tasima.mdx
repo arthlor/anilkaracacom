@@ -1,9 +1,9 @@
 ---
-title: "How Izmir's transit network found its way back after the pandemic"
-description: "A data-driven analysis of how Izmir's public transport network recovered after COVID-19, and how the rider mix changed along the way."
+title: "How İzmir’s Transit Network Found Its Way Back After the Pandemic"
+description: "A 3D interactive data story analyzing the post-pandemic recovery patterns of İzmir’s public transport network across modes and demographics."
 pubDate: 2024-03-25
-heroImage: "../../assets/images/articles/izmir-coronavirus-transport-2025.webp"
-tags: ["izmir", "covid-19", "public-transport", "data-analysis", "interactive"]
+heroImage: "../../assets/images/articles/izmir-coronavirus-transport-2025.jpg"
+tags: ["izmir", "covid-19", "public-transport", "data-analysis", "three-js", "interactive"]
 category: "data-journalism"
 featured: true
 published: true
@@ -15,31 +15,34 @@ techStack:
   [
     "Municipal ridership records",
     "Monthly recovery modeling",
-    "Linked React chart system",
-    "Astro reporting flow",
+    "Three.js particle simulation",
+    "React interaction layer",
+    "Astro editorial workflow",
   ]
 metrics:
   - label: "Records analyzed"
     value: "19K+"
-    detail: "Daily public transport records across multiple transit modes."
+    detail: "Daily public transport records aggregated across İzmir’s major transit modes."
   - label: "Time window"
     value: "2021-2024"
-    detail: "Four years of recovery behavior after the pandemic collapse."
-  - label: "Linked views"
+    detail: "Four years of post-collapse recovery behavior after the pandemic shock."
+  - label: "Interactive views"
     value: "2"
-    detail: "Ridership recovery and fare-group composition move on the same monthly cursor."
-executiveSummary: "A recovery analysis of Izmir's transit system built from four years of open data, showing not only when ridership returned but which fare groups came back first."
-context: "The pandemic radically altered urban mobility, but simple top-line ridership charts do not explain how public infrastructure recovered. This case study uses municipal transport data to show the timing, scale, and demographic shape of Izmir's recovery."
+    detail: "Mode recovery and rider composition are linked through the same monthly timeline."
+executiveSummary: "Using municipal open data, this 3D visualization reveals how İzmir’s transit network recovered unevenly across transport modes and passenger demographics after the pandemic shock."
+context: "Total ridership trends hide the structural changes within a transit network. This analysis uses four years of municipal records to show how different modes and passenger groups returned to the system at different rates."
 methodology:
-  - "Pulled open municipal transport data and normalized totals by mode and fare group."
-  - "Rebuilt the visuals as native linked charts so overall recovery and rider composition could share one monthly cursor."
-  - "Structured the narrative around indexed recovery, absolute totals, and share mode instead of static snapshots."
-challenge: "The main challenge was making four years of recovery legible without flattening the story into one crowded plot. The solution was to let the two views answer different questions while still moving together on the same month selection."
-codeProof: "The page now uses native React charts backed by local data modules. Absolute and indexed recovery, plus absolute and share-based fare composition, can all be compared without leaving the article surface."
-conclusion: "The project turns a broad post-pandemic question into a concrete systems story: Izmir's transit network recovered, but the pace and shape of that recovery changed depending on who depended on the system first."
-summaryEn: "A systems-focused analysis of Izmir's transit recovery that uses open data to show both ridership rebound and demographic shifts."
-role: "Data analysis, systems framing, interaction design"
-impact: "Makes a large public dataset usable for readers trying to understand how an urban system changed after disruption."
+  - "Collected open municipal transport records and normalized daily totals by transport mode and fare group."
+  - "Aggregated the data into monthly series to compare long-term recovery patterns without daily noise."
+  - "Indexed mode recovery against January 2021 to show relative rebound speed alongside absolute trip volume."
+  - "Built a native Three.js scene where particle count represents trip volume and particle speed represents indexed recovery."
+  - "Projected İzmir’s coastline, stations, hubs, ferry routes, and rail corridors into a local 3D coordinate system for spatial context."
+challenge: "The core challenge was avoiding a decorative 3D map. A beautiful network animation is not automatically journalism; it has to make comparison easier. The solution was to let the scene answer a specific question: how did recovery move through the system over time?"
+codeProof: "The article uses a React-powered Three.js component backed by local data modules. The scene links month selection, mode filtering, indexed recovery, absolute volume, rider-mix color encoding, camera presets, and projected geographic transit geometry."
+conclusion: "İzmir’s transit network recovered, but not as a single line returning to normal. Buses remained the volume backbone, rail modes showed sharper indexed rebounds, and fare-group composition reveals who came back to the system first."
+summaryEn: "A Three.js data-journalism case study of İzmir’s post-pandemic transit recovery, combining open ridership data, indexed recovery modeling, rider-mix analysis, and a spatial particle simulation."
+role: "Data analysis, systems framing, Three.js visualization, interaction design, editorial narrative"
+impact: "Turns a large municipal dataset into an explorable public-interest story about how an urban transport system recovered after disruption."
 relatedContent:
   - collection: "articles"
     slug: "izmir-trafik-kazasi-raporu"
@@ -47,19 +50,35 @@ relatedContent:
     slug: "attack-on-ozgur-ozel"
 ---
 
-import IzmirTransitRecoveryStory from "../../components/mdx/charts/IzmirTransitRecoveryStory";
+import IzmirTransit3DStory from "../../components/mdx/charts/IzmirTransit3DStory";
 
-Izmir's transit recovery was not only about total riders returning. The useful question is which modes and fare groups came back first, and how that changed the shape of the network.
+The first sign of recovery in a transit system is simple: the ridership line goes up. The harder question is what that line hides.
 
-<IzmirTransitRecoveryStory client:load />
+Following the COVID-19 pandemic, İzmir’s public transport network did not simply return to normal. It reorganized. While some modes carried the absolute volume burden, others recovered much faster relative to their baseline. Concurrently, the passenger mix shifted as schools reopened, work habits evolved, and restrictions lifted.
 
-## What to notice
+This 3D, interactive simulation maps İzmir's transit network. By linking municipal open data to a spatial particle system, it allows us to analyze ridership volume, recovery pace, and rider demographics simultaneously.
 
-- Buses remain the volume backbone, while rail modes show sharper recovery curves when normalized to their 2021 baseline.
-- Student travel becomes easier to read in share mode because the chart stops letting total month size dominate the frame.
-- The recovery is a systems story: mode volume and rider mix change together, not in separate timelines.
+<IzmirTransit3DStory client:load />
+
+## Visual Encodings
+
+The scene uses motion and color to encode transport datasets:
+
+- **Density & Volume**: The concentration of moving particles corresponds to absolute monthly trips.
+- **Speed & Index**: Particle flow speed indicates relative recovery indexed against January 2021 baseline levels (Jan 2021 = 100).
+- **Mode vs. Demographics**: The display toggles between color-coding by transit mode (buses, rail, tram, ferry) and color-coding by passenger fare groups (students, full-fare, elderly).
+
+## Key Insights
+
+1. **Volume vs. Pace**: Buses remain the absolute backbone of İzmir’s transport system, carrying the widest daily loads. However, rail systems (Metro and İZBAN) show much steeper indexed recovery slopes, rebounding rapidly once urban movement resumed.
+2. **Demographic Rebound**: Student ridership recovered in sharp, seasonal surges. By viewing the demographic mix, the recovery is revealed not as a uniform return of commuters, but as a series of distinct social groups returning at different rates.
+
+## Why 3D Geography?
+
+A flat chart struggles to show spatial relationships. İzmir is a city defined by its bay. Its transport logic depends on cross-bay ferries, a north-south rail spine, coastal tramways, and radial bus networks. 
+
+By projecting WGS84 GPS coordinates into a local Three.js space, the visualization maintains geographic context, allowing readers to see how the recovery physically moved across the bay and through the city's key hubs.
 
 ---
 
-_Data source: [Izmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/)_
-_Note: Interactive visualizations are built as native React views so recovery totals and rider mix can be read on the same monthly timeline._
+*Data Source: [İzmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/)*

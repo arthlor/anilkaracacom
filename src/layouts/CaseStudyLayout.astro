@@ -103,61 +103,42 @@ const schema =
           {
             isPublishedArticle ? (
               <div class="article-dashboard">
-                <section class="article-snapshot" id="story-snapshot">
-                  <div class="article-snapshot__header">
-                    <p class="case-study-layout__label">
-                      {isTurkish ? "Özet" : "Story Snapshot"}
-                    </p>
-                    <a href="#visual-analysis" class="article-snapshot__jump">
-                      <span>
-                        {isTurkish
-                          ? "Grafikle Başla"
-                          : "Start with the graphic"}
-                      </span>
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M3 8h10M9 4l4 4-4 4"
-                          stroke="currentColor"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        />
-                      </svg>
-                    </a>
-                  </div>
-
-                  <p class="article-snapshot__body">
-                    {entry.data.executiveSummary}
-                  </p>
-
-                  <div
-                    class="article-snapshot__metrics"
-                    aria-label="Story metrics"
-                  >
-                    {entry.data.metrics.slice(0, 3).map((metric) => (
-                      <div class="article-snapshot__metric-card">
-                        <span class="article-snapshot__metric-value">
-                          {metric.value}
-                        </span>
-                        <span class="article-snapshot__metric-label">
-                          {metric.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </section>
 
                 <section id="visual-analysis">
                   <div class="prose-article max-w-none">
                     <Content components={mdxComponents} />
                   </div>
                 </section>
+
+                {/* Challenge, Code Proof & Conclusion Section (Behind the Scenes Dashboard) */}
+                <div class="article-dashboard__outro-grid">
+                  {entry.data.challenge && (
+                    <section class="article-dashboard__card">
+                      <p class="case-study-layout__label">{copy.challengeLabel}</p>
+                      <p class="article-dashboard__copy mt-3">
+                        {entry.data.challenge}
+                      </p>
+                    </section>
+                  )}
+
+                  {entry.data.codeProof && (
+                    <section class="article-dashboard__card">
+                      <p class="case-study-layout__label">{copy.codeLabel}</p>
+                      <p class="article-dashboard__copy mt-3">
+                        {entry.data.codeProof}
+                      </p>
+                    </section>
+                  )}
+
+                  {entry.data.conclusion && (
+                    <section class="article-dashboard__card md:col-span-2 lg:col-span-2">
+                      <p class="case-study-layout__label">{copy.conclusionLabel}</p>
+                      <p class="article-dashboard__copy mt-3">
+                        {entry.data.conclusion}
+                      </p>
+                    </section>
+                  )}
+                </div>
               </div>
             ) : (
               <div class="grid gap-8">
@@ -302,6 +283,60 @@ const schema =
   .article-dashboard {
     display: grid;
     gap: 1.25rem;
+  }
+
+  .article-dashboard__intro-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) {
+    .article-dashboard__intro-grid {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .article-dashboard__outro-grid {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  @media (min-width: 768px) {
+    .article-dashboard__outro-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .article-dashboard__card {
+    padding: 1.75rem 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  .article-dashboard__copy {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .article-dashboard__methodology {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .article-dashboard__methodology li {
+    padding: 0.75rem 1rem;
+    border-left: 2px solid rgba(122, 242, 152, 0.15);
+    background: rgba(255, 255, 255, 0.01);
+    font-size: 0.90rem;
+    line-height: 1.6;
+    color: hsl(var(--foreground));
   }
 
   .article-snapshot {
