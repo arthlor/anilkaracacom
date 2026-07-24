@@ -3,7 +3,7 @@ import { scaleLinear, scalePoint } from "d3-scale";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
-import { formatNumber } from "@/components/case-study/chartTheme";
+import { chartPalette, formatNumber } from "@/components/case-study/chartTheme";
 import data from "@/data/itfaiye_processed.json";
 
 // Colors mapped to each category
@@ -111,6 +111,27 @@ export default function ItfaiyeCategoryGrowth({
   const totalYearlyIncidents = useMemo(() => {
     return yearTotalsForReadout.reduce((sum, item) => sum + item.value, 0);
   }, [yearTotalsForReadout]);
+  const activeRead = useMemo(() => {
+    if (hoveredBar) {
+      const row = data.yearly_totals.find(
+        (entry: any) => entry.year === hoveredBar.year,
+      ) as any;
+      return {
+        year: hoveredBar.year,
+        label: activityLabelsTr[hoveredBar.category] ?? hoveredBar.category,
+        value: row?.[hoveredBar.category] ?? 0,
+      };
+    }
+
+    const selected =
+      yearTotalsForReadout.find((entry) => activeLines[entry.key]) ??
+      yearTotalsForReadout[0];
+    return {
+      year: selectedYear,
+      label: selected?.label ?? "Görev",
+      value: selected?.value ?? 0,
+    };
+  }, [activeLines, hoveredBar, selectedYear, yearTotalsForReadout]);
 
   // SVG parameters
   const width = 720;
@@ -160,8 +181,16 @@ export default function ItfaiyeCategoryGrowth({
   };
 
   const chartCore = (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-      <p className="viz-scroll-hint">Kaydırarak tüm yılları görün →</p>
+    <div
+      className={
+        pureCanvas
+          ? "relative min-h-0 flex-1 overflow-hidden border-y border-border/65 py-1"
+          : "relative overflow-x-auto rounded-xl border border-border bg-card/70 p-3 shadow-[0_8px_30px_hsl(var(--foreground)/0.08)] backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      }
+    >
+      {!pureCanvas && (
+        <p className="viz-scroll-hint">Kaydırarak tüm yılları görün →</p>
+      )}
       {/* HTML Tooltip */}
       <AnimatePresence>
         {tooltip && (
@@ -170,14 +199,14 @@ export default function ItfaiyeCategoryGrowth({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3 py-2 text-xs shadow-2xl backdrop-blur-md max-w-[240px]"
+            className="pointer-events-none absolute z-30 max-w-[240px] rounded-lg border border-border bg-popover/95 px-3 py-2 text-xs text-popover-foreground shadow-2xl backdrop-blur-md"
             style={{
               left: tooltip.x,
               top: tooltip.y,
               transform: "translate(-50%, -100%)",
             }}
           >
-            <div className="font-bold text-foreground mb-1 pb-0.5 border-b border-white/10">
+            <div className="mb-1 border-b border-border pb-0.5 font-bold text-foreground">
               {tooltip.title}
             </div>
             <div className="space-y-0.5 max-h-[140px] overflow-y-auto pr-1">
@@ -207,8 +236,14 @@ export default function ItfaiyeCategoryGrowth({
 
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="h-auto w-full min-w-[500px] overflow-visible"
+        className={
+          pureCanvas
+            ? "h-full w-full overflow-visible"
+            : "h-auto w-full min-w-[500px] overflow-visible"
+        }
         preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-label={`${selectedYear} yılı yangın dışı görev kategorileri`}
       >
         {/* Y Axis Grid Lines */}
         {[0, 0.25, 0.5, 0.75, 1].map((p) => {
@@ -221,14 +256,14 @@ export default function ItfaiyeCategoryGrowth({
                 x2={width - padding.right}
                 y1={y}
                 y2={y}
-                stroke="rgba(255,255,255,0.06)"
+                stroke={chartPalette.grid}
                 strokeDasharray="4 6"
               />
               <text
                 x={padding.left - 8}
                 y={y + 3}
                 textAnchor="end"
-                className="fill-[rgba(243,241,235,0.45)] text-[9px] font-mono"
+                className="fill-muted-foreground font-mono text-[9px]"
               >
                 {formatNumber(Math.round(val / 500) * 500, "tr-TR")}
               </text>
@@ -246,13 +281,13 @@ export default function ItfaiyeCategoryGrowth({
                 x2={x}
                 y1={padding.top}
                 y2={height - padding.bottom}
-                stroke="rgba(255,255,255,0.02)"
+                stroke={chartPalette.grid}
               />
               <text
                 x={x}
                 y={height - 6}
                 textAnchor="middle"
-                className="fill-[rgba(243,241,235,0.65)] text-[10px] font-semibold"
+                className="fill-foreground text-[10px] font-semibold"
               >
                 {year}
               </text>
@@ -327,6 +362,9 @@ export default function ItfaiyeCategoryGrowth({
                         height={innerHeight}
                         fill="transparent"
                         style={{ cursor: "pointer" }}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`${yearRow.year}, ${activityLabelsTr[cat] ?? cat}, ${formatNumber(value, "tr-TR")} görev`}
                         onMouseEnter={(e) => {
                           setHoveredBar({
                             year: yearRow.year,
@@ -338,6 +376,28 @@ export default function ItfaiyeCategoryGrowth({
                           setHoveredBar(null);
                           handleLeave();
                         }}
+                        onFocus={(e) => {
+                          setHoveredBar({
+                            year: yearRow.year,
+                            category: cat,
+                          });
+                          handleBarEnter(
+                            e as unknown as React.MouseEvent,
+                            yearRow.year,
+                            cat,
+                            value,
+                          );
+                        }}
+                        onBlur={() => {
+                          setHoveredBar(null);
+                          handleLeave();
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setSelectedYear(yearRow.year);
+                          }
+                        }}
                         onClick={() => setSelectedYear(yearRow.year)}
                       />
                     </g>
@@ -348,83 +408,82 @@ export default function ItfaiyeCategoryGrowth({
           })}
         </g>
       </svg>
-     </div>
+    </div>
   );
 
   const chartBody = (
-    <div className="w-full flex flex-col gap-3">
+    <div
+      className={`flex w-full min-w-0 flex-col ${
+        pureCanvas ? "h-full gap-2" : "gap-3"
+      }`}
+    >
+      {pureCanvas && (
+        <div className="flex min-h-11 items-center justify-between gap-2">
+          <div className="min-w-0">
+            <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              Aktif okuma
+            </span>
+            <span className="block truncate text-sm font-bold text-foreground">
+              {activeRead.year} · {activeRead.label} ·{" "}
+              {formatNumber(activeRead.value, "tr-TR")}
+            </span>
+          </div>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <select
+              value={selectedYear}
+              onChange={(event) => setSelectedYear(Number(event.target.value))}
+              className="min-h-11 rounded-full border border-border bg-background/80 px-2.5 text-[10px] font-semibold text-foreground outline-none"
+              aria-label="Odak yılı"
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <select
+              value=""
+              onChange={(event) => {
+                if (event.target.value) {
+                  toggleCategory(event.target.value);
+                }
+              }}
+              className="min-h-11 max-w-[8.5rem] rounded-full border border-border bg-background/80 px-2.5 text-[10px] font-semibold text-foreground outline-none"
+              aria-label="Görev kategorilerini değiştir"
+            >
+              <option value="">
+                Kategoriler · {activeCategoryCount}/{activities.length}
+              </option>
+              {activities.map((activity) => (
+                <option key={activity} value={activity}>
+                  {activeLines[activity] ? "✓ " : ""}
+                  {activityLabelsTr[activity] ?? activity}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      )}
       {chartCore}
       {pureCanvas && (
-        <>
-          {/* Dynamic Active Toggles */}
-          <div
-            className="flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
-            role="group"
-            aria-label="Odak yılı"
-          >
-            {years.map((year) => {
-              const isSelected = selectedYear === year;
-              return (
-                <button
-                  key={`year-focus-pure-${year}`}
-                  type="button"
-                  className="rounded-md border px-2.5 py-1 text-[10px] font-semibold transition-all duration-200"
-                  style={{
-                    borderColor: isSelected
-                      ? "rgba(122,242,152,0.35)"
-                      : "rgba(255,255,255,0.05)",
-                    backgroundColor: isSelected
-                      ? "rgba(122,242,152,0.08)"
-                      : "transparent",
-                    color: isSelected ? "#ffffff" : "rgba(255,255,255,0.45)",
-                  }}
-                  onClick={() => setSelectedYear(year)}
-                >
-                  {year}
-                </button>
-              );
-            })}
-          </div>
-
-          <div
-            className="flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl font-sans"
-            role="group"
-            aria-label="Görev kategorileri"
-          >
-            {activities.map((act) => {
-              const isActive = activeLines[act];
-              const color = categoryColors[act] ?? "#8c98ad";
-              const isLocked = activeCategoryCount <= 1 && isActive;
-              return (
-                <button
-                  key={`legend-toggle-pure-${act}`}
-                  type="button"
-                  className="flex items-center gap-1 px-2.5 py-1 rounded-md border text-[10px] font-semibold select-none transition-all duration-200"
-                  aria-pressed={isActive}
-                  disabled={isLocked}
-                  style={{
-                    borderColor: isActive ? `${color}40` : "rgba(255,255,255,0.05)",
-                    backgroundColor: isActive ? `${color}08` : "transparent",
-                    color: isActive
-                      ? "#ffffff"
-                      : "rgba(255,255,255,0.35)",
-                    opacity: isLocked ? 0.72 : 1,
-                  }}
-                  onClick={() => toggleCategory(act)}
-                >
-                  <span
-                    className="w-1.5 h-1.5 rounded-full"
-                    style={{
-                      backgroundColor: color,
-                      opacity: isActive ? 1 : 0.2,
-                    }}
-                  />
-                  {activityLabelsTr[act] ?? act}
-                </button>
-              );
-            })}
-          </div>
-        </>
+        <div className="flex min-h-7 items-center gap-2 overflow-hidden text-[8px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          {activeCats.map((category) => (
+            <span
+              key={category}
+              className="flex min-w-0 items-center gap-1 truncate"
+            >
+              <span
+                className="h-1.5 w-1.5 shrink-0 rounded-full"
+                style={{
+                  background: categoryColors[category] ?? chartPalette.muted,
+                }}
+              />
+              <span className="truncate">
+                {activityLabelsTr[category] ?? category}
+              </span>
+            </span>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -452,7 +511,7 @@ export default function ItfaiyeCategoryGrowth({
               {yearTotalsForReadout.map((row) => (
                 <div
                   key={row.key}
-                  className="viz-ranking-item flex items-center justify-between text-xs py-1 border-b border-white/[0.03]"
+                  className="viz-ranking-item flex items-center justify-between border-b border-border py-1 text-xs"
                 >
                   <div className="flex items-center gap-1.5 min-w-0">
                     <span
@@ -500,7 +559,7 @@ export default function ItfaiyeCategoryGrowth({
 
       {/* Dynamic Active Toggles */}
       <div
-        className="mt-3 flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+        className="mt-3 flex flex-wrap justify-center gap-1.5 rounded-xl border border-border bg-muted/35 p-2"
         role="group"
         aria-label="Odak yılı"
       >
@@ -516,11 +575,11 @@ export default function ItfaiyeCategoryGrowth({
               style={{
                 borderColor: isSelected
                   ? "rgba(122,242,152,0.35)"
-                  : "rgba(255,255,255,0.05)",
+                  : chartPalette.grid,
                 backgroundColor: isSelected
                   ? "rgba(122,242,152,0.08)"
                   : "transparent",
-                color: isSelected ? "#ffffff" : "rgba(255,255,255,0.45)",
+                color: isSelected ? chartPalette.text : chartPalette.muted,
               }}
               onClick={() => setSelectedYear(year)}
             >
@@ -531,7 +590,7 @@ export default function ItfaiyeCategoryGrowth({
       </div>
 
       <div
-        className="mt-2 flex flex-wrap gap-1.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+        className="mt-2 flex flex-wrap justify-center gap-1.5 rounded-xl border border-border bg-muted/35 p-2"
         role="group"
         aria-label="Görev kategorileri"
       >
@@ -550,11 +609,9 @@ export default function ItfaiyeCategoryGrowth({
               }`}
               disabled={isLocked}
               style={{
-                borderColor: isActive ? `${color}40` : "rgba(255,255,255,0.05)",
+                borderColor: isActive ? `${color}40` : chartPalette.grid,
                 backgroundColor: isActive ? `${color}08` : "transparent",
-                color: isActive
-                  ? "#ffffff"
-                  : "rgba(255,255,255,0.35)",
+                color: isActive ? chartPalette.text : chartPalette.muted,
                 opacity: isLocked ? 0.72 : 1,
               }}
               onClick={() => toggleCategory(act)}

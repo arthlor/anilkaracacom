@@ -68,28 +68,38 @@ import IstanbulFirefightersStoryVisual from "@/components/mdx/charts/IstanbulFir
 
 Gelin, yaklaşık 300 bin vakanın yer aldığı bu acil durum veritabanının fısıldadığı mevsimsel örüntülere birlikte göz atalım. Aşağıdaki etkileşimli görsel akış, size bu görev dağılımlarının hikayesini anlatacak.
 
-<StickyScrollytelling>
+<StickyScrollytelling mode="immersive">
   <Fragment slot="visual">
     <IstanbulFirefightersStoryVisual client:visible />
   </Fragment>
 
-  <StickyStep
-    id="itfaiye-growth"
-    label="Adım 1"
-    title="Genişleyen Görev Haritası"
-    summary="2021-2025 yılları arasında ekiplerin müdahale ettiği yangın dışı olayların sayısı düzenli bir artış gösterdi. 'Faaliyet Eğilimleri' grafiğinde görüleceği üzere, İtfaiye ekipleri insan hayatını kurtarma ve kentsel tehlikeleri bertaraf etme görevlerinin yanı sıra, adrese gidildiğinde müdahale gerektirmeyen boş ihbarlara da aynı sorumluluk bilinciyle sevk ediliyor."
-  >
-    İtfaiye ekiplerinin yangın dışı acil durum görevleri son 5 yılda düzenli bir yükseliş trendi sergilemiştir. En dikkat çekici unsur ise, ekiplerin ihbara gidip işlem gerçekleştiremediği boş sevklerin (Faaliyet Yapılmadı) tüm görevlerin yarısından fazlasını oluşturacak şekilde iki katına çıkmasıdır. Bu durum, kamu kaynaklarının etkin kullanımı ve ihbar kalitesinin artırılması gerekliliğine işaret ediyor.
-  </StickyStep>
+<StickyStep
+  id="itfaiye-growth"
+  label="Adım 1"
+  title="Genişleyen Görev Haritası"
+  summary="2021-2025 yılları arasında ekiplerin müdahale ettiği yangın dışı olayların sayısı düzenli bir artış gösterdi. 'Faaliyet Eğilimleri' grafiğinde görüleceği üzere, İtfaiye ekipleri insan hayatını kurtarma ve kentsel tehlikeleri bertaraf etme görevlerinin yanı sıra, adrese gidildiğinde müdahale gerektirmeyen boş ihbarlara da aynı sorumluluk bilinciyle sevk ediliyor."
+>
+  İtfaiye ekiplerinin yangın dışı acil durum görevleri son 5 yılda düzenli bir
+  yükseliş trendi sergilemiştir. En dikkat çekici unsur ise, ekiplerin ihbara
+  gidip işlem gerçekleştiremediği boş sevklerin (Faaliyet Yapılmadı) tüm
+  görevlerin yarısından fazlasını oluşturacak şekilde iki katına çıkmasıdır. Bu
+  durum, kamu kaynaklarının etkin kullanımı ve ihbar kalitesinin artırılması
+  gerekliliğine işaret ediyor.
+</StickyStep>
 
-  <StickyStep
-    id="itfaiye-seasonality"
-    label="Adım 2"
-    title="Mevsimsel Dağılım Matrisi"
-    summary="Görev türlerini zirve yaptıkları aylara göre analiz ettiğimizde, iklim koşulları ve çevre dinamiklerinin doğrudan etkisini görüyoruz. Kış aylarında yağışlara bağlı su tahliyeleri yoğunlaşırken, yaz aylarında sıcaklık artışıyla birlikte sokak hayvanlarına yönelik kurtarma operasyonları belirgin şekilde artış gösteriyor."
-  >
-    Isı haritası, acil durum görevlerinin mevsime ve iklim koşullarına ne kadar duyarlı olduğunu göstermektedir. Örneğin, kış aylarındaki yağışlar su tahliyesi görevlerini tetiklerken, yaz aylarında sokak hayvanlarının su ve mama arayışı esnasında mahsur kalması kurtarma vakalarını dramatik şekilde artırıyor. Ekiplerin operasyonel takvimi bu mevsimsel salınımlara göre planlanmaktadır.
-  </StickyStep>
+<StickyStep
+  id="itfaiye-seasonality"
+  label="Adım 2"
+  title="Mevsimsel Dağılım Matrisi"
+  summary="Görev türlerini zirve yaptıkları aylara göre analiz ettiğimizde, iklim koşulları ve çevre dinamiklerinin doğrudan etkisini görüyoruz. Kış aylarında yağışlara bağlı su tahliyeleri yoğunlaşırken, yaz aylarında sıcaklık artışıyla birlikte sokak hayvanlarına yönelik kurtarma operasyonları belirgin şekilde artış gösteriyor."
+>
+  Isı haritası, acil durum görevlerinin mevsime ve iklim koşullarına ne kadar
+  duyarlı olduğunu göstermektedir. Örneğin, kış aylarındaki yağışlar su
+  tahliyesi görevlerini tetiklerken, yaz aylarında sokak hayvanlarının su ve
+  mama arayışı esnasında mahsur kalması kurtarma vakalarını dramatik şekilde
+  artırıyor. Ekiplerin operasyonel takvimi bu mevsimsel salınımlara göre
+  planlanmaktadır.
+</StickyStep>
 
   <StickyStep
     id="itfaiye-animal-rescue"

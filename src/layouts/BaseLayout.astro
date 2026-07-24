@@ -2,8 +2,10 @@
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import { PUBLIC_GA_MEASUREMENT_ID } from "astro:env/client";
+import { siteConfig, themeStorageKey } from "../lib/site";
 
 const gaMeasurementId = PUBLIC_GA_MEASUREMENT_ID;
+const defaultTheme = siteConfig.defaultTheme;
 
 interface Props {
   title: string;
@@ -33,13 +35,86 @@ const {
 ---
 
 <!doctype html>
-<html lang={lang} class="dark">
+<html
+  lang={lang}
+  data-default-theme={defaultTheme}
+  data-theme-storage-key={themeStorageKey}
+>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="format-detection" content="telephone=no" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#121212" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const storageKey =
+          root.dataset.themeStorageKey || "anilkaraca-theme";
+        const colorSchemeQuery = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        );
+        const lightColorSchemeQuery = window.matchMedia(
+          "(prefers-color-scheme: light)",
+        );
+
+        const getSavedTheme = () => {
+          try {
+            const savedTheme = localStorage.getItem(storageKey);
+            return savedTheme === "light" || savedTheme === "dark"
+              ? savedTheme
+              : null;
+          } catch {
+            return null;
+          }
+        };
+
+        const getPreferredTheme = () => {
+          const savedTheme = getSavedTheme();
+          if (savedTheme) return savedTheme;
+
+          const configuredTheme =
+            root.dataset.defaultTheme === "light" ? "light" : "dark";
+
+          if (colorSchemeQuery.matches) return "dark";
+          if (lightColorSchemeQuery.matches) return "light";
+          return configuredTheme;
+        };
+
+        const applyTheme = (theme) => {
+          const isDark = theme === "dark";
+          root.classList.toggle("dark", isDark);
+          root.dataset.theme = theme;
+
+          const colorSchemeMeta = document.querySelector(
+            'meta[name="color-scheme"]',
+          );
+          const themeColorMeta = document.querySelector(
+            'meta[name="theme-color"]',
+          );
+
+          if (colorSchemeMeta) colorSchemeMeta.content = theme;
+          if (themeColorMeta) {
+            themeColorMeta.content = isDark ? "#121212" : "#fafafa";
+          }
+        };
+
+        applyTheme(getPreferredTheme());
+
+        colorSchemeQuery.addEventListener("change", (event) => {
+          if (getSavedTheme()) return;
+
+          const theme = event.matches ? "dark" : "light";
+          applyTheme(theme);
+          window.dispatchEvent(
+            new CustomEvent("themechange", { detail: { theme } }),
+          );
+        });
+      })();
+    </script>
 
     <SEO
       title={title}

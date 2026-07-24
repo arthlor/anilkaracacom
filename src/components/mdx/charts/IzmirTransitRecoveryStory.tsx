@@ -108,7 +108,7 @@ export default function IzmirTransitRecoveryStory() {
                 {trendMode === option.key && (
                   <motion.div
                     layoutId="transit-trend-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -137,7 +137,7 @@ export default function IzmirTransitRecoveryStory() {
                 {mixMode === option.key && (
                   <motion.div
                     layoutId="transit-mix-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -169,7 +169,7 @@ export default function IzmirTransitRecoveryStory() {
                   <button
                     key={`${row.institution}-${monthLabel}`}
                     type="button"
-                    className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
+                    className="viz-ranking-item text-left transition-all duration-200 hover:bg-muted"
                     data-active={activeCategory === row.institution}
                     aria-pressed={activeCategory === row.institution}
                     onClick={() =>
@@ -216,7 +216,7 @@ export default function IzmirTransitRecoveryStory() {
       }
     >
       <div className="space-y-5">
-        <div className="viz-insight rounded-xl border border-white/[0.07] bg-white/[0.015] p-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="viz-insight flex flex-col gap-2 rounded-xl border border-border bg-muted/35 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="viz-label">Selected month summary</p>
             <p className="mt-1 text-base font-semibold text-foreground">
@@ -230,7 +230,7 @@ export default function IzmirTransitRecoveryStory() {
               </p>
             )}
           </div>
-          <div className="text-xs font-semibold text-foreground bg-white/[0.04] border border-white/[0.06] rounded-full px-3 py-1">
+          <div className="rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-foreground">
             {trendMode === "indexed" ? "Index view" : "Trip view"} ·{" "}
             {mixMode === "share" ? "Share mix" : "Trip mix"}
           </div>
@@ -265,7 +265,7 @@ export default function IzmirTransitRecoveryStory() {
             locale="en"
           />
 
-          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.15)] hover:bg-white/[0.015] hover:border-white/[0.09] transition-all duration-300">
+          <div className="rounded-2xl border border-border bg-card/70 p-4 shadow-[0_12px_40px_hsl(var(--foreground)/0.08)] backdrop-blur-md transition-all duration-300 hover:border-primary/20 hover:bg-muted/35 sm:p-5">
             <p className="viz-label">Selected fare composition</p>
             <p className="viz-note mt-1">
               In {monthLabel}, the lower view shows whether the rebound was
@@ -326,12 +326,12 @@ function CustomMonthScrubber({
   };
 
   return (
-    <div className="flex items-center gap-3 w-full bg-white/[0.01] border border-white/[0.06] rounded-2xl p-3 sm:px-6 shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
+    <div className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card/70 p-3 shadow-[0_8px_30px_hsl(var(--foreground)/0.06)] sm:px-6">
       <button
         type="button"
         disabled={index === 0}
         onClick={() => onSelect(index - 1)}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
         aria-label="Previous month"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
@@ -344,7 +344,7 @@ function CustomMonthScrubber({
         onPointerUp={handlePointerUp}
       >
         <div className="absolute inset-0 flex items-center">
-          <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative overflow-hidden">
+          <div className="relative h-[4px] w-full overflow-hidden rounded-full bg-muted">
             <motion.div
               className="absolute left-0 top-0 bottom-0 rounded-full bg-[#7af298]"
               animate={{ width: `${percentage}%` }}
@@ -354,7 +354,7 @@ function CustomMonthScrubber({
         </div>
 
         <motion.div
-          className="absolute w-5 h-5 rounded-full bg-[#7af298] border-4 border-[#111111] shadow-[0_0_12px_rgba(122,242,152,0.4)] z-10"
+          className="absolute z-10 h-5 w-5 rounded-full border-4 border-background bg-primary shadow-[0_0_12px_hsl(var(--primary)/0.4)]"
           animate={{ left: `calc(${percentage}% - 10px)` }}
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
           whileHover={{ scale: 1.2 }}
@@ -365,7 +365,7 @@ function CustomMonthScrubber({
         type="button"
         disabled={index === maxIndex}
         onClick={() => onSelect(index + 1)}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
         aria-label="Next month"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>

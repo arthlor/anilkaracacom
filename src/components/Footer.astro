@@ -32,11 +32,11 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
         <div class="site-footer__cta">
           <div class="site-footer__cta-content">
             <h2 class="site-footer__cta-title">
-              Let's build <br />
-              <span>something great.</span>
+              Have something in mind? <br />
+              <span>Let’s talk.</span>
             </h2>
             <a href="/contact" class="site-footer__cta-button">
-              Start a project
+              Get in touch
               <svg
                 viewBox="0 0 16 16"
                 fill="none"
@@ -66,7 +66,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
         <div class="site-footer__brand-id">
           <span class="site-footer__tag">{siteConfig.personName}</span>
           <p class="site-footer__tag-desc">
-            Product Specialist, Data Journalist & Corporate Communications Expert
+            Product Specialist, Data Journalist & Communications Specialist
           </p>
         </div>
         <div class="site-footer__social-pills">
@@ -102,7 +102,8 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
             <a
               href={resumeUrl}
               data-track-event="navigate_cv"
-              data-track-label="Footer Resume">Resumes / CVs</a>
+              data-track-label="Footer Resume">CVs</a
+            >
             <a href="/articles">Articles</a>
             <a href={siteConfig.githubUrl} target="_blank">GitHub</a>
           </div>
@@ -120,7 +121,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
       </div>
       <div class="site-footer__status">
         <span class="site-footer__status-dot"></span>
-        <span>Open for new mandates 2024+</span>
+        <span>Based in İzmir, Türkiye</span>
       </div>
     </div>
   </div>
@@ -131,8 +132,8 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     position: relative;
     padding: 80px 0 40px;
     background: transparent;
-    color: #f3f1eb;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    color: hsl(var(--foreground));
+    border-top: 1px solid hsl(var(--foreground) / 0.08);
     z-index: 10;
   }
 
@@ -145,7 +146,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
   .site-footer__cta {
     margin-bottom: 80px;
     padding: 60px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
     display: flex;
     justify-content: center;
     text-align: center;
@@ -159,7 +160,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     letter-spacing: -0.04em;
     text-transform: uppercase;
     margin-bottom: 32px;
-    color: #fff;
+    color: hsl(var(--foreground));
   }
 
   .site-footer__cta-title span {
@@ -171,8 +172,8 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     align-items: center;
     gap: 12px;
     padding: 16px 32px;
-    background: #fff;
-    color: #000;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
     border-radius: 999px;
     font-size: 0.9rem;
     font-weight: 700;
@@ -184,7 +185,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
 
   .site-footer__cta-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px hsl(var(--foreground) / 0.1);
   }
 
   /* Main Footer Section */
@@ -207,12 +208,12 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     font-weight: 800;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #fff;
+    color: hsl(var(--foreground));
   }
 
   .site-footer__tag-desc {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: hsl(var(--muted-foreground));
     margin-top: 4px;
   }
 
@@ -226,13 +227,13 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     padding: 6px 14px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.6);
+    color: hsl(var(--muted-foreground));
     text-decoration: none;
     transition: all 200ms ease;
   }
 
   .site-footer__social-pill:hover {
-    color: #fff;
+    color: hsl(var(--foreground));
   }
 
   .site-footer__nav-grid {
@@ -258,13 +259,13 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
   .site-footer__nav-links a {
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: hsl(var(--muted-foreground));
     text-decoration: none;
     transition: color 200ms ease;
   }
 
   .site-footer__nav-links a:hover {
-    color: #fff;
+    color: hsl(var(--foreground));
   }
 
   /* Bottom Bar */
@@ -273,7 +274,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     justify-content: space-between;
     align-items: center;
     padding-top: 32px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid hsl(var(--foreground) / 0.08);
   }
 
   .site-footer__legal {
@@ -281,17 +282,17 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     align-items: center;
     gap: 20px;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.4);
+    color: hsl(var(--muted-foreground));
   }
 
   .site-footer__contact-link {
-    color: rgba(255, 255, 255, 0.5);
+    color: hsl(var(--muted-foreground));
     text-decoration: none;
     transition: color 200ms ease;
   }
 
   .site-footer__contact-link:hover {
-    color: #fff;
+    color: hsl(var(--foreground));
   }
 
   .site-footer__status {
@@ -300,7 +301,7 @@ const footerSocialLinks = ["X", "LinkedIn", "GitHub", "YouTube"]
     gap: 10px;
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.4);
+    color: hsl(var(--muted-foreground));
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }

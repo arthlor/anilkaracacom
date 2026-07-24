@@ -5,7 +5,7 @@ import Icon from "../components/Icon.astro";
 
 <MainLayout
   title="Page Not Found"
-  description="The page you are looking for does not exist."
+  description="The page may have moved or no longer exists."
 >
   <section
     class="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-4"
@@ -28,18 +28,18 @@ import Icon from "../components/Icon.astro";
         </div>
 
         <h1 class="text-3xl md:text-4xl font-display font-bold mb-4">
-          Page Not Found
+          That page isn’t here.
         </h1>
 
         <p class="text-xl text-muted-foreground max-w-md mx-auto mb-10">
-          It seems you've ventured into uncharted territory. The page you're
-          looking for has moved or doesn't exist.
+          The link may be out of date, or the page may have moved. You can head
+          back to the homepage from here.
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="/" class="page-button">
             <Icon name="arrow-left" size={20} class="transition-transform" />
-            Back to Home
+            Go to homepage
           </a>
         </div>
       </div>

@@ -12,18 +12,21 @@ import MainLayout from "../layouts/MainLayout.astro";
 
 <MainLayout
   title="About"
-  description="Full profile for Anil Karaca, including experience, education, and publications."
+  description="Anil Karaca's experience across mobile products, data journalism, and communications, plus the education and research behind the work."
 >
   <section class="about-hero">
     <div class="about-hero__shell">
       <header class="about-hero__copy">
         <p class="about-hero__eyebrow">About</p>
-        <h1>About Me</h1>
+        <h1>About me</h1>
         <p class="about-hero__subtitle">
-          Bridging product development, data journalism, and corporate communications to build clear, impactful digital systems.
+          My work has moved between newsrooms, public institutions, data
+          projects, and independent mobile apps.
         </p>
         <p class="about-hero__description">
-          This page outlines my professional history, academic background, and graduate research that define my approach to product strategy, user experience, and communications.
+          Along the way, I’ve learned how to build useful products, ask better
+          questions of data, and explain complex work without losing people.
+          Here’s the longer version.
         </p>
         <div class="about-hero__actions">
           <a
@@ -33,13 +36,13 @@ import MainLayout from "../layouts/MainLayout.astro";
             data-track-label="About Resume"
           >
             <Icon name="arrow-right" size={16} />
-            View Resumes / CVs
+            View my CVs
           </a>
           <a
             href="/contact"
             class="about-action-btn about-action-btn--secondary"
           >
-            Contact me
+            Get in touch
             <Icon name="arrow-right" size={16} />
           </a>
         </div>
@@ -66,7 +69,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     <div class="about-section__shell">
       <div class="about-section__head">
         <span class="about-section__kicker">Experience</span>
-        <h2>Professional timeline and organizational impact</h2>
+        <h2>From newsrooms to public institutions and independent products</h2>
       </div>
 
       <div class="about-timeline">
@@ -106,7 +109,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     <div class="about-section__shell">
       <div class="about-section__head">
         <span class="about-section__kicker">Education</span>
-        <h2>Academic background behind the work</h2>
+        <h2>What I studied</h2>
       </div>
 
       <div class="about-education-grid">
@@ -140,7 +143,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     <div class="about-section__shell">
       <div class="about-section__head">
         <span class="about-section__kicker">Publication</span>
-        <h2>Graduate research that belongs in the profile story</h2>
+        <h2>My graduate research</h2>
       </div>
 
       <div class="about-publication-list">
@@ -187,7 +190,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .about-hero__copy {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
     padding-bottom: 3.5rem;
   }
 
@@ -216,7 +219,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     line-height: 1.6;
     font-family: var(--font-display);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
+    color: hsl(var(--foreground) / 0.85);
   }
 
   .about-hero__description {
@@ -242,9 +245,9 @@ import MainLayout from "../layouts/MainLayout.astro";
     min-height: 2.6rem;
     padding: 0 1.25rem;
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    color: white;
+    background: hsl(var(--foreground) / 0.06);
+    border: 1px solid hsl(var(--foreground) / 0.1);
+    color: hsl(var(--foreground));
     font-size: 0.82rem;
     font-weight: 600;
     transition: all 180ms ease;
@@ -253,20 +256,20 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .about-action-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: hsl(var(--foreground) / 0.1);
+    border-color: hsl(var(--foreground) / 0.18);
     transform: translateY(-1px);
   }
 
   .about-action-btn--secondary {
     background: transparent;
-    border-color: rgba(255, 255, 255, 0.05);
+    border-color: hsl(var(--foreground) / 0.08);
     color: hsl(var(--muted-foreground));
   }
 
   .about-action-btn--secondary:hover {
-    background: rgba(255, 255, 255, 0.02);
-    color: white;
+    background: hsl(var(--foreground) / 0.04);
+    color: hsl(var(--foreground));
   }
 
   /* Highlights Card Grid */
@@ -289,9 +292,9 @@ import MainLayout from "../layouts/MainLayout.astro";
     display: flex;
     gap: 0.85rem;
     padding: 1.25rem 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.015);
+    background: hsl(var(--foreground) / 0.025);
     font-size: 0.88rem;
     line-height: 1.6;
     color: hsl(var(--muted-foreground));
@@ -408,7 +411,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     bottom: 0;
     left: 20px;
     width: 1px;
-    background: rgba(255, 255, 255, 0.05);
+    background: hsl(var(--foreground) / 0.08);
   }
 
   .about-timeline__item:last-child .about-timeline__connector {
@@ -423,7 +426,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     width: 9px;
     height: 9px;
     border-radius: 999px;
-    background: #111;
+    background: hsl(var(--background));
     border: 2px solid rgba(122, 242, 152, 0.4);
     box-shadow: 0 0 8px rgba(122, 242, 152, 0.2);
     transition: all 180ms ease;
@@ -439,15 +442,15 @@ import MainLayout from "../layouts/MainLayout.astro";
     flex: 1;
     margin-left: 2rem;
     padding: 1.75rem 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.01);
+    background: hsl(var(--foreground) / 0.02);
     transition: all 200ms ease;
   }
 
   .about-timeline__item:hover .about-timeline__content-card {
     border-color: rgba(122, 242, 152, 0.15);
-    background: rgba(255, 255, 255, 0.02);
+    background: hsl(var(--foreground) / 0.04);
   }
 
   .about-timeline__role {
@@ -470,7 +473,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     margin-top: 1rem;
     font-size: 0.94rem;
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.65);
+    color: hsl(var(--foreground) / 0.7);
   }
 
   .about-timeline__tags {
@@ -486,11 +489,11 @@ import MainLayout from "../layouts/MainLayout.astro";
     min-height: 1.6rem;
     padding: 0 0.65rem;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: hsl(var(--foreground) / 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     font-size: 0.74rem;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.7);
+    color: hsl(var(--foreground) / 0.72);
   }
 
   /* Education Cards */
@@ -504,15 +507,15 @@ import MainLayout from "../layouts/MainLayout.astro";
     display: flex;
     flex-direction: column;
     padding: 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.01);
+    background: hsl(var(--foreground) / 0.02);
     transition: all 200ms ease;
   }
 
   .about-education-card:hover {
     border-color: rgba(122, 242, 152, 0.15);
-    background: rgba(255, 255, 255, 0.02);
+    background: hsl(var(--foreground) / 0.04);
   }
 
   .about-education-card__period {
@@ -544,7 +547,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     margin-top: 1rem;
     font-size: 0.88rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.7);
+    color: hsl(var(--foreground) / 0.72);
   }
 
   .about-education-card__notes {
@@ -588,15 +591,15 @@ import MainLayout from "../layouts/MainLayout.astro";
     justify-content: space-between;
     gap: 3rem;
     padding: 2.25rem 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.01);
+    background: hsl(var(--foreground) / 0.02);
     transition: all 200ms ease;
   }
 
   .about-publication-card:hover {
     border-color: rgba(122, 242, 152, 0.15);
-    background: rgba(255, 255, 255, 0.02);
+    background: hsl(var(--foreground) / 0.04);
   }
 
   .about-publication-card__body {
@@ -633,7 +636,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     margin-top: 1.25rem;
     font-size: 0.94rem;
     line-height: 1.75;
-    color: rgba(255, 255, 255, 0.65);
+    color: hsl(var(--foreground) / 0.7);
     max-width: 52rem;
   }
 

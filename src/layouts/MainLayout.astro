@@ -60,9 +60,10 @@ const {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: #111111;
-    color: #f3f1eb;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     isolation: isolate;
+    transition: background-color var(--transition-normal), color var(--transition-normal);
   }
 
   .portfolio-shell__texture {
@@ -73,12 +74,12 @@ const {
     background:
       repeating-linear-gradient(
         90deg,
-        rgba(255, 255, 255, 0.015) 0,
-        rgba(255, 255, 255, 0.015) 1px,
+        var(--shell-texture-grid) 0,
+        var(--shell-texture-grid) 1px,
         transparent 1px,
         transparent 64px
       ),
-      linear-gradient(180deg, #111111 0%, #080808 100%);
+      var(--shell-texture-grad);
   }
 
   .portfolio-shell__main {

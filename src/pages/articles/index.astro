@@ -338,7 +338,7 @@ const formatDate = (date: Date) =>
 
   .articles-archive__hero {
     padding-bottom: 2.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
   }
 
   .articles-archive__eyebrow {
@@ -373,8 +373,8 @@ const formatDate = (date: Date) =>
     z-index: 30;
     margin-top: 1.5rem;
     padding: 0.85rem 0;
-    background: rgba(17, 17, 17, 0.85);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: hsl(var(--background) / 0.88);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
     backdrop-filter: blur(16px);
   }
 
@@ -402,7 +402,7 @@ const formatDate = (date: Date) =>
 
   .articles-archive__filter:hover {
     color: hsl(var(--foreground));
-    background: rgba(255, 255, 255, 0.02);
+    background: hsl(var(--foreground) / 0.04);
   }
 
   .articles-archive__filter[data-active="true"] {
@@ -432,7 +432,7 @@ const formatDate = (date: Date) =>
     align-items: baseline;
     margin-bottom: 1.6rem;
     padding-bottom: 0.6rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
   }
 
   .articles-section__head h2 {
@@ -460,9 +460,9 @@ const formatDate = (date: Date) =>
     flex-direction: column;
     min-width: 0;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--border));
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.01);
+    background: hsl(var(--card));
     transition:
       border-color 200ms ease,
       background 200ms ease,
@@ -473,8 +473,8 @@ const formatDate = (date: Date) =>
   .article-card:hover {
     transform: translateY(-2px);
     border-color: rgba(122, 242, 152, 0.2);
-    background: rgba(255, 255, 255, 0.02);
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+    background: hsl(var(--muted) / 0.62);
+    box-shadow: 0 16px 36px hsl(var(--foreground) / 0.1);
   }
 
   .article-card__media {
@@ -482,8 +482,8 @@ const formatDate = (date: Date) =>
     display: block;
     aspect-ratio: 16 / 10;
     overflow: hidden;
-    background: #0f1110;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    background: hsl(var(--muted));
+    border-bottom: 1px solid hsl(var(--border));
   }
 
   .article-card__img {
@@ -506,8 +506,8 @@ const formatDate = (date: Date) =>
     height: 100%;
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.03),
-      rgba(255, 255, 255, 0.005)
+      hsl(var(--foreground) / 0.04),
+      hsl(var(--foreground) / 0.01)
     );
   }
 
@@ -571,7 +571,7 @@ const formatDate = (date: Date) =>
     gap: 1rem;
     margin-top: auto;
     padding-top: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    border-top: 1px solid hsl(var(--foreground) / 0.08);
     font-size: 0.76rem;
   }
 

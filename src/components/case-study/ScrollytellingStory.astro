@@ -18,7 +18,7 @@ const steps = stepsProp?.length ? stepsProp : getStorySteps();
 
 <section class="article-story-shell my-10 md:my-14" data-story-root>
   <div
-    class="relative z-10 mb-5 -mx-4 border-b border-white/[0.055] px-4 py-2.5 md:mx-0 md:mb-7 md:px-1"
+    class="relative z-10 mb-5 -mx-4 border-b border-border px-4 py-2.5 md:mx-0 md:mb-7 md:px-1"
   >
     <div
       class="flex items-center gap-4 overflow-x-auto no-scrollbar"
@@ -37,7 +37,7 @@ const steps = stepsProp?.length ? stepsProp : getStorySteps();
                 "whitespace-nowrap border-b px-1.5 py-2 text-[10px] font-bold uppercase tracking-[0.12em] transition-all duration-300 sm:px-2.5 sm:text-[11px]",
                 index === 0
                   ? "border-primary/60 text-primary"
-                  : "border-transparent text-[#71717a] hover:border-white/[0.18] hover:text-[#a1a1aa]",
+                  : "border-transparent text-muted-foreground hover:border-border hover:text-foreground",
               ]}
             >
               {step.label}

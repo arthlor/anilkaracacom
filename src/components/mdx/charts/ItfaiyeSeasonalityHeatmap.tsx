@@ -28,6 +28,17 @@ const activityLabelsTr: Record<string, string> = {
   no_action: "Faaliyet Yapılmadı (Boş İhbar)",
 };
 
+const activityShortLabelsTr: Record<string, string> = {
+  search_rescue: "Arama",
+  animal_rescue: "Hayvan",
+  water_evacuation: "Su",
+  danger_elimination: "Tehlike",
+  support_assignment: "Destek",
+  decontamination: "Dekon.",
+  detection: "Tespit",
+  no_action: "Boş",
+};
+
 const turkishMonthNames = [
   "Ocak",
   "Şubat",
@@ -59,6 +70,13 @@ export default function ItfaiyeSeasonalityHeatmap({
     monthIndex: number;
     value: number;
   } | null>(null);
+  const [selectedCell, setSelectedCell] = useState({
+    activity: "animal_rescue",
+    monthIndex: 5,
+    value:
+      (data.monthly_totals[5] as Record<string, number> | undefined)
+        ?.animal_rescue ?? 0,
+  });
 
   const [tooltip, setTooltip] = useState<{
     x: number;
@@ -143,9 +161,149 @@ export default function ItfaiyeSeasonalityHeatmap({
       opacity: 0.04 + scaleRatio * 0.92,
     };
   };
+  const activeCell = hoveredCell ?? selectedCell;
+
+  if (pureCanvas) {
+    return (
+      <div className="flex h-full min-h-0 w-full min-w-0 flex-col gap-2">
+        <div className="flex min-h-11 items-center justify-between gap-2">
+          <div className="min-w-0">
+            <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              Aktif okuma
+            </span>
+            <span className="flex min-w-0 items-baseline gap-1.5 text-xs font-bold text-foreground">
+              <span className="truncate">
+                {months[activeCell.monthIndex]?.slice(0, 3)} ·{" "}
+                {activityShortLabelsTr[activeCell.activity] ??
+                  activeCell.activity}
+              </span>
+              <strong className="shrink-0 font-mono text-sm tabular-nums text-primary">
+                {formatNumber(activeCell.value, "tr-TR")}
+              </strong>
+            </span>
+          </div>
+          <div
+            className="flex shrink-0 items-center rounded-full border border-border bg-background/80 p-0.5"
+            role="group"
+            aria-label="Renk ölçeği"
+          >
+            {(["relative", "global"] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                className="min-h-11 rounded-full px-3 text-[10px] font-semibold text-muted-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                data-active={scaleMode === mode}
+                aria-pressed={scaleMode === mode}
+                onClick={() => setScaleMode(mode)}
+              >
+                {mode === "relative" ? "Göreli" : "Mutlak"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid min-h-0 flex-1 grid-cols-[42px_minmax(0,1fr)] gap-x-2 border-y border-border/65 py-2">
+          <span className="self-end pb-1 text-[7px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+            Görev
+          </span>
+          <div
+            className="grid h-5 items-end gap-[2px]"
+            style={{ gridTemplateColumns: "repeat(12, minmax(0, 1fr))" }}
+            aria-hidden="true"
+          >
+            {months.map((month) => (
+              <span
+                key={month}
+                className="truncate text-center text-[7px] font-semibold text-muted-foreground"
+              >
+                {month.slice(0, 3)}
+              </span>
+            ))}
+          </div>
+
+          <div
+            className="grid min-h-0 gap-[3px]"
+            style={{ gridTemplateRows: "repeat(8, minmax(0, 1fr))" }}
+            aria-hidden="true"
+          >
+            {activities.map((activity) => (
+              <span
+                key={activity}
+                className="flex min-h-0 items-center justify-end truncate text-[7px] font-bold uppercase text-muted-foreground"
+              >
+                {activityShortLabelsTr[activity] ?? activity}
+              </span>
+            ))}
+          </div>
+
+          <div
+            className="grid min-h-0 gap-[3px]"
+            style={{
+              gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+              gridTemplateRows: "repeat(8, minmax(0, 1fr))",
+            }}
+            role="grid"
+            aria-label="Aylara göre yangın dışı görev yoğunluğu"
+          >
+            {activities.flatMap((activity) =>
+              monthlyData.map((monthRow: any, monthIndex: number) => {
+                const value = monthRow[activity] ?? 0;
+                const color = getCellColor(activity, value);
+                const alpha = Math.round(color.opacity * 255)
+                  .toString(16)
+                  .padStart(2, "0");
+                const isSelected =
+                  selectedCell.activity === activity &&
+                  selectedCell.monthIndex === monthIndex;
+                const label = `${months[monthIndex]}, ${activityLabelsTr[activity] ?? activity}, aylık ortalama ${formatNumber(value, "tr-TR")} görev`;
+
+                return (
+                  <button
+                    key={`${activity}-${monthIndex}`}
+                    type="button"
+                    className="min-h-0 min-w-0 rounded-[3px] border border-foreground/[0.04] outline-none hover:z-10 hover:ring-1 hover:ring-foreground/50 focus-visible:z-20 focus-visible:ring-2 focus-visible:ring-foreground"
+                    style={{
+                      background: `${color.fill}${alpha}`,
+                      boxShadow: isSelected
+                        ? "inset 0 0 0 1.5px hsl(var(--foreground)), 0 0 10px hsl(var(--primary) / 0.25)"
+                        : "none",
+                    }}
+                    data-fire-heat-cell={`${activity}-${monthIndex}`}
+                    role="gridcell"
+                    aria-label={label}
+                    aria-selected={isSelected}
+                    tabIndex={isSelected ? 0 : -1}
+                    title={label}
+                    onMouseEnter={() =>
+                      setHoveredCell({ activity, monthIndex, value })
+                    }
+                    onMouseLeave={() => setHoveredCell(null)}
+                    onFocus={() =>
+                      setHoveredCell({ activity, monthIndex, value })
+                    }
+                    onBlur={() => setHoveredCell(null)}
+                    onClick={() =>
+                      setSelectedCell({ activity, monthIndex, value })
+                    }
+                  />
+                );
+              }),
+            )}
+          </div>
+        </div>
+
+        <div className="flex min-h-7 items-center justify-between text-[8px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <span>96 aylık-kategori hücresi</span>
+          <span className="text-primary">
+            Haziran · hayvan kurtarma zirvesi
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   const chartCore = (
-    <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+    <div className="relative overflow-x-auto rounded-xl border border-border bg-card/70 p-3 shadow-[0_8px_30px_hsl(var(--foreground)/0.08)] backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
       <p className="viz-scroll-hint">Kaydırarak tüm ayları görün →</p>
       {/* HTML Tooltip */}
       <AnimatePresence>
@@ -155,17 +313,17 @@ export default function ItfaiyeSeasonalityHeatmap({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 25 }}
-            className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3.5 py-1.5 text-[11px] shadow-2xl backdrop-blur-md max-w-[200px]"
+            className="pointer-events-none absolute z-30 max-w-[200px] rounded-lg border border-border bg-popover/95 px-3.5 py-1.5 text-[11px] text-popover-foreground shadow-2xl backdrop-blur-md"
             style={{
               left: tooltip.x,
               top: tooltip.y,
               transform: "translate(-50%, -100%)",
             }}
           >
-            <div className="font-bold text-foreground mb-1 pb-0.5 border-b border-white/10">
+            <div className="mb-1 border-b border-border pb-0.5 font-bold text-foreground">
               {tooltip.title}
             </div>
-            <div className="text-[11px] text-zinc-300">
+            <div className="text-[11px] text-muted-foreground">
               {tooltip.content}
             </div>
           </motion.div>
@@ -188,7 +346,7 @@ export default function ItfaiyeSeasonalityHeatmap({
                 x={x}
                 y={padding.top - 8}
                 textAnchor="middle"
-                className="fill-[rgba(243,241,235,0.65)] text-[10px] font-semibold"
+                className="fill-foreground text-[10px] font-semibold"
               >
                 {mName.slice(0, 3)}
               </text>
@@ -207,7 +365,7 @@ export default function ItfaiyeSeasonalityHeatmap({
                   x={padding.left - 10}
                   y={y + rowHeight / 2 + 4}
                   textAnchor="end"
-                  className="fill-[rgba(243,241,235,0.55)] text-[9px] font-bold uppercase tracking-wider"
+                  className="fill-muted-foreground text-[9px] font-bold uppercase tracking-wider"
                 >
                   {activityLabelsTr[activity] ?? activity}
                 </text>
@@ -257,7 +415,15 @@ export default function ItfaiyeSeasonalityHeatmap({
                         height={rowHeight}
                         fill="transparent"
                         className="cursor-pointer"
-                        onMouseEnter={(e) => handleCellEnter(e, activity, months[mIdx] ?? "", mIdx, val)}
+                        onMouseEnter={(e) =>
+                          handleCellEnter(
+                            e,
+                            activity,
+                            months[mIdx] ?? "",
+                            mIdx,
+                            val,
+                          )
+                        }
                         onMouseLeave={handleCellLeave}
                       />
                     </g>
@@ -274,8 +440,10 @@ export default function ItfaiyeSeasonalityHeatmap({
   const chartBody = (
     <div className="w-full flex flex-col gap-3">
       {pureCanvas && (
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl text-xs pointer-events-auto">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">Renk Ölçeği</span>
+        <div className="pointer-events-auto flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-muted/35 p-2 text-xs">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400">
+            Renk Ölçeği
+          </span>
           <div
             className="viz-toggle-group"
             role="group"
@@ -293,7 +461,7 @@ export default function ItfaiyeSeasonalityHeatmap({
               {scaleMode === "relative" && (
                 <motion.div
                   layoutId="itfaiye-scale-highlight-pure"
-                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -310,7 +478,7 @@ export default function ItfaiyeSeasonalityHeatmap({
               {scaleMode === "global" && (
                 <motion.div
                   layoutId="itfaiye-scale-highlight-pure"
-                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -321,10 +489,6 @@ export default function ItfaiyeSeasonalityHeatmap({
       {chartCore}
     </div>
   );
-
-  if (pureCanvas) {
-    return chartBody;
-  }
 
   return (
     <ArticleChartFrame
@@ -358,7 +522,7 @@ export default function ItfaiyeSeasonalityHeatmap({
               {scaleMode === "relative" && (
                 <motion.div
                   layoutId="itfaiye-scale-highlight"
-                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -375,7 +539,7 @@ export default function ItfaiyeSeasonalityHeatmap({
               {scaleMode === "global" && (
                 <motion.div
                   layoutId="itfaiye-scale-highlight"
-                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -389,14 +553,17 @@ export default function ItfaiyeSeasonalityHeatmap({
             <div className="viz-stat border-t-0 pt-0">
               <span className="viz-label">Ölçeklendirme</span>
               <strong className="text-xs">
-                {scaleMode === "relative" ? "Göreli (Kategori İçi)" : "Mutlak (Tüm Hacim)"}
+                {scaleMode === "relative"
+                  ? "Göreli (Kategori İçi)"
+                  : "Mutlak (Tüm Hacim)"}
               </strong>
             </div>
             {hoveredCell ? (
               <div className="viz-stat border-t pt-3">
                 <span className="viz-label">Seçim Detayı</span>
                 <p className="text-xs font-bold truncate text-foreground">
-                  {activityLabelsTr[hoveredCell.activity] ?? hoveredCell.activity}
+                  {activityLabelsTr[hoveredCell.activity] ??
+                    hoveredCell.activity}
                 </p>
                 <p className="text-[10px] text-muted-foreground font-medium">
                   {months[hoveredCell.monthIndex]} Ayı Ortalaması:
@@ -406,7 +573,7 @@ export default function ItfaiyeSeasonalityHeatmap({
                 </strong>
               </div>
             ) : (
-              <div className="p-3 bg-white/[0.01] border border-white/[0.03] border-dashed rounded-xl text-center py-4">
+              <div className="rounded-xl border border-dashed border-border bg-muted/30 p-3 py-4 text-center">
                 <p className="text-xs text-muted-foreground italic">
                   Ortalamaları incelemek için hücrelerin üzerine gelin.
                 </p>

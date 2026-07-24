@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
 import ChartControlsDrawer from "@/components/case-study/ChartControlsDrawer";
@@ -179,7 +179,7 @@ export default function IncidentHeatmap({
             {activeYear === year && (
               <motion.div
                 layoutId="heatmap-year-highlight"
-                className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}
@@ -202,7 +202,7 @@ export default function IncidentHeatmap({
           {!compareMode && (
             <motion.div
               layoutId="heatmap-mode-highlight"
-              className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+              className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
               transition={{ type: "spring", stiffness: 380, damping: 30 }}
             />
           )}
@@ -218,7 +218,7 @@ export default function IncidentHeatmap({
           {compareMode && (
             <motion.div
               layoutId="heatmap-mode-highlight"
-              className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+              className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
               transition={{ type: "spring", stiffness: 380, damping: 30 }}
             />
           )}
@@ -245,7 +245,7 @@ export default function IncidentHeatmap({
                 {compareYear === year && (
                   <motion.div
                     layoutId="heatmap-compare-year-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                     transition={{
                       type: "spring",
                       stiffness: 380,
@@ -284,190 +284,311 @@ export default function IncidentHeatmap({
     </>
   );
 
+  const moveCellFocus = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+    dayIndex: number,
+    hour: number,
+  ) => {
+    let nextDayIndex = dayIndex;
+    let nextHour = hour;
+
+    if (event.key === "ArrowLeft") nextHour = Math.max(0, hour - 1);
+    else if (event.key === "ArrowRight") nextHour = Math.min(23, hour + 1);
+    else if (event.key === "ArrowUp")
+      nextDayIndex = Math.max(0, dayIndex - 1);
+    else if (event.key === "ArrowDown")
+      nextDayIndex = Math.min(daysOrder.length - 1, dayIndex + 1);
+    else return;
+
+    event.preventDefault();
+    const nextDay = daysOrder[nextDayIndex] ?? "Pazartesi";
+    setSelectedDay(nextDay);
+    setSelectedHour(nextHour);
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLButtonElement>(
+          `[data-heatmap-cell="${nextDayIndex}-${nextHour}"]`,
+        )
+        ?.focus();
+    });
+  };
+
   const chartBody = (
-    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 shadow-[0_12px_40px_rgba(0,0,0,0.2)] sm:p-6 flex flex-col gap-4">
+    <div
+      className={`flex min-h-0 min-w-0 flex-col gap-2 ${
+        pureCanvas
+          ? "h-full"
+          : "rounded-2xl border border-border bg-card/35 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.16)] sm:p-6"
+      }`}
+    >
       {pureCanvas && (
-        <div className="flex flex-wrap items-center gap-3 border-b border-white/[0.06] pb-3 text-xs pointer-events-auto">
-          {filterControls}
+        <div className="border-b border-border/70 pb-2">
+          <div className="flex min-h-11 items-center justify-between gap-2">
+            <div className="min-w-0">
+              <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+                Active read
+              </span>
+              <span
+                className="block truncate text-sm font-bold text-foreground"
+                aria-live="polite"
+              >
+                {activeCell
+                  ? `${dayLabels[activeCell.day] ?? activeCell.day} ${String(activeCell.hour).padStart(2, "0")}:00 · ${
+                      compareMode
+                        ? `${(activeCell.delta ?? 0) > 0 ? "+" : ""}${formatNumber(activeCell.delta ?? 0, "en-US")}`
+                        : formatNumber(activeCell.value, "en-US")
+                    }`
+                  : "No cell selected"}
+              </span>
+            </div>
+            <select
+              value={activeYear}
+              onChange={(event) => setActiveYear(Number(event.target.value))}
+              className="min-h-11 shrink-0 rounded-full border border-border bg-background/80 px-3 text-[11px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15"
+              aria-label="Active year"
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mt-1 flex min-w-0 flex-wrap items-center gap-1.5 pb-0.5">
+            <select
+              value={selectedDay}
+              onChange={(event) => setSelectedDay(event.target.value)}
+              className="min-h-11 min-w-0 flex-1 rounded-full border border-border bg-background/80 px-3 text-[10px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15"
+              aria-label="Select day"
+            >
+              {daysOrder.map((day) => (
+                <option key={day} value={day}>
+                  {dayLabels[day] ?? day}
+                </option>
+              ))}
+            </select>
+            <select
+              value={selectedHour}
+              onChange={(event) => setSelectedHour(Number(event.target.value))}
+              className="min-h-11 rounded-full border border-border bg-background/80 px-3 text-[10px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15"
+              aria-label="Select hour"
+            >
+              {hours.map((hour) => (
+                <option key={hour} value={hour}>
+                  {String(hour).padStart(2, "0")}:00
+                </option>
+              ))}
+            </select>
+            <button
+              type="button"
+              className="min-h-11 shrink-0 rounded-full border border-border bg-background/80 px-3 text-[10px] font-semibold text-muted-foreground transition hover:border-primary/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              data-active={compareMode}
+              aria-pressed={compareMode}
+              onClick={() => setCompareMode((active) => !active)}
+            >
+              {compareMode ? "Difference on" : "Compare"}
+            </button>
+            {compareMode && (
+              <select
+                value={compareYear}
+                onChange={(event) =>
+                  setCompareYear(Number(event.target.value))
+                }
+                className="min-h-11 shrink-0 rounded-full border border-border bg-background/80 px-3 text-[10px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15"
+                aria-label="Comparison year"
+              >
+                {years
+                  .filter((year) => year !== activeYear)
+                  .map((year) => (
+                    <option key={year} value={year}>
+                      vs {year}
+                    </option>
+                  ))}
+              </select>
+            )}
+          </div>
         </div>
       )}
-      <div className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1fr)_140px] xl:items-stretch">
+
+      <div className="grid min-h-0 flex-1 grid-cols-[30px_minmax(0,1fr)] gap-x-2">
+        <div className="flex items-end justify-end pb-1 text-[8px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          Hour
+        </div>
         <div
-          className="viz-scroll-region min-w-0 overflow-x-auto pb-2 scrollbar-thin focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background xl:pb-0"
-          role="region"
-          aria-label="Hourly incident heatmap"
-          tabIndex={0}
+          className="grid h-8 items-end gap-[2px]"
+          style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
+          aria-hidden="true"
         >
-          <p className="viz-scroll-hint">Swipe to explore the full week →</p>
-          <div className="min-w-[680px] space-y-4">
-            {/* Marginal hour totals */}
-            <div className="h-20 rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3">
-              <div className="flex h-full items-end gap-1 px-1 pl-[48px] sm:px-1.5">
-                {hourTotals.map((entry) => {
-                  const height = (Math.abs(entry.total) / maxHourTotal) * 100;
-                  return (
-                    <div
-                      key={entry.hour}
-                      className="flex h-full flex-1 items-end"
-                      onMouseEnter={() => setSelectedHour(entry.hour)}
-                    >
-                      <motion.div
-                        className="w-full rounded-t"
-                        animate={{ height: `${height}%` }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 120,
-                          damping: 15,
-                        }}
-                        style={{
-                          background: compareMode
-                            ? entry.total >= 0
-                              ? chartPalette.rose
-                              : chartPalette.cyan
-                            : chartPalette.accent,
-                        }}
-                      />
-                    </div>
-                  );
-                })}
+          {hourTotals.map((entry) => {
+            const height = (Math.abs(entry.total) / maxHourTotal) * 100;
+            return (
+              <div
+                key={entry.hour}
+                className="flex h-full min-w-0 items-end"
+              >
+                <motion.div
+                  className="w-full min-w-0 rounded-t-[2px]"
+                  animate={{ height: `${height}%` }}
+                  transition={{ type: "spring", stiffness: 120, damping: 18 }}
+                  style={{
+                    background: compareMode
+                      ? entry.total >= 0
+                        ? chartPalette.rose
+                        : chartPalette.cyan
+                      : "hsl(var(--primary))",
+                    opacity: 0.62,
+                  }}
+                />
               </div>
-            </div>
-
-            {/* Heatmap Grid */}
-            <div className="flex gap-4">
-              {/* Day Labels */}
-              <div className="w-[32px] flex flex-col justify-between py-1 text-right">
-                {daysOrder.map((day) => (
-                  <span
-                    key={day}
-                    className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80 h-[28px] leading-[28px]"
-                  >
-                    {(dayLabels[day] ?? day).slice(0, 3)}
-                  </span>
-                ))}
-              </div>
-
-              {/* Heatmap cells */}
-              <div className="flex-1 space-y-[4px]">
-                {daysOrder.map((day) => (
-                  <div key={day} className="flex gap-[4px]">
-                    {hours.map((hour) => {
-                      const cell = matrix[daysOrder.indexOf(day)]?.[hour];
-                      const value = cell?.value ?? 0;
-                      const delta = cell?.delta ?? 0;
-
-                      const isSelected =
-                        selectedDay === day && selectedHour === hour;
-
-                      const opacity = compareMode
-                        ? Math.min(Math.abs(delta) / maxDelta, 1)
-                        : Math.min(value / maxAbsolute, 1);
-
-                      const background = compareMode
-                        ? delta >= 0
-                          ? `rgba(244, 111, 136, ${Math.max(opacity, 0.05)})`
-                          : `rgba(104, 211, 245, ${Math.max(opacity, 0.05)})`
-                        : `rgba(122, 242, 152, ${Math.max(opacity, 0.05)})`;
-
-                      const tooltipText = compareMode
-                        ? `${dayLabels[day] ?? day} ${String(hour).padStart(2, "0")}:00 · ${delta > 0 ? "+" : ""}${delta} difference vs ${compareYear}`
-                        : `${dayLabels[day] ?? day} ${String(hour).padStart(2, "0")}:00 · ${value} incidents`;
-
-                      return (
-                        <div
-                          key={hour}
-                          className="relative flex-1 aspect-square rounded-[4px] border border-white/[0.02] cursor-pointer"
-                          style={{
-                            background,
-                            boxShadow: isSelected
-                              ? "inset 0 0 0 2px rgba(255,255,255,0.8)"
-                              : "none",
-                          }}
-                          onClick={() => {
-                            setSelectedDay(day);
-                            setSelectedHour(hour);
-                          }}
-                          onMouseEnter={() => setHoveredCell({ day, hour, value, delta })}
-                          onMouseLeave={() => setHoveredCell(null)}
-                          title={tooltipText}
-                        >
-                          <AnimatePresence>
-                            {hoveredCell?.day === day &&
-                              hoveredCell?.hour === hour && (
-                                <motion.div
-                                  initial={{ opacity: 0, scale: 0.9 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  exit={{ opacity: 0, scale: 0.9 }}
-                                  className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-30 rounded bg-zinc-950 border border-white/[0.1] px-2.5 py-1 text-[10px] text-zinc-200 shadow-xl whitespace-nowrap pointer-events-none"
-                                >
-                                  {compareMode
-                                    ? `${delta > 0 ? "+" : ""}${delta} diff`
-                                    : `${value} incidents`}
-                                </motion.div>
-                              )}
-                          </AnimatePresence>
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Hour Labels */}
-            <div className="flex gap-[4px] pl-[48px]">
-              {hours.map((hour) => (
-                <span
-                  key={hour}
-                  className="flex-1 text-[9px] font-semibold text-center text-muted-foreground/60"
-                >
-                  {hour % 6 === 0 ? `${String(hour).padStart(2, "0")}` : ""}
-                </span>
-              ))}
-            </div>
-          </div>
+            );
+          })}
         </div>
 
-        {/* Marginal day totals */}
-        <div className="rounded-[18px] border border-white/[0.05] bg-white/[0.015] p-3 flex flex-col justify-between h-full min-h-[220px]">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80 mb-2 border-b border-white/[0.05] pb-1">
-            Day Totals
-          </div>
-          <div className="flex-1 flex flex-col justify-between py-1">
-            {dayTotals.map((entry) => {
-              const width = (Math.abs(entry.total) / maxDayTotal) * 100;
+        <div></div>
+        <div
+          className="grid h-4 items-center gap-[2px]"
+          style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
+          aria-hidden="true"
+        >
+          <span className="col-start-[18] col-span-3 truncate text-center text-[7px] font-bold uppercase tracking-[0.08em] text-primary">
+            Peak 17–19
+          </span>
+        </div>
+
+        <div
+          className="grid min-h-0 gap-[3px] py-px"
+          style={{ gridTemplateRows: "repeat(7, minmax(0, 1fr))" }}
+        >
+          {daysOrder.map((day) => (
+            <span
+              key={day}
+              className="flex min-h-0 items-center justify-end font-mono text-[8px] font-bold uppercase text-muted-foreground"
+            >
+              {(dayLabels[day] ?? day).slice(0, 3)}
+            </span>
+          ))}
+        </div>
+
+        <div
+          className="grid min-h-0 gap-[3px]"
+          style={{
+            gridTemplateColumns: "repeat(24, minmax(0, 1fr))",
+            gridTemplateRows: "repeat(7, minmax(0, 1fr))",
+          }}
+          role="grid"
+          aria-label={`Hourly incident heatmap for ${activeYear}`}
+        >
+          {daysOrder.flatMap((day, dayIndex) =>
+            hours.map((hour) => {
+              const cell = matrix[dayIndex]?.[hour];
+              const value = cell?.value ?? 0;
+              const delta = cell?.delta ?? 0;
+              const isSelected =
+                selectedDay === day && selectedHour === hour;
+              const isPeakWindow =
+                day === "Cuma" && hour >= 17 && hour <= 19;
+              const opacity = compareMode
+                ? Math.min(Math.abs(delta) / maxDelta, 1)
+                : Math.min(value / maxAbsolute, 1);
+              const background = compareMode
+                ? delta >= 0
+                  ? `rgba(244, 63, 94, ${Math.max(opacity, 0.08)})`
+                  : `rgba(14, 165, 233, ${Math.max(opacity, 0.08)})`
+                : `hsl(var(--primary) / ${Math.max(opacity, 0.07)})`;
+              const label = compareMode
+                ? `${dayLabels[day] ?? day}, ${String(hour).padStart(2, "0")}:00, ${delta > 0 ? "+" : ""}${delta} compared with ${compareYear}`
+                : `${dayLabels[day] ?? day}, ${String(hour).padStart(2, "0")}:00, ${value} incidents`;
+
               return (
-                <div
-                  key={entry.day}
-                  className="flex items-center gap-2"
-                  onMouseEnter={() => setSelectedDay(entry.day)}
-                >
-                  <span className="w-[24px] text-[9px] font-bold text-muted-foreground/70">
-                    {(dayLabels[entry.day] ?? entry.day).slice(0, 3)}
-                  </span>
-                  <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-white/[0.04]">
-                    <motion.div
-                      className="h-full rounded-full"
-                      animate={{ width: `${width}%` }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 15,
-                      }}
-                      style={{
-                        background: compareMode
-                          ? entry.total >= 0
-                            ? chartPalette.rose
-                            : chartPalette.cyan
-                          : chartPalette.accent,
-                      }}
-                    />
-                  </div>
-                </div>
+                <button
+                  key={`${day}-${hour}`}
+                  type="button"
+                  className="relative min-h-0 min-w-0 rounded-[3px] border border-foreground/[0.035] outline-none transition-transform hover:z-10 hover:scale-125 focus-visible:z-20 focus-visible:scale-150 focus-visible:ring-2 focus-visible:ring-foreground"
+                  style={{
+                    background,
+                    boxShadow: isSelected
+                      ? "inset 0 0 0 1.5px hsl(var(--foreground)), 0 0 12px hsl(var(--primary) / 0.35)"
+                      : isPeakWindow
+                        ? "inset 0 0 0 1px hsl(var(--accent) / 0.72)"
+                        : "none",
+                  }}
+                  data-heatmap-cell={`${dayIndex}-${hour}`}
+                  aria-label={label}
+                  aria-selected={isSelected}
+                  role="gridcell"
+                  tabIndex={isSelected ? 0 : -1}
+                  title={label}
+                  onClick={() => {
+                    setSelectedDay(day);
+                    setSelectedHour(hour);
+                  }}
+                  onMouseEnter={() =>
+                    setHoveredCell({ day, hour, value, delta })
+                  }
+                  onMouseLeave={() => setHoveredCell(null)}
+                  onFocus={() => setHoveredCell({ day, hour, value, delta })}
+                  onBlur={() => setHoveredCell(null)}
+                  onKeyDown={(event) =>
+                    moveCellFocus(event, dayIndex, hour)
+                  }
+                />
               );
-            })}
-          </div>
+            }),
+          )}
         </div>
+
+        <div></div>
+        <div
+          className="grid h-4 items-start gap-[2px]"
+          style={{ gridTemplateColumns: "repeat(24, minmax(0, 1fr))" }}
+          aria-hidden="true"
+        >
+          {hours.map((hour) => (
+            <span
+              key={hour}
+              className="truncate text-center font-mono text-[7px] font-semibold text-muted-foreground"
+            >
+              {hour % 6 === 0 || hour === 23
+                ? String(hour).padStart(2, "0")
+                : ""}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 border-t border-border/60 pt-1.5">
+        {dayTotals.map((entry) => {
+          const width = (Math.abs(entry.total) / maxDayTotal) * 100;
+          return (
+            <button
+              key={entry.day}
+              type="button"
+              className="min-h-11 min-w-0 rounded-md px-1 py-1 text-left transition hover:bg-foreground/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+              onClick={() => setSelectedDay(entry.day)}
+              aria-label={`${dayLabels[entry.day] ?? entry.day} total: ${entry.total}`}
+            >
+              <span className="block truncate text-[7px] font-bold uppercase text-muted-foreground">
+                {(dayLabels[entry.day] ?? entry.day).slice(0, 3)}
+              </span>
+              <span className="mt-1 block h-1 overflow-hidden rounded-full bg-foreground/[0.06]">
+                <motion.span
+                  className="block h-full rounded-full"
+                  animate={{ width: `${width}%` }}
+                  transition={{ type: "spring", stiffness: 110, damping: 18 }}
+                  style={{
+                    background: compareMode
+                      ? entry.total >= 0
+                        ? chartPalette.rose
+                        : chartPalette.cyan
+                      : "hsl(var(--primary))",
+                  }}
+                />
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -536,7 +657,7 @@ export default function IncidentHeatmap({
             <p className="viz-label">Color scale</p>
             {compareMode ? (
               <div className="space-y-2">
-                <div className="h-3 rounded-full bg-[linear-gradient(90deg,#68d3f5,rgba(255,255,255,0.06),#f46f88)]" />
+                <div className="h-3 rounded-full bg-[linear-gradient(90deg,#68d3f5,hsl(var(--border)),#f46f88)]" />
                 <div className="flex justify-between text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                   <span>Quieter than {compareYear}</span>
                   <span>Busier in {activeYear}</span>

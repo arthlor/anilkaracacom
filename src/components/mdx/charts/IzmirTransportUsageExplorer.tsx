@@ -86,7 +86,7 @@ export default function IzmirTransportUsageExplorer() {
                   <button
                     key={`${row.institution}-${monthLabel}`}
                     type="button"
-                    className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
+                    className="viz-ranking-item text-left transition-all duration-200 hover:bg-muted"
                     data-active={activeCategory === row.institution}
                     aria-pressed={activeCategory === row.institution}
                     onClick={() =>
@@ -150,7 +150,7 @@ export default function IzmirTransportUsageExplorer() {
             locale="tr"
           />
 
-          <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.15)] hover:bg-white/[0.015] hover:border-white/[0.09] transition-all duration-300">
+          <div className="rounded-2xl border border-border bg-card/70 p-4 shadow-[0_12px_40px_hsl(var(--foreground)/0.08)] backdrop-blur-md transition-all duration-300 hover:border-primary/20 hover:bg-muted/35 sm:p-5">
             <p className="viz-label">Yolcu bileşimi</p>
             <p className="viz-note mt-1">
               {monthLabel} döneminde sistemin ana gövdesi yine tam yolcu ve

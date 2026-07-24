@@ -46,12 +46,12 @@ export default function ArticleChartFrame({
   return (
     <section
       className={cn(
-        "article-visual-frame isolate my-10 min-w-0 overflow-hidden rounded-lg border border-white/[0.075] bg-[linear-gradient(180deg,rgba(255,255,255,0.026),rgba(255,255,255,0.01))] shadow-[0_18px_70px_rgba(0,0,0,0.24)]",
+        "article-visual-frame isolate my-10 box-border w-full max-w-full min-w-0 overflow-hidden rounded-lg border border-border bg-card/80 shadow-[0_18px_70px_hsl(var(--foreground)/0.1)]",
         aside && "max-lg:pb-2",
         className,
       )}
     >
-      <header className="border-b border-white/[0.055] px-4 py-4 sm:px-6 lg:px-8">
+      <header className="border-b border-border px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-4xl">
             {eyebrow && (
@@ -134,7 +134,7 @@ export default function ArticleChartFrame({
         <div className="min-w-0 overflow-hidden">{children}</div>
         {aside && (
           <div
-            className="article-chart-readout hidden min-w-0 border-t border-white/[0.06] pt-4 xl:sticky xl:top-[96px] xl:block xl:self-start xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0"
+            className="article-chart-readout hidden min-w-0 border-t border-border pt-4 xl:sticky xl:top-[96px] xl:block xl:self-start xl:border-l xl:border-t-0 xl:pl-6 xl:pt-0"
             aria-live="polite"
           >
             {aside}
@@ -144,7 +144,7 @@ export default function ArticleChartFrame({
 
       {aside && (
         <div
-          className="article-chart-mobile-readout sticky bottom-0 z-20 border-t border-white/[0.1] bg-[rgba(10,10,10,0.94)] shadow-[0_-16px_48px_rgba(0,0,0,0.35)] backdrop-blur-xl xl:hidden"
+          className="article-chart-mobile-readout sticky bottom-0 z-20 border-t border-border bg-background/95 shadow-[0_-16px_48px_hsl(var(--foreground)/0.12)] backdrop-blur-xl xl:hidden"
           aria-live="polite"
         >
           <button
@@ -185,7 +185,7 @@ export default function ArticleChartFrame({
             </span>
           </button>
           {mobileReadoutOpen && (
-            <div className="max-h-[42vh] overflow-y-auto border-t border-white/[0.06] px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <div className="max-h-[42vh] overflow-y-auto border-t border-border px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
               {aside}
             </div>
           )}
@@ -193,7 +193,7 @@ export default function ArticleChartFrame({
       )}
 
       {footer && (
-        <footer className="border-t border-white/[0.06] px-4 py-4 text-xs leading-6 text-muted-foreground/82 sm:px-6 lg:px-8 lg:py-5">
+        <footer className="border-t border-border px-4 py-4 text-xs leading-6 text-muted-foreground/82 sm:px-6 lg:px-8 lg:py-5">
           {footer}
         </footer>
       )}

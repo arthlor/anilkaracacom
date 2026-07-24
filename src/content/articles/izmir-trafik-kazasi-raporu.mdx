@@ -66,28 +66,44 @@ import IzmirTrafficStoryVisual from "@/components/mdx/charts/IzmirTrafficStoryVi
 
 Every day, thousands of commuters, public transit riders, and logistics workers navigate Izmir’s arterial corridors. But their journeys are shaped by an invisible map of risk. By examining over 17,000 traffic incident records from the Izmir Traffic Center spanning more than two years, we reveal that traffic delays and collisions are not random mishaps—they are the predictable results of structural bottlenecks and systemic pressure points. This data tells the story of who bears the burden of road safety, where the city's infrastructure fractures under peak demand, and when risk spikes for everyday citizens.
 
-<StickyScrollytelling>
+<StickyScrollytelling mode="immersive">
   <Fragment slot="visual">
     <IzmirTrafficStoryVisual client:visible />
   </Fragment>
 
-  <StickyStep
-    id="trafik-zaman"
-    label="Step 1"
-    title="The Fragile Corridors"
-    summary="A few critical arteries consistently rank as the highest-risk zones year after year, suggesting systemic layout issues."
-  >
-    Yeşildere Caddesi and Anadolu Caddesi aren't just busy routes; they are structural bottlenecks where traffic risk remains stubbornly high year after year. For transit riders and logistics drivers, these corridors represent daily anxiety. The data shows Yeşildere Caddesi alone logged over 600 crashes in 2024 and nearly 1,000 in 2022. Rather than isolated events, these persistent rankings reveal systemic infrastructure challenges that demand targeted urban design interventions—such as dedicated transit lanes and safer pedestrian crossings—to protect vulnerable road users.
-  </StickyStep>
+<StickyStep
+  id="trafik-zaman"
+  label="Step 1"
+  title="The Fragile Corridors"
+  summary="A few critical arteries consistently rank as the highest-risk zones year after year, suggesting systemic layout issues."
+>
+  Yeşildere Caddesi and Anadolu Caddesi aren't just busy routes; they are
+  structural bottlenecks where traffic risk remains stubbornly high year after
+  year. For transit riders and logistics drivers, these corridors represent
+  daily anxiety. The data shows Yeşildere Caddesi alone logged over 600 crashes
+  in 2024 and nearly 1,000 in 2022. Rather than isolated events, these
+  persistent rankings reveal systemic infrastructure challenges that demand
+  targeted urban design interventions—such as dedicated transit lanes and safer
+  pedestrian crossings—to protect vulnerable road users.
+</StickyStep>
 
-  <StickyStep
-    id="trafik-turler"
-    label="Step 2"
-    title="The Breakdown Burden"
-    summary="While severe crashes claim lives, thousands of mechanical breakdowns and minor collisions create a daily tax on public transit commuters."
-  >
-    While fatal and injury crashes are the most tragic aspect of road risk—with 30 lives lost in 2023 alone—the daily reality of Izmir's roads is dominated by mechanical breakdowns (*Arızalı*) and property damage collisions (*Maddi Hasarlı*). In 2023, there were over 2,300 vehicle breakdowns and 2,900 property damage incidents. For a working-class commuter relying on buses, a single breakdown in a bottleneck like Mürselpaşa Bulvarı doesn't just mean a delay; it ripples across the network, leading to missed shifts, docked wages, and systemic inequality in transit access. Addressing vehicle maintenance support and rapid incident clearance is as crucial for economic mobility as it is for traffic flow.
-  </StickyStep>
+<StickyStep
+  id="trafik-turler"
+  label="Step 2"
+  title="The Breakdown Burden"
+  summary="While severe crashes claim lives, thousands of mechanical breakdowns and minor collisions create a daily tax on public transit commuters."
+>
+  While fatal and injury crashes are the most tragic aspect of road risk—with 30
+  lives lost in 2023 alone—the daily reality of Izmir's roads is dominated by
+  mechanical breakdowns (*Arızalı*) and property damage collisions (*Maddi
+  Hasarlı*). In 2023, there were over 2,300 vehicle breakdowns and 2,900
+  property damage incidents. For a working-class commuter relying on buses, a
+  single breakdown in a bottleneck like Mürselpaşa Bulvarı doesn't just mean a
+  delay; it ripples across the network, leading to missed shifts, docked wages,
+  and systemic inequality in transit access. Addressing vehicle maintenance
+  support and rapid incident clearance is as crucial for economic mobility as it
+  is for traffic flow.
+</StickyStep>
 
   <StickyStep
     id="trafik-isiharitasi"
@@ -107,7 +123,7 @@ Urban mobility is a public good, but its risks are unevenly shared. Analyzing Iz
    Instead of widening roads, municipal efforts should focus on safety retrofits and transit priority lanes on structurally vulnerable corridors like **Yeşildere Caddesi** and **Anadolu Caddesi**. These corridors consistently rank as the highest-risk zones year after year, suggesting that their current layout is fundamentally incompatible with safe speed limits and mixed traffic.
 
 2. **The Economic Cost of Transit Disruptions**
-   With thousands of mechanical breakdowns (*Arızalı*) and minor collisions blocking roads each year, the primary victim of traffic congestion is often the bus commuter. When a single lane on a major boulevard is blocked, it delays public transit lines, disproportionately affecting shift workers who lack private vehicles. Expanding rapid-response towing services and establishing bus-only lanes can mitigate this hidden economic tax.
+   With thousands of mechanical breakdowns (_Arızalı_) and minor collisions blocking roads each year, the primary victim of traffic congestion is often the bus commuter. When a single lane on a major boulevard is blocked, it delays public transit lines, disproportionately affecting shift workers who lack private vehicles. Expanding rapid-response towing services and establishing bus-only lanes can mitigate this hidden economic tax.
 
 3. **Targeted Peak-Hour Interventions**
    The dramatic concentration of incidents during Friday evening commute hours suggests that safety campaigns, traffic enforcement, and emergency responder staging should be dynamically adjusted. Rather than uniform city-wide patrol schedules, resources should be concentrated at known bottlenecks during the high-density Friday 17:00–19:00 window.

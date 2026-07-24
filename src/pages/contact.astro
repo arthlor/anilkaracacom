@@ -8,39 +8,40 @@ const socialLinks = [
     handle: "/in/anil-karaca",
     href: "https://www.linkedin.com/in/anil-karaca/",
     icon: "linkedin",
-    description: "Best for recruiter outreach and role conversations.",
+    description: "For roles, freelance work, and professional conversations.",
   },
   {
     name: "GitHub",
     handle: "@arthlor",
     href: "https://github.com/arthlor",
     icon: "github",
-    description: "Code, experiments, and shipped repositories.",
+    description: "Code, side projects, and work in progress.",
   },
   {
     name: "X",
     handle: "@anilkaraca17",
     href: "https://x.com/anilkaraca17",
     icon: "twitter",
-    description: "Public writing and shorter updates.",
+    description: "Reporting, ideas, and the occasional update.",
   },
 ];
 ---
 
 <MainLayout
   title="Contact"
-  description="Direct contact details for Anil Karaca."
+  description="Email and social profiles for getting in touch with Anil Karaca."
 >
   <section class="contact-hero">
     <div class="contact-hero__shell">
       <header class="contact-hero__copy">
         <p class="contact-hero__eyebrow">Contact</p>
-        <h1>Get in Touch</h1>
+        <h1>Let’s talk</h1>
         <p class="contact-hero__subtitle">
-          Let's connect to discuss products, data stories, or communications.
+          Have a role, project, or story in mind?
         </p>
         <p class="contact-hero__description">
-          Whether you are looking to hire, collaborate on a project, or discuss my work, the best way to reach me is via email.
+          Email is the quickest way to reach me. You can also find my work and
+          occasional updates on the profiles below.
         </p>
       </header>
     </div>
@@ -62,11 +63,11 @@ const socialLinks = [
           <span class="contact-email-card__kicker">Primary contact</span>
           <h2 class="contact-email-card__address">anilkaraca140@gmail.com</h2>
           <p class="contact-email-card__desc">
-            Best for recruiter outreach, hiring-manager intros, and
-            collaboration requests. I usually reply within one or two days.
+            For job opportunities, project ideas, and collaborations. I usually
+            reply within a day or two.
           </p>
           <span class="contact-email-card__action">
-            Send an email
+            Send me an email
             <Icon name="arrow-right" size={16} />
           </span>
         </a>
@@ -113,7 +114,7 @@ const socialLinks = [
   }
 
   .contact-hero__copy {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
     padding-bottom: 3.5rem;
   }
 
@@ -142,7 +143,7 @@ const socialLinks = [
     line-height: 1.6;
     font-family: var(--font-display);
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
+    color: hsl(var(--foreground) / 0.85);
   }
 
   .contact-hero__description {
@@ -191,8 +192,9 @@ const socialLinks = [
   .contact-email-card {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     padding: 3rem 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     border-radius: 24px;
     background:
       radial-gradient(
@@ -202,8 +204,8 @@ const socialLinks = [
       ),
       linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.015),
-        rgba(255, 255, 255, 0.005)
+        hsl(var(--foreground) / 0.025),
+        hsl(var(--foreground) / 0.01)
       );
     box-shadow: 0 32px 80px rgba(0, 0, 0, 0.22);
     text-decoration: none;
@@ -224,8 +226,8 @@ const socialLinks = [
       ),
       linear-gradient(
         180deg,
-        rgba(255, 255, 255, 0.03),
-        rgba(255, 255, 255, 0.01)
+        hsl(var(--foreground) / 0.05),
+        hsl(var(--foreground) / 0.02)
       );
   }
 
@@ -236,9 +238,9 @@ const socialLinks = [
     height: 3.5rem;
     width: 3.5rem;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    color: rgba(255, 255, 255, 0.7);
+    background: hsl(var(--foreground) / 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
+    color: hsl(var(--foreground) / 0.72);
     transition: all 200ms ease;
   }
 
@@ -264,6 +266,7 @@ const socialLinks = [
     font-family: var(--font-display);
     font-weight: 800;
     color: hsl(var(--foreground));
+    overflow-wrap: anywhere;
   }
 
   .contact-email-card__desc {
@@ -292,10 +295,11 @@ const socialLinks = [
 
   /* Social Profiles Card */
   .contact-profiles-card {
+    min-width: 0;
     padding: 2.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     border-radius: 24px;
-    background: rgba(255, 255, 255, 0.01);
+    background: hsl(var(--foreground) / 0.02);
   }
 
   .contact-profiles-card__kicker {
@@ -318,16 +322,16 @@ const socialLinks = [
     align-items: flex-start;
     gap: 1.25rem;
     padding: 1.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border: 1px solid hsl(var(--foreground) / 0.07);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.015);
+    background: hsl(var(--foreground) / 0.025);
     text-decoration: none;
     transition: all 200ms ease;
   }
 
   .contact-profile-item:hover {
     border-color: rgba(122, 242, 152, 0.15);
-    background: rgba(255, 255, 255, 0.03);
+    background: hsl(var(--foreground) / 0.05);
     transform: translateY(-1px);
   }
 
@@ -338,9 +342,9 @@ const socialLinks = [
     height: 2.5rem;
     width: 2.5rem;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.5);
+    background: hsl(var(--foreground) / 0.03);
+    border: 1px solid hsl(var(--foreground) / 0.07);
+    color: hsl(var(--foreground) / 0.58);
     transition: all 200ms ease;
     flex-shrink: 0;
   }

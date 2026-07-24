@@ -4,7 +4,7 @@ import { line as d3Line } from "d3-shape";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
-import { formatNumber } from "@/components/case-study/chartTheme";
+import { chartPalette, formatNumber } from "@/components/case-study/chartTheme";
 import data from "@/data/itfaiye_processed.json";
 
 // Heat-progression colors for the years 2021-2025 (dimmer to brighter Sky Blue)
@@ -56,6 +56,7 @@ export default function ItfaiyeAnimalRescueFocus({
 
   // States
   const [selectedYear, setSelectedYear] = useState<number>(2025);
+  const [selectedMonth, setSelectedMonth] = useState(6);
   const [activeYears, setActiveYears] = useState<Record<number, boolean>>({
     2021: true,
     2022: true,
@@ -226,7 +227,10 @@ export default function ItfaiyeAnimalRescueFocus({
     });
   };
 
-  const handleXHover = (e: React.MouseEvent<SVGRectElement>, monthNum: number) => {
+  const handleXHover = (
+    e: React.MouseEvent<SVGRectElement>,
+    monthNum: number,
+  ) => {
     showMonthTooltip(e.currentTarget, monthNum);
   };
 
@@ -238,17 +242,59 @@ export default function ItfaiyeAnimalRescueFocus({
       return;
     }
     e.preventDefault();
+    setSelectedMonth(monthNum);
     showMonthTooltip(e.currentTarget, monthNum);
   };
 
   const handleLeave = () => {
     setTooltip(null);
   };
+  const activeMonth = tooltip?.monthNum ?? selectedMonth;
+  const activeMonthValue =
+    seriesData[selectedYear]?.find((row) => row.monthNum === activeMonth)
+      ?.value ?? 0;
 
   const chartBody = (
-    <div className="w-full">
-      <div className="rounded-xl border border-white/[0.06] bg-white/[0.01] backdrop-blur-md p-3 shadow-[0_8px_30px_rgba(0,0,0,0.2)] relative overflow-x-auto focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-        <p className="viz-scroll-hint">Kaydırarak tüm ayları görün →</p>
+    <div
+      className={`flex w-full min-w-0 flex-col ${
+        pureCanvas ? "h-full gap-2" : ""
+      }`}
+    >
+      {pureCanvas && (
+        <div className="flex min-h-11 items-center justify-between gap-2">
+          <div className="min-w-0">
+            <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              Aktif okuma
+            </span>
+            <span className="block truncate text-sm font-bold text-foreground">
+              {selectedYear} · {fullMonthNames[activeMonth - 1]} ·{" "}
+              {formatNumber(activeMonthValue, "tr-TR")}
+            </span>
+          </div>
+          <select
+            value={selectedYear}
+            onChange={(event) => setSelectedYear(Number(event.target.value))}
+            className="min-h-11 shrink-0 rounded-full border border-border bg-background/80 px-3 text-[10px] font-semibold text-foreground outline-none"
+            aria-label="Odak yılı"
+          >
+            {years.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      <div
+        className={
+          pureCanvas
+            ? "relative min-h-0 flex-1 overflow-hidden border-y border-border/65 py-1"
+            : "relative overflow-x-auto rounded-xl border border-border bg-card/70 p-3 shadow-[0_8px_30px_hsl(var(--foreground)/0.08)] backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        }
+      >
+        {!pureCanvas && (
+          <p className="viz-scroll-hint">Kaydırarak tüm ayları görün →</p>
+        )}
         {/* HTML Tooltip */}
         <AnimatePresence>
           {tooltip && (
@@ -257,14 +303,14 @@ export default function ItfaiyeAnimalRescueFocus({
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 350, damping: 25 }}
-              className="absolute pointer-events-none z-30 rounded-lg bg-black/95 border border-white/[0.1] px-3 py-2 text-xs shadow-2xl backdrop-blur-md min-w-[150px]"
+              className="pointer-events-none absolute z-30 min-w-[150px] rounded-lg border border-border bg-popover/95 px-3 py-2 text-xs text-popover-foreground shadow-2xl backdrop-blur-md"
               style={{
                 left: tooltip.x,
                 top: tooltip.y,
                 transform: "translate(-50%, -100%)",
               }}
             >
-              <div className="font-bold text-foreground mb-1 pb-0.5 border-b border-white/10">
+              <div className="mb-1 border-b border-border pb-0.5 font-bold text-foreground">
                 {tooltip.monthName} Ayı Karşılaştırmalı Vakalar
               </div>
               <div className="space-y-1">
@@ -293,8 +339,14 @@ export default function ItfaiyeAnimalRescueFocus({
 
         <svg
           viewBox={`0 0 ${width} ${height}`}
-          className="h-auto w-full min-w-[620px] overflow-visible"
+          className={
+            pureCanvas
+              ? "h-full w-full overflow-visible"
+              : "h-auto w-full min-w-[620px] overflow-visible"
+          }
           preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label={`${selectedYear} hayvan kurtarma vakalarının aylık seyri`}
         >
           {/* Y Axis Grid Lines */}
           {[0, 0.25, 0.5, 0.75, 1].map((p) => {
@@ -307,14 +359,14 @@ export default function ItfaiyeAnimalRescueFocus({
                   x2={width - padding.right}
                   y1={y}
                   y2={y}
-                  stroke="rgba(255,255,255,0.06)"
+                  stroke={chartPalette.grid}
                   strokeDasharray="4 6"
                 />
                 <text
                   x={padding.left - 8}
                   y={y + 3}
                   textAnchor="end"
-                  className="fill-[rgba(243,241,235,0.45)] text-[9px] font-mono"
+                  className="fill-muted-foreground font-mono text-[9px]"
                 >
                   {formatNumber(Math.round(val / 500) * 500, "tr-TR")}
                 </text>
@@ -333,13 +385,13 @@ export default function ItfaiyeAnimalRescueFocus({
                   x2={x}
                   y1={padding.top}
                   y2={height - padding.bottom}
-                  stroke="rgba(255,255,255,0.02)"
+                  stroke={chartPalette.grid}
                 />
                 <text
                   x={x}
                   y={height - 6}
                   textAnchor="middle"
-                  className="fill-[rgba(243,241,235,0.65)] text-[10px] font-semibold"
+                  className="fill-foreground text-[10px] font-semibold"
                 >
                   {label}
                 </text>
@@ -357,7 +409,10 @@ export default function ItfaiyeAnimalRescueFocus({
                   style={{ cursor: "pointer" }}
                   onMouseEnter={(e) => handleXHover(e, monthNum)}
                   onFocus={(e) => showMonthTooltip(e.currentTarget, monthNum)}
-                  onClick={(e) => showMonthTooltip(e.currentTarget, monthNum)}
+                  onClick={(e) => {
+                    setSelectedMonth(monthNum);
+                    showMonthTooltip(e.currentTarget, monthNum);
+                  }}
                   onKeyDown={(e) => handleMonthKeyDown(e, monthNum)}
                   onMouseLeave={handleLeave}
                   onBlur={handleLeave}
@@ -423,7 +478,11 @@ export default function ItfaiyeAnimalRescueFocus({
 
       {/* Interactive Legend with Highlights */}
       <div
-        className="mt-3 flex flex-wrap gap-2.5 justify-center bg-white/[0.01] border border-white/[0.04] p-2 rounded-xl"
+        className={
+          pureCanvas
+            ? "grid grid-cols-5 gap-1"
+            : "mt-3 flex flex-wrap justify-center gap-2.5 rounded-xl border border-border bg-muted/35 p-2"
+        }
         role="group"
         aria-label="Yıl görünürlüğü ve odak yılı"
       >
@@ -433,11 +492,27 @@ export default function ItfaiyeAnimalRescueFocus({
           const color = yearColors[yr] ?? "#8c98ad";
           const isLocked = activeYearCount <= 1 && isActive;
 
-          return (
+          return pureCanvas ? (
+            <button
+              key={`legend-${yr}`}
+              type="button"
+              className="min-h-11 min-w-0 rounded-lg border border-border px-1 text-[9px] font-semibold text-muted-foreground data-[active=true]:border-primary/30 data-[active=true]:bg-primary/10 data-[active=true]:text-foreground"
+              data-active={isActive}
+              aria-pressed={isActive}
+              disabled={isLocked}
+              onClick={() => toggleYear(yr)}
+            >
+              <span
+                className="mx-auto mb-1 block h-1.5 w-5 rounded-full"
+                style={{ background: color, opacity: isActive ? 1 : 0.2 }}
+              />
+              {yr}
+            </button>
+          ) : (
             <div key={`legend-${yr}`} className="flex items-center gap-1">
               <button
                 type="button"
-                className="w-3.5 h-3.5 rounded border border-white/20 flex items-center justify-center text-[8px] text-foreground hover:bg-white/10 transition-colors"
+                className="flex h-3.5 w-3.5 items-center justify-center rounded border border-border text-[8px] text-foreground transition-colors hover:bg-muted"
                 aria-pressed={isActive}
                 aria-label={`${yr} yılını ${isActive ? "gizle" : "göster"}`}
                 disabled={isLocked}
@@ -450,9 +525,9 @@ export default function ItfaiyeAnimalRescueFocus({
                 type="button"
                 className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold select-none transition-colors"
                 style={{
-                  color: isSelected ? "#ffffff" : "rgba(255,255,255,0.4)",
+                  color: isSelected ? chartPalette.text : chartPalette.muted,
                   backgroundColor: isSelected
-                    ? "rgba(255,255,255,0.05)"
+                    ? chartPalette.accentSoft
                     : "transparent",
                 }}
                 disabled={!isActive}

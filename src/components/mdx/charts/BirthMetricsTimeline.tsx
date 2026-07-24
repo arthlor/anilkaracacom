@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react";
 import { scaleLinear, scalePoint } from "d3-scale";
 import { line as d3Line } from "d3-shape";
-import { motion } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
 import {
+  chartPalette,
   formatNumber,
   formatPercent,
 } from "@/components/case-study/chartTheme";
@@ -14,23 +14,29 @@ const metricDefinitions = [
   {
     key: "crudeBirthRate",
     label: "Crude birth rate",
+    shortLabel: "Birth rate",
     unit: "‰",
-    color: "#7af298",
-    note: "The number of births per 1,000 people.",
+    color: "#55df80",
+    note: "Births per 1,000 people.",
+    digits: 1,
   },
   {
     key: "totalFertilityRate",
     label: "Total fertility rate",
+    shortLabel: "Fertility",
     unit: "children",
-    color: "#68d3f5",
-    note: "The average number of children a woman is expected to have over her lifetime.",
+    color: "#45bfe8",
+    note: "Expected children per woman.",
+    digits: 2,
   },
   {
     key: "maternalAge",
     label: "Average maternal age",
+    shortLabel: "Maternal age",
     unit: "years",
-    color: "#f4b76e",
-    note: "The average age of mothers at birth.",
+    color: "#e9a24d",
+    note: "Average age of mothers at birth.",
+    digits: 1,
   },
 ] as const;
 
@@ -56,6 +62,7 @@ const callouts = [
 ];
 
 const calloutYears = new Set(callouts.map((callout) => callout.year));
+const years = birthIndicatorSeries.map((point) => point.year);
 
 export default function BirthMetricsTimeline() {
   const [selectedIndex, setSelectedIndex] = useState(
@@ -66,17 +73,19 @@ export default function BirthMetricsTimeline() {
   const firstYear = birthIndicatorSeries[0]?.year ?? activePoint.year;
   const lastYear = birthIndicatorSeries.at(-1)?.year ?? activePoint.year;
 
-  const metrics = useMemo(() => {
-    return metricDefinitions.map((metric) => {
-      const values = birthIndicatorSeries.map((point) => point[metric.key]);
-      return {
-        ...metric,
-        values,
-        min: Math.min(...values),
-        max: Math.max(...values),
-      };
-    });
-  }, []);
+  const metrics = useMemo(
+    () =>
+      metricDefinitions.map((metric) => {
+        const values = birthIndicatorSeries.map((point) => point[metric.key]);
+        return {
+          ...metric,
+          values,
+          min: Math.min(...values),
+          max: Math.max(...values),
+        };
+      }),
+    [],
+  );
 
   return (
     <ArticleChartFrame
@@ -89,63 +98,10 @@ export default function BirthMetricsTimeline() {
         value: String(activePoint.year),
         detail: `${formatNumber(activePoint.births, "en-US")} live births`,
       }}
-      interactionHint="Move the year slider to lock all three series to the same moment."
+      interactionHint="Select any point or use the year control to lock all three series to the same moment."
       density="explorer"
-      aside={
-        <div className="space-y-5">
-          <div className="viz-stat-grid">
-            <div className="viz-stat border-t-0 pt-0">
-              <span className="viz-label">Selected year</span>
-              <strong>{activePoint.year}</strong>
-            </div>
-            <div className="viz-stat">
-              <span className="viz-label">Live births</span>
-              <strong>{formatNumber(activePoint.births, "en-US")}</strong>
-            </div>
-            <div className="viz-stat">
-              <span className="viz-label">Crude birth rate</span>
-              <strong>
-                {formatPercent(activePoint.crudeBirthRate, 1, "en-US")}‰
-              </strong>
-            </div>
-            <div className="viz-stat">
-              <span className="viz-label">Total fertility</span>
-              <strong>
-                {formatPercent(activePoint.totalFertilityRate, 2, "en-US")}{" "}
-                children
-              </strong>
-            </div>
-            <div className="viz-stat">
-              <span className="viz-label">Average maternal age</span>
-              <strong>
-                {formatPercent(activePoint.maternalAge, 1, "en-US")} years
-              </strong>
-            </div>
-          </div>
-
-          <div className="viz-divider" />
-
-          <div className="space-y-3">
-            <p className="viz-label">Story notes</p>
-            {callouts.map((callout) => (
-              <div
-                key={callout.year}
-                className="rounded-[22px] border border-white/[0.07] bg-white/[0.02] p-4 hover:bg-white/[0.04] transition-all duration-200"
-              >
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary/75">
-                  {callout.year}
-                </p>
-                <p className="mt-2 text-sm font-semibold text-foreground">
-                  {callout.title}
-                </p>
-                <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                  {callout.detail}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      }
+      className="birth-signal-frame mx-auto w-full max-w-full"
+      bodyClassName="p-0 sm:p-0 lg:p-0"
       footer={
         <div className="viz-note">
           Source: TUIK, "Core fertility indicators, 2001-2020." This local data
@@ -154,51 +110,131 @@ export default function BirthMetricsTimeline() {
         </div>
       }
     >
-      <div className="space-y-4">
-        {metrics.map((metric) => (
-          <MetricStrip
-            key={metric.key}
-            label={metric.label}
-            unit={metric.unit}
-            color={metric.color}
-            note={metric.note}
-            values={metric.values}
-            min={metric.min}
-            max={metric.max}
-            activeIndex={selectedIndex}
-            onSelect={setSelectedIndex}
+      <div className="bg-[radial-gradient(circle_at_80%_0%,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(180deg,hsl(var(--card)),hsl(var(--background)/0.72))] px-3 py-4 sm:px-5 sm:py-5">
+        <div
+          className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-4"
+          aria-live="polite"
+        >
+          <SignalMetric
+            label="Live births"
+            value={formatNumber(activePoint.births, "en-US")}
+            accent="hsl(var(--foreground))"
           />
-        ))}
-
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md px-4 py-4 sm:px-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="viz-label">Year selector</p>
-              <p className="viz-note mt-1">
-                Lock one year to compare how all three indicators moved during
-                the same period.
-              </p>
-            </div>
-            <div className="text-sm font-semibold text-foreground">
-              {activePoint.year}
-            </div>
-          </div>
-
-          <CustomTimelineScrubber
-            index={selectedIndex}
-            minYear={firstYear}
-            selectedYear={activePoint.year}
-            maxIndex={birthIndicatorSeries.length - 1}
-            onSelect={setSelectedIndex}
-          />
-
-          <div className="mt-2 flex justify-between text-[11px] uppercase tracking-[0.16em] text-muted-foreground">
-            <span>{firstYear}</span>
-            <span>{lastYear}</span>
-          </div>
+          {metrics.map((metric) => (
+            <SignalMetric
+              key={metric.key}
+              label={metric.shortLabel}
+              value={`${formatPercent(activePoint[metric.key], metric.digits, "en-US")} ${metric.unit}`}
+              accent={metric.color}
+            />
+          ))}
         </div>
+
+        <div className="mt-4 overflow-hidden rounded-xl border border-border/85 bg-background/52">
+          {metrics.map((metric, metricIndex) => (
+            <MetricStrip
+              key={metric.key}
+              label={metric.label}
+              unit={metric.unit}
+              color={metric.color}
+              note={metric.note}
+              values={metric.values}
+              min={metric.min}
+              max={metric.max}
+              activeIndex={selectedIndex}
+              onSelect={setSelectedIndex}
+              isLast={metricIndex === metrics.length - 1}
+            />
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-3 rounded-xl border border-border bg-card/72 p-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-4">
+          <div className="min-w-0">
+            <div className="flex items-baseline justify-between gap-3">
+              <div>
+                <p className="viz-label">Shared year</p>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                  One control updates every series and exact-value readout.
+                </p>
+              </div>
+              <strong className="font-display text-xl tabular-nums text-foreground">
+                {activePoint.year}
+              </strong>
+            </div>
+            <CustomTimelineScrubber
+              index={selectedIndex}
+              minYear={firstYear}
+              selectedYear={activePoint.year}
+              maxIndex={birthIndicatorSeries.length - 1}
+              onSelect={setSelectedIndex}
+            />
+            <div className="mt-1 flex justify-between font-mono text-[10px] text-muted-foreground">
+              <span>{firstYear}</span>
+              <span>{lastYear}</span>
+            </div>
+          </div>
+
+          <nav
+            className="flex gap-1 sm:max-w-[190px] sm:flex-wrap sm:justify-end"
+            aria-label="Jump to annotated years"
+          >
+            {callouts.map((callout) => {
+              const index = birthIndicatorSeries.findIndex(
+                (point) => point.year === callout.year,
+              );
+              const isCurrent = index === selectedIndex;
+              return (
+                <button
+                  key={callout.year}
+                  type="button"
+                  className="min-h-11 flex-1 rounded-lg border border-border bg-background/70 px-3 text-xs font-bold tabular-nums text-muted-foreground transition-colors hover:border-primary/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:flex-none"
+                  aria-current={isCurrent ? "true" : undefined}
+                  aria-label={`${callout.year}: ${callout.title}`}
+                  onClick={() => setSelectedIndex(index)}
+                >
+                  {callout.year}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          <strong className="text-foreground">
+            {callouts.find((callout) => callout.year === activePoint.year)
+              ?.title ?? "Year-to-year signal"}
+            :
+          </strong>{" "}
+          {callouts.find((callout) => callout.year === activePoint.year)
+            ?.detail ??
+            "The linked cursor keeps rate, fertility, and maternal age at the same point in time."}
+        </p>
       </div>
     </ArticleChartFrame>
+  );
+}
+
+function SignalMetric({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent: string;
+}) {
+  return (
+    <div className="min-w-0 bg-card/92 px-3 py-3 sm:px-4">
+      <span className="block text-[9px] font-semibold uppercase tracking-[0.13em] text-muted-foreground">
+        {label}
+      </span>
+      <strong
+        className="mt-1 block truncate font-mono text-sm font-bold tabular-nums sm:text-base"
+        style={{ color: accent }}
+      >
+        {value}
+      </strong>
+    </div>
   );
 }
 
@@ -212,6 +248,7 @@ function MetricStrip({
   max,
   activeIndex,
   onSelect,
+  isLast,
 }: {
   label: string;
   unit: string;
@@ -222,162 +259,176 @@ function MetricStrip({
   max: number;
   activeIndex: number;
   onSelect: (index: number) => void;
+  isLast: boolean;
 }) {
   const width = 720;
-  const height = 105;
-  const years = birthIndicatorSeries.map((point) => point.year);
-  const xScale = scalePoint<number>().domain(years).range([24, 696]);
-  const yScale = scaleLinear().domain([min, max]).range([85, 20]).nice();
-  const path = useMemo(() => {
-    return (
+  const height = 112;
+  const xScale = scalePoint<number>().domain(years).range([18, 702]);
+  const yScale = scaleLinear().domain([min, max]).range([82, 18]).nice();
+  const path = useMemo(
+    () =>
       d3Line<number>()
-        .x((_, index) => xScale(years[index] ?? years[0] ?? 2001) ?? 24)
-        .y((value) => yScale(value))(values) ?? ""
-    );
-  }, [values, xScale, yScale, years]);
+        .x((_, index) => xScale(years[index] ?? years[0] ?? 2001) ?? 18)
+        .y((value) => yScale(value))(values) ?? "",
+    [values, xScale, yScale],
+  );
+  const selectedX = xScale(years[activeIndex] ?? years[0] ?? 2001) ?? 18;
+  const selectedY = yScale(values[activeIndex] ?? min);
+
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.012] backdrop-blur-md px-4 py-4 sm:px-6 shadow-[0_12px_40px_rgba(0,0,0,0.15)] hover:bg-white/[0.02] hover:border-white/[0.09] transition-all duration-300">
-      <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-        <div>
-          <p className="viz-label">{label}</p>
-          <p className="mt-2 text-sm leading-7 text-muted-foreground">{note}</p>
+    <section
+      className={`grid min-w-0 gap-2 p-3 sm:grid-cols-[148px_minmax(0,1fr)] sm:items-center sm:gap-4 sm:px-4 ${
+        isLast ? "" : "border-b border-border/75"
+      }`}
+      aria-label={`${label} timeline`}
+    >
+      <div className="flex min-w-0 items-start justify-between gap-3 sm:block">
+        <div className="min-w-0">
+          <h4 className="text-xs font-semibold text-foreground">{label}</h4>
+          <p className="mt-1 text-[10px] leading-4 text-muted-foreground">
+            {note}
+          </p>
         </div>
-        <div
-          className="rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] self-start md:self-auto"
-          style={{ background: `${color}1f`, color }}
+        <span
+          className="shrink-0 rounded-full px-2 py-1 text-[9px] font-bold uppercase tracking-[0.1em]"
+          style={{ background: `${color}18`, color }}
         >
           {unit}
-        </div>
+        </span>
       </div>
 
-      <div className="mt-4 viz-scroll-region overflow-x-auto scrollbar-thin select-none relative focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background">
-        <p className="viz-scroll-hint">Swipe to explore timeline →</p>
-        <div className="min-w-[620px]">
-          <svg
-            viewBox={`0 0 ${width} ${height}`}
-            className="h-auto w-full max-w-full overflow-visible"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            {[0, 0.5, 1].map((tick) => {
-              const y = yScale(min + (max - min) * tick);
-              return (
-                <line
-                  key={tick}
-                  x1={24}
-                  x2={696}
-                  y1={y}
-                  y2={y}
-                  stroke="rgba(255,255,255,0.08)"
-                  strokeDasharray="4 6"
+      <div className="relative min-w-0">
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="block h-[96px] w-full overflow-visible sm:h-[112px]"
+          preserveAspectRatio="none"
+          role="img"
+          aria-label={`${label}. Selected ${years[activeIndex]}: ${values[activeIndex]?.toFixed(2)} ${unit}.`}
+        >
+          {[0, 0.5, 1].map((tick) => {
+            const y = yScale(min + (max - min) * tick);
+            return (
+              <line
+                key={tick}
+                x1={18}
+                x2={702}
+                y1={y}
+                y2={y}
+                stroke={chartPalette.grid}
+                strokeDasharray="4 7"
+                vectorEffect="non-scaling-stroke"
+              />
+            );
+          })}
+
+          <path
+            d={path}
+            fill="none"
+            stroke={color}
+            strokeWidth={2.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+
+          {birthIndicatorSeries.map((point, index) => {
+            const x = xScale(point.year) ?? 18;
+            const y = yScale(values[index] ?? min);
+            const isCallout = calloutYears.has(point.year);
+            return (
+              <g key={`${label}-${point.year}`}>
+                <circle
+                  cx={x}
+                  cy={y}
+                  r={index === activeIndex ? 6 : isCallout ? 4 : 2.2}
+                  fill={
+                    index === activeIndex ? "hsl(var(--background))" : color
+                  }
+                  stroke={color}
+                  strokeWidth={index === activeIndex ? 4 : 1.5}
+                  vectorEffect="non-scaling-stroke"
                 />
-              );
-            })}
+                <rect
+                  x={x - 15}
+                  y={2}
+                  width={30}
+                  height={91}
+                  fill="transparent"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${point.year}, ${values[index]?.toFixed(2)} ${unit}`}
+                  onPointerDown={() => onSelect(index)}
+                  onFocus={() => onSelect(index)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onSelect(index);
+                    }
+                  }}
+                />
+              </g>
+            );
+          })}
 
-            <path
-              d={path}
-              fill="none"
-              stroke={color}
-              strokeWidth={3}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <line
+            x1={selectedX}
+            x2={selectedX}
+            y1={5}
+            y2={94}
+            stroke={color}
+            strokeWidth={1}
+            strokeDasharray="3 4"
+            opacity={0.7}
+            vectorEffect="non-scaling-stroke"
+          />
+          <circle
+            cx={selectedX}
+            cy={selectedY}
+            r={3}
+            fill={color}
+            vectorEffect="non-scaling-stroke"
+          />
 
-            {birthIndicatorSeries.map((point, index) => {
-              if (!calloutYears.has(point.year)) {
-                return null;
-              }
-
-              const x = xScale(point.year) ?? 24;
-              const y = yScale(values[index] ?? min);
-              const textAnchor =
-                point.year === years[0]
+          {[2001, 2005, 2010, 2015, 2020].map((year) => (
+            <text
+              key={year}
+              x={xScale(year) ?? 18}
+              y={108}
+              textAnchor={
+                year === first(years)
                   ? "start"
-                  : point.year === years.at(-1)
+                  : year === last(years)
                     ? "end"
-                    : "middle";
-              const textX =
-                point.year === years[0]
-                  ? x + 6
-                  : point.year === years.at(-1)
-                    ? x - 6
-                    : x;
-              const textY = y > 60 ? y - 12 : y + 18;
-
-              return (
-                <g key={`${label}-marker-${point.year}`}>
-                  <circle
-                    cx={x}
-                    cy={y}
-                    r={5}
-                    fill={color}
-                    stroke="rgba(17,17,17,0.92)"
-                    strokeWidth={2}
-                  />
-                  <text
-                    x={textX}
-                    y={textY}
-                    textAnchor={textAnchor}
-                    className="fill-white font-bold text-[9px] drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-                  >
-                    {point.year}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* Interactive mouse capture rect */}
-            <rect
-              x={24}
-              y={12}
-              width={672}
-              height={80}
-              fill="transparent"
-              aria-hidden="true"
-              onMouseMove={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const clientX = e.clientX - rect.left;
-                const ratio = Math.max(0, Math.min(clientX / rect.width, 1));
-                const index = Math.round(ratio * (years.length - 1));
-                if (index >= 0 && index < years.length) {
-                  onSelect(index);
-                }
-              }}
-              onTouchMove={(e) => {
-                const touch = e.touches[0];
-                if (!touch) return;
-                const rect = e.currentTarget.getBoundingClientRect();
-                const clientX = touch.clientX - rect.left;
-                const ratio = Math.max(0, Math.min(clientX / rect.width, 1));
-                const index = Math.round(ratio * (years.length - 1));
-                if (index >= 0 && index < years.length) {
-                  onSelect(index);
-                }
-              }}
-              style={{ cursor: "crosshair" }}
-            />
-
-            {birthIndicatorSeries.map((point, index) => {
-              const x = xScale(point.year) ?? 24;
-              const showLabel = point.year % 5 === 0 || point.year === 2001;
-              if (!showLabel) return null;
-
-              return (
-                <text
-                  key={`${label}-axis-${point.year}`}
-                  x={x}
-                  y={101}
-                  textAnchor="middle"
-                  className={`text-[10px] ${index === activeIndex ? "fill-[#f3f1eb] font-semibold" : "fill-[rgba(243,241,235,0.45)]"}`}
-                >
-                  {point.year}
-                </text>
-              );
-            })}
-          </svg>
-        </div>
+                    : "middle"
+              }
+              className="fill-muted-foreground font-mono text-[9px]"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              {year}
+            </text>
+          ))}
+        </svg>
+        <output
+          className="pointer-events-none absolute right-1 top-0 rounded-md border border-border bg-background/90 px-2 py-1 font-mono text-[9px] font-bold tabular-nums text-foreground shadow-sm"
+          aria-live="polite"
+        >
+          {values[activeIndex]?.toFixed(
+            metricDefinitions.find((metric) => metric.label === label)
+              ?.digits ?? 1,
+          )}{" "}
+          {unit}
+        </output>
       </div>
-    </div>
+    </section>
   );
+}
+
+function first<T>(items: T[]) {
+  return items[0];
+}
+
+function last<T>(items: T[]) {
+  return items.at(-1);
 }
 
 function CustomTimelineScrubber({
@@ -395,125 +446,44 @@ function CustomTimelineScrubber({
 }) {
   const percentage = (index / maxIndex) * 100;
 
-  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.currentTarget.setPointerCapture(e.pointerId);
-    updateValue(e);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-      updateValue(e);
-    }
-  };
-
-  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.currentTarget.releasePointerCapture(e.pointerId);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    const step =
-      e.key === "PageUp" || e.key === "PageDown"
-        ? 5
-        : e.shiftKey
-          ? 3
-          : 1;
-
-    if (
-      ![
-        "ArrowLeft",
-        "ArrowDown",
-        "ArrowRight",
-        "ArrowUp",
-        "Home",
-        "End",
-        "PageUp",
-        "PageDown",
-      ].includes(e.key)
-    ) {
-      return;
-    }
-
-    e.preventDefault();
-
-    if (e.key === "Home") {
-      onSelect(0);
-      return;
-    }
-
-    if (e.key === "End") {
-      onSelect(maxIndex);
-      return;
-    }
-
-    const direction =
-      e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "PageUp"
-        ? 1
-        : -1;
-    onSelect(Math.max(0, Math.min(maxIndex, index + direction * step)));
-  };
-
-  const updateValue = (e: React.PointerEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const ratio = Math.max(0, Math.min(clickX / rect.width, 1));
-    const nextIndex = Math.round(ratio * maxIndex);
-    if (nextIndex >= 0 && nextIndex <= maxIndex) {
-      onSelect(nextIndex);
-    }
-  };
-
   return (
-    <div className="flex items-center gap-3 mt-4 select-none">
+    <div className="mt-3 flex items-center gap-2 sm:gap-3">
       <button
         type="button"
         disabled={index === 0}
         onClick={() => onSelect(index - 1)}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-35"
         aria-label="Previous year"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        ←
       </button>
 
-      <div
-        className="relative flex-grow h-6 flex items-center cursor-pointer select-none group touch-none"
-        role="slider"
-        tabIndex={0}
+      <input
+        type="range"
+        min={0}
+        max={maxIndex}
+        value={index}
+        step={1}
+        onChange={(event) => onSelect(Number(event.currentTarget.value))}
+        className="birth-year-range h-11 min-w-0 flex-1 cursor-pointer accent-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         aria-label="Select year"
         aria-valuemin={minYear}
         aria-valuemax={minYear + maxIndex}
         aria-valuenow={selectedYear}
         aria-valuetext={`${selectedYear}`}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onKeyDown={handleKeyDown}
-      >
-        <div className="absolute inset-0 flex items-center">
-          <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative overflow-hidden">
-            <motion.div
-              className="absolute left-0 top-0 bottom-0 rounded-full bg-[#7af298]"
-              animate={{ width: `${percentage}%` }}
-              transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            />
-          </div>
-        </div>
-
-        <motion.div
-          className="absolute w-5 h-5 rounded-full bg-[#7af298] border-4 border-[#111111] shadow-[0_0_12px_rgba(122,242,152,0.4)] z-10"
-          animate={{ left: `calc(${percentage}% - 10px)` }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-          whileHover={{ scale: 1.2 }}
-        />
-      </div>
+        style={{
+          background: `linear-gradient(90deg, #55df80 ${percentage}%, hsl(var(--muted)) ${percentage}%)`,
+        }}
+      />
 
       <button
         type="button"
         disabled={index === maxIndex}
         onClick={() => onSelect(index + 1)}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-35"
         aria-label="Next year"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        →
       </button>
     </div>
   );

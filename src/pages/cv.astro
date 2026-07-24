@@ -4,55 +4,75 @@ import MainLayout from "@layouts/MainLayout.astro";
 
 const resumeVariants = [
   {
-    title: "Product Specialist & Developer CV",
-    subtitle: "Mobil Ürün Uzmanı & Geliştirici",
+    title: "Product Specialist & Mobile Developer CV",
+    subtitle: "Mobil Ürün Uzmanı ve Geliştirici",
     subtitleEn: "Mobile Product Specialist & Developer",
-    description: "Focused on end-to-end product delivery, React Native mobile UX, onboarding experiences, and retention strategies.",
-    descriptionTr: "Uçtan uca özellik setlerinin teslimi, React Native mobil UX, işe uyum (onboarding) deneyimleri ve kullanıcıyı elde tutma stratejileri odaklı.",
-    tags: ["Product Discovery", "React Native", "Expo", "UX Design", "RevenueCat", "Agile"],
+    description:
+      "For roles that span mobile product scope, UX, development, launch, and retention.",
+    descriptionTr:
+      "Bu sürüm mobil ürünlerde kapsam, UX, geliştirme, yayına alma ve kullanıcı bağlılığına odaklanır.",
+    tags: [
+      "Product Discovery",
+      "React Native",
+      "Expo",
+      "UX Design",
+      "RevenueCat",
+      "Agile",
+    ],
     pathEn: "/cvs/Anil_Karaca_Product_Specialist.pdf",
     pathTr: "/cvs/Anil_Karaca_Product_Specialist_TR.pdf",
     filenameEn: "Anil_Karaca_Product_Specialist.pdf",
-    filenameTr: "Anil_Karaca_Product_Specialist_TR.pdf"
+    filenameTr: "Anil_Karaca_Product_Specialist_TR.pdf",
   },
   {
     title: "Data Journalist & Analyst CV",
     subtitle: "Veri Gazetecisi & Veri Analisti",
     subtitleEn: "Data Journalist & Data Analyst",
-    description: "Geared towards complex dataset modeling, ETL pipelines, geospatial analysis, scrollytelling, and newsroom visualizations.",
-    descriptionTr: "Karmaşık veri setlerinin modellenmesi, ETL süreçleri, coğrafi bilgi sistemleri (QGIS) ve scrollytelling veri hikayeleri odaklı.",
+    description:
+      "For roles centered on complex datasets, ETL, geospatial analysis, interactive stories, and newsroom graphics.",
+    descriptionTr:
+      "Bu sürüm karmaşık veri setleri, ETL süreçleri, coğrafi analiz, etkileşimli veri hikâyeleri ve haber merkezi görselleştirmelerine odaklanır.",
     tags: ["Python", "SQL", "Pandas", "ETL", "QGIS", "D3.js", "Plotly"],
     pathEn: "/cvs/Anil_Karaca_Data_CV.pdf",
     pathTr: "/cvs/Anil_Karaca_Data_CV_TR.pdf",
     filenameEn: "Anil_Karaca_Data_CV.pdf",
-    filenameTr: "Anil_Karaca_Data_CV_TR.pdf"
+    filenameTr: "Anil_Karaca_Data_CV_TR.pdf",
   },
   {
     title: "Corporate Communications Specialist CV",
     subtitle: "Kurumsal İletişim Uzmanı",
     subtitleEn: "Corporate Communications Specialist",
-    description: "Tailored for stakeholder management, digital media campaigns, video production, and strategic brand storytelling.",
-    descriptionTr: "Paydaş yönetimi, kurumsal dijital medya kampanyaları, video prodüksiyonu ve stratejik marka hikayeciliği odaklı.",
-    tags: ["Communications Strategy", "Social Media", "Agency Briefing", "Video Production", "Copywriting"],
+    description:
+      "For roles involving stakeholder communication, digital campaigns, video production, and brand storytelling.",
+    descriptionTr:
+      "Bu sürüm paydaş iletişimi, dijital kampanyalar, video prodüksiyonu ve marka anlatısına odaklanır.",
+    tags: [
+      "Communications Strategy",
+      "Social Media",
+      "Agency Briefing",
+      "Video Production",
+      "Copywriting",
+    ],
     pathEn: "/cvs/Anil_Karaca_Communications_Manager.pdf",
     pathTr: "/cvs/Anil_Karaca_Communications_Manager_TR.pdf",
     filenameEn: "Anil_Karaca_Communications_Manager.pdf",
-    filenameTr: "Anil_Karaca_Communications_Manager_TR.pdf"
-  }
+    filenameTr: "Anil_Karaca_Communications_Manager_TR.pdf",
+  },
 ];
 ---
 
 <MainLayout
-  title="Resumes"
-  description="Download specialized versions of Anil Karaca's resume tailored to different career paths: Product Specialist, Data Analyst, and Corporate Communications."
+  title="CVs"
+  description="Choose the version of Anil Karaca's CV that best fits product, data, or communications roles. Available in English and Turkish."
 >
   <section class="cv-page">
     <div class="cv-page__shell">
       <header class="cv-page__header">
         <p class="cv-page__eyebrow">Curriculum Vitae</p>
-        <h1>Select a Resume</h1>
+        <h1>Choose a CV</h1>
         <p class="cv-page__subtitle">
-          Download a specialized version of my resume tailored to the role you are hiring for, in either English or Turkish.
+          I keep separate versions for product, data, and communications roles.
+          Each one is available in English and Turkish.
         </p>
       </header>
 
@@ -64,12 +84,18 @@ const resumeVariants = [
               <div class="cv-card__content">
                 <div class="cv-card__header-block">
                   <h2 class="cv-card__title">{variant.title}</h2>
-                  <p class="cv-card__subtitle">{variant.subtitleEn} <span class="cv-card__subtitle-sep">·</span> {variant.subtitle}</p>
+                  <p class="cv-card__subtitle">
+                    {variant.subtitleEn}{" "}
+                    <span class="cv-card__subtitle-sep">·</span>{" "}
+                    <span lang="tr">{variant.subtitle}</span>
+                  </p>
                 </div>
-                
+
                 <div class="cv-card__body-block">
                   <p class="cv-card__desc">{variant.description}</p>
-                  <p class="cv-card__desc-tr">{variant.descriptionTr}</p>
+                  <p class="cv-card__desc-tr" lang="tr">
+                    {variant.descriptionTr}
+                  </p>
                 </div>
 
                 <div class="cv-card__tags">
@@ -97,7 +123,7 @@ const resumeVariants = [
                     data-track-label={`CV Page - ${variant.title} - TR`}
                   >
                     <Icon name="download" size={14} />
-                    Türkçe PDF
+                    <span lang="tr">Türkçe PDF</span>
                   </a>
                 </div>
               </div>
@@ -121,7 +147,7 @@ const resumeVariants = [
   }
 
   .cv-page__header {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
     padding-bottom: 3rem;
     margin-bottom: 4rem;
   }
@@ -168,8 +194,8 @@ const resumeVariants = [
   .cv-card {
     position: relative;
     border-radius: var(--radius, 12px);
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: hsl(var(--foreground) / 0.025);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -177,13 +203,17 @@ const resumeVariants = [
   .cv-card:hover {
     transform: translateY(-2px);
     border-color: rgba(122, 242, 152, 0.2);
-    background: rgba(255, 255, 255, 0.04);
+    background: hsl(var(--foreground) / 0.05);
   }
 
   .cv-card__glow {
     position: absolute;
     inset: 0;
-    background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(122, 242, 152, 0.06), transparent 40%);
+    background: radial-gradient(
+      800px circle at var(--x, 0px) var(--y, 0px),
+      rgba(122, 242, 152, 0.06),
+      transparent 40%
+    );
     opacity: 0;
     transition: opacity 0.5s;
     pointer-events: none;
@@ -223,7 +253,7 @@ const resumeVariants = [
   }
 
   .cv-card__subtitle-sep {
-    color: rgba(255, 255, 255, 0.25);
+    color: hsl(var(--foreground) / 0.32);
     margin-inline: 0.4rem;
   }
 
@@ -261,8 +291,8 @@ const resumeVariants = [
     font-size: 0.7rem;
     padding: 0.25rem 0.6rem;
     border-radius: 4px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: hsl(var(--foreground) / 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.08);
     color: hsl(var(--muted-foreground));
   }
 
@@ -292,26 +322,28 @@ const resumeVariants = [
   }
 
   .cv-btn--primary:hover {
-    background: #ffffff;
+    background: hsl(var(--foreground) / 0.88);
     transform: translateY(-1px);
   }
 
   .cv-btn--secondary {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: hsl(var(--foreground) / 0.04);
+    border: 1px solid hsl(var(--foreground) / 0.1);
     color: hsl(var(--foreground));
   }
 
   .cv-btn--secondary:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: hsl(var(--foreground) / 0.08);
+    border-color: hsl(var(--foreground) / 0.18);
     transform: translateY(-1px);
   }
 </style>
 
 <script>
   // Dynamic glow effect that tracks cursor coordinates over cards, including scroll updates to prevent stalling
-  const cards = document.querySelectorAll(".cv-card") as NodeListOf<HTMLElement>;
+  const cards = document.querySelectorAll(
+    ".cv-card",
+  ) as NodeListOf<HTMLElement>;
   let lastClientX = 0;
   let lastClientY = 0;
   let hoveredCard: HTMLElement | null = null;
@@ -343,9 +375,13 @@ const resumeVariants = [
     });
   });
 
-  window.addEventListener("scroll", () => {
-    if (hoveredCard) {
-      updateCardGlow(hoveredCard, lastClientX, lastClientY);
-    }
-  }, { passive: true });
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (hoveredCard) {
+        updateCardGlow(hoveredCard, lastClientX, lastClientY);
+      }
+    },
+    { passive: true },
+  );
 </script>

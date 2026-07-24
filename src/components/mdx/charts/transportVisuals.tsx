@@ -158,7 +158,7 @@ export function TransportTrendPanel({
   );
 
   return (
-    <div className="space-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.15)] hover:bg-white/[0.015] hover:border-white/[0.09] transition-all duration-300">
+    <div className="space-y-3 rounded-2xl border border-border bg-card/70 p-4 shadow-[0_12px_40px_hsl(var(--foreground)/0.08)] backdrop-blur-md transition-all duration-300 hover:border-primary/20 hover:bg-muted/35 sm:p-5">
       <div className="pb-1 overflow-visible relative">
         <svg
           viewBox={`0 0 ${width} ${height}`}
@@ -178,14 +178,14 @@ export function TransportTrendPanel({
                   x2={width - padding.right}
                   y1={y}
                   y2={y}
-                  stroke="rgba(255,255,255,0.08)"
+                  stroke={chartPalette.grid}
                   strokeDasharray="4 6"
                 />
                 <text
                   x={padding.left - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-[rgba(243,241,235,0.45)] text-[10px]"
+                  className="fill-muted-foreground text-[10px]"
                 >
                   {label}
                 </text>
@@ -206,7 +206,7 @@ export function TransportTrendPanel({
                     x={x}
                     y={height - 10}
                     textAnchor="middle"
-                    className={`text-[10px] ${index === selectedIndex ? "fill-[#f3f1eb] font-semibold" : "fill-[rgba(243,241,235,0.45)]"}`}
+                    className={`text-[10px] ${index === selectedIndex ? "fill-foreground font-semibold" : "fill-muted-foreground"}`}
                   >
                     {formatMonthLabel(month, locale)}
                   </text>
@@ -333,16 +333,16 @@ export function TransportTrendPanel({
         </svg>
       </div>
 
-      <div className="flex flex-wrap gap-2 pt-2 border-t border-white/[0.05]">
+      <div className="flex flex-wrap gap-2 border-t border-border pt-2">
         {transformedSeries.map((entry) => (
           <div
             key={entry.category}
-            className="flex items-center gap-2 rounded-full border border-white/[0.06] px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+            className="flex items-center gap-2 rounded-full border border-border px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
             style={{
               background:
                 activeCategory === entry.category
                   ? `${entry.color}1a`
-                  : "rgba(255,255,255,0.02)",
+                  : chartPalette.grid,
             }}
           >
             <span
@@ -421,7 +421,7 @@ export function PassengerMixPanel({
   );
 
   return (
-    <div className="space-y-3 rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-5 shadow-[0_12px_40px_rgba(0,0,0,0.15)] hover:bg-white/[0.015] hover:border-white/[0.09] transition-all duration-300">
+    <div className="space-y-3 rounded-2xl border border-border bg-card/70 p-4 shadow-[0_12px_40px_hsl(var(--foreground)/0.08)] backdrop-blur-md transition-all duration-300 hover:border-primary/20 hover:bg-muted/35 sm:p-5">
       <div className="pb-1 overflow-visible relative">
         <svg
           viewBox={`0 0 ${width} ${height}`}
@@ -440,14 +440,14 @@ export function PassengerMixPanel({
                   x2={width - padding.right}
                   y1={y}
                   y2={y}
-                  stroke="rgba(255,255,255,0.08)"
+                  stroke={chartPalette.grid}
                   strokeDasharray="4 6"
                 />
                 <text
                   x={padding.left - 10}
                   y={y + 4}
                   textAnchor="end"
-                  className="fill-[rgba(243,241,235,0.45)] text-[10px]"
+                  className="fill-muted-foreground text-[10px]"
                 >
                   {mode === "share"
                     ? `${Math.round(tick * 100)}%`
@@ -501,7 +501,7 @@ export function PassengerMixPanel({
                     x={x + barWidth / 2}
                     y={height - 10}
                     textAnchor="middle"
-                    className={`text-[10px] ${isActive ? "fill-[#f3f1eb] font-semibold" : "fill-[rgba(243,241,235,0.45)]"}`}
+                    className={`text-[10px] ${isActive ? "fill-foreground font-semibold" : "fill-muted-foreground"}`}
                   >
                     {formatMonthLabel(stack.month, locale)}
                   </text>
@@ -545,14 +545,14 @@ export function PassengerMixPanel({
         </svg>
       </div>
 
-      <div className="flex flex-wrap gap-2 pt-2 border-t border-white/[0.05]">
+      <div className="flex flex-wrap gap-2 border-t border-border pt-2">
         {groups.map((group) => {
           const meta = getPassengerGroupMeta(group, locale);
 
           return (
             <div
               key={group}
-              className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+              className="flex items-center gap-1.5 rounded-full border border-border bg-muted/35 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
             >
               <span
                 className="h-2 w-2 rounded-full"
@@ -607,7 +607,7 @@ export function CurrentMonthMix({
                   : formatCompactNumber(value, localeMap[locale])}
               </span>
             </div>
-            <div className="h-2.5 overflow-hidden rounded-full bg-white/[0.04] relative">
+            <div className="relative h-2.5 overflow-hidden rounded-full bg-muted">
               <motion.div
                 className="h-full rounded-full"
                 initial={{ width: 0 }}

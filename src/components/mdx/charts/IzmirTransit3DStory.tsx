@@ -10,7 +10,6 @@ import { formatCompactNumber } from "@/components/case-study/chartTheme";
 import transportData from "@/data/izmir-ulasim-transport.json";
 import demographicsData from "@/data/izmir-ulasim-demographics.json";
 
-
 import {
   geoToScene,
   geoToFlat,
@@ -172,8 +171,8 @@ const izmirPlaces = [
   {
     name: "Kadifekale",
     short: "Kadifekale",
-    lat: 38.410,
-    lng: 27.140,
+    lat: 38.41,
+    lng: 27.14,
     desc: "Hill above Konak",
     kind: "hill",
     accent: IZMIR_THEME.limestone,
@@ -209,7 +208,7 @@ function getStationStoppingProgress(t: number, numStations: number): number {
   const segmentFraction = scaledT % 1.0;
 
   // 70% of segment time is spent traveling, 30% is spent stopped at the station
-  const travelLimit = 0.70;
+  const travelLimit = 0.7;
 
   let s = 0;
   if (segmentFraction < travelLimit) {
@@ -245,16 +244,39 @@ const HUBS = [
 
 // Milestone events to provide storytelling narrative
 const MILESTONES: Record<string, { title: string; desc: string }> = {
-  "2021-01": { title: "Curfews & Restrictions", desc: "Strict weekend lockdowns. Transit volumes operate at ~25% of baseline." },
-  "2021-05": { title: "Full National Lockdown", desc: "17-day full lockdown. Public transport ridership drops to the absolute floor." },
-  "2021-06": { title: "Normalisation Phase", desc: "Curfews relaxed. Initial recovery begins, led by bus and ferry networks." },
-  "2021-09": { title: "Return to School", desc: "Universities & schools reopen. Student transit share spikes from 15% to 33%." },
-  "2022-03": { title: "Mask Mandate Eased", desc: "Outdoor mask mandates lifted. Total network volume reaches 85% of baseline." },
-  "2023-02": { title: "Earthquake Disruption", desc: "Mobility drops temporarily as resources redirect to earthquake aid." },
-  "2023-09": { title: "Post-Pandemic Peak", desc: "Rail modes (Metro/İZBAN) show sharp recovery, exceeding 120% of baseline." },
-  "2024-03": { title: "The New Transit Normal", desc: "Full structural recovery. Student and concession groups dominate ridership mix." },
+  "2021-01": {
+    title: "Curfews & Restrictions",
+    desc: "Strict weekend lockdowns. Transit volumes operate at ~25% of baseline.",
+  },
+  "2021-05": {
+    title: "Full National Lockdown",
+    desc: "17-day full lockdown. Public transport ridership drops to the absolute floor.",
+  },
+  "2021-06": {
+    title: "Normalisation Phase",
+    desc: "Curfews relaxed. Initial recovery begins, led by bus and ferry networks.",
+  },
+  "2021-09": {
+    title: "Return to School",
+    desc: "Universities & schools reopen. Student transit share spikes from 15% to 33%.",
+  },
+  "2022-03": {
+    title: "Mask Mandate Eased",
+    desc: "Outdoor mask mandates lifted. Total network volume reaches 85% of baseline.",
+  },
+  "2023-02": {
+    title: "Earthquake Disruption",
+    desc: "Mobility drops temporarily as resources redirect to earthquake aid.",
+  },
+  "2023-09": {
+    title: "Post-Pandemic Peak",
+    desc: "Rail modes (Metro/İZBAN) show sharp recovery, exceeding 120% of baseline.",
+  },
+  "2024-03": {
+    title: "The New Transit Normal",
+    desc: "Full structural recovery. Student and concession groups dominate ridership mix.",
+  },
 };
-
 
 const getTransportIcon = (key: string, color: string) => {
   const props = {
@@ -267,7 +289,7 @@ const getTransportIcon = (key: string, color: string) => {
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const,
     className: "shrink-0",
-    style: { filter: `drop-shadow(0 0 4px ${color}bb)` }
+    style: { filter: `drop-shadow(0 0 4px ${color}bb)` },
   };
 
   switch (key) {
@@ -334,13 +356,17 @@ const getTransportIcon = (key: string, color: string) => {
 };
 
 export default function IzmirTransit3DStory() {
-  const [selectedIndex, setSelectedIndex] = useState(transport.months.length - 1);
+  const [selectedIndex, setSelectedIndex] = useState(
+    transport.months.length - 1,
+  );
 
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"layers" | "demographics" | "details">("layers");
+  const [activeTab, setActiveTab] = useState<
+    "layers" | "demographics" | "details"
+  >("layers");
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -384,11 +410,14 @@ export default function IzmirTransit3DStory() {
   const toggleFullscreen = () => {
     if (!containerRef.current) return;
     if (!document.fullscreenElement) {
-      containerRef.current.requestFullscreen().then(() => {
-        setIsFullscreen(true);
-      }).catch((err) => {
-        console.error("Error enabling fullscreen", err);
-      });
+      containerRef.current
+        .requestFullscreen()
+        .then(() => {
+          setIsFullscreen(true);
+        })
+        .catch((err) => {
+          console.error("Error enabling fullscreen", err);
+        });
     } else {
       document.exitFullscreen();
       setIsFullscreen(false);
@@ -404,7 +433,8 @@ export default function IzmirTransit3DStory() {
       }, 100);
     };
     document.addEventListener("fullscreenchange", onFullscreenChange);
-    return () => document.removeEventListener("fullscreenchange", onFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
   }, []);
 
   // Keep stateRef up to date
@@ -450,7 +480,9 @@ export default function IzmirTransit3DStory() {
   );
 
   const activeMilestone = MILESTONES[transport.months[selectedIndex] ?? ""];
-  const monthNarrative = getMonthNarrative(transport.months[selectedIndex] ?? "");
+  const monthNarrative = getMonthNarrative(
+    transport.months[selectedIndex] ?? "",
+  );
 
   const ranking = useMemo(() => {
     return transport.institutions
@@ -472,8 +504,6 @@ export default function IzmirTransit3DStory() {
   const totalTrips = ranking.reduce((sum, item) => sum + item.value, 0);
   const leadingMode = ranking[0];
 
-
-
   const demographicsTotal = useMemo(() => {
     return demographics.groups.reduce(
       (sum, group) => sum + (demographics.series[group]?.[selectedIndex] ?? 0),
@@ -482,18 +512,20 @@ export default function IzmirTransit3DStory() {
   }, [selectedIndex]);
 
   const demographicMix = useMemo(() => {
-    return demographics.groups.map((group) => {
-      const val = demographics.series[group]?.[selectedIndex] ?? 0;
-      const share = demographicsTotal > 0 ? val / demographicsTotal : 0;
-      const color = getGroupColor(group);
-      return {
-        group,
-        value: val,
-        share,
-        color: "#" + color.getHexString(),
-        label: groupLabels[group] ?? group,
-      };
-    }).sort((a, b) => b.value - a.value);
+    return demographics.groups
+      .map((group) => {
+        const val = demographics.series[group]?.[selectedIndex] ?? 0;
+        const share = demographicsTotal > 0 ? val / demographicsTotal : 0;
+        const color = getGroupColor(group);
+        return {
+          group,
+          value: val,
+          share,
+          color: "#" + color.getHexString(),
+          label: groupLabels[group] ?? group,
+        };
+      })
+      .sort((a, b) => b.value - a.value);
   }, [selectedIndex, demographicsTotal]);
 
   const selectedModeDetails = useMemo(() => {
@@ -508,15 +540,20 @@ export default function IzmirTransit3DStory() {
 
     let desc = "";
     if (activeCategory === "Metro") {
-      desc = "High-speed rail line linking Fahrettin Altay to Bornova. İzmir's primary rapid transit network backbone.";
+      desc =
+        "High-speed rail line linking Fahrettin Altay to Bornova. İzmir's primary rapid transit network backbone.";
     } else if (activeCategory === "Tramvay") {
-      desc = "Scenic coastal light rail networks operating along Konak and Karşıyaka shorelines.";
+      desc =
+        "Scenic coastal light rail networks operating along Konak and Karşıyaka shorelines.";
     } else if (activeCategory === "Izban (Train)") {
-      desc = "Massive north-south commuter railway spine connecting outer suburbs to the metro hubs.";
+      desc =
+        "Massive north-south commuter railway spine connecting outer suburbs to the metro hubs.";
     } else if (activeCategory === "Ferry (Izdeniz)") {
-      desc = "Maritime gulf transit boats connecting Bostanlı, Karşıyaka, Alsancak, and Konak piers.";
+      desc =
+        "Maritime gulf transit boats connecting Bostanlı, Karşıyaka, Alsancak, and Konak piers.";
     } else if (activeCategory === "Bus (Eshot, Izulas, etc.)") {
-      desc = "The extensive radial bus network spanning all local districts and feeding into metro terminals.";
+      desc =
+        "The extensive radial bus network spanning all local districts and feeding into metro terminals.";
     }
 
     return {
@@ -530,7 +567,12 @@ export default function IzmirTransit3DStory() {
 
   // Main Three.js setup
   useEffect(() => {
-    if (typeof window === "undefined" || !canvasRef.current || !containerRef.current) return;
+    if (
+      typeof window === "undefined" ||
+      !canvasRef.current ||
+      !containerRef.current
+    )
+      return;
 
     const width = containerRef.current.clientWidth;
     const height = containerRef.current.clientHeight || 700;
@@ -545,7 +587,7 @@ export default function IzmirTransit3DStory() {
     let radius = 30;
     let theta = 0.5;
     let phi = 1.0;
-    
+
     let targetTheta = 0.5;
     let targetPhi = 1.0;
     let targetRadius = 30;
@@ -580,8 +622,8 @@ export default function IzmirTransit3DStory() {
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(width, height),
       1.35, // bloom strength
-      0.40, // radius
-      0.50  // threshold - lets emissive neon elements glow intensely
+      0.4, // radius
+      0.5, // threshold - lets emissive neon elements glow intensely
     );
     const composer = new EffectComposer(renderer);
     composer.addPass(renderScene);
@@ -615,19 +657,23 @@ export default function IzmirTransit3DStory() {
     const westExtensionNorth: [number, number][] = [
       [38.46857, 26.8],
       [38.46857, 26.9],
-      [38.46857, 27.0]
+      [38.46857, 27.0],
     ];
     const westExtensionSouth: [number, number][] = [
       [38.41332, 27.0],
       [38.41332, 26.9],
-      [38.41332, 26.8]
+      [38.41332, 26.8],
     ];
 
     const extendedNorthShore = [...westExtensionNorth, ...NORTH_SHORE];
     const extendedSouthShore = [...SOUTH_SHORE, ...westExtensionSouth];
 
-    const northShorePoints = extendedNorthShore.map(([lat, lng]) => geoToScene(lat, lng, -0.12));
-    const southShorePoints = extendedSouthShore.map(([lat, lng]) => geoToScene(lat, lng, -0.12));
+    const northShorePoints = extendedNorthShore.map(([lat, lng]) =>
+      geoToScene(lat, lng, -0.12),
+    );
+    const southShorePoints = extendedSouthShore.map(([lat, lng]) =>
+      geoToScene(lat, lng, -0.12),
+    );
 
     const northCurve = new THREE.CatmullRomCurve3(northShorePoints);
     const southCurve = new THREE.CatmullRomCurve3(southShorePoints);
@@ -639,11 +685,15 @@ export default function IzmirTransit3DStory() {
       opacity: 0.22,
     });
 
-    const northGlowGeo = new THREE.BufferGeometry().setFromPoints(northCurve.getPoints(280));
+    const northGlowGeo = new THREE.BufferGeometry().setFromPoints(
+      northCurve.getPoints(280),
+    );
     const northGlowLine = new THREE.Line(northGlowGeo, glowShoreMat);
     scene.add(northGlowLine);
 
-    const southGlowGeo = new THREE.BufferGeometry().setFromPoints(southCurve.getPoints(280));
+    const southGlowGeo = new THREE.BufferGeometry().setFromPoints(
+      southCurve.getPoints(280),
+    );
     const southGlowLine = new THREE.Line(southGlowGeo, glowShoreMat.clone());
     scene.add(southGlowLine);
 
@@ -654,11 +704,15 @@ export default function IzmirTransit3DStory() {
       opacity: 0.88,
     });
 
-    const northShoreGeo = new THREE.BufferGeometry().setFromPoints(northCurve.getPoints(280));
+    const northShoreGeo = new THREE.BufferGeometry().setFromPoints(
+      northCurve.getPoints(280),
+    );
     const northShoreLine = new THREE.Line(northShoreGeo, shorelineMat);
     scene.add(northShoreLine);
 
-    const southShoreGeo = new THREE.BufferGeometry().setFromPoints(southCurve.getPoints(280));
+    const southShoreGeo = new THREE.BufferGeometry().setFromPoints(
+      southCurve.getPoints(280),
+    );
     const southShoreLine = new THREE.Line(southShoreGeo, shorelineMat.clone());
     scene.add(southShoreLine);
 
@@ -683,35 +737,37 @@ export default function IzmirTransit3DStory() {
         const pi = bayPoly[i];
         const pj = bayPoly[j];
         if (pi && pj) {
-          const xi = pi.x, yi = pi.z;
-          const xj = pj.x, yj = pj.z;
-          const intersect = ((yi > z) !== (yj > z))
-              && (x < (xj - xi) * (z - yi) / (yj - yi) + xi);
+          const xi = pi.x,
+            yi = pi.z;
+          const xj = pj.x,
+            yj = pj.z;
+          const intersect =
+            yi > z !== yj > z && x < ((xj - xi) * (z - yi)) / (yj - yi) + xi;
           if (intersect) inside = !inside;
         }
       }
       return inside;
     };
 
-
-
     const landGeo = new THREE.PlaneGeometry(90, 70, 110, 90);
-    const landPosAttr = landGeo.getAttribute("position") as THREE.BufferAttribute;
+    const landPosAttr = landGeo.getAttribute(
+      "position",
+    ) as THREE.BufferAttribute;
 
     if (landPosAttr) {
       for (let i = 0; i < landPosAttr.count; i++) {
         const vx = landPosAttr.getX(i);
         const vy = landPosAttr.getY(i);
-        
-        const sceneX = vx + 2; 
-        const sceneZ = -vy + 1; 
+
+        const sceneX = vx + 2;
+        const sceneZ = -vy + 1;
 
         const inBay = isPointInBay(sceneX, sceneZ);
 
         // Perfectly flat land at 0.0, recessed bay basin at -0.15
         const height = inBay ? -0.15 : 0.0;
 
-        landPosAttr.setZ(i, height); 
+        landPosAttr.setZ(i, height);
       }
     }
     landGeo.computeVertexNormals();
@@ -753,7 +809,7 @@ export default function IzmirTransit3DStory() {
         }
       `,
       transparent: true,
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
     });
 
     const landMesh = new THREE.Mesh(landGeo, landMaterial);
@@ -792,8 +848,12 @@ export default function IzmirTransit3DStory() {
     //  8. TRANSPARENT PHYSICAL GLASS WATER
     // ========================================================================
     const waterShape = new THREE.Shape();
-    const southFlat = extendedSouthShore.map(([lat, lng]) => geoToFlat(lat, lng));
-    const northFlat = extendedNorthShore.map(([lat, lng]) => geoToFlat(lat, lng));
+    const southFlat = extendedSouthShore.map(([lat, lng]) =>
+      geoToFlat(lat, lng),
+    );
+    const northFlat = extendedNorthShore.map(([lat, lng]) =>
+      geoToFlat(lat, lng),
+    );
 
     const firstSouth = southFlat[0];
     if (firstSouth) {
@@ -809,19 +869,19 @@ export default function IzmirTransit3DStory() {
     }
 
     const waterGeometry = new THREE.ShapeGeometry(waterShape);
-    
+
     // Translucent glowing physical glass water
     const waterMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0x063e6e,     // richer cyan-blue ocean body
-      emissive: 0x03182b,  // glowing base illumination
-      roughness: 0.08,     // glossier reflections
-      metalness: 0.45,     // shinier metallic structure
-      transmission: 0.58,  // slightly less transparent for better color body
+      color: 0x063e6e, // richer cyan-blue ocean body
+      emissive: 0x03182b, // glowing base illumination
+      roughness: 0.08, // glossier reflections
+      metalness: 0.45, // shinier metallic structure
+      transmission: 0.58, // slightly less transparent for better color body
       thickness: 1.2,
       ior: 1.333,
       transparent: true,
-      opacity: 0.90,
-      side: THREE.DoubleSide
+      opacity: 0.9,
+      side: THREE.DoubleSide,
     });
 
     const waterMesh = new THREE.Mesh(waterGeometry, waterMaterial);
@@ -831,7 +891,7 @@ export default function IzmirTransit3DStory() {
 
     // Subtle glowing cyan grid overlay on water
     const waterGrid = new THREE.GridHelper(50, 30, 0x00f3ff, 0x075985);
-    waterGrid.position.set(-3, -0.10, 0); // slightly raised
+    waterGrid.position.set(-3, -0.1, 0); // slightly raised
     (waterGrid.material as THREE.Material).transparent = true;
     (waterGrid.material as THREE.Material).opacity = 0.32; // more visible
     scene.add(waterGrid);
@@ -843,14 +903,38 @@ export default function IzmirTransit3DStory() {
     // ========================================================================
     //  10. TRANSIT STATIONS  –  All real stations from GPS data
     // ========================================================================
-    const ALL_STATION_DATA: { name: string; pos: THREE.Vector3; category: string }[] = [
-      ...METRO_STATIONS.map((s) => ({ name: s.name, pos: geoToScene(s.lat, s.lng, s.y), category: "Metro" })),
-      ...IZBAN_STATIONS.map((s) => ({ name: s.name, pos: geoToScene(s.lat, s.lng, s.y), category: "Izban (Train)" })),
-      ...KONAK_TRAM_STOPS.map((s) => ({ name: s.name, pos: geoToScene(s.lat, s.lng, s.y), category: "Tramvay" })),
-      ...KARSIYAKA_TRAM_STOPS.map((s) => ({ name: s.name, pos: geoToScene(s.lat, s.lng, s.y), category: "Tramvay" })),
+    const ALL_STATION_DATA: {
+      name: string;
+      pos: THREE.Vector3;
+      category: string;
+    }[] = [
+      ...METRO_STATIONS.map((s) => ({
+        name: s.name,
+        pos: geoToScene(s.lat, s.lng, s.y),
+        category: "Metro",
+      })),
+      ...IZBAN_STATIONS.map((s) => ({
+        name: s.name,
+        pos: geoToScene(s.lat, s.lng, s.y),
+        category: "Izban (Train)",
+      })),
+      ...KONAK_TRAM_STOPS.map((s) => ({
+        name: s.name,
+        pos: geoToScene(s.lat, s.lng, s.y),
+        category: "Tramvay",
+      })),
+      ...KARSIYAKA_TRAM_STOPS.map((s) => ({
+        name: s.name,
+        pos: geoToScene(s.lat, s.lng, s.y),
+        category: "Tramvay",
+      })),
     ];
 
-    const stationMeshes: { mesh: THREE.Mesh; category: string; material: THREE.MeshBasicMaterial }[] = [];
+    const stationMeshes: {
+      mesh: THREE.Mesh;
+      category: string;
+      material: THREE.MeshBasicMaterial;
+    }[] = [];
     const stationGroup = new THREE.Group();
 
     ALL_STATION_DATA.forEach((st) => {
@@ -859,7 +943,7 @@ export default function IzmirTransit3DStory() {
       const mat = new THREE.MeshBasicMaterial({
         color: getModeColor(st.category),
         transparent: true,
-        opacity: 0.60,
+        opacity: 0.6,
         side: THREE.DoubleSide,
       });
       const mesh = new THREE.Mesh(geo, mat);
@@ -917,7 +1001,13 @@ export default function IzmirTransit3DStory() {
     // ========================================================================
     //  10. FERRY PIER RIPPLE RINGS
     // ========================================================================
-    const rippleMeshes: { mesh: THREE.Mesh; material: THREE.MeshBasicMaterial; scale: number; maxScale: number; speed: number }[] = [];
+    const rippleMeshes: {
+      mesh: THREE.Mesh;
+      material: THREE.MeshBasicMaterial;
+      scale: number;
+      maxScale: number;
+      speed: number;
+    }[] = [];
 
     FERRY_PIERS.forEach((pier) => {
       const pierPos = geoToScene(pier.lat, pier.lng, 0.01);
@@ -949,7 +1039,13 @@ export default function IzmirTransit3DStory() {
     // ========================================================================
     //  11. TRANSIT TRACK DEFINITIONS  –  Real geographic paths
     // ========================================================================
-    const trackDefinitions: { category: string; curve: THREE.CatmullRomCurve3; color: THREE.Color; weight: number; numStations: number }[] = [];
+    const trackDefinitions: {
+      category: string;
+      curve: THREE.CatmullRomCurve3;
+      color: THREE.Color;
+      weight: number;
+      numStations: number;
+    }[] = [];
 
     const metroPath = METRO_STATIONS.map((s) => geoToScene(s.lat, s.lng, s.y));
     trackDefinitions.push({
@@ -969,7 +1065,9 @@ export default function IzmirTransit3DStory() {
       numStations: IZBAN_STATIONS.length,
     });
 
-    const konakTramPath = KONAK_TRAM_STOPS.map((s) => geoToScene(s.lat, s.lng, s.y));
+    const konakTramPath = KONAK_TRAM_STOPS.map((s) =>
+      geoToScene(s.lat, s.lng, s.y),
+    );
     trackDefinitions.push({
       category: "Tramvay",
       curve: new THREE.CatmullRomCurve3(konakTramPath),
@@ -978,7 +1076,9 @@ export default function IzmirTransit3DStory() {
       numStations: KONAK_TRAM_STOPS.length,
     });
 
-    const karsiyakaTramPath = KARSIYAKA_TRAM_STOPS.map((s) => geoToScene(s.lat, s.lng, s.y));
+    const karsiyakaTramPath = KARSIYAKA_TRAM_STOPS.map((s) =>
+      geoToScene(s.lat, s.lng, s.y),
+    );
     trackDefinitions.push({
       category: "Tramvay",
       curve: new THREE.CatmullRomCurve3(karsiyakaTramPath),
@@ -987,7 +1087,9 @@ export default function IzmirTransit3DStory() {
       numStations: KARSIYAKA_TRAM_STOPS.length,
     });
 
-    const pierMap = new Map(FERRY_PIERS.map((p) => [p.name, geoToScene(p.lat, p.lng, 0.01)]));
+    const pierMap = new Map(
+      FERRY_PIERS.map((p) => [p.name, geoToScene(p.lat, p.lng, 0.01)]),
+    );
     FERRY_ROUTES.forEach(([fromName, toName]) => {
       const fromPos = pierMap.get(fromName);
       const toPos = pierMap.get(toName);
@@ -995,11 +1097,7 @@ export default function IzmirTransit3DStory() {
 
       const midX = (fromPos.x + toPos.x) / 2;
       const midZ = (fromPos.z + toPos.z) / 2;
-      const arcMid = new THREE.Vector3(
-        midX * 0.7,
-        0.01,
-        midZ * 0.7 - 0.5,
-      );
+      const arcMid = new THREE.Vector3(midX * 0.7, 0.01, midZ * 0.7 - 0.5);
 
       trackDefinitions.push({
         category: "Ferry (Izdeniz)",
@@ -1089,7 +1187,7 @@ export default function IzmirTransit3DStory() {
               emissive: emissiveColor,
               roughness: 0.2,
               metalness: 0.8,
-            })
+            }),
           );
 
           // Glowing passenger window stripes on the sides
@@ -1105,9 +1203,9 @@ export default function IzmirTransit3DStory() {
             const lightGeo = new THREE.BoxGeometry(0.04, 0.04, 0.04);
             const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
             const leftLight = new THREE.Mesh(lightGeo, lightMat);
-            leftLight.position.set(0.20, 0.01, 0.03);
+            leftLight.position.set(0.2, 0.01, 0.03);
             const rightLight = new THREE.Mesh(lightGeo, lightMat);
-            rightLight.position.set(0.20, 0.01, -0.03);
+            rightLight.position.set(0.2, 0.01, -0.03);
             trainMesh.add(leftLight, rightLight);
 
             // Add glowing headlight cone pointing forward
@@ -1127,11 +1225,13 @@ export default function IzmirTransit3DStory() {
 
           if (c === numCarriages - 1) {
             const tailLightGeo = new THREE.BoxGeometry(0.02, 0.03, 0.03);
-            const tailLightMat = new THREE.MeshBasicMaterial({ color: 0xff3333 });
+            const tailLightMat = new THREE.MeshBasicMaterial({
+              color: 0xff3333,
+            });
             const leftTail = new THREE.Mesh(tailLightGeo, tailLightMat);
-            leftTail.position.set(-0.20, 0.01, 0.03);
+            leftTail.position.set(-0.2, 0.01, 0.03);
             const rightTail = new THREE.Mesh(tailLightGeo, tailLightMat);
-            rightTail.position.set(-0.20, 0.01, -0.03);
+            rightTail.position.set(-0.2, 0.01, -0.03);
             trainMesh.add(leftTail, rightTail);
           }
 
@@ -1153,30 +1253,50 @@ export default function IzmirTransit3DStory() {
         if (def.category === "Tramvay") {
           const segment1 = new THREE.Mesh(
             new THREE.BoxGeometry(0.24, 0.09, 0.08),
-            new THREE.MeshStandardMaterial({ color: bodyColor, emissive: emissiveColor, roughness: 0.2 })
+            new THREE.MeshStandardMaterial({
+              color: bodyColor,
+              emissive: emissiveColor,
+              roughness: 0.2,
+            }),
           );
           segment1.position.x = 0.13;
 
           const segment2 = new THREE.Mesh(
             new THREE.BoxGeometry(0.24, 0.09, 0.08),
-            new THREE.MeshStandardMaterial({ color: bodyColor, emissive: emissiveColor, roughness: 0.2 })
+            new THREE.MeshStandardMaterial({
+              color: bodyColor,
+              emissive: emissiveColor,
+              roughness: 0.2,
+            }),
           );
           segment2.position.x = -0.13;
 
           // Glowing windows for tram segments
           const winMat = new THREE.MeshBasicMaterial({ color: 0xe0f2fe });
-          const win1 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.02, 0.084), winMat);
+          const win1 = new THREE.Mesh(
+            new THREE.BoxGeometry(0.18, 0.02, 0.084),
+            winMat,
+          );
           win1.position.set(0, 0.01, 0);
           segment1.add(win1);
 
-          const win2 = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.02, 0.084), winMat);
+          const win2 = new THREE.Mesh(
+            new THREE.BoxGeometry(0.18, 0.02, 0.084),
+            winMat,
+          );
           win2.position.set(0, 0.01, 0);
           segment2.add(win2);
 
           // Headlights and beam on lead segment
-          const leftLight = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+          const leftLight = new THREE.Mesh(
+            new THREE.BoxGeometry(0.03, 0.03, 0.03),
+            new THREE.MeshBasicMaterial({ color: 0xffffff }),
+          );
           leftLight.position.set(0.12, 0.01, 0.03);
-          const rightLight = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+          const rightLight = new THREE.Mesh(
+            new THREE.BoxGeometry(0.03, 0.03, 0.03),
+            new THREE.MeshBasicMaterial({ color: 0xffffff }),
+          );
           rightLight.position.set(0.12, 0.01, -0.03);
           segment1.add(leftLight, rightLight);
 
@@ -1196,66 +1316,92 @@ export default function IzmirTransit3DStory() {
           vehicleGroup.add(segment1, segment2);
         } else if (def.category === "Bus (Eshot, Izulas, etc.)") {
           const busMesh = new THREE.Mesh(
-            new THREE.BoxGeometry(0.26, 0.13, 0.10),
-            new THREE.MeshStandardMaterial({ color: bodyColor, emissive: emissiveColor, roughness: 0.4 })
+            new THREE.BoxGeometry(0.26, 0.13, 0.1),
+            new THREE.MeshStandardMaterial({
+              color: bodyColor,
+              emissive: emissiveColor,
+              roughness: 0.4,
+            }),
           );
 
           // Glowing side windows
           const winMat = new THREE.MeshBasicMaterial({ color: 0xfef08a }); // warm yellow light for bus windows
-          const windows = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.03, 0.104), winMat);
+          const windows = new THREE.Mesh(
+            new THREE.BoxGeometry(0.2, 0.03, 0.104),
+            winMat,
+          );
           windows.position.set(0, 0.02, 0);
           busMesh.add(windows);
 
           // Headlights
-          const leftLight = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+          const leftLight = new THREE.Mesh(
+            new THREE.BoxGeometry(0.03, 0.03, 0.03),
+            new THREE.MeshBasicMaterial({ color: 0xffffff }),
+          );
           leftLight.position.set(0.13, -0.01, 0.03);
-          const rightLight = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+          const rightLight = new THREE.Mesh(
+            new THREE.BoxGeometry(0.03, 0.03, 0.03),
+            new THREE.MeshBasicMaterial({ color: 0xffffff }),
+          );
           rightLight.position.set(0.13, -0.01, -0.03);
           busMesh.add(leftLight, rightLight);
 
           // Red taillights
-          const leftTail = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xff3333 }));
+          const leftTail = new THREE.Mesh(
+            new THREE.BoxGeometry(0.02, 0.03, 0.03),
+            new THREE.MeshBasicMaterial({ color: 0xff3333 }),
+          );
           leftTail.position.set(-0.13, -0.01, 0.03);
-          const rightTail = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, 0.03), new THREE.MeshBasicMaterial({ color: 0xff3333 }));
+          const rightTail = new THREE.Mesh(
+            new THREE.BoxGeometry(0.02, 0.03, 0.03),
+            new THREE.MeshBasicMaterial({ color: 0xff3333 }),
+          );
           rightTail.position.set(-0.13, -0.01, -0.03);
           busMesh.add(leftTail, rightTail);
 
           vehicleGroup.add(busMesh);
         } else {
           const deck = new THREE.Mesh(
-            new THREE.BoxGeometry(0.50, 0.06, 0.20),
-            new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.5 })
+            new THREE.BoxGeometry(0.5, 0.06, 0.2),
+            new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.5 }),
           );
           deck.position.y = 0.03;
 
           const cabin = new THREE.Mesh(
-            new THREE.BoxGeometry(0.26, 0.10, 0.12),
-            new THREE.MeshStandardMaterial({ color: bodyColor, emissive: emissiveColor, roughness: 0.4 })
+            new THREE.BoxGeometry(0.26, 0.1, 0.12),
+            new THREE.MeshStandardMaterial({
+              color: bodyColor,
+              emissive: emissiveColor,
+              roughness: 0.4,
+            }),
           );
           cabin.position.set(-0.04, 0.11, 0);
 
           // Glowing cabin window stripes
           const winMat = new THREE.MeshBasicMaterial({ color: 0xe0f2fe });
-          const windows = new THREE.Mesh(new THREE.BoxGeometry(0.20, 0.03, 0.124), winMat);
+          const windows = new THREE.Mesh(
+            new THREE.BoxGeometry(0.2, 0.03, 0.124),
+            winMat,
+          );
           windows.position.set(0, 0.01, 0);
           cabin.add(windows);
-          
+
           const chimney = new THREE.Mesh(
             new THREE.CylinderGeometry(0.02, 0.02, 0.08, 8),
-            new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7 })
+            new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.7 }),
           );
           chimney.position.set(-0.12, 0.16, 0);
 
           // Port (Left - Red) and Starboard (Right - Green) navigation lights on deck
           const portLight = new THREE.Mesh(
             new THREE.SphereGeometry(0.02, 8, 8),
-            new THREE.MeshBasicMaterial({ color: 0xff3333 })
+            new THREE.MeshBasicMaterial({ color: 0xff3333 }),
           );
           portLight.position.set(0.15, 0.04, -0.11); // shift to left side
 
           const starboardLight = new THREE.Mesh(
             new THREE.SphereGeometry(0.02, 8, 8),
-            new THREE.MeshBasicMaterial({ color: 0x33ff33 })
+            new THREE.MeshBasicMaterial({ color: 0x33ff33 }),
           );
           starboardLight.position.set(0.15, 0.04, 0.11); // shift to right side
 
@@ -1277,14 +1423,19 @@ export default function IzmirTransit3DStory() {
     // ========================================================================
     //  13B. PROGRAMMATIC CHIMNEY SMOKE PARTICLES
     // ========================================================================
-    const smokeParticles: { mesh: THREE.Mesh; age: number; maxAge: number; vel: THREE.Vector3 }[] = [];
+    const smokeParticles: {
+      mesh: THREE.Mesh;
+      age: number;
+      maxAge: number;
+      vel: THREE.Vector3;
+    }[] = [];
     const smokeGeometry = new THREE.SphereGeometry(0.045, 6, 6);
     const smokeMaterial = new THREE.MeshBasicMaterial({
       color: 0x9ca3af,
       transparent: true,
       opacity: 0.35,
     });
-    
+
     for (let i = 0; i < 20; i++) {
       const mesh = new THREE.Mesh(smokeGeometry, smokeMaterial.clone());
       mesh.visible = false;
@@ -1293,16 +1444,16 @@ export default function IzmirTransit3DStory() {
         mesh,
         age: 0,
         maxAge: 1.2 + Math.random() * 0.4,
-        vel: new THREE.Vector3(0, 0, 0)
+        vel: new THREE.Vector3(0, 0, 0),
       });
     }
-    
+
     let smokeSpawnTimer = 0;
 
     // ========================================================================
     //  14. DYNAMIC PARTICLES WITH DECAYING TRAILS
     // ========================================================================
-    const PARTICLES_PER_SIM = 4; 
+    const PARTICLES_PER_SIM = 4;
     const MAX_SIM_PARTICLES = 500;
     const TOTAL_VERTICES = MAX_SIM_PARTICLES * PARTICLES_PER_SIM;
 
@@ -1319,8 +1470,14 @@ export default function IzmirTransit3DStory() {
     }
 
     const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    particleGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    particleGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(positions, 3),
+    );
+    particleGeometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(colors, 3),
+    );
 
     const createCircleTexture = () => {
       const canvas = document.createElement("canvas");
@@ -1362,7 +1519,7 @@ export default function IzmirTransit3DStory() {
 
     const simParticles: SimParticle[] = [];
     trackDefinitions.forEach((def) => {
-      const capacity = Math.round(75 * def.weight); 
+      const capacity = Math.round(75 * def.weight);
       for (let j = 0; j < capacity; j++) {
         simParticles.push({
           curve: def.curve,
@@ -1397,7 +1554,10 @@ export default function IzmirTransit3DStory() {
       const deltaY = e.clientY - previousPointerY;
 
       targetTheta -= deltaX * 0.0075;
-      targetPhi = Math.max(0.18, Math.min(Math.PI / 2 - 0.05, targetPhi + deltaY * 0.0075));
+      targetPhi = Math.max(
+        0.18,
+        Math.min(Math.PI / 2 - 0.05, targetPhi + deltaY * 0.0075),
+      );
 
       previousPointerX = e.clientX;
       previousPointerY = e.clientY;
@@ -1410,7 +1570,10 @@ export default function IzmirTransit3DStory() {
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
       lastInteractTime = Date.now();
-      targetRadius = Math.max(12, Math.min(65, targetRadius + e.deltaY * 0.035));
+      targetRadius = Math.max(
+        12,
+        Math.min(65, targetRadius + e.deltaY * 0.035),
+      );
     };
 
     const canvasEl = canvasRef.current;
@@ -1430,6 +1593,8 @@ export default function IzmirTransit3DStory() {
       camera.updateProjectionMatrix();
     };
     window.addEventListener("resize", handleResize);
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(containerRef.current);
     handleResize();
 
     // ========================================================================
@@ -1446,7 +1611,7 @@ export default function IzmirTransit3DStory() {
       const time = performance.now();
       const dt = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
-      
+
       const now = Date.now();
 
       // Retrieve reactive state
@@ -1480,7 +1645,12 @@ export default function IzmirTransit3DStory() {
 
       // Smooth environment light lerping based on recovery index
       const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
-      const lerpColor = (c1: THREE.Color, c2: THREE.Color, t: number, outColor: THREE.Color) => {
+      const lerpColor = (
+        c1: THREE.Color,
+        c2: THREE.Color,
+        t: number,
+        outColor: THREE.Color,
+      ) => {
         outColor.r = lerp(c1.r, c2.r, t);
         outColor.g = lerp(c1.g, c2.g, t);
         outColor.b = lerp(c1.b, c2.b, t);
@@ -1540,8 +1710,6 @@ export default function IzmirTransit3DStory() {
         maxVolumeMap[inst] = Math.max(...(transport.series[inst] ?? []), 1);
       });
 
-
-
       // Slow orbit rotation when idle
       if (now - lastInteractTime > 8000 && !isDragging) {
         targetTheta += 0.024 * dt;
@@ -1556,8 +1724,8 @@ export default function IzmirTransit3DStory() {
         const isTubeActive = activeCat === (tube as any).category;
         const tubeMat = tube.material as THREE.MeshStandardMaterial;
         if (isTubeActive) {
-          tubeMat.opacity = 0.90;
-          tubeMat.emissiveIntensity = 2.2; 
+          tubeMat.opacity = 0.9;
+          tubeMat.emissiveIntensity = 2.2;
         } else {
           tubeMat.opacity = isAnyActive ? 0.02 : 0.35;
           tubeMat.emissiveIntensity = isAnyActive ? 0.05 : 0.9;
@@ -1569,7 +1737,7 @@ export default function IzmirTransit3DStory() {
         const dotsMat = dots.material as THREE.PointsMaterial;
         if (isDotsActive) {
           dotsMat.opacity = 0.95;
-          dotsMat.size = 0.38; 
+          dotsMat.size = 0.38;
         } else {
           dotsMat.opacity = isAnyActive ? 0.01 : 0.22;
           dotsMat.size = 0.14;
@@ -1583,7 +1751,10 @@ export default function IzmirTransit3DStory() {
           ripple.scale = 0.1;
         }
         ripple.mesh.scale.set(ripple.scale * 3.6, ripple.scale * 3.6, 1);
-        ripple.material.opacity = Math.max(0, 0.28 * (1 - ripple.scale / ripple.maxScale));
+        ripple.material.opacity = Math.max(
+          0,
+          0.28 * (1 - ripple.scale / ripple.maxScale),
+        );
       });
 
       // Animate/Glow station stops based on activeCategory filter
@@ -1618,13 +1789,16 @@ export default function IzmirTransit3DStory() {
         } else if (vehicle.category === "Bus (Eshot, Izulas, etc.)") {
           yOffset = 0.08;
         } else if (vehicle.category === "Metro") {
-          yOffset = 0.08; 
+          yOffset = 0.08;
         } else if (vehicle.category === "Tramvay") {
           yOffset = 0.04;
         }
 
         // Apply station stopping & dwell progress logic
-        const leadProgress = getStationStoppingProgress(vehicle.progress, vehicle.numStations || 2);
+        const leadProgress = getStationStoppingProgress(
+          vehicle.progress,
+          vehicle.numStations || 2,
+        );
 
         if (vehicle.carriages) {
           // Animate multi-carriage trains winding smoothly
@@ -1649,11 +1823,14 @@ export default function IzmirTransit3DStory() {
           const targetPos = tempV3.clone().add(tangent);
           vehicle.mesh.lookAt(targetPos);
           vehicle.mesh.visible = !isDimmed;
-          
+
           if (vehicle.category === "Ferry (Izdeniz)") {
-            const beacon = vehicle.mesh.children.find(child => child instanceof THREE.PointLight);
+            const beacon = vehicle.mesh.children.find(
+              (child) => child instanceof THREE.PointLight,
+            );
             if (beacon) {
-              (beacon as THREE.PointLight).intensity = Math.sin(now * 0.01) > 0 ? 1.5 : 0;
+              (beacon as THREE.PointLight).intensity =
+                Math.sin(now * 0.01) > 0 ? 1.5 : 0;
             }
           }
         }
@@ -1664,20 +1841,25 @@ export default function IzmirTransit3DStory() {
       if (smokeSpawnTimer > 0.12) {
         smokeSpawnTimer = 0;
         activeVehicles.forEach((vehicle) => {
-          if (vehicle.category === "Ferry (Izdeniz)" && vehicle.mesh && vehicle.mesh.visible) {
-            const particle = smokeParticles.find(p => !p.mesh.visible);
+          if (
+            vehicle.category === "Ferry (Izdeniz)" &&
+            vehicle.mesh &&
+            vehicle.mesh.visible
+          ) {
+            const particle = smokeParticles.find((p) => !p.mesh.visible);
             if (particle) {
-              const pos = new THREE.Vector3(-0.12, 0.16, 0); 
-              pos.applyMatrix4(vehicle.mesh.matrixWorld); 
+              const pos = new THREE.Vector3(-0.12, 0.16, 0);
+              pos.applyMatrix4(vehicle.mesh.matrixWorld);
               particle.mesh.position.copy(pos);
               particle.mesh.scale.setScalar(1.0);
-              (particle.mesh.material as THREE.MeshBasicMaterial).opacity = 0.35;
+              (particle.mesh.material as THREE.MeshBasicMaterial).opacity =
+                0.35;
               particle.mesh.visible = true;
               particle.age = 0;
               particle.vel.set(
                 (Math.random() - 0.5) * 0.15,
-                0.6 + Math.random() * 0.3, 
-                (Math.random() - 0.5) * 0.15
+                0.6 + Math.random() * 0.3,
+                (Math.random() - 0.5) * 0.15,
               );
             }
           }
@@ -1692,20 +1874,23 @@ export default function IzmirTransit3DStory() {
           } else {
             const ratio = p.age / p.maxAge;
             p.mesh.position.addScaledVector(p.vel, dt);
-            p.mesh.scale.setScalar(1.0 + ratio * 2.2); 
-            (p.mesh.material as THREE.MeshBasicMaterial).opacity = 0.35 * (1.0 - ratio); 
+            p.mesh.scale.setScalar(1.0 + ratio * 2.2);
+            (p.mesh.material as THREE.MeshBasicMaterial).opacity =
+              0.35 * (1.0 - ratio);
           }
         }
       });
 
       // Copy lead positions to moving spotlights
-      const metroTrain = activeVehicles.find(v => v.category === "Metro");
+      const metroTrain = activeVehicles.find((v) => v.category === "Metro");
       if (metroTrain && metroTrain.carriages && metroTrain.carriages[0]) {
         metroLight.position.copy(metroTrain.carriages[0].position);
         metroLight.position.y += 0.2;
         metroLight.visible = metroTrain.carriages[0].visible;
       }
-      const ferryBoat = activeVehicles.find(v => v.category === "Ferry (Izdeniz)");
+      const ferryBoat = activeVehicles.find(
+        (v) => v.category === "Ferry (Izdeniz)",
+      );
       if (ferryBoat && ferryBoat.mesh) {
         ferryLight.position.copy(ferryBoat.mesh.position);
         ferryLight.position.y += 0.2;
@@ -1713,8 +1898,10 @@ export default function IzmirTransit3DStory() {
       }
 
       // Animate and render active particles with trailing ribbons
-      const posAttr = particleGeometry.attributes.position as THREE.BufferAttribute;
-      const colAttr = particleGeometry.attributes.color as THREE.BufferAttribute;
+      const posAttr = particleGeometry.attributes
+        .position as THREE.BufferAttribute;
+      const colAttr = particleGeometry.attributes
+        .color as THREE.BufferAttribute;
       const posArr = posAttr.array as Float32Array;
       const colArr = colAttr.array as Float32Array;
 
@@ -1725,21 +1912,27 @@ export default function IzmirTransit3DStory() {
         const baseline = transport.series[particle.category]?.[0] ?? 1;
         const maxVol = maxVolumeMap[particle.category] || 1;
 
-        const isModeDimmed = activeCat !== null && activeCat !== particle.category;
+        const isModeDimmed =
+          activeCat !== null && activeCat !== particle.category;
         const indexVal = baseline > 0 ? (val / baseline) * 100 : 0;
 
-        const particlesPerTrack = Math.round(MAX_SIM_PARTICLES * 0.12 * particle.weight);
+        const particlesPerTrack = Math.round(
+          MAX_SIM_PARTICLES * 0.12 * particle.weight,
+        );
         const activeCountForThisTrack = Math.max(
           2,
-          Math.round(particlesPerTrack * (val / maxVol))
+          Math.round(particlesPerTrack * (val / maxVol)),
         );
 
         const trackSubIndex = pIdx % particlesPerTrack;
         const isActive = trackSubIndex < activeCountForThisTrack;
 
-        if (isActive && activeParticleIndex < TOTAL_VERTICES - PARTICLES_PER_SIM) {
+        if (
+          isActive &&
+          activeParticleIndex < TOTAL_VERTICES - PARTICLES_PER_SIM
+        ) {
           const speedMultiplier = Math.max(0.3, Math.min(2.5, indexVal / 100));
-          
+
           particle.progress += dt * particle.speed * speedMultiplier;
           if (particle.progress > 1.0) particle.progress -= 1.0;
 
@@ -1807,15 +2000,22 @@ export default function IzmirTransit3DStory() {
         const containerW = renderer.domElement.clientWidth || width;
         const containerH = renderer.domElement.clientHeight || height;
 
-        const occupiedBoxes: { x1: number; y1: number; x2: number; y2: number }[] = [];
+        const occupiedBoxes: {
+          x1: number;
+          y1: number;
+          x2: number;
+          y2: number;
+        }[] = [];
 
         // Sort HUBS by priority (Major hubs take precedence over landmarks)
-        const sortedHubs = HUBS.map((hub, index) => ({ hub, originalIndex: index }))
-          .sort((a, b) => {
-            const prioA = a.hub.kind === "hub" ? 1 : 2;
-            const prioB = b.hub.kind === "hub" ? 1 : 2;
-            return prioA - prioB;
-          });
+        const sortedHubs = HUBS.map((hub, index) => ({
+          hub,
+          originalIndex: index,
+        })).sort((a, b) => {
+          const prioA = a.hub.kind === "hub" ? 1 : 2;
+          const prioB = b.hub.kind === "hub" ? 1 : 2;
+          return prioA - prioB;
+        });
 
         sortedHubs.forEach(({ hub, originalIndex }) => {
           const el = labels[originalIndex] as HTMLElement;
@@ -1835,8 +2035,8 @@ export default function IzmirTransit3DStory() {
           const ly = (-(tempProjectV.y * 0.5) + 0.5) * containerH;
 
           // Estimate label dimensions for overlap checking
-          const labelW = hub.short.length * 7 + 60; 
-          const labelH = 34; 
+          const labelW = hub.short.length * 7 + 60;
+          const labelH = 34;
 
           const x1 = lx - labelW / 2;
           const y1 = ly - labelH / 2;
@@ -1846,14 +2046,24 @@ export default function IzmirTransit3DStory() {
           let hasOverlap = false;
           for (const box of occupiedBoxes) {
             const margin = 6;
-            if (!(x2 + margin < box.x1 || x1 - margin > box.x2 || y2 + margin < box.y1 || y1 - margin > box.y2)) {
+            if (!(
+              x2 + margin < box.x1 ||
+              x1 - margin > box.x2 ||
+              y2 + margin < box.y1 ||
+              y1 - margin > box.y2
+            )) {
               hasOverlap = true;
               break;
             }
           }
 
           // Bound check edges of screen
-          if (lx < 40 || lx > containerW - 40 || ly < 40 || ly > containerH - 40) {
+          if (
+            lx < 40 ||
+            lx > containerW - 40 ||
+            ly < 40 ||
+            ly > containerH - 40
+          ) {
             hasOverlap = true;
           }
 
@@ -1861,13 +2071,27 @@ export default function IzmirTransit3DStory() {
           const isCategorySelected = activeCat !== null;
           let shouldHideByFilter = false;
           if (isCategorySelected) {
-            if (activeCat === "Metro" && hub.name !== "Konak Hub" && hub.name !== "Halkapınar Hub" && hub.name !== "Bornova") {
+            if (
+              activeCat === "Metro" &&
+              hub.name !== "Konak Hub" &&
+              hub.name !== "Halkapınar Hub" &&
+              hub.name !== "Bornova"
+            ) {
               shouldHideByFilter = true;
             }
-            if (activeCat === "Ferry (Izdeniz)" && hub.name !== "Konak Hub" && hub.name !== "Bostanlı" && hub.name !== "Karşıyaka") {
+            if (
+              activeCat === "Ferry (Izdeniz)" &&
+              hub.name !== "Konak Hub" &&
+              hub.name !== "Bostanlı" &&
+              hub.name !== "Karşıyaka"
+            ) {
               shouldHideByFilter = true;
             }
-            if (activeCat === "Izban (Train)" && hub.name !== "Halkapınar Hub" && hub.name !== "Bornova") {
+            if (
+              activeCat === "Izban (Train)" &&
+              hub.name !== "Halkapınar Hub" &&
+              hub.name !== "Bornova"
+            ) {
               shouldHideByFilter = true;
             }
           }
@@ -1893,6 +2117,7 @@ export default function IzmirTransit3DStory() {
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
       if (canvasEl) {
         canvasEl.removeEventListener("pointerdown", onPointerDown);
         canvasEl.removeEventListener("pointermove", onPointerMove);
@@ -1912,14 +2137,14 @@ export default function IzmirTransit3DStory() {
       scene.remove(northGlowLine);
       scene.remove(southGlowLine);
       scene.remove(particlePoints);
-      
+
       scene.remove(landmarkGroup);
       scene.remove(metroLight);
       scene.remove(ferryLight);
-      
+
       rippleMeshes.forEach((r) => scene.remove(r.mesh));
       smokeParticles.forEach((p) => scene.remove(p.mesh));
-      
+
       activeVehicles.forEach((vehicle) => {
         if (vehicle.mesh) scene.remove(vehicle.mesh);
         if (vehicle.carriages) {
@@ -1967,8 +2192,6 @@ export default function IzmirTransit3DStory() {
         ((child as THREE.Mesh).material as THREE.Material).dispose();
       });
 
-
-
       rippleMeshes.forEach((ripple) => {
         ripple.mesh.geometry.dispose();
         ripple.material.dispose();
@@ -1995,7 +2218,8 @@ export default function IzmirTransit3DStory() {
           });
         }
       });
-    };  }, []);
+    };
+  }, []);
 
   return (
     <ArticleChartFrame
@@ -2017,30 +2241,34 @@ export default function IzmirTransit3DStory() {
       footer={
         <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
           <div className="viz-note text-xs text-muted-foreground">
-            * The scene is an analytical abstraction of İzmir's public transport recovery.
-            Particle density follows absolute trips, particle speed follows the January 2021 recovery index,
-            and place labels anchor the story around İzmir Körfezi.
+            * The scene is an analytical abstraction of İzmir's public transport
+            recovery. Particle density follows absolute trips, particle speed
+            follows the January 2021 recovery index, and place labels anchor the
+            story around İzmir Körfezi.
           </div>
           <div className="text-[11px] uppercase tracking-[0.16em] text-muted-foreground bg-white/[0.04] px-2.5 py-1 rounded-full border border-white/[0.06]">
             Konak · Kordon · Karşıyaka · Bostanlı · Kadifekale
           </div>
         </div>
       }
-      className="xl:max-w-[1320px] 2xl:max-w-[1420px] mx-auto transition-all duration-300"
+      className="transit-story-frame mx-auto box-border w-full max-w-full [contain:inline-size] transition-all duration-300 xl:max-w-[1320px] 2xl:max-w-[1420px]"
+      bodyClassName="min-w-0 max-w-full"
     >
       <div className="space-y-6">
         {/* Three.js viewport */}
         <div
           ref={containerRef}
           className={`relative overflow-hidden border border-white/[0.07] bg-black/40 shadow-inner group transition-all duration-300 ${
-            isFullscreen ? "w-screen h-screen rounded-none border-none" : "rounded-2xl"
+            isFullscreen
+              ? "w-screen h-screen rounded-none border-none"
+              : "rounded-2xl"
           }`}
           style={
             isFullscreen
               ? { height: "100vh" }
               : isMobile
-              ? { height: "400px" }
-              : { height: "700px" }
+                ? { height: "clamp(350px, 58svh, 480px)" }
+                : { height: "700px" }
           }
         >
           <canvas
@@ -2101,10 +2329,22 @@ export default function IzmirTransit3DStory() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7af298] opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7af298]"></span>
                   </span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7af298]">Milestone Event</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7af298]">
+                    Milestone Event
+                  </span>
                 </div>
-                <h4 className="mt-1.5 text-sm font-semibold text-foreground">{activeMilestone.title}</h4>
-                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{activeMilestone.desc}</p>
+                <h4
+                  className="mt-1.5 text-sm font-semibold"
+                  style={{ color: "#f8fafc" }}
+                >
+                  {activeMilestone.title}
+                </h4>
+                <p
+                  className="mt-1 text-xs leading-relaxed"
+                  style={{ color: "#cbd5e1" }}
+                >
+                  {activeMilestone.desc}
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
@@ -2113,13 +2353,23 @@ export default function IzmirTransit3DStory() {
           {!hasInteracted && (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/25 pointer-events-none z-10 transition-opacity duration-500 animate-pulse">
               <div className="flex flex-col items-center gap-2.5 bg-[#09090b]/90 border border-white/[0.08] px-5 py-3 rounded-2xl backdrop-blur-md shadow-2xl">
-                <svg className="animate-bounce text-[#7af298]" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  className="animate-bounce text-[#7af298]"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M15 18H9.5a5.5 5.5 0 0 1-5.5-5.5v0A5.5 5.5 0 0 1 9.5 7H15" />
                   <path d="M15 6v12" />
                   <path d="M18 9l-3-3-3 3" />
                   <path d="M18 15l-3 3-3-3" />
                 </svg>
-                <span className="text-[10px] text-foreground font-semibold uppercase tracking-wider">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-[#f8fafc]">
                   Drag across İzmir Körfezi
                 </span>
                 <span className="text-[8px] text-zinc-500">
@@ -2135,15 +2385,33 @@ export default function IzmirTransit3DStory() {
             <button
               type="button"
               onClick={toggleFullscreen}
-              className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] text-zinc-400 hover:text-white hover:bg-white/[0.04] transition-all duration-200 shadow-lg active:scale-95 cursor-pointer"
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/[0.08] bg-[#09090b]/85 text-zinc-400 shadow-lg backdrop-blur-md transition-all duration-200 hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] active:scale-95 cursor-pointer"
               aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
             >
               {isFullscreen ? (
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M10 14l-7 7" />
                 </svg>
               ) : (
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
                   <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3M10 21v-6H4M14 3v6h6" />
                 </svg>
               )}
@@ -2154,7 +2422,7 @@ export default function IzmirTransit3DStory() {
               <span className="text-[8px] sm:text-[9px] font-semibold uppercase tracking-[0.16em] text-[#7af298] block">
                 {monthLabel} Total
               </span>
-              <span className="text-base sm:text-xl font-display font-bold text-foreground block mt-0.5">
+              <span className="mt-0.5 block font-display text-base font-bold text-[#f8fafc] sm:text-xl">
                 {formatCompactNumber(totalTrips, "en-US")}
               </span>
               {leadingMode && (
@@ -2183,7 +2451,7 @@ export default function IzmirTransit3DStory() {
                         {mix.label}
                       </span>
                     </div>
-                    <span className="text-[9px] font-semibold text-foreground tabular-nums shrink-0 ml-1">
+                    <span className="ml-1 shrink-0 text-[9px] font-semibold tabular-nums text-[#f8fafc]">
                       {(mix.share * 100).toFixed(0)}%
                     </span>
                   </div>
@@ -2216,12 +2484,17 @@ export default function IzmirTransit3DStory() {
               </div>
               <div className="flex items-center justify-between mt-1.5">
                 {demographicMix.slice(0, 3).map((mix) => (
-                  <div key={`legend-${mix.group}`} className="flex items-center gap-1">
+                  <div
+                    key={`legend-${mix.group}`}
+                    className="flex items-center gap-1"
+                  >
                     <span
                       className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: mix.color }}
                     />
-                    <span className="text-[7px] text-muted-foreground leading-none">{mix.label}</span>
+                    <span className="text-[7px] text-muted-foreground leading-none">
+                      {mix.label}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -2235,7 +2508,8 @@ export default function IzmirTransit3DStory() {
                   İzmir Bay Layers
                 </p>
                 <p className="mt-1 text-[10px] leading-snug text-zinc-400">
-                  Follow the gulf, rail spine, ferries, and coastal tram corridors.
+                  Follow the gulf, rail spine, ferries, and coastal tram
+                  corridors.
                 </p>
               </div>
               <span className="rounded-full border border-[#f7a85b]/25 bg-[#f7a85b]/10 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.14em] text-[#f7a85b]">
@@ -2245,21 +2519,25 @@ export default function IzmirTransit3DStory() {
 
             <div className="mt-3 space-y-1">
               {modeUi.map((item) => {
-                const isItemDimmed = activeCategory !== null && activeCategory !== item.key;
+                const isItemDimmed =
+                  activeCategory !== null && activeCategory !== item.key;
                 const isItemActive = activeCategory === item.key;
 
                 return (
                   <button
                     key={item.key}
                     type="button"
+                    aria-pressed={isItemActive}
                     onClick={() =>
                       setActiveCategory((current) =>
                         current === item.key ? null : item.key,
                       )
                     }
-                    className="group/mode flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left transition-all duration-200 hover:bg-white/[0.05]"
+                    className="group/mode flex min-h-11 w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left transition-all duration-200 hover:bg-white/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298]"
                     style={{
-                      background: isItemActive ? `${item.color}14` : "transparent",
+                      background: isItemActive
+                        ? `${item.color}14`
+                        : "transparent",
                       opacity: isItemDimmed ? 0.45 : 1,
                     }}
                   >
@@ -2268,7 +2546,7 @@ export default function IzmirTransit3DStory() {
                       <div className="min-w-0">
                         <div
                           className={`text-[10px] font-semibold leading-tight ${
-                            isItemActive ? "text-white" : "text-zinc-300"
+                            isItemActive ? "text-[#f8fafc]" : "text-zinc-300"
                           }`}
                         >
                           {item.label}
@@ -2281,7 +2559,9 @@ export default function IzmirTransit3DStory() {
 
                     <span
                       className={`text-[8px] font-bold uppercase tracking-[0.12em] ${
-                        isItemActive ? "text-[#7af298]" : "text-zinc-600 group-hover/mode:text-zinc-400"
+                        isItemActive
+                          ? "text-[#7af298]"
+                          : "text-zinc-600 group-hover/mode:text-zinc-400"
                       }`}
                     >
                       {isItemActive ? "Focus" : "View"}
@@ -2296,16 +2576,28 @@ export default function IzmirTransit3DStory() {
           {selectedModeDetails && (
             <div className="absolute top-44 left-4 hidden md:block w-60 bg-[#09090b]/92 backdrop-blur-md border border-white/[0.08] p-3.5 rounded-xl shadow-xl z-10 text-left pointer-events-auto transition-all duration-300">
               <div className="flex items-center justify-between">
-                <span className="text-[9px] font-bold uppercase tracking-[0.16em]" style={{ color: selectedModeDetails.color }}>
+                <span
+                  className="text-[9px] font-bold uppercase tracking-[0.16em]"
+                  style={{ color: selectedModeDetails.color }}
+                >
                   {selectedModeDetails.name} Details
                 </span>
                 <button
                   type="button"
                   onClick={() => setActiveCategory(null)}
-                  className="text-zinc-500 hover:text-white transition-colors duration-150 cursor-pointer"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg text-zinc-500 transition-colors duration-150 hover:bg-white/[0.05] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] cursor-pointer"
                   aria-label="Clear filter"
                 >
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="10"
+                    height="10"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <line x1="18" y1="6" x2="6" y2="18"></line>
                     <line x1="6" y1="6" x2="18" y2="18"></line>
                   </svg>
@@ -2313,12 +2605,26 @@ export default function IzmirTransit3DStory() {
               </div>
               <div className="mt-2">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold font-display text-white">{selectedModeDetails.value}</span>
-                  <span className="text-[8px] text-muted-foreground">trips this month</span>
+                  <span className="font-display text-xl font-bold text-[#f8fafc]">
+                    {selectedModeDetails.value}
+                  </span>
+                  <span className="text-[8px] text-muted-foreground">
+                    trips this month
+                  </span>
                 </div>
                 <div className="mt-2 flex items-center justify-between">
-                  <span className="text-[8px] text-muted-foreground">Baseline Recovery:</span>
-                  <span className="text-xs font-bold font-display" style={{ color: selectedModeDetails.recovery >= 100 ? "#7af298" : "#f4b76e" }}>
+                  <span className="text-[8px] text-muted-foreground">
+                    Baseline Recovery:
+                  </span>
+                  <span
+                    className="text-xs font-bold font-display"
+                    style={{
+                      color:
+                        selectedModeDetails.recovery >= 100
+                          ? "#7af298"
+                          : "#f4b76e",
+                    }}
+                  >
                     {selectedModeDetails.recovery}%
                   </span>
                 </div>
@@ -2339,15 +2645,29 @@ export default function IzmirTransit3DStory() {
             </div>
           )}
 
-
-
           {/* İzmir geographic context strip */}
           <div className="absolute bottom-[88px] left-4 right-4 z-10 hidden lg:flex items-center justify-between gap-3 pointer-events-none">
             {[
-              { label: "Konak", detail: "historic hub", color: IZMIR_THEME.sunset },
-              { label: "Kordon", detail: "waterfront edge", color: IZMIR_THEME.bayGlow },
-              { label: "Karşıyaka", detail: "north shore", color: IZMIR_THEME.bougainvillea },
-              { label: "Kadifekale", detail: "hill contour", color: IZMIR_THEME.limestone },
+              {
+                label: "Konak",
+                detail: "historic hub",
+                color: IZMIR_THEME.sunset,
+              },
+              {
+                label: "Kordon",
+                detail: "waterfront edge",
+                color: IZMIR_THEME.bayGlow,
+              },
+              {
+                label: "Karşıyaka",
+                detail: "north shore",
+                color: IZMIR_THEME.bougainvillea,
+              },
+              {
+                label: "Kadifekale",
+                detail: "hill contour",
+                color: IZMIR_THEME.limestone,
+              },
             ].map((item) => (
               <div
                 key={item.label}
@@ -2380,290 +2700,382 @@ export default function IzmirTransit3DStory() {
 
         {/* Mobile Tabbed Panel (Visible only on mobile/tablet) */}
         <div className="block md:hidden space-y-4">
-            {/* Milestone Event Overlay (Header) */}
-            {activeMilestone && (
-              <motion.div
-                key={`mobile-milestone-${activeMilestone.title}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-[#09090b]/80 border border-white/[0.08] p-4 rounded-2xl shadow-lg backdrop-blur-md"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7af298] opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7af298]"></span>
-                  </span>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7af298]">Milestone Event</span>
-                </div>
-                <h4 className="mt-1.5 text-sm font-semibold text-white">{activeMilestone.title}</h4>
-                <p className="mt-1 text-xs text-zinc-400 leading-relaxed">{activeMilestone.desc}</p>
-              </motion.div>
-            )}
-
-            {/* Tabbed Card */}
-            <div className="bg-[#09090b]/80 border border-white/[0.08] rounded-2xl p-4 shadow-lg backdrop-blur-md">
-              {/* Tabs Header */}
-              <div className="flex p-1 bg-white/[0.03] rounded-xl border border-white/[0.05] mb-4">
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("layers")}
-                  className={`flex-1 py-2 text-center text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
-                    activeTab === "layers"
-                      ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
-                      : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  Bay Layers
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("demographics")}
-                  className={`flex-1 py-2 text-center text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
-                    activeTab === "demographics"
-                      ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
-                      : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  Demographics
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("details")}
-                  className={`flex-1 py-2 text-center text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer ${
-                    activeTab === "details"
-                      ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
-                      : "text-zinc-400 hover:text-white"
-                  }`}
-                >
-                  Details
-                </button>
+          {/* Milestone Event Overlay (Header) */}
+          {activeMilestone && (
+            <motion.div
+              key={`mobile-milestone-${activeMilestone.title}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-[#09090b]/80 border border-white/[0.08] p-4 rounded-2xl shadow-lg backdrop-blur-md"
+            >
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7af298] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#7af298]"></span>
+                </span>
+                <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#7af298]">
+                  Milestone Event
+                </span>
               </div>
+              <h4
+                className="mt-1.5 text-sm font-semibold"
+                style={{ color: "#f8fafc" }}
+              >
+                {activeMilestone.title}
+              </h4>
+              <p
+                className="mt-1 text-xs leading-relaxed"
+                style={{ color: "#cbd5e1" }}
+              >
+                {activeMilestone.desc}
+              </p>
+            </motion.div>
+          )}
 
-              {/* Tab Contents */}
-              <AnimatePresence mode="wait">
-                {activeTab === "layers" && (
-                  <motion.div
-                    key="tab-layers"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
-                    className="space-y-2"
-                  >
-                    <div className="text-[10px] text-zinc-400 mb-2 px-1">
-                      Select a transit mode layer to focus the 3D camera and highlight paths.
-                    </div>
-                    <div className="space-y-1.5">
-                      {modeUi.map((item) => {
-                        const isItemActive = activeCategory === item.key;
-                        const isItemDimmed = activeCategory !== null && activeCategory !== item.key;
+          {/* Tabbed Card */}
+          <div className="bg-[#09090b]/80 border border-white/[0.08] rounded-2xl p-4 shadow-lg backdrop-blur-md">
+            {/* Tabs Header */}
+            <div
+              className="mb-4 flex rounded-xl border border-white/[0.05] bg-white/[0.03] p-1"
+              role="tablist"
+              aria-label="Transit detail views"
+            >
+              <button
+                type="button"
+                id="transit-tab-layers"
+                role="tab"
+                aria-selected={activeTab === "layers"}
+                aria-controls="transit-panel-layers"
+                onClick={() => setActiveTab("layers")}
+                className={`min-h-11 flex-1 rounded-lg px-1 py-2 text-center text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] cursor-pointer ${
+                  activeTab === "layers"
+                    ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Bay Layers
+              </button>
+              <button
+                type="button"
+                id="transit-tab-demographics"
+                role="tab"
+                aria-selected={activeTab === "demographics"}
+                aria-controls="transit-panel-demographics"
+                onClick={() => setActiveTab("demographics")}
+                className={`min-h-11 flex-1 rounded-lg px-1 py-2 text-center text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] cursor-pointer ${
+                  activeTab === "demographics"
+                    ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Demographics
+              </button>
+              <button
+                type="button"
+                id="transit-tab-details"
+                role="tab"
+                aria-selected={activeTab === "details"}
+                aria-controls="transit-panel-details"
+                onClick={() => setActiveTab("details")}
+                className={`min-h-11 flex-1 rounded-lg px-1 py-2 text-center text-xs font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] cursor-pointer ${
+                  activeTab === "details"
+                    ? "bg-[#7af298]/10 text-[#7af298] border border-[#7af298]/20 shadow-[0_0_8px_rgba(122,242,152,0.15)]"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                Details
+              </button>
+            </div>
 
-                        // Get current value and baseline for stats display
-                        const values = transport.series[item.key] ?? [];
-                        const baselineVal = values[0] || 1;
-                        const currentVal = values[selectedIndex] ?? 0;
-                        const recoveryPct = Math.round((currentVal / baselineVal) * 105);
+            {/* Tab Contents */}
+            <AnimatePresence mode="wait">
+              {activeTab === "layers" && (
+                <motion.div
+                  key="tab-layers"
+                  id="transit-panel-layers"
+                  role="tabpanel"
+                  aria-labelledby="transit-tab-layers"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                  className="space-y-2"
+                >
+                  <div className="text-[10px] text-zinc-400 mb-2 px-1">
+                    Select a transit mode layer to focus the 3D camera and
+                    highlight paths.
+                  </div>
+                  <div className="space-y-1.5">
+                    {modeUi.map((item) => {
+                      const isItemActive = activeCategory === item.key;
+                      const isItemDimmed =
+                        activeCategory !== null && activeCategory !== item.key;
 
-                        return (
-                          <button
-                            key={`mobile-mode-${item.key}`}
-                            type="button"
-                            onClick={() => {
-                              setActiveCategory((current) =>
-                                current === item.key ? null : item.key,
-                              );
-                              // Auto-switch to Details tab if selecting a mode
-                              if (activeCategory !== item.key) {
-                                setActiveTab("details");
-                              }
-                            }}
-                            className="group/mode flex w-full items-center justify-between gap-3 rounded-xl border border-white/[0.04] p-3 text-left transition-all duration-200 bg-white/[0.01]"
-                            style={{
-                              borderColor: isItemActive ? `${item.color}33` : "rgba(255,255,255,0.04)",
-                              background: isItemActive ? `${item.color}0a` : "rgba(255,255,255,0.01)",
-                              opacity: isItemDimmed ? 0.5 : 1,
-                            }}
-                          >
-                            <div className="flex min-w-0 items-center gap-2.5">
-                              {getTransportIcon(item.key, item.color)}
-                              <div className="min-w-0">
-                                <div className="text-xs font-semibold text-white leading-snug">
-                                  {item.label}
-                                </div>
-                                <div className="truncate text-[9px] text-zinc-500">
-                                  {item.local}
-                                </div>
+                      // Get current value and baseline for stats display
+                      const values = transport.series[item.key] ?? [];
+                      const baselineVal = values[0] || 1;
+                      const currentVal = values[selectedIndex] ?? 0;
+                      const recoveryPct = Math.round(
+                        (currentVal / baselineVal) * 105,
+                      );
+
+                      return (
+                        <button
+                          key={`mobile-mode-${item.key}`}
+                          type="button"
+                          aria-pressed={isItemActive}
+                          onClick={() => {
+                            setActiveCategory((current) =>
+                              current === item.key ? null : item.key,
+                            );
+                            // Auto-switch to Details tab if selecting a mode
+                            if (activeCategory !== item.key) {
+                              setActiveTab("details");
+                            }
+                          }}
+                          className="group/mode flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-white/[0.04] bg-white/[0.01] p-3 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298]"
+                          style={{
+                            borderColor: isItemActive
+                              ? `${item.color}33`
+                              : "rgba(255,255,255,0.04)",
+                            background: isItemActive
+                              ? `${item.color}0a`
+                              : "rgba(255,255,255,0.01)",
+                            opacity: isItemDimmed ? 0.5 : 1,
+                          }}
+                        >
+                          <div className="flex min-w-0 items-center gap-2.5">
+                            {getTransportIcon(item.key, item.color)}
+                            <div className="min-w-0">
+                              <div className="text-xs font-semibold leading-snug text-[#f8fafc]">
+                                {item.label}
+                              </div>
+                              <div className="truncate text-[9px] text-zinc-500">
+                                {item.local}
                               </div>
                             </div>
+                          </div>
 
-                            <div className="text-right shrink-0">
-                              <div className="text-[11px] font-semibold text-white tabular-nums">
-                                {formatCompactNumber(currentVal, "en-US")}
-                              </div>
-                              <div
-                                className="text-[9px] font-bold tabular-nums"
-                                style={{ color: recoveryPct >= 100 ? "#7af298" : "#f4b76e" }}
-                              >
-                                {recoveryPct}% rec
-                              </div>
+                          <div className="text-right shrink-0">
+                            <div className="text-[11px] font-semibold tabular-nums text-[#f8fafc]">
+                              {formatCompactNumber(currentVal, "en-US")}
                             </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </motion.div>
-                )}
+                            <div
+                              className="text-[9px] font-bold tabular-nums"
+                              style={{
+                                color:
+                                  recoveryPct >= 100 ? "#7af298" : "#f4b76e",
+                              }}
+                            >
+                              {recoveryPct}% rec
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
 
-                {activeTab === "demographics" && (
-                  <motion.div
-                    key="tab-demographics"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
-                    className="space-y-3.5"
-                  >
-                    <div className="text-[10px] text-[#7af298] font-bold uppercase tracking-[0.12em] px-0.5">
-                      Rider Fare Mix
-                    </div>
-                    <div className="space-y-2.5">
-                      {demographicMix.map((mix) => (
-                        <div key={`mobile-mix-${mix.group}`} className="px-0.5 text-left">
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span
-                                className="w-2 h-2 rounded-full shrink-0 ring-1 ring-white/10"
-                                style={{ backgroundColor: mix.color }}
-                              />
-                              <span className="text-xs text-zinc-300 truncate">
-                                {mix.label}
-                              </span>
-                            </div>
-                            <span className="text-xs font-semibold text-white tabular-nums shrink-0 ml-1">
-                              {(mix.share * 100).toFixed(0)}%
+              {activeTab === "demographics" && (
+                <motion.div
+                  key="tab-demographics"
+                  id="transit-panel-demographics"
+                  role="tabpanel"
+                  aria-labelledby="transit-tab-demographics"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                  className="space-y-3.5"
+                >
+                  <div className="text-[10px] text-[#7af298] font-bold uppercase tracking-[0.12em] px-0.5">
+                    Rider Fare Mix
+                  </div>
+                  <div className="space-y-2.5">
+                    {demographicMix.map((mix) => (
+                      <div
+                        key={`mobile-mix-${mix.group}`}
+                        className="px-0.5 text-left"
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span
+                              className="w-2 h-2 rounded-full shrink-0 ring-1 ring-white/10"
+                              style={{ backgroundColor: mix.color }}
+                            />
+                            <span className="text-xs text-zinc-300 truncate">
+                              {mix.label}
                             </span>
                           </div>
-                          <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-500 ease-out"
-                              style={{
-                                width: `${mix.share * 100}%`,
-                                backgroundColor: mix.color,
-                                boxShadow: `0 0 4px ${mix.color}66`,
-                              }}
-                            />
-                          </div>
+                          <span className="ml-1 shrink-0 text-xs font-semibold tabular-nums text-[#f8fafc]">
+                            {(mix.share * 100).toFixed(0)}%
+                          </span>
                         </div>
-                      ))}
-                    </div>
-
-                    {/* Stacked composition bar */}
-                    <div className="pt-3 border-t border-white/[0.06]">
-                      <div className="flex h-2.5 w-full rounded-full overflow-hidden">
-                        {demographicMix.map((mix) => (
+                        <div className="h-1.5 w-full bg-white/[0.04] rounded-full overflow-hidden">
                           <div
-                            key={`mobile-stack-${mix.group}`}
-                            className="h-full transition-all duration-500"
+                            className="h-full rounded-full transition-all duration-500 ease-out"
                             style={{
                               width: `${mix.share * 100}%`,
                               backgroundColor: mix.color,
+                              boxShadow: `0 0 4px ${mix.color}66`,
                             }}
                           />
-                        ))}
+                        </div>
                       </div>
-                      <div className="flex flex-wrap gap-x-3 gap-y-1.5 mt-2">
-                        {demographicMix.map((mix) => (
-                          <div key={`mobile-legend-${mix.group}`} className="flex items-center gap-1.5">
-                            <span
-                              className="w-1.5 h-1.5 rounded-full"
-                              style={{ backgroundColor: mix.color }}
-                            />
-                            <span className="text-[9px] text-zinc-400 leading-none">{mix.label}</span>
+                    ))}
+                  </div>
+
+                  {/* Stacked composition bar */}
+                  <div className="pt-3 border-t border-white/[0.06]">
+                    <div className="flex h-2.5 w-full rounded-full overflow-hidden">
+                      {demographicMix.map((mix) => (
+                        <div
+                          key={`mobile-stack-${mix.group}`}
+                          className="h-full transition-all duration-500"
+                          style={{
+                            width: `${mix.share * 100}%`,
+                            backgroundColor: mix.color,
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-x-3 gap-y-1.5 mt-2">
+                      {demographicMix.map((mix) => (
+                        <div
+                          key={`mobile-legend-${mix.group}`}
+                          className="flex items-center gap-1.5"
+                        >
+                          <span
+                            className="w-1.5 h-1.5 rounded-full"
+                            style={{ backgroundColor: mix.color }}
+                          />
+                          <span className="text-[9px] text-zinc-400 leading-none">
+                            {mix.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === "details" && (
+                <motion.div
+                  key="tab-details"
+                  id="transit-panel-details"
+                  role="tabpanel"
+                  aria-labelledby="transit-tab-details"
+                  initial={{ opacity: 0, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -5 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {selectedModeDetails ? (
+                    <div className="text-left space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span
+                          className="text-xs font-bold uppercase tracking-[0.16em]"
+                          style={{ color: selectedModeDetails.color }}
+                        >
+                          {selectedModeDetails.name} Focus
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveCategory(null)}
+                          className="flex min-h-11 items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 text-[10px] text-zinc-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298]"
+                        >
+                          Clear Focus
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3 bg-white/[0.02] border border-white/[0.04] p-3 rounded-xl">
+                        <div>
+                          <div className="text-[9px] text-zinc-500 uppercase tracking-wider">
+                            Trips this month
                           </div>
-                        ))}
+                          <div className="mt-0.5 font-display text-base font-bold text-[#f8fafc]">
+                            {selectedModeDetails.value}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[9px] text-zinc-500 uppercase tracking-wider">
+                            Baseline Recovery
+                          </div>
+                          <div
+                            className="text-base font-bold font-display mt-0.5"
+                            style={{
+                              color:
+                                selectedModeDetails.recovery >= 100
+                                  ? "#7af298"
+                                  : "#f4b76e",
+                            }}
+                          >
+                            {selectedModeDetails.recovery}%
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between text-[10px] text-zinc-500">
+                          <span>Recovery progress relative to Jan 2021:</span>
+                          <span style={{ color: selectedModeDetails.color }}>
+                            {selectedModeDetails.recovery}%
+                          </span>
+                        </div>
+                        <div className="h-1.5 w-full rounded-full bg-white/[0.08] overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{
+                              width: `${Math.min(selectedModeDetails.recovery, 100)}%`,
+                              backgroundColor: selectedModeDetails.color,
+                              boxShadow: `0 0 8px ${selectedModeDetails.color}`,
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-zinc-400 leading-relaxed pt-1.5 border-t border-white/[0.05]">
+                        {selectedModeDetails.desc}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-8 text-center border border-dashed border-white/[0.08] rounded-xl bg-white/[0.01]">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-zinc-600 mb-2"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                      </svg>
+                      <div className="text-xs font-medium text-zinc-400">
+                        No transit mode focused
+                      </div>
+                      <div className="text-[10px] text-zinc-500 mt-1 max-w-[200px]">
+                        Select a mode under the{" "}
+                        <span
+                          className="text-zinc-300 font-semibold cursor-pointer underline"
+                          onClick={() => setActiveTab("layers")}
+                        >
+                          Bay Layers
+                        </span>{" "}
+                        tab to view full details.
                       </div>
                     </div>
-                  </motion.div>
-                )}
-
-                {activeTab === "details" && (
-                  <motion.div
-                    key="tab-details"
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -5 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    {selectedModeDetails ? (
-                      <div className="text-left space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold uppercase tracking-[0.16em]" style={{ color: selectedModeDetails.color }}>
-                            {selectedModeDetails.name} Focus
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => setActiveCategory(null)}
-                            className="text-[10px] text-zinc-400 hover:text-white flex items-center gap-1 px-2 py-0.5 rounded-full border border-white/[0.08] bg-white/[0.02]"
-                          >
-                            Clear Focus
-                          </button>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3 bg-white/[0.02] border border-white/[0.04] p-3 rounded-xl">
-                          <div>
-                            <div className="text-[9px] text-zinc-500 uppercase tracking-wider">Trips this month</div>
-                            <div className="text-base font-bold font-display text-white mt-0.5">{selectedModeDetails.value}</div>
-                          </div>
-                          <div>
-                            <div className="text-[9px] text-zinc-500 uppercase tracking-wider">Baseline Recovery</div>
-                            <div
-                              className="text-base font-bold font-display mt-0.5"
-                              style={{ color: selectedModeDetails.recovery >= 100 ? "#7af298" : "#f4b76e" }}
-                            >
-                              {selectedModeDetails.recovery}%
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between text-[10px] text-zinc-500">
-                            <span>Recovery progress relative to Jan 2021:</span>
-                            <span style={{ color: selectedModeDetails.color }}>{selectedModeDetails.recovery}%</span>
-                          </div>
-                          <div className="h-1.5 w-full rounded-full bg-white/[0.08] overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${Math.min(selectedModeDetails.recovery, 100)}%`,
-                                backgroundColor: selectedModeDetails.color,
-                                boxShadow: `0 0 8px ${selectedModeDetails.color}`,
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <p className="text-xs text-zinc-400 leading-relaxed pt-1.5 border-t border-white/[0.05]">
-                          {selectedModeDetails.desc}
-                        </p>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center py-8 text-center border border-dashed border-white/[0.08] rounded-xl bg-white/[0.01]">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-600 mb-2">
-                          <circle cx="12" cy="12" r="10"></circle>
-                          <line x1="12" y1="16" x2="12" y2="12"></line>
-                          <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                        </svg>
-                        <div className="text-xs font-medium text-zinc-400">No transit mode focused</div>
-                        <div className="text-[10px] text-zinc-500 mt-1 max-w-[200px]">
-                          Select a mode under the <span className="text-zinc-300 font-semibold cursor-pointer underline" onClick={() => setActiveTab("layers")}>Bay Layers</span> tab to view full details.
-                        </div>
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
+        </div>
       </div>
     </ArticleChartFrame>
   );
@@ -2711,13 +3123,41 @@ function CustomMonthScrubber({
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (
+      ![
+        "ArrowLeft",
+        "ArrowDown",
+        "ArrowRight",
+        "ArrowUp",
+        "Home",
+        "End",
+      ].includes(e.key)
+    ) {
+      return;
+    }
+
+    e.preventDefault();
+    setIsPlaying(false);
+    if (e.key === "Home") {
+      onSelect(0);
+      return;
+    }
+    if (e.key === "End") {
+      onSelect(maxIndex);
+      return;
+    }
+    const direction = e.key === "ArrowRight" || e.key === "ArrowUp" ? 1 : -1;
+    onSelect(Math.max(0, Math.min(maxIndex, index + direction)));
+  };
+
   return (
     <div className="flex items-center gap-3 w-full bg-[#09090b]/85 backdrop-blur-md border border-white/[0.08] p-3 sm:px-5 rounded-xl shadow-[0_12px_40px_rgba(0,0,0,0.45)]">
       {/* Play/Pause Button */}
       <button
         type="button"
         onClick={() => setIsPlaying(!isPlaying)}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-[#7af298]/30 bg-[#7af298]/10 text-[#7af298] hover:bg-[#7af298]/20 transition-all duration-200 shadow-[0_0_8px_rgba(122,242,152,0.15)] shrink-0"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#7af298]/30 bg-[#7af298]/10 text-[#7af298] shadow-[0_0_8px_rgba(122,242,152,0.15)] transition-all duration-200 hover:bg-[#7af298]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298]"
         aria-label={isPlaying ? "Pause simulation" : "Play simulation"}
       >
         {isPlaying ? (
@@ -2739,19 +3179,36 @@ function CustomMonthScrubber({
           setIsPlaying(false);
           onSelect(index - 1);
         }}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200 shrink-0"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 transition-all duration-200 hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] disabled:pointer-events-none disabled:opacity-30"
         aria-label="Previous month"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <polyline points="15 18 9 12 15 6"></polyline>
         </svg>
       </button>
 
       <div
-        className="relative flex-grow h-6 flex items-center cursor-pointer select-none group touch-none"
+        className="group relative flex h-11 min-w-0 flex-grow cursor-pointer select-none items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] touch-none"
+        role="slider"
+        tabIndex={0}
+        aria-label="Transit timeline month"
+        aria-valuemin={0}
+        aria-valuemax={maxIndex}
+        aria-valuenow={index}
+        aria-valuetext={months[index]}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
+        onKeyDown={handleKeyDown}
       >
         <div className="absolute inset-0 flex items-center">
           <div className="h-[4px] w-full rounded-full bg-white/[0.08] relative">
@@ -2772,7 +3229,9 @@ function CustomMonthScrubber({
                 <div
                   key={m}
                   className={`absolute top-1/2 w-2 h-2 rounded-full border border-[#09090b] -translate-x-1/2 -translate-y-1/2 hover:scale-150 transition-all duration-200 cursor-pointer shadow-md z-20 ${
-                    isPast ? "bg-[#7af298] shadow-[#7af298]/30" : "bg-orange-500 shadow-orange-500/30"
+                    isPast
+                      ? "bg-[#7af298] shadow-[#7af298]/30"
+                      : "bg-orange-500 shadow-orange-500/30"
                   }`}
                   style={{ left: `${leftPct}%` }}
                   title={`${m}: ${milestone.title}`}
@@ -2801,10 +3260,19 @@ function CustomMonthScrubber({
           setIsPlaying(false);
           onSelect(index + 1);
         }}
-        className="flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200 shrink-0"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 transition-all duration-200 hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7af298] disabled:pointer-events-none disabled:opacity-30"
         aria-label="Next month"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <polyline points="9 18 15 12 9 6"></polyline>
         </svg>
       </button>

@@ -96,64 +96,97 @@ export default function AccidentTypesBarChart({
   const total = ranking.reduce((sum, item) => sum + item.value, 0);
 
   const chartBody = (
-    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)] flex flex-col gap-4">
+    <div
+      className={`flex min-h-0 min-w-0 flex-col gap-2 ${
+        pureCanvas
+          ? "h-full"
+          : "rounded-2xl border border-border bg-card/35 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.16)] sm:p-6"
+      }`}
+    >
       {pureCanvas && (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
-          {/* Year selection pills */}
-          <div
-            className="viz-toggle-group"
-            role="group"
-            aria-label="Year selector"
-          >
-            {parsed.years.map((year) => (
-              <button
-                key={year}
-                type="button"
-                className="relative viz-toggle z-10"
-                data-active={selectedYear === year}
-                aria-pressed={selectedYear === year}
-                onClick={() => setSelectedYear(year)}
-              >
-                <span className="relative z-20">{year}</span>
-                {selectedYear === year && (
-                  <motion.div
-                    layoutId="accident-pure-year-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+        <div className="flex min-h-11 items-center justify-between gap-2 border-b border-border/70 pb-2">
+          <div className="min-w-0">
+            <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              Ranked incidents
+            </span>
+            <span className="block truncate text-sm font-bold text-foreground">
+              {selectedYear} · {formatNumber(total, "en-US")} records
+            </span>
           </div>
-          {/* Count selection pills */}
-          <div
-            className="viz-toggle-group"
-            role="group"
-            aria-label="Visible category count"
-          >
-            {[8, 10, 12].map((count) => (
-              <button
-                key={count}
-                type="button"
-                className="relative viz-toggle z-10"
-                data-active={topCount === count}
-                aria-pressed={topCount === count}
-                onClick={() => setTopCount(count)}
-              >
-                <span className="relative z-20">Top {count}</span>
-                {topCount === count && (
-                  <motion.div
-                    layoutId="accident-pure-count-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
-                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                  />
-                )}
-              </button>
-            ))}
+
+          <div className="flex shrink-0 items-center gap-2">
+            <select
+              value={selectedYear}
+              onChange={(event) => setSelectedYear(Number(event.target.value))}
+              className="min-h-11 rounded-full border border-border bg-background/80 px-3 text-[11px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15 sm:hidden"
+              aria-label="Select year"
+            >
+              {parsed.years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+
+            <div
+              className="viz-toggle-group hidden sm:inline-flex"
+              role="group"
+              aria-label="Year selector"
+            >
+              {parsed.years.map((year) => (
+                <button
+                  key={year}
+                  type="button"
+                  className="relative z-10 min-h-11 rounded-full px-3 text-[11px] font-semibold text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                  data-active={selectedYear === year}
+                  aria-pressed={selectedYear === year}
+                  onClick={() => setSelectedYear(year)}
+                >
+                  <span className="relative z-20">{year}</span>
+                  {selectedYear === year && (
+                    <motion.div
+                      layoutId="accident-pure-year-highlight"
+                      className="absolute inset-0 z-10 rounded-full bg-primary/10"
+                      transition={{
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 30,
+                      }}
+                    />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <select
+              value={topCount}
+              onChange={(event) => setTopCount(Number(event.target.value))}
+              className="min-h-11 rounded-full border border-border bg-background/80 px-3 text-[11px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15"
+              aria-label="Visible category count"
+            >
+              {[8, 10, 12].map((count) => (
+                <option key={count} value={count}>
+                  Top {count}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       )}
-      <motion.div layout className="space-y-3">
+
+      <motion.div
+        layout
+        className={pureCanvas ? "grid min-h-0 flex-1" : "space-y-2"}
+        {...(pureCanvas
+          ? {
+              style: {
+                gridTemplateRows: `repeat(${visibleItems.length}, minmax(0, 1fr))`,
+              },
+            }
+          : {})}
+        role="list"
+        aria-label={`${selectedYear} incident categories, top ${topCount}`}
+      >
         <AnimatePresence mode="popLayout">
           {visibleItems.map((item, index) => {
             const width = (item.value / maxValue) * 100;
@@ -162,20 +195,26 @@ export default function AccidentTypesBarChart({
               <motion.div
                 layout
                 key={item.name}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 120, damping: 15 }}
-                className="grid grid-cols-[24px_1fr_auto] sm:grid-cols-[auto_minmax(0,220px)_minmax(0,1fr)_auto] gap-x-3 gap-y-1.5 rounded-[20px] border border-white/[0.05] bg-white/[0.015] px-4 py-3 sm:items-center hover:bg-white/[0.03] hover:border-white/[0.08] hover:translate-y-[-1px] transition-all duration-200"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 8 }}
+                transition={{ type: "spring", stiffness: 180, damping: 22 }}
+                className={`group grid min-h-0 grid-cols-[22px_minmax(72px,0.8fr)_minmax(70px,1.25fr)_auto] items-center gap-2 border-b border-border/55 px-1.5 last:border-b-0 sm:grid-cols-[28px_minmax(120px,0.9fr)_minmax(120px,1.5fr)_auto] sm:gap-3 ${
+                  pureCanvas ? "py-0.5" : "min-h-11 py-2"
+                }`}
+                role="listitem"
               >
-                <span className="text-xs font-semibold text-muted-foreground w-6 col-start-1 row-start-1">
+                <span className="font-mono text-[9px] font-bold text-muted-foreground sm:text-[10px]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <p className="text-sm font-semibold text-foreground truncate col-start-2 row-start-1">
+                <span
+                  className="truncate text-[10px] font-semibold leading-tight text-foreground sm:text-xs"
+                  title={item.name}
+                >
                   {item.name}
-                </p>
-                <div className="relative flex items-center h-5 col-span-2 col-start-2 sm:col-span-1 sm:col-start-auto row-start-2 sm:row-start-auto">
-                  <div className="h-[2px] w-full bg-white/[0.06]" />
+                </span>
+                <div className="relative flex h-5 items-center">
+                  <div className="h-px w-full bg-foreground/[0.08]" />
                   {item.value > 0 && (
                     <>
                       <motion.div
@@ -184,31 +223,29 @@ export default function AccidentTypesBarChart({
                         animate={{ width: `${width}%` }}
                         transition={{
                           type: "spring",
-                          stiffness: 100,
-                          damping: 15,
+                          stiffness: 110,
+                          damping: 18,
                         }}
                         style={{ background: item.color }}
                       />
                       <motion.div
-                        className="absolute top-1/2 -translate-y-1/2 rounded-full border-4 border-[#111111]"
+                        className="absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full border-2 border-background sm:h-3 sm:w-3"
                         initial={{ left: "0%" }}
-                        animate={{ left: `calc(${width}% - 10px)` }}
+                        animate={{ left: `calc(${width}% - 5px)` }}
                         transition={{
                           type: "spring",
-                          stiffness: 100,
-                          damping: 15,
+                          stiffness: 110,
+                          damping: 18,
                         }}
                         style={{
-                          width: 14,
-                          height: 14,
                           background: item.color,
-                          boxShadow: `0 0 10px ${item.color}40`,
+                          boxShadow: `0 0 12px ${item.color}55`,
                         }}
                       />
                     </>
                   )}
                 </div>
-                <span className="text-sm font-semibold text-foreground text-right w-auto sm:w-16 col-start-3 row-start-1 sm:col-start-auto sm:row-start-auto">
+                <span className="min-w-[2.2rem] text-right font-mono text-[10px] font-bold tabular-nums text-foreground sm:text-xs">
                   {formatNumber(item.value, "en-US")}
                 </span>
               </motion.div>
@@ -259,7 +296,7 @@ export default function AccidentTypesBarChart({
                 {selectedYear === year && (
                   <motion.div
                     layoutId="accident-year-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
@@ -285,7 +322,7 @@ export default function AccidentTypesBarChart({
                 {topCount === count && (
                   <motion.div
                     layoutId="accident-count-highlight"
-                    className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                    className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}

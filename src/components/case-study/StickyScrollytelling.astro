@@ -1,27 +1,77 @@
 ---
+interface Props {
+  mode?: "pager" | "immersive";
+}
+
+const { mode = "pager" } = Astro.props;
 ---
 
-<div class="sticky-scrolly-container my-12 md:my-20" data-scrolly-root data-story-root>
+<div
+  class="sticky-scrolly-container my-12 md:my-20"
+  data-scrolly-root
+  data-story-root
+  data-scrolly-mode={mode}
+>
   <div class="sticky-scrolly-grid">
-    {/* Left Column: Scrolling Narrative Steps */}
     <div class="scrolly-narrative-col">
       <slot />
     </div>
 
-    {/* Right Column: Sticky Visual Container */}
     <div class="scrolly-visual-col">
-      <div class="sticky-visual-wrapper">
-        <slot name="visual" />
-      </div>
-      {/* Mobile Pagination Toolbar */}
-      <div class="scrolly-mobile-nav flex items-center justify-between mt-4 px-4 py-2.5 rounded-full border border-white/[0.08] bg-[#161618]/60 backdrop-blur-md shadow-lg xl:hidden select-none">
-        <button type="button" class="scrolly-nav-btn scrolly-nav-btn--prev flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200" aria-label="Previous step">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        </button>
-        <div class="scrolly-nav-dots flex items-center gap-1.5"></div>
-        <button type="button" class="scrolly-nav-btn scrolly-nav-btn--next flex items-center justify-center w-8 h-8 rounded-full border border-white/[0.08] bg-white/[0.02] text-zinc-400 disabled:opacity-30 disabled:pointer-events-none hover:text-white hover:bg-white/[0.06] transition-all duration-200" aria-label="Next step">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </button>
+      <div class="sticky-visual-stage">
+        <div class="sticky-visual-wrapper">
+          <slot name="visual" />
+        </div>
+
+        <nav class="scrolly-mobile-nav" aria-label="Story chapters">
+          <button
+            type="button"
+            class="scrolly-nav-btn scrolly-nav-btn--prev"
+            aria-label="Previous step"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <div class="scrolly-progress" aria-live="polite">
+            <span class="scrolly-progress__current">01</span>
+            <span class="scrolly-progress__divider" aria-hidden="true"></span>
+            <span class="scrolly-progress__total">03</span>
+          </div>
+
+          <div class="scrolly-nav-dots"></div>
+
+          <button
+            type="button"
+            class="scrolly-nav-btn scrolly-nav-btn--next"
+            aria-label="Next step"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </nav>
       </div>
     </div>
   </div>
@@ -29,6 +79,8 @@
 
 <style>
   .sticky-scrolly-container {
+    --immersive-canvas-height: clamp(340px, 52svh, 500px);
+    --scrolly-sticky-offset: 82px;
     position: relative;
     width: 100%;
     margin-left: auto;
@@ -37,234 +89,558 @@
 
   .sticky-scrolly-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
 
-  /* Desktop Split-Screen Layout (Above xl breakpoint) */
-  @media (min-width: 1280px) {
-    .sticky-scrolly-container {
-      max-width: 1360px;
-    }
-
-    .sticky-scrolly-grid {
-      grid-template-columns: 350px 1fr;
-      gap: 4rem;
-    }
-  }
-
-  /* Scrolling Narrative Blocks */
   .scrolly-narrative-col {
-    display: flex;
-    flex-direction: column;
-    z-index: 2;
     position: relative;
+    z-index: 2;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
   }
 
-  @media (max-width: 1279px) {
-    .scrolly-narrative-col {
-      padding-top: 1rem;
-    }
-  }
-
-  /* Sticky Visuals Column */
   .scrolly-visual-col {
     position: relative;
-    min-height: 350px;
     width: 100%;
+    min-width: 0;
+    min-height: 350px;
   }
 
-  @media (max-width: 1279px) {
-    .scrolly-visual-col {
-      order: -1; /* Place visual at the top on mobile/tablet viewports */
-      position: relative;
-      top: 0;
-      z-index: 10;
-      background-color: transparent;
-      backdrop-filter: none;
-      padding: 0;
-      border-bottom: none;
-      max-height: none;
-      min-height: auto;
-      overflow: visible;
-    }
+  .sticky-visual-stage {
+    position: sticky;
+    top: 140px;
+    width: 100%;
   }
 
   .sticky-visual-wrapper {
-    position: sticky;
-    top: 140px; /* Position sticky visual nicely below header on desktop viewports */
+    display: flex;
     width: 100%;
+    min-width: 0;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scrolly-mobile-nav {
+    display: none;
+    min-height: 3.25rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+    padding: 0.3rem 0.45rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: 999px;
+    background: hsl(var(--card) / 0.88);
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(18px) saturate(1.2);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  }
+
+  .scrolly-nav-btn {
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid hsl(var(--border));
+    border-radius: 999px;
+    background: hsl(var(--foreground) / 0.025);
+    color: hsl(var(--muted-foreground));
+    transition:
+      color 180ms ease,
+      background 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .scrolly-nav-btn:hover,
+  .scrolly-nav-btn:focus-visible {
+    border-color: hsl(var(--primary) / 0.35);
+    background: hsl(var(--primary) / 0.08);
+    color: hsl(var(--foreground));
+    outline: none;
+  }
+
+  .scrolly-nav-btn:disabled {
+    pointer-events: none;
+    opacity: 0.3;
+  }
+
+  .scrolly-nav-dots {
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  @media (max-width: 1279px) {
-    .sticky-visual-wrapper {
-      position: relative;
-      top: 0;
-      max-height: 100%;
-    }
+  .scrolly-progress {
+    display: none;
+    align-items: center;
+    gap: 0.55rem;
+    color: hsl(var(--muted-foreground));
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
   }
 
-  /* Dot styles */
+  .scrolly-progress__current {
+    color: hsl(var(--foreground));
+  }
+
+  .scrolly-progress__divider {
+    width: clamp(2rem, 8vw, 4rem);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--primary) / 0.78),
+      hsl(var(--border))
+    );
+  }
+
   :global(.scrolly-dot) {
+    position: relative;
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  :global(.scrolly-dot)::after {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: hsl(var(--muted-foreground) / 0.38);
+    content: "";
+    transition:
+      width 200ms ease,
+      background 200ms ease,
+      box-shadow 200ms ease;
   }
 
-  :global(.scrolly-dot[data-active="true"]) {
-    background-color: #3b82f6;
-    transform: scale(1.3);
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+  :global(.scrolly-dot:hover)::after,
+  :global(.scrolly-dot:focus-visible)::after {
+    background: hsl(var(--foreground) / 0.72);
+  }
+
+  :global(.scrolly-dot:focus-visible) {
+    outline: 2px solid hsl(var(--primary) / 0.65);
+    outline-offset: -4px;
+  }
+
+  :global(.scrolly-dot[data-active="true"])::after {
+    width: 1.55rem;
+    border-radius: 999px;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 14px hsl(var(--primary) / 0.34);
+  }
+
+  @media (min-width: 1280px) {
+    .sticky-scrolly-container[data-scrolly-mode="pager"] {
+      max-width: 1360px;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="pager"] .sticky-scrolly-grid {
+      grid-template-columns: 350px minmax(0, 1fr);
+      gap: 4rem;
+    }
+  }
+
+  @media (max-width: 1279px) {
+    .sticky-scrolly-container[data-scrolly-mode="pager"]
+      .scrolly-narrative-col {
+      padding-top: 1rem;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="pager"] .scrolly-visual-col {
+      order: -1;
+      min-height: auto;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="pager"] .sticky-visual-stage {
+      position: relative;
+      top: 0;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="pager"] .scrolly-mobile-nav {
+      display: flex;
+    }
+  }
+
+  .sticky-scrolly-container[data-scrolly-mode="immersive"] {
+    max-width: 1380px;
+  }
+
+  .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-mobile-nav {
+    display: flex;
+  }
+
+  .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-progress {
+    display: flex;
+  }
+
+  .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-nav-btn {
+    display: none;
+  }
+
+  .sticky-scrolly-container[data-scrolly-mode="immersive"]
+    .sticky-visual-stage {
+    transition: opacity 180ms ease;
+  }
+
+  @media (min-width: 1024px) {
+    .sticky-scrolly-container {
+      --scrolly-sticky-offset: 104px;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"] {
+      --immersive-canvas-height: min(560px, calc(100svh - 136px));
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .sticky-scrolly-grid {
+      grid-template-columns: minmax(300px, 350px) minmax(0, 1fr);
+      gap: clamp(2.5rem, 4vw, 4.75rem);
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .sticky-visual-stage {
+      top: var(--scrolly-sticky-offset);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .sticky-scrolly-grid {
+      grid-template-areas: "story";
+      gap: 0;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-narrative-col,
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-visual-col {
+      grid-area: story;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-visual-col {
+      z-index: 8;
+      min-height: 100%;
+      pointer-events: none;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .sticky-visual-stage {
+      top: var(--scrolly-sticky-offset);
+      pointer-events: auto;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-narrative-col {
+      z-index: 2;
+      padding-top: calc(var(--immersive-canvas-height) + 9rem);
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-mobile-nav {
+      margin-inline: 0.25rem;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"][data-mobile-reading="true"]
+      .sticky-visual-stage {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .sticky-scrolly-container {
+      --scrolly-sticky-offset: 74px;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-mobile-nav {
+      min-height: 3rem;
+      margin-top: 0.55rem;
+    }
+
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .scrolly-narrative-col {
+      padding-top: calc(var(--immersive-canvas-height) + 7.5rem);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scrolly-nav-btn,
+    :global(.scrolly-dot)::after,
+    .sticky-scrolly-container[data-scrolly-mode="immersive"]
+      .sticky-visual-stage {
+      transition: none;
+    }
   }
 </style>
 
 <script is:inline>
   document.querySelectorAll("[data-scrolly-root]").forEach((container) => {
-    if (!(container instanceof HTMLElement) || container.dataset.bound === "true") {
+    if (
+      !(container instanceof HTMLElement) ||
+      container.dataset.bound === "true"
+    ) {
       return;
     }
+
     container.dataset.bound = "true";
 
     const steps = Array.from(container.querySelectorAll("[data-scrolly-step]"));
     if (steps.length === 0) return;
 
-    const isMobileQuery = window.matchMedia("(max-width: 1279px)");
-    let isMobile = isMobileQuery.matches;
+    const mode = container.dataset.scrollyMode ?? "pager";
+    const isPagerMobileQuery = window.matchMedia("(max-width: 1279px)");
+    let isPagerMobile = isPagerMobileQuery.matches;
     let activeIndex = 0;
+    let activeStepId = null;
+    let isMobileReading = false;
+    let scrollFrame = 0;
 
-    // References to mobile nav UI elements
-    const mobileNav = container.querySelector(".scrolly-mobile-nav");
     const prevBtn = container.querySelector(".scrolly-nav-btn--prev");
     const nextBtn = container.querySelector(".scrolly-nav-btn--next");
     const dotsContainer = container.querySelector(".scrolly-nav-dots");
+    const currentLabel = container.querySelector(".scrolly-progress__current");
+    const totalLabel = container.querySelector(".scrolly-progress__total");
+    const visualStage = container.querySelector(".sticky-visual-stage");
 
-    // Initialize dots
+    if (totalLabel) {
+      totalLabel.textContent = String(steps.length).padStart(2, "0");
+    }
+
     if (dotsContainer) {
       dotsContainer.innerHTML = "";
-      steps.forEach((_, idx) => {
+      steps.forEach((step, index) => {
         const dot = document.createElement("button");
         dot.type = "button";
         dot.className = "scrolly-dot";
-        dot.setAttribute("aria-label", `Go to step ${idx + 1}`);
-        dot.dataset.index = String(idx);
+        dot.setAttribute(
+          "aria-label",
+          `Go to chapter ${index + 1}: ${
+            step.querySelector("h3")?.textContent?.trim() ?? ""
+          }`,
+        );
+        dot.dataset.index = String(index);
         dotsContainer.appendChild(dot);
       });
     }
 
-    const dots = dotsContainer ? Array.from(dotsContainer.querySelectorAll(".scrolly-dot")) : [];
+    const dots = dotsContainer
+      ? Array.from(dotsContainer.querySelectorAll(".scrolly-dot"))
+      : [];
 
-    // Step navigation core logic
-    function setStep(index) {
+    function setStep(index, options = {}) {
       if (index < 0 || index >= steps.length) return;
+      const { scroll = false, force = false } = options;
+      const step = steps[index];
+      const stepId = step.getAttribute("data-scrolly-step");
       activeIndex = index;
 
-      steps.forEach((step, idx) => {
-        const isActive = idx === index;
-        step.setAttribute("data-active", String(isActive));
-      });
-
-      // Update dots
-      dots.forEach((dot, idx) => {
-        dot.setAttribute("data-active", String(idx === index));
-      });
-
-      // Update disabled states
-      if (prevBtn) prevBtn.disabled = index === 0;
-      if (nextBtn) nextBtn.disabled = index === steps.length - 1;
-
-      // Dispatch custom event to coordinate with React islands
-      const stepId = steps[index].getAttribute("data-scrolly-step");
-      window.dispatchEvent(
-        new CustomEvent("scrolly:stepchange", {
-          detail: { stepId }
-        })
-      );
-    }
-
-    // Set up IntersectionObserver for desktop
-    const observerOptions = {
-      root: null,
-      rootMargin: "-25% 0px -45% 0px",
-      threshold: 0.05
-    };
-
-    let activeStepId = null;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (isMobile) return; // Skip observer logic on mobile viewports
-
-      entries.forEach((entry) => {
-        const stepId = entry.target.getAttribute("data-scrolly-step");
-        
-        if (entry.isIntersecting) {
-          steps.forEach(s => {
-            const isTarget = s.getAttribute("data-scrolly-step") === stepId;
-            s.setAttribute("data-active", String(isTarget));
-          });
-
-          if (activeStepId !== stepId) {
-            activeStepId = stepId;
-            
-            // Find active index
-            const idx = steps.findIndex(s => s.getAttribute("data-scrolly-step") === stepId);
-            if (idx !== -1) {
-              activeIndex = idx;
-              // Sync dots if visible
-              dots.forEach((dot, dIdx) => {
-                dot.setAttribute("data-active", String(dIdx === idx));
-              });
-            }
-
-            window.dispatchEvent(
-              new CustomEvent("scrolly:stepchange", {
-                detail: { stepId }
-              })
-            );
-          }
+      steps.forEach((candidate, candidateIndex) => {
+        const isActive = candidateIndex === index;
+        candidate.setAttribute("data-active", String(isActive));
+        if (isActive) {
+          candidate.setAttribute("aria-current", "step");
+        } else {
+          candidate.removeAttribute("aria-current");
         }
       });
-    }, observerOptions);
 
-    function initLayout() {
-      isMobile = isMobileQuery.matches;
-      if (isMobile) {
-        // Disconnect observer
-        steps.forEach((step) => observer.unobserve(step));
-        // Reset to active step
-        setStep(activeIndex);
-      } else {
-        // Enable observer
-        steps.forEach((step) => {
-          step.removeAttribute("style"); // Clear mobile overrides if any
-          observer.observe(step);
+      dots.forEach((dot, dotIndex) => {
+        const isActive = dotIndex === index;
+        dot.setAttribute("data-active", String(isActive));
+        dot.setAttribute("aria-current", isActive ? "step" : "false");
+      });
+
+      if (prevBtn instanceof HTMLButtonElement) {
+        prevBtn.disabled = index === 0;
+      }
+      if (nextBtn instanceof HTMLButtonElement) {
+        nextBtn.disabled = index === steps.length - 1;
+      }
+      if (currentLabel) {
+        currentLabel.textContent = String(index + 1).padStart(2, "0");
+      }
+
+      if (scroll) {
+        step.scrollIntoView({
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "auto"
+            : "smooth",
+          block: mode === "immersive" ? "center" : "nearest",
         });
-        
-        // Ensure first step is styled normally if none active
-        const hasActive = steps.some(s => s.getAttribute("data-active") === "true");
-        if (!hasActive) {
-          steps[0].setAttribute("data-active", "true");
-        }
+      }
+
+      if (force || activeStepId !== stepId) {
+        activeStepId = stepId;
+        container.dataset.activeStepId = stepId;
+        window.dispatchEvent(
+          new CustomEvent("scrolly:stepchange", {
+            detail: { stepId },
+          }),
+        );
       }
     }
 
-    // Mobile nav click handlers
-    if (prevBtn) prevBtn.addEventListener("click", () => setStep(activeIndex - 1));
-    if (nextBtn) nextBtn.addEventListener("click", () => setStep(activeIndex + 1));
-    
-    dots.forEach((dot, idx) => {
-      dot.addEventListener("click", () => setStep(idx));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (mode === "immersive" || isPagerMobile) return;
+
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort(
+            (left, right) =>
+              Math.abs(left.boundingClientRect.top - window.innerHeight * 0.4) -
+              Math.abs(right.boundingClientRect.top - window.innerHeight * 0.4),
+          )[0];
+
+        if (!visible) return;
+        const index = steps.indexOf(visible.target);
+        if (index !== -1) setStep(index);
+      },
+      {
+        root: null,
+        rootMargin: "-24% 0px -44% 0px",
+        threshold: [0, 0.05, 0.2],
+      },
+    );
+
+    function updateImmersiveStep() {
+      scrollFrame = 0;
+      if (mode !== "immersive") return;
+
+      const activationLine =
+        window.innerWidth < 1024
+          ? window.innerHeight * 0.78
+          : window.innerHeight * 0.48;
+
+      let nextIndex = activeIndex;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      steps.forEach((step, index) => {
+        const rect = step.getBoundingClientRect();
+        const distance =
+          activationLine < rect.top
+            ? rect.top - activationLine
+            : activationLine > rect.bottom
+              ? activationLine - rect.bottom
+              : 0;
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          nextIndex = index;
+        }
+      });
+
+      setStep(nextIndex);
+      updateMobileReadingState();
+    }
+
+    function updateMobileReadingState() {
+      if (
+        mode !== "immersive" ||
+        window.innerWidth >= 1024 ||
+        !(visualStage instanceof HTMLElement)
+      ) {
+        isMobileReading = false;
+        container.removeAttribute("data-mobile-reading");
+        if (visualStage instanceof HTMLElement) {
+          visualStage.inert = false;
+          visualStage.removeAttribute("aria-hidden");
+        }
+        return;
+      }
+
+      const activeStep = steps[activeIndex];
+      const activeCard = activeStep?.querySelector(".scrolly-step-card");
+      const mobileNav = visualStage.querySelector(".scrolly-mobile-nav");
+      if (
+        !(activeCard instanceof HTMLElement) ||
+        !(mobileNav instanceof HTMLElement)
+      ) {
+        return;
+      }
+
+      const cardRect = activeCard.getBoundingClientRect();
+      const navRect = mobileNav.getBoundingClientRect();
+      const enterReadingAt = navRect.bottom - 12;
+      const leaveReadingAt = navRect.bottom + 28;
+      const cardStillOnScreen = cardRect.bottom > 90;
+      const shouldRead = isMobileReading
+        ? cardRect.top < leaveReadingAt && cardStillOnScreen
+        : cardRect.top < enterReadingAt && cardStillOnScreen;
+
+      if (shouldRead === isMobileReading) return;
+      isMobileReading = shouldRead;
+      container.dataset.mobileReading = String(shouldRead);
+      visualStage.inert = shouldRead;
+      visualStage.setAttribute("aria-hidden", String(shouldRead));
+    }
+
+    function scheduleImmersiveUpdate() {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(updateImmersiveStep);
+    }
+
+    function initLayout() {
+      isPagerMobile = isPagerMobileQuery.matches;
+
+      steps.forEach((step) => observer.unobserve(step));
+
+      if (mode === "immersive") {
+        updateMobileReadingState();
+        scheduleImmersiveUpdate();
+        return;
+      }
+
+      if (isPagerMobile) {
+        setStep(activeIndex, { force: true });
+      } else {
+        steps.forEach((step) => observer.observe(step));
+        setStep(activeIndex, { force: true });
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () =>
+        setStep(activeIndex - 1, { scroll: mode === "immersive" }),
+      );
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () =>
+        setStep(activeIndex + 1, { scroll: mode === "immersive" }),
+      );
+    }
+
+    dots.forEach((dot, index) => {
+      dot.addEventListener("click", () =>
+        setStep(index, { scroll: mode === "immersive" }),
+      );
     });
 
-    // Listen to resize
-    isMobileQuery.addEventListener("change", initLayout);
+    isPagerMobileQuery.addEventListener("change", initLayout);
 
-    // Initial setup
+    if (mode === "immersive") {
+      window.addEventListener("scroll", scheduleImmersiveUpdate, {
+        passive: true,
+      });
+      window.addEventListener("resize", scheduleImmersiveUpdate);
+    }
+
+    setStep(0, { force: true });
     initLayout();
   });
 </script>

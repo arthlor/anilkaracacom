@@ -34,15 +34,15 @@ const featuredArticles = pickEntriesBySlug(articles, featuredArticleSlugs);
 const homeStats = [
   {
     value: "10+",
-    label: "Years bridging journalism, corporate communications, and product development",
+    label: "Years across journalism, communications, and digital products",
   },
   {
     value: `${workplaces.length}`,
-    label: "Newsrooms and civic institutions served",
+    label: "Newsrooms and public institutions",
   },
   {
     value: `${appProjects.length}`,
-    label: "Consumer iOS apps shipped to the App Store",
+    label: "iOS apps shipped to the App Store",
   },
 ] as const;
 
@@ -67,7 +67,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
 <MainLayout
   title="Home"
-  description="Framer-style homepage for Anil Karaca, blending data journalism, civic storytelling, mobile apps, and editorial product engineering."
+  description="Anil Karaca builds mobile products, reports with data, and helps organizations communicate complex work clearly."
 >
   <JsonLd schema={buildPersonSchema()} />
 
@@ -162,17 +162,20 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
         <div class="portfolio-home__hero-copy">
           <div class="portfolio-home__eyebrow">
             <span>Product Specialist</span>
-            <span class="portfolio-home__eyebrow-sep" aria-hidden="true">·</span>
+            <span class="portfolio-home__eyebrow-sep" aria-hidden="true">·</span
+            >
             <span>Data Journalist</span>
-            <span class="portfolio-home__eyebrow-sep" aria-hidden="true">·</span>
-            <span>Corporate Communications Expert</span>
+            <span class="portfolio-home__eyebrow-sep" aria-hidden="true">·</span
+            >
+            <span>Communications Specialist</span>
           </div>
           <h1>ANIL<br />KARACA</h1>
         </div>
 
         <div class="portfolio-home__hero-side">
           <p class="portfolio-home__hero-summary">
-            Bridging mobile product design, data analysis, and corporate communications to ship impactful consumer apps, interactive stories, and strategic narratives.
+            I build mobile products, find stories in complex data, and help
+            organizations communicate clearly.
           </p>
 
           <div class="portfolio-home__hero-meta">
@@ -197,7 +200,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
               <a
                 href={resumeUrl}
                 data-track-event="navigate_cv"
-                data-track-label="Home Hero CV">CV / Resume</a
+                data-track-label="Home Hero CV">CVs</a
               >
             </div>
           </div>
@@ -253,24 +256,26 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
         <div class="portfolio-home__container">
           <div class="portfolio-home__positioning-grid">
             <div>
-              <p class="portfolio-home__section-kicker">// Positioning</p>
+              <p class="portfolio-home__section-kicker">// What I Do</p>
 
               <div class="portfolio-home__positioning-copy">
-                <h2>Bridging product ownership, data storytelling, and strategic communications.</h2>
+                <h2>I work across product, data, and communications.</h2>
                 <p>
-                  High-impact digital systems require a rare mix of skills: product focus to ship clean user experiences, data literacy to model complex information, and communication expertise to build trust and reach audiences effectively.
+                  That can mean taking an app from idea to release, turning a
+                  public dataset into an interactive story, or finding the
+                  clearest way to explain complicated work.
                 </p>
               </div>
 
               <div class="portfolio-home__positioning-actions">
                 <a href="/projects" class="portfolio-home__button">
-                  Explore Work
+                  See my work
                 </a>
                 <a
                   href="/about"
                   class="portfolio-home__button portfolio-home__button--ghost"
                 >
-                  Full Profile
+                  More about me
                 </a>
               </div>
             </div>
@@ -310,10 +315,10 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
           class="portfolio-home__section-head portfolio-home__section-head--split"
         >
           <div>
-            <p class="portfolio-home__section-kicker">// Shipped Products & Analysis</p>
+            <p class="portfolio-home__section-kicker">// Selected Work</p>
           </div>
 
-          <h2>Featured mobile apps, interactive systems, and case studies</h2>
+          <h2>A few things I’ve made and shipped</h2>
 
           <div class="portfolio-home__section-mark" aria-hidden="true">
             <span>&lt;/</span>
@@ -387,7 +392,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
         <div class="portfolio-home__section-cta">
           <a href="/projects" class="portfolio-home__button">
-            View All Projects
+            See all projects
           </a>
         </div>
       </div>
@@ -402,11 +407,13 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
           <div class="portfolio-home__container">
             <div class="portfolio-home__section-head portfolio-home__section-head--split">
               <div>
-                <p class="portfolio-home__section-kicker">// Data Stories & Investigations</p>
+                <p class="portfolio-home__section-kicker">
+                  // Selected Articles
+                </p>
               </div>
 
-              <h2>Civic datasets and analytical writing</h2>
-              
+              <h2>Reporting that starts with the data</h2>
+
               <div class="portfolio-home__section-mark" aria-hidden="true">
                 <span>&lt;/</span>
                 <span>&gt;</span>
@@ -419,7 +426,10 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
             <div class="portfolio-home__writing-grid">
               {featuredArticles.map((entry) => (
-                <a href={getEntryHref(entry)} class="portfolio-home__writing-card">
+                <a
+                  href={getEntryHref(entry)}
+                  class="portfolio-home__writing-card"
+                >
                   <div class="portfolio-home__writing-copy">
                     <p class="portfolio-home__writing-meta">
                       {entry.data.language === "tr" ? "Turkish" : "English"} ·{" "}
@@ -444,7 +454,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
             <div class="portfolio-home__section-cta">
               <a href="/articles" class="portfolio-home__button">
-                View All Articles
+                See all articles
               </a>
             </div>
           </div>
@@ -460,12 +470,10 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
           class="portfolio-home__section-head portfolio-home__section-head--split"
         >
           <div>
-            <p class="portfolio-home__section-kicker">// Professional History</p>
+            <p class="portfolio-home__section-kicker">// Where I’ve Worked</p>
           </div>
 
-          <h2>
-            The companies, public institutions, and independent apps shaping my career
-          </h2>
+          <h2>Newsrooms and public institutions I’ve worked with</h2>
 
           <div class="portfolio-home__section-mark" aria-hidden="true">
             <span>&lt;/</span>
@@ -504,7 +512,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
             href="/about"
             class="portfolio-home__button portfolio-home__button--ghost"
           >
-            View Experience
+            See my experience
           </a>
         </div>
       </div>
@@ -515,9 +523,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home {
       position: relative;
       overflow: clip;
-      background: #111111;
-      color: #f3f1eb;
+      background: hsl(var(--background));
+      color: hsl(var(--foreground));
       isolation: isolate;
+      transition:
+        background-color var(--transition-normal),
+        color var(--transition-normal);
     }
 
     .portfolio-home a {
@@ -548,9 +559,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       left: 0;
       right: 0;
       height: 120px;
-      background: linear-gradient(to bottom, transparent, #111111);
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        hsl(var(--background))
+      );
       pointer-events: none;
       z-index: 5;
+      transition: background var(--transition-normal);
     }
 
     .portfolio-home__hero-sparkles {
@@ -568,7 +584,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       width: var(--ss);
       height: var(--ss);
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.7);
+      background: hsl(var(--foreground) / 0.7);
       opacity: 0;
       filter: blur(0.5px);
       animation-delay: var(--sd);
@@ -595,13 +611,13 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__hero-grid {
       position: relative;
       display: grid;
-      grid-template-columns: 1fr 1.2fr;
+      grid-template-columns: minmax(0, 1.08fr) minmax(360px, 0.72fr);
       grid-template-rows: auto auto auto;
       grid-template-areas:
         "copy  image"
         "side  image"
         ".     image";
-      column-gap: 48px;
+      column-gap: clamp(48px, 6vw, 96px);
       row-gap: 28px;
       padding-top: 140px;
       padding-bottom: 80px;
@@ -623,12 +639,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-size: clamp(0.65rem, 0.75vw, 0.8rem);
       font-weight: 600;
       letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.45);
+      color: hsl(var(--foreground) / 0.55);
       text-transform: uppercase;
     }
 
     .portfolio-home__eyebrow-sep {
-      color: rgba(255, 255, 255, 0.15);
+      color: hsl(var(--foreground) / 0.25);
       font-size: 0.9em;
     }
 
@@ -645,7 +661,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-size: clamp(4.8rem, 10vw, 9.5rem);
       line-height: 0.88;
       letter-spacing: -0.05em;
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
       text-transform: uppercase;
     }
 
@@ -663,7 +679,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 0;
       font-size: 1.2rem;
       line-height: 1.75;
-      color: rgba(255, 255, 255, 0.82);
+      color: hsl(var(--foreground) / 0.82);
       font-weight: 400;
     }
 
@@ -672,14 +688,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       flex-direction: column;
       gap: 20px;
       padding-top: 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid hsl(var(--foreground) / 0.12);
     }
 
     .portfolio-home__hero-socials {
       display: flex;
       flex-wrap: wrap;
       gap: 18px;
-      color: rgba(255, 255, 255, 0.72);
+      color: hsl(var(--foreground) / 0.72);
     }
 
     .portfolio-home__hero-socials a {
@@ -691,7 +707,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     }
 
     .portfolio-home__hero-socials a:hover {
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__hero-contacts {
@@ -699,30 +715,30 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       flex-wrap: wrap;
       align-items: center;
       gap: 14px;
-      color: rgba(255, 255, 255, 0.72);
+      color: hsl(var(--foreground) / 0.72);
       font-size: 0.9rem;
     }
 
     .portfolio-home__hero-contacts a {
-      color: rgba(255, 255, 255, 0.82);
+      color: hsl(var(--foreground) / 0.82);
       transition: color 180ms ease;
     }
 
     .portfolio-home__hero-contacts a:hover {
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__contact-sep {
-      color: rgba(255, 255, 255, 0.25);
+      color: hsl(var(--foreground) / 0.32);
     }
 
     .portfolio-home__hero-image-wrap {
       grid-area: image;
       position: relative;
-      align-self: center;
+      align-self: end;
       justify-self: end;
-      width: 100%;
-      max-width: 820px;
+      width: min(100%, 600px);
+      margin-right: clamp(0px, 1.8vw, 28px);
       transform-style: preserve-3d;
       transition: transform 0.1s ease-out;
       will-change: transform;
@@ -732,12 +748,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       position: absolute;
       top: var(--glow-y, 50%);
       left: var(--glow-x, 50%);
-      width: 400px;
-      height: 400px;
+      width: min(30vw, 340px);
+      height: min(30vw, 340px);
       border-radius: 999px;
       background: radial-gradient(
         circle,
-        rgba(255, 255, 255, 0.2),
+        hsl(var(--foreground) / 0.2),
         transparent 70%
       );
       filter: blur(48px);
@@ -761,7 +777,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       left: var(--left);
       width: var(--size);
       height: var(--size);
-      background: rgba(255, 255, 255, 0.6);
+      background: hsl(var(--foreground) / 0.6);
       border-radius: 50%;
       opacity: 0.3;
       filter: blur(1px);
@@ -773,8 +789,10 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       position: relative;
       display: block;
       width: 100%;
+      max-height: calc(100svh - 170px);
       height: auto;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center bottom;
       filter: saturate(0.92) contrast(1.08) brightness(1.04);
       transition: filter 0.5s ease;
       mask-image:
@@ -806,11 +824,13 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     }
 
     .portfolio-home__section--deep {
-      background: #111111;
+      background: hsl(var(--background));
+      transition: background-color var(--transition-normal);
     }
 
     .portfolio-home__section--soft {
-      background: #191818;
+      background: hsl(var(--muted) / 0.5);
+      transition: background-color var(--transition-normal);
     }
 
     .portfolio-home__section--work {
@@ -829,7 +849,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 0 0 18px;
       font-size: 0.88rem;
       letter-spacing: 0.08em;
-      color: #7af298;
+      color: var(--premium-accent);
     }
 
     .portfolio-home__section-head--split {
@@ -850,7 +870,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-size: clamp(1.95rem, 3.9vw, 3.15rem);
       line-height: 1.1;
       letter-spacing: -0.05em;
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__section-mark {
@@ -858,7 +878,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       gap: 12px;
       align-items: center;
       font-size: 1.35rem;
-      color: rgba(255, 255, 255, 0.76);
+      color: hsl(var(--foreground) / 0.76);
     }
 
     .portfolio-home__section-divider {
@@ -866,14 +886,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       align-items: center;
       gap: 14px;
       margin-bottom: 40px;
-      color: #7af298;
+      color: var(--premium-accent);
       font-size: 1.25rem;
     }
 
     .portfolio-home__section-divider::after {
       content: "";
       flex: 1;
-      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      border-top: 1px solid hsl(var(--foreground) / 0.18);
     }
 
     .portfolio-home__skills-grid {
@@ -890,7 +910,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__skill-group {
       padding: 18px 0 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: 1px solid hsl(var(--foreground) / 0.14);
     }
 
     .portfolio-home__skill-group-head {
@@ -905,11 +925,11 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 0;
       font-size: 1.12rem;
       line-height: 1.2;
-      color: #ffffff;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__skill-group-head span {
-      color: rgba(255, 255, 255, 0.7);
+      color: hsl(var(--foreground) / 0.7);
       font-size: 0.92rem;
     }
 
@@ -917,7 +937,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       display: flex;
       flex-wrap: wrap;
       gap: 10px 14px;
-      color: rgba(255, 255, 255, 0.62);
+      color: hsl(var(--foreground) / 0.62);
       font-size: 0.92rem;
     }
 
@@ -929,7 +949,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 0;
       font-size: 1.14rem;
       line-height: 1.85;
-      color: rgba(255, 255, 255, 0.86);
+      color: hsl(var(--foreground) / 0.86);
     }
 
     .portfolio-home__positioning-grid {
@@ -949,14 +969,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-size: clamp(2.2rem, 4.4vw, 4rem);
       line-height: 0.98;
       letter-spacing: -0.05em;
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__positioning-copy p {
       margin: 22px 0 0;
       font-size: 1.08rem;
       line-height: 1.85;
-      color: rgba(255, 255, 255, 0.76);
+      color: hsl(var(--foreground) / 0.76);
     }
 
     .portfolio-home__positioning-actions {
@@ -976,7 +996,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       display: grid;
       gap: 16px;
       padding: 20px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: 1px solid hsl(var(--foreground) / 0.14);
     }
 
     .portfolio-home__positioning-note span {
@@ -984,14 +1004,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-weight: 700;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: #7af298;
+      color: var(--premium-accent);
     }
 
     .portfolio-home__positioning-note p {
       margin: 0;
       font-size: 0.98rem;
       line-height: 1.75;
-      color: rgba(255, 255, 255, 0.76);
+      color: hsl(var(--foreground) / 0.76);
     }
 
     .portfolio-home__button {
@@ -1002,8 +1022,8 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       min-height: 52px;
       border: 0;
       border-radius: 999px;
-      background: #2ecc71;
-      color: #0a0a0a;
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
       padding: 12px 28px;
       font-size: 0.84rem;
       font-weight: 700;
@@ -1023,14 +1043,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     }
 
     .portfolio-home__button--ghost {
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.03);
-      color: #f5f2eb;
+      border: 1px solid hsl(var(--foreground) / 0.14);
+      background: hsl(var(--foreground) / 0.04);
+      color: hsl(var(--foreground));
       box-shadow: none;
     }
 
     .portfolio-home__button--ghost:hover {
-      color: #2ecc71;
+      color: var(--premium-accent);
       filter: none;
       box-shadow: none;
       border-color: rgba(46, 204, 113, 0.4);
@@ -1045,14 +1065,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__stat {
       padding-bottom: 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: 1px solid hsl(var(--foreground) / 0.14);
     }
 
     .portfolio-home__stat-value {
       font-size: clamp(2.2rem, 4vw, 4rem);
       font-weight: 700;
       line-height: 1;
-      color: #f6f3ec;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__stat p {
@@ -1060,7 +1080,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       max-width: 340px;
       font-size: 0.95rem;
       line-height: 1.7;
-      color: #7af298;
+      color: var(--premium-accent);
     }
 
     .portfolio-home__work-grid {
@@ -1074,8 +1094,8 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       position: relative;
       display: flex;
       flex-direction: column;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
       border-radius: 28px;
       overflow: hidden;
       text-decoration: none;
@@ -1088,7 +1108,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__work-card:hover {
       border-color: rgba(122, 242, 152, 0.3);
-      background: rgba(255, 255, 255, 0.05);
+      background: hsl(var(--muted) / 0.72);
       transform: translateY(-4px);
     }
 
@@ -1139,7 +1159,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__work-image-frame {
       position: relative;
       overflow: hidden;
-      background: #000;
+      background: hsl(var(--muted));
       flex: 1;
       aspect-ratio: auto;
     }
@@ -1188,14 +1208,20 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       flex-direction: column;
       gap: 8px;
       z-index: 2;
-      background: linear-gradient(to top, rgba(10, 10, 10, 0.95), transparent);
+      border-top: 1px solid hsl(var(--border));
+      background: hsl(var(--card));
+      transition: background-color 0.4s ease;
+    }
+
+    .portfolio-home__work-card:hover .portfolio-home__work-content {
+      background: hsl(var(--muted) / 0.72);
     }
 
     .portfolio-home__work-copy h3 {
       margin: 0;
       font-size: 1.15rem;
       font-weight: 700;
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
       letter-spacing: -0.01em;
     }
 
@@ -1203,7 +1229,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 4px 0 0;
       font-size: 0.88rem;
       line-height: 1.4;
-      color: rgba(255, 255, 255, 0.55);
+      color: hsl(var(--muted-foreground));
       max-width: 480px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -1224,7 +1250,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       border-radius: 999px;
       background: rgba(122, 242, 152, 0.1);
       border: 1px solid rgba(122, 242, 152, 0.15);
-      color: #7af298;
+      color: var(--premium-accent);
       font-size: 0.75rem;
       font-weight: 600;
     }
@@ -1240,7 +1266,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       justify-content: center;
       border-radius: 50%;
       background: rgba(122, 242, 152, 0.1);
-      color: #7af298;
+      color: var(--premium-accent);
       opacity: 0;
       transform: translate(-10px, 10px);
       transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
@@ -1274,9 +1300,9 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       gap: 1.25rem;
       min-height: 240px;
       padding: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid hsl(var(--foreground) / 0.1);
       border-radius: 1.25rem;
-      background: rgba(255, 255, 255, 0.02);
+      background: hsl(var(--foreground) / 0.025);
       text-decoration: none;
       color: inherit;
       transition:
@@ -1288,7 +1314,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__writing-card:hover {
       transform: translateY(-2px);
       border-color: rgba(122, 242, 152, 0.35);
-      background: rgba(255, 255, 255, 0.04);
+      background: hsl(var(--foreground) / 0.045);
     }
 
     .portfolio-home__writing-meta {
@@ -1296,7 +1322,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-size: 0.72rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.48);
+      color: hsl(var(--muted-foreground));
     }
 
     .portfolio-home__writing-copy h3 {
@@ -1309,7 +1335,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 0;
       font-size: 0.92rem;
       line-height: 1.65;
-      color: rgba(255, 255, 255, 0.72);
+      color: hsl(var(--foreground) / 0.72);
     }
 
     .portfolio-home__work-image,
@@ -1333,7 +1359,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 0;
       font-size: 2rem;
       line-height: 1.15;
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__process-card p,
@@ -1342,7 +1368,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       margin: 12px 0 0;
       font-size: 1rem;
       line-height: 1.8;
-      color: rgba(255, 255, 255, 0.74);
+      color: hsl(var(--foreground) / 0.74);
     }
 
     .portfolio-home__tag-row {
@@ -1357,10 +1383,10 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       align-items: center;
       min-height: 34px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      background: hsl(var(--foreground) / 0.08);
       padding: 0 14px;
       font-size: 0.82rem;
-      color: #7af298;
+      color: var(--premium-accent);
     }
 
     .portfolio-home__section-cta {
@@ -1372,12 +1398,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__services {
       display: grid;
       gap: 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid hsl(var(--foreground) / 0.1);
+      border-bottom: 1px solid hsl(var(--foreground) / 0.1);
     }
 
     .portfolio-home__service {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid hsl(var(--foreground) / 0.1);
     }
 
     .portfolio-home__service:last-child {
@@ -1393,7 +1419,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       padding: 26px 0;
       background: transparent;
       border: 0;
-      color: #f4f1ea;
+      color: hsl(var(--foreground));
       text-align: left;
       font: inherit;
       cursor: pointer;
@@ -1407,7 +1433,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     }
 
     .portfolio-home__service-trigger span:last-child {
-      color: rgba(255, 255, 255, 0.62);
+      color: hsl(var(--foreground) / 0.62);
       font-size: 1rem;
     }
 
@@ -1438,15 +1464,15 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       display: grid;
       gap: 22px;
       padding: 28px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid hsl(var(--foreground) / 0.1);
+      background: hsl(var(--foreground) / 0.025);
     }
 
     .portfolio-home__process-number {
       font-size: 2.9rem;
       font-weight: 700;
       line-height: 1;
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__clients-band {
@@ -1533,7 +1559,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__article-meta time {
       font-size: 0.82rem;
-      color: rgba(255, 255, 255, 0.72);
+      color: hsl(var(--foreground) / 0.72);
     }
 
     .portfolio-home__footer {
@@ -1557,7 +1583,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       border-radius: 999px;
       background: radial-gradient(
         circle,
-        rgba(255, 255, 255, 0.12),
+        hsl(var(--foreground) / 0.12),
         transparent 74%
       );
       filter: blur(38px);
@@ -1585,7 +1611,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-size: clamp(2.7rem, 5.5vw, 4.85rem);
       line-height: 0.96;
       letter-spacing: -0.05em;
-      color: #f2efe8;
+      color: hsl(var(--foreground));
       text-transform: uppercase;
       white-space: nowrap;
     }
@@ -1599,8 +1625,8 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       align-items: center;
       justify-content: center;
       border-radius: 999px;
-      background: #2ecc71;
-      color: #0a0a0a;
+      background: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
       font-size: 0.78rem;
       font-weight: 700;
       box-shadow: 0 18px 42px rgba(46, 204, 113, 0.3);
@@ -1618,7 +1644,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
 
     .portfolio-home__footer-divider {
       height: 1px;
-      background: rgba(255, 255, 255, 0.1);
+      background: hsl(var(--foreground) / 0.1);
       margin-bottom: 40px;
     }
 
@@ -1640,13 +1666,13 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__footer-github {
       font-size: 0.92rem;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.72);
+      color: hsl(var(--foreground) / 0.72);
       transition: color 180ms ease;
     }
 
     .portfolio-home__footer-email:hover,
     .portfolio-home__footer-github:hover {
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__footer-nav {
@@ -1661,12 +1687,12 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.72);
+      color: hsl(var(--foreground) / 0.72);
       transition: color 180ms ease;
     }
 
     .portfolio-home__footer-nav a:hover {
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__footer-socials {
@@ -1681,23 +1707,23 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.5);
+      color: hsl(var(--foreground) / 0.5);
       transition: color 180ms ease;
     }
 
     .portfolio-home__footer-socials a:hover {
-      color: #f5f2eb;
+      color: hsl(var(--foreground));
     }
 
     .portfolio-home__footer-copy {
       padding-top: 24px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid hsl(var(--foreground) / 0.08);
       text-align: center;
     }
 
     .portfolio-home__footer-copy span {
       font-size: 0.78rem;
-      color: rgba(255, 255, 255, 0.35);
+      color: hsl(var(--foreground) / 0.42);
       letter-spacing: 0.04em;
     }
 
@@ -1754,9 +1780,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
         position: relative;
         left: auto;
         bottom: auto;
-        width: min(100%, 390px);
-        margin-top: -48px;
+        justify-self: center;
+        width: min(78%, 360px);
+        margin: -24px auto 0;
         transform: none;
+      }
+
+      .portfolio-home__hero-image {
+        max-height: none;
       }
 
       .portfolio-home__stats-grid,
@@ -1915,7 +1946,11 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     let lastClientY = 0;
     let hoveredCard: HTMLElement | null = null;
 
-    function updateCardGlow(card: HTMLElement, clientX: number, clientY: number) {
+    function updateCardGlow(
+      card: HTMLElement,
+      clientX: number,
+      clientY: number,
+    ) {
       const rect = card.getBoundingClientRect();
       const x = clientX - rect.left;
       const y = clientY - rect.top;
@@ -1945,10 +1980,14 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       });
     });
 
-    window.addEventListener("scroll", () => {
-      if (hoveredCard) {
-        updateCardGlow(hoveredCard, lastClientX, lastClientY);
-      }
-    }, { passive: true });
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (hoveredCard) {
+          updateCardGlow(hoveredCard, lastClientX, lastClientY);
+        }
+      },
+      { passive: true },
+    );
   </script>
 </MainLayout>

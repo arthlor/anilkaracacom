@@ -63,7 +63,7 @@ export default function ElectionResultsBarChart() {
               {sortMode === "share" && (
                 <motion.div
                   layoutId="election-sort-highlight"
-                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -79,7 +79,7 @@ export default function ElectionResultsBarChart() {
               {sortMode === "delta" && (
                 <motion.div
                   layoutId="election-sort-highlight"
-                  className="absolute inset-0 z-10 rounded-full bg-white/[0.08]"
+                  className="absolute inset-0 z-10 rounded-full bg-foreground/[0.08]"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}
@@ -120,7 +120,7 @@ export default function ElectionResultsBarChart() {
         </div>
       }
     >
-      <div className="rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+      <div className="rounded-2xl border border-border bg-card/70 p-4 shadow-[0_12px_40px_hsl(var(--foreground)/0.08)] backdrop-blur-md sm:p-6">
         <motion.div layout className="space-y-3">
           <AnimatePresence mode="popLayout">
             {ranked.map((entry) => {
@@ -133,7 +133,7 @@ export default function ElectionResultsBarChart() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 120, damping: 15 }}
-                  className="grid gap-4 rounded-[20px] border border-white/[0.05] bg-white/[0.015] px-4 py-4 sm:grid-cols-[100px_minmax(0,1fr)_auto] sm:items-center hover:bg-white/[0.03] hover:border-white/[0.08] hover:translate-y-[-1px] transition-all duration-200"
+                  className="grid gap-4 rounded-[20px] border border-border bg-muted/30 px-4 py-4 transition-all duration-200 hover:-translate-y-px hover:border-primary/20 hover:bg-muted/55 sm:grid-cols-[100px_minmax(0,1fr)_auto] sm:items-center"
                 >
                   <div className="flex items-center gap-2">
                     <span
@@ -164,7 +164,7 @@ export default function ElectionResultsBarChart() {
                         {formatPercent(entry.share2024, 2, "en-US")}%
                       </span>
                     </div>
-                    <div className="h-3 overflow-hidden rounded-full bg-white/[0.04] relative">
+                    <div className="relative h-3 overflow-hidden rounded-full bg-muted">
                       <motion.div
                         className="h-full rounded-full"
                         initial={{ width: 0 }}

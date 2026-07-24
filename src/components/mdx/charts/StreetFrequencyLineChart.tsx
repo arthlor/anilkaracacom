@@ -1,10 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { scaleLinear, scalePoint } from "d3-scale";
 import { line as d3Line } from "d3-shape";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ArticleChartFrame from "@/components/case-study/ArticleChartFrame";
-import { formatNumber } from "@/components/case-study/chartTheme";
+import {
+  chartPalette,
+  formatNumber,
+} from "@/components/case-study/chartTheme";
 import { cn } from "@/lib/utils";
 import rawData from "@/data/yearly_accident_frequency_streets.json";
 
@@ -112,6 +115,23 @@ export default function StreetFrequencyLineChart({
     value: string;
     year: number;
   } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState(720);
+
+  useEffect(() => {
+    const element = containerRef.current;
+    if (!element) return;
+
+    const updateWidth = () => {
+      setContainerWidth(Math.max(element.clientWidth, 280));
+    };
+    updateWidth();
+
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   const fallbackStreet = parsed.series[0];
   if (!fallbackStreet) {
@@ -124,9 +144,12 @@ export default function StreetFrequencyLineChart({
     fallbackStreet;
   const activePositions = parsed.positions.get(activeStreetName) ?? [];
 
-  const width = 720;
-  const height = 300;
-  const padding = { top: 24, right: 160, bottom: 28, left: 48 };
+  const compact = pureCanvas && containerWidth < 560;
+  const width = compact ? containerWidth : 720;
+  const height = compact ? 248 : 300;
+  const padding = compact
+    ? { top: 24, right: 14, bottom: 34, left: 34 }
+    : { top: 24, right: 160, bottom: 28, left: 48 };
   const innerWidth = width - padding.left - padding.right;
   const innerHeight = height - padding.top - padding.bottom;
   const xScale = scalePoint<number>()
@@ -153,12 +176,13 @@ export default function StreetFrequencyLineChart({
     }
 
     const svgRect = e.currentTarget.ownerSVGElement?.getBoundingClientRect();
+    const canvasRect = canvasRef.current?.getBoundingClientRect();
     const elemRect = e.currentTarget.getBoundingClientRect();
 
-    if (svgRect) {
+    if (svgRect && canvasRect) {
       setTooltip({
         x: elemRect.left - svgRect.left + elemRect.width / 2,
-        y: elemRect.top - svgRect.top - 8,
+        y: elemRect.top - canvasRect.top - 8,
         show: true,
         title: streetName,
         value: `Rank #${rank} (${val} crashes)`,
@@ -177,12 +201,13 @@ export default function StreetFrequencyLineChart({
   ) => {
     const target = e.currentTarget;
     const svgRect = target.ownerSVGElement?.getBoundingClientRect();
+    const canvasRect = canvasRef.current?.getBoundingClientRect();
     const elemRect = target.getBoundingClientRect();
 
-    if (svgRect) {
+    if (svgRect && canvasRect) {
       setPinnedTooltip({
         x: elemRect.left - svgRect.left + elemRect.width / 2,
-        y: elemRect.top - svgRect.top - 8,
+        y: elemRect.top - canvasRect.top - 8,
         title: streetName,
         value: `Rank #${rank} (${val} crashes)`,
         year: year,
@@ -206,75 +231,91 @@ export default function StreetFrequencyLineChart({
 
   const chartBody = (
     <div
+      ref={containerRef}
       className={cn(
-        "relative flex flex-col gap-3 w-full h-full",
+        "relative flex h-full min-h-0 w-full min-w-0 flex-col gap-2",
         !pureCanvas &&
-          "rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 shadow-[0_12px_40px_rgba(0,0,0,0.2)]"
+          "rounded-2xl border border-border bg-card/35 p-4 shadow-[0_12px_40px_rgba(0,0,0,0.16)]",
       )}
     >
       {pureCanvas && (
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.06] pb-2 text-[11px] font-semibold text-white pointer-events-auto">
-          <div className="flex flex-col">
-            <span className="text-[9px] font-bold uppercase tracking-wider text-blue-400">Focus Corridor</span>
-            <span className="text-sm font-bold text-white leading-tight">{activeStreetName}</span>
+        <div className="pointer-events-auto flex min-h-11 items-center justify-between gap-2 border-b border-border/70 pb-2 text-[11px] font-semibold text-foreground">
+          <div className="min-w-0">
+            <span className="block text-[8px] font-bold uppercase tracking-[0.16em] text-primary">
+              Focus corridor
+            </span>
+            <span className="block truncate text-sm font-bold leading-tight text-foreground">
+              {activeStreetName}
+            </span>
           </div>
           <select
             value={activeStreetName}
             onChange={(e) => setSelectedStreet(e.target.value)}
-            className="bg-black/40 border border-white/[0.08] text-white text-[11px] font-semibold rounded-full px-3 py-1.5 outline-none cursor-pointer"
+            className="min-h-11 max-w-[48%] cursor-pointer rounded-full border border-border bg-background/80 px-3 text-[11px] font-semibold text-foreground outline-none transition focus:border-primary/45 focus:ring-2 focus:ring-primary/15"
             aria-label="Select corridor"
           >
             {top2024.map((row: RankedStreetRow) => (
-              <option key={row.name} value={row.name} className="bg-zinc-900 text-white">
+              <option key={row.name} value={row.name}>
                 {row.name}
               </option>
             ))}
           </select>
         </div>
       )}
-      {/* Floating HTML tooltip */}
-      <AnimatePresence>
-        {activeTooltip && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className={cn(
-              "absolute z-30 rounded-xl bg-black/90 border border-white/[0.1] px-3 py-2 text-xs shadow-2xl backdrop-blur-md whitespace-nowrap",
-              pinnedTooltip ? "pointer-events-auto" : "pointer-events-none",
-            )}
-            style={{
-              left: activeTooltip.x,
-              top: activeTooltip.y,
-              transform: "translate(-50%, -100%)",
-            }}
-          >
-            <div className="flex items-center gap-1.5 font-bold text-foreground">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7af298]" />
-              {activeTooltip.title}
-            </div>
-            <p className="text-muted-foreground text-[10px] mt-1">
-              Year {activeTooltip.year} · {activeTooltip.value}
-            </p>
-            {pinnedTooltip && (
-              <button
-                type="button"
-                className="mt-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary"
-                onClick={() => setPinnedTooltip(null)}
-              >
-                Dismiss
-              </button>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <div ref={canvasRef} className="relative min-h-0 flex-1">
+        <AnimatePresence>
+          {activeTooltip && (
+            <motion.div
+              initial={{ opacity: 0, y: 6, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className={cn(
+                "absolute z-30 max-w-[calc(100%-1rem)] rounded-lg border border-border bg-popover/95 px-3 py-2 text-xs shadow-2xl backdrop-blur-md",
+                pinnedTooltip ? "pointer-events-auto" : "pointer-events-none",
+                compact && "inset-x-2 bottom-1",
+              )}
+              {...(!compact
+                ? {
+                    style: {
+                      left: Math.min(
+                        Math.max(activeTooltip.x, 86),
+                        Math.max(containerWidth - 86, 86),
+                      ),
+                      top: Math.max(activeTooltip.y, 58),
+                      transform: "translate(-50%, -100%)",
+                    },
+                  }
+                : {})}
+              role="status"
+            >
+              <div className="flex items-center gap-1.5 font-bold text-foreground">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span className="truncate">{activeTooltip.title}</span>
+              </div>
+              <div className="mt-1 text-[10px] text-muted-foreground">
+                Year {activeTooltip.year} · {activeTooltip.value}
+              </div>
+              {pinnedTooltip && (
+                <button
+                  type="button"
+                  className="mt-1 min-h-11 rounded-md px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary"
+                  onClick={() => setPinnedTooltip(null)}
+                >
+                  Dismiss
+                </button>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        className="h-auto w-full max-w-full overflow-visible"
-        preserveAspectRatio="xMidYMid meet"
-      >
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="h-full w-full overflow-visible"
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label={`Street incident ranking from 2021 to 2024. ${activeStreetName} is selected.`}
+        >
         {Array.from({ length: parsed.series.length }, (_, index) => {
           const y = yScale(index + 1);
           return (
@@ -284,14 +325,14 @@ export default function StreetFrequencyLineChart({
                 x2={width - padding.right}
                 y1={y}
                 y2={y}
-                stroke="rgba(255,255,255,0.06)"
+                stroke={chartPalette.grid}
                 strokeDasharray="4 6"
               />
               <text
                 x={padding.left - 10}
                 y={y + 4}
                 textAnchor="end"
-                className="fill-[rgba(243,241,235,0.45)] text-[10px]"
+                className="fill-muted-foreground text-[10px]"
               >
                 #{index + 1}
               </text>
@@ -310,7 +351,7 @@ export default function StreetFrequencyLineChart({
                 x={x}
                 y={height - 8}
                 textAnchor="middle"
-                className="fill-[rgba(243,241,235,0.68)] text-[11px] font-semibold"
+                className="fill-foreground text-[11px] font-semibold"
               >
                 {year}
               </text>
@@ -328,10 +369,12 @@ export default function StreetFrequencyLineChart({
           const path = rankLine(points) ?? "";
 
           return (
-            <motion.g
+            <g
               key={street.name}
-              animate={{ opacity }}
-              transition={{ duration: 0.2 }}
+              style={{
+                opacity,
+                transition: "opacity 200ms ease",
+              }}
             >
               <path
                 d={path}
@@ -358,8 +401,9 @@ export default function StreetFrequencyLineChart({
                 onClick={() => setSelectedStreet(street.name)}
                 style={{ cursor: "pointer" }}
               />
-              {/* Direct label at the end of the line */}
-              {(() => {
+              {/* Direct labels stay complete on wide canvases; narrow canvases
+                  reserve the label space for the selected corridor. */}
+              {(!compact || isHighlighted) && (() => {
                 const lastPoint =
                   points.find((p) => p.year === 2024) ||
                   points[points.length - 1];
@@ -368,21 +412,25 @@ export default function StreetFrequencyLineChart({
                 const ly = yScale(lastPoint.rank);
                 return (
                   <text
-                    x={lx + 10}
+                    x={compact ? Math.min(lx + 8, width - 8) : lx + 10}
                     y={ly + 3.5}
-                    textAnchor="start"
+                    textAnchor={compact && lx > width - 90 ? "end" : "start"}
                     className={cn(
                       "text-[10px] font-bold transition-all duration-200 pointer-events-none",
-                      isHighlighted ? "fill-white opacity-100" : "fill-white/40 opacity-60"
+                      isHighlighted
+                        ? "fill-foreground opacity-100"
+                        : "fill-muted-foreground opacity-60",
                     )}
                     style={{
                       fontFamily: "var(--font-sans, sans-serif)",
                       letterSpacing: "0.02em",
                     }}
                   >
-                    {street.name
-                      .replace(" Caddesi", " Cd.")
-                      .replace(" Bulvarı", " Blv.")}
+                    {compact
+                      ? `#${lastPoint.rank}`
+                      : street.name
+                          .replace(" Caddesi", " Cd.")
+                          .replace(" Bulvarı", " Blv.")}
                   </text>
                 );
               })()}
@@ -395,18 +443,14 @@ export default function StreetFrequencyLineChart({
                 const y = yScale(point.rank);
                 return (
                   <g key={`${street.name}-${point.year}`}>
-                    <motion.circle
+                    <circle
                       cx={x}
                       cy={y}
-                      animate={{ r: isHighlighted ? 7 : 4 }}
+                      r={isHighlighted ? 7 : 4}
                       fill={street.color}
-                      stroke="rgba(17,17,17,0.92)"
+                      stroke="hsl(var(--background) / 0.92)"
                       strokeWidth={isHighlighted ? 3 : 2}
-                      transition={{
-                        type: "spring",
-                        stiffness: 150,
-                        damping: 15,
-                      }}
+                      style={{ transition: "r 180ms ease" }}
                     />
                     {/* Interactive capture circles for hover tooltips */}
                     <circle
@@ -443,15 +487,51 @@ export default function StreetFrequencyLineChart({
                           point.value,
                         );
                       }}
+                      tabIndex={isHighlighted ? 0 : -1}
+                      role="button"
+                      aria-label={`${street.name}, ${point.year}, rank ${point.rank}, ${point.value} crashes`}
+                      onFocus={(e) =>
+                        handlePointEnter(
+                          e as unknown as React.MouseEvent<SVGCircleElement>,
+                          street.name,
+                          point.year,
+                          point.rank,
+                          point.value,
+                        )
+                      }
+                      onBlur={handlePointLeave}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handlePointActivate(
+                            e as unknown as React.MouseEvent<SVGCircleElement>,
+                            street.name,
+                            point.year,
+                            point.rank,
+                            point.value,
+                          );
+                        }
+                      }}
                       className="cursor-pointer"
                     />
+                    {compact && isHighlighted && (
+                      <text
+                        x={x}
+                        y={Math.max(y - 12, 12)}
+                        textAnchor="middle"
+                        className="pointer-events-none fill-foreground text-[9px] font-bold"
+                      >
+                        {formatNumber(point.value, "en-US")}
+                      </text>
+                    )}
                   </g>
                 );
               })}
-            </motion.g>
+            </g>
           );
         })}
-      </svg>
+        </svg>
+      </div>
     </div>
   );
 
@@ -506,7 +586,7 @@ export default function StreetFrequencyLineChart({
                 <button
                   key={row.name}
                   type="button"
-                  className="viz-ranking-item text-left hover:bg-white/[0.04] transition-all duration-200"
+                  className="viz-ranking-item text-left transition-all duration-200 hover:bg-muted"
                   data-active={row.name === activeStreetName}
                   aria-pressed={row.name === activeStreetName}
                   onClick={() => setSelectedStreet(row.name)}

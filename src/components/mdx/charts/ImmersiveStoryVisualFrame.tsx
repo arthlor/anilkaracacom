@@ -1,87 +1,80 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
-import AccidentTypesBarChart from "./AccidentTypesBarChart";
-import IncidentHeatmap from "./IncidentHeatmap";
-import StreetFrequencyLineChart from "./StreetFrequencyLineChart";
+export type ImmersiveStoryView = {
+  id: string;
+  kicker: string;
+  title: string;
+  visual: ReactNode;
+};
 
-const storyViews = [
-  {
-    id: "trafik-zaman",
-    kicker: "Corridor pressure",
-    title: "Persistent risk",
-    visual: <StreetFrequencyLineChart pureCanvas />,
-  },
-  {
-    id: "trafik-turler",
-    kicker: "Incident burden",
-    title: "Daily disruption",
-    visual: <AccidentTypesBarChart pureCanvas />,
-  },
-  {
-    id: "trafik-isiharitasi",
-    kicker: "Weekly rhythm",
-    title: "Peak-hour density",
-    visual: <IncidentHeatmap pureCanvas />,
-  },
-] as const;
-
-export default function IzmirTrafficStoryVisual() {
-  const [activeStepId, setActiveStepId] = useState<string>("trafik-zaman");
-  const reduceMotion = useReducedMotion();
+export default function ImmersiveStoryVisualFrame({
+  views,
+  ariaLabel,
+}: {
+  views: ImmersiveStoryView[];
+  ariaLabel: string;
+}) {
+  const [activeStepId, setActiveStepId] = useState(views[0]?.id ?? "");
   const visualRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
+  const viewIds = views.map((view) => view.id).join("|");
 
   useEffect(() => {
-    const persistedStepId =
-      visualRef.current?.closest<HTMLElement>("[data-scrolly-root]")?.dataset
-        .activeStepId;
+    const allowedStepIds = new Set(viewIds.split("|"));
+    const persistedStepId = visualRef.current?.closest<HTMLElement>(
+      "[data-scrolly-root]",
+    )?.dataset.activeStepId;
     if (
       typeof persistedStepId === "string" &&
-      storyViews.some((view) => view.id === persistedStepId)
+      allowedStepIds.has(persistedStepId)
     ) {
       setActiveStepId(persistedStepId);
     }
 
     const handleStepChange = (event: Event) => {
-      const customEvent = event as CustomEvent<{ stepId: string }>;
-      if (storyViews.some((view) => view.id === customEvent.detail.stepId)) {
-        setActiveStepId(customEvent.detail.stepId);
+      const stepId = (event as CustomEvent<{ stepId: string }>).detail.stepId;
+      if (allowedStepIds.has(stepId)) {
+        setActiveStepId(stepId);
       }
     };
 
     window.addEventListener("scrolly:stepchange", handleStepChange);
-    return () => {
+    return () =>
       window.removeEventListener("scrolly:stepchange", handleStepChange);
-    };
-  }, []);
+  }, [viewIds]);
 
   const activeIndex = Math.max(
-    storyViews.findIndex((view) => view.id === activeStepId),
+    views.findIndex((view) => view.id === activeStepId),
     0,
   );
-  const activeView = storyViews[activeIndex] ?? storyViews[0];
+  const activeView = views[activeIndex] ?? views[0];
+
+  if (!activeView) {
+    return null;
+  }
 
   return (
     <section
       ref={visualRef}
-      className="traffic-story-visual relative isolate w-full min-w-0 overflow-hidden rounded-[18px] border border-border/80 bg-card/90 shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
+      className="editorial-story-visual relative isolate w-full min-w-0 overflow-hidden rounded-[18px] border border-border/80 bg-card/95 shadow-[0_24px_70px_hsl(var(--foreground)/0.14)]"
       style={{
         height: "var(--immersive-canvas-height, 500px)",
         backgroundImage:
-          "radial-gradient(circle at 12% 0%, hsl(var(--primary) / 0.09), transparent 32%), linear-gradient(180deg, hsl(var(--card)), hsl(var(--background)))",
+          "radial-gradient(circle at 10% 0%, hsl(var(--primary) / 0.09), transparent 32%), linear-gradient(180deg, hsl(var(--card)), hsl(var(--background)))",
       }}
       data-active-step={activeStepId}
-      aria-label="Interactive Izmir traffic incident story"
+      aria-label={ariaLabel}
     >
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.34]"
+        className="pointer-events-none absolute inset-0 opacity-35"
         aria-hidden="true"
         style={{
           backgroundImage:
             "linear-gradient(hsl(var(--foreground) / 0.025) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.025) 1px, transparent 1px)",
           backgroundSize: "36px 36px",
           maskImage:
-            "linear-gradient(to bottom, rgba(0,0,0,0.92), transparent 88%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 88%)",
         }}
       />
 
@@ -104,7 +97,7 @@ export default function IzmirTrafficStoryVisual() {
       </header>
 
       <div className="absolute inset-x-2 bottom-2 top-[54px] min-h-0 sm:inset-x-3 sm:bottom-3 sm:top-[62px]">
-        {storyViews.map((view, index) => {
+        {views.map((view, index) => {
           const isActive = view.id === activeStepId;
 
           return (
@@ -133,26 +126,22 @@ export default function IzmirTrafficStoryVisual() {
       </div>
 
       <style>{`
-        .traffic-story-visual :where(button, select, [role="button"]):focus-visible {
+        .editorial-story-visual :where(button, select, [role="button"]):focus-visible {
           outline: 2px solid hsl(var(--primary));
           outline-offset: 2px;
         }
 
-        .traffic-story-visual [data-heatmap-cell]:focus-visible {
-          outline-color: hsl(var(--foreground));
-        }
-
         @media (prefers-reduced-motion: reduce) {
-          .traffic-story-visual *,
-          .traffic-story-visual *::before,
-          .traffic-story-visual *::after {
+          .editorial-story-visual *,
+          .editorial-story-visual *::before,
+          .editorial-story-visual *::after {
             animation-duration: 0.01ms !important;
             animation-iteration-count: 1 !important;
             scroll-behavior: auto !important;
             transition-duration: 0.01ms !important;
           }
 
-          .traffic-story-visual [style*="transform"] {
+          .editorial-story-visual [style*="transform"] {
             transform: none !important;
           }
         }

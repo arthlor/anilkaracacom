@@ -238,9 +238,9 @@ export const workplaces = [
 ] as const;
 
 export const credibilityHighlights = [
-  "Proven track record of shipping real-world consumer iOS apps and digital products",
-  "Expertise in modeling complex civic datasets, SQL databases, and interactive visualizations",
-  "A decade of experience bridging high-stakes journalism, corporate communications, and product delivery",
+  "Four consumer iOS apps shipped to the App Store",
+  "Hands-on work with civic data, SQL, and interactive visualization",
+  "More than a decade across journalism, communications, and product delivery",
 ] as const;
 
 export type ExperienceEntry = {
@@ -255,17 +255,17 @@ export type ExperienceEntry = {
 export const experienceEntries: ExperienceEntry[] = [
   {
     period: "2025 - Present",
-    role: "Independent Mobile Product Developer & Data Journalist",
-    organization: "Self-directed work",
+    role: "Independent Product Developer & Data Journalist",
+    organization: "Independent",
     context:
-      "Mobile apps, interactive case studies, and public-interest reporting",
+      "Mobile apps, interactive data stories, and public-interest reporting",
     summary:
-      "Building and shipping consumer iOS apps to the App Store while producing interactive data journalism and public-interest reporting.",
+      "I build and ship consumer iOS apps while continuing to report and tell stories with public data.",
     highlights: [
-      "Shipped collaborative and monetization-enabled consumer iOS apps (Bohça, ChoreUs) to the App Store using React Native and Expo",
-      "Owned end-to-end product delivery: scoped features, designed mobile UX, built Supabase-backed partner-sync workspaces, and integrated RevenueCat subscriptions",
-      "Built data-driven stories and interactive visualizations using Python, SQL, D3.js, and Plotly",
-      "Translated complex product and analytical ideas into clear onboarding flows, product messaging, and user-facing communications",
+      "Shipped consumer apps including Bohça and ChoreUs to the App Store with React Native and Expo",
+      "Took features from initial scope and UX through Supabase integration, subscriptions, and release",
+      "Produced interactive data stories with Python, SQL, D3.js, and Plotly",
+      "Turned technical and analytical work into clear onboarding, product copy, and public-facing explanations",
     ],
   },
   {
@@ -275,12 +275,12 @@ export const experienceEntries: ExperienceEntry[] = [
     context:
       "Civic communications, digital campaigns, and data dashboard modeling",
     summary:
-      "Managed public-sector communication strategy, coordinated digital campaigns, and modeled large civic datasets for municipal institutions.",
+      "I led communications work, digital campaigns, and data analysis for İzmir Metropolitan Municipality and İZBETON.",
     highlights: [
-      "Managed corporate social media channels, producing graphic and video content that adapted institutional messages into social-first formats",
-      "Coordinated public-sector messaging and managed external agencies and vendors through strategic briefs, creative feedback, and quality control",
-      "Modeled large-scale traffic and transit datasets, including 17K+ collision records, using Python and SQL",
-      "Designed custom web dashboards, D3.js charts, and visual reports for data stories, public communication, and decision support",
+      "Ran social channels and produced graphics and video for public campaigns",
+      "Briefed and coordinated agencies and vendors from early direction through final quality checks",
+      "Analyzed traffic and transit data, including more than 17,000 collision records, with Python and SQL",
+      "Built dashboards, D3.js charts, and visual reports for public communication and internal decisions",
     ],
   },
   {
@@ -289,12 +289,12 @@ export const experienceEntries: ExperienceEntry[] = [
     organization: "BirGün, dokuz8HABER, and Ege'de Sonsöz",
     context: "Digital reporting, live publishing, and database analysis",
     summary:
-      "Built a foundation in deadline-driven digital reporting, live publishing, and database analysis across major newsrooms.",
+      "I worked across breaking news, digital publishing, and data analysis in three Turkish newsrooms.",
     highlights: [
-      "Produced deadline-driven digital coverage across civic, political, and public-interest topics with strong editorial standards",
-      "Built real-time election results trackers, digital explainers, and newsroom graphics using SQL, Excel, and visual interfaces",
-      "Conducted investigative reporting, fact-checking, source verification, and public records research under newsroom pressure",
-      "Developed a deadline-driven product mindset through live news coverage, verification workflows, and audience-facing data tools",
+      "Reported on local government, politics, and other public-interest issues under daily deadlines",
+      "Built live election trackers, explainers, and newsroom graphics with SQL, Excel, and visual tools",
+      "Researched investigations through fact-checking, source verification, and public records",
+      "Combined reporting and product thinking in live coverage, verification workflows, and audience-facing data tools",
     ],
   },
 ];
@@ -314,7 +314,8 @@ export const educationEntries: EducationEntry[] = [
     degree: "Master's Degree, New Media",
     period: "2017 - 2019",
     grade: "GPA 3.68/4.00",
-    notes: "Focused on digital media, data analysis, and quantitative research methods.",
+    notes:
+      "Studied digital media, data analysis, and quantitative research methods.",
     skills: ["Data Analysis"],
   },
   {
@@ -322,14 +323,15 @@ export const educationEntries: EducationEntry[] = [
     degree: "Bachelor's Degree, Journalism",
     period: "2011 - 2015",
     grade: "GPA 2.94/4.00",
-    notes: "Completed an Erasmus exchange semester at the University of Lodz in 2014; GPA 3.75/4.00. Activities and societies: University club of Sci-Fi and Fantasy.",
+    notes:
+      "Completed an Erasmus exchange semester at the University of Lodz in 2014 (GPA 3.75/4.00). Member of Ege University’s Science Fiction and Fantasy club.",
   },
   {
     institution: "University of Lodz",
     degree: "Bachelor's Degree, Journalism (Erasmus)",
     period: "2014",
     grade: "GPA 3.75/4.00",
-    notes: "Erasmus exchange programme.",
+    notes: "Erasmus exchange semester.",
   },
 ];
 
@@ -350,6 +352,6 @@ export const publicationEntries: PublicationEntry[] = [
     year: "2019",
     href: "https://hdl.handle.net/20.500.12469/2753",
     summary:
-      "Graduate research on how online news readers perceive clickbait, combining survey data, open-ended responses, and interviews with digital news executives.",
+      "My master's research examined how online news readers understand and respond to clickbait, using survey data, open-ended responses, and interviews with digital news leaders.",
   },
 ];

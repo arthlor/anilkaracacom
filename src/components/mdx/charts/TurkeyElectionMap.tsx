@@ -164,7 +164,7 @@ export default function TurkeyElectionMap() {
         </div>
       }
     >
-      <div className="space-y-4 rounded-2xl border border-white/[0.07] bg-white/[0.01] backdrop-blur-md p-4 sm:p-6 shadow-[0_12px_40px_rgba(0,0,0,0.2)]">
+      <div className="space-y-4 rounded-2xl border border-border bg-card/70 p-4 shadow-[0_12px_40px_hsl(var(--foreground)/0.08)] backdrop-blur-md sm:p-6">
         {/* SVG silhouette map of Turkey */}
         <div className="relative overflow-visible">
           <svg
@@ -183,7 +183,7 @@ export default function TurkeyElectionMap() {
                   fill={fill}
                   opacity={isActive ? 1 : 0.8}
                   stroke={
-                    isActive ? chartPalette.text : "rgba(255,255,255,0.25)"
+                    isActive ? chartPalette.text : chartPalette.dim
                   }
                   strokeWidth={isActive ? 2.2 : 0.8}
                   vectorEffect="non-scaling-stroke"
@@ -205,11 +205,11 @@ export default function TurkeyElectionMap() {
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-white/[0.05]">
+        <div className="flex flex-wrap gap-2 border-t border-border pt-2">
           {["CHP", "AKP", "YRP", "DEM", "MHP", "IYI", "BBP"].map((party) => (
             <div
               key={party}
-              className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
+              className="flex items-center gap-1.5 rounded-full border border-border bg-muted/40 px-3 py-1 text-[10px] uppercase tracking-[0.14em] text-muted-foreground"
             >
               <span
                 className="h-2 w-2 rounded-full"
@@ -269,8 +269,8 @@ export default function TurkeyElectionMap() {
                   }}
                   className={`snap-center flex-shrink-0 w-[240px] rounded-xl p-3.5 border transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? "bg-white/[0.06] border-white/[0.18] shadow-[0_4px_16px_rgba(0,0,0,0.3)] scale-[1.01]"
-                      : "bg-white/[0.015] border-white/[0.04] opacity-60"
+                      ? "scale-[1.01] border-primary/25 bg-primary/[0.06] shadow-[0_4px_16px_hsl(var(--foreground)/0.1)]"
+                      : "border-border bg-muted/30 opacity-60"
                   }`}
                   onClick={() => setSelectedProvince(feature.id)}
                 >

@@ -66,7 +66,7 @@ import TurkeyElectionsStoryVisual from "../../components/mdx/charts/TurkeyElecti
 
 Turkey's 2024 local elections produced a territorial realignment. The sequence below starts with national vote share, moves to the province map, then separates vote momentum from actual municipal control.
 
-<StickyScrollytelling>
+<StickyScrollytelling mode="immersive">
   <Fragment slot="visual">
     <TurkeyElectionsStoryVisual client:visible />
   </Fragment>
@@ -80,14 +80,16 @@ Turkey's 2024 local elections produced a territorial realignment. The sequence b
     CHP led the national municipal vote while also gaining momentum against 2019. This aggregate visualization highlights the national realignments by showing how opposition parties drew major gains.
   </StickyStep>
 
-  <StickyStep
-    id="election-map"
-    label="Step 2"
-    title="Where the shift spread"
-    summary="The province map matters because it shows the opposition move extending beyond the usual western urban strongholds."
-  >
-    The province map shows why the result felt broader than a coastal or metropolitan win. The opposition spread into previously conservative Anatolian strongholds, showing territorial shifts at a granular geographic scale.
-  </StickyStep>
+<StickyStep
+  id="election-map"
+  label="Step 2"
+  title="Where the shift spread"
+  summary="The province map matters because it shows the opposition move extending beyond the usual western urban strongholds."
+>
+  The province map shows why the result felt broader than a coastal or
+  metropolitan win. The opposition spread into previously conservative Anatolian
+  strongholds, showing territorial shifts at a granular geographic scale.
+</StickyStep>
 
   <StickyStep
     id="election-change"
