@@ -74,7 +74,6 @@ export default function TurkeyMotorcycleMap() {
     }));
   }, [features]);
 
-  // Tailwind class determination per mode for crisp light/dark rendering
   const getPathClass = (featureId: string, meta: any, isActive: boolean) => {
     const surpassed = isProvinceCarSurpassed(featureId);
 
@@ -147,13 +146,13 @@ export default function TurkeyMotorcycleMap() {
       }
       density="explorer"
       controls={
-        <div className="flex items-center gap-1 rounded-lg border border-border bg-muted/40 p-1">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-1 rounded-lg border border-border bg-muted/40 p-1 max-w-full overflow-x-auto scrollbar-none">
           {(["cars_surpassed", "share", "stock"] as Mode[]).map((m) => (
             <button
               key={m}
               type="button"
               onClick={() => setMode(m)}
-              className={`rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
+              className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-semibold transition-all ${
                 mode === m
                   ? "bg-amber-500 text-black shadow-sm font-bold"
                   : "text-muted-foreground hover:text-foreground"
@@ -246,7 +245,7 @@ export default function TurkeyMotorcycleMap() {
         <div className="relative overflow-visible">
           <svg
             viewBox="0 0 760 430"
-            className="h-auto w-full max-w-full overflow-visible"
+            className="h-auto w-full max-w-full overflow-visible touch-action-manipulation"
             preserveAspectRatio="xMidYMid meet"
           >
             {paths.map(({ feature, path }) => {
@@ -264,6 +263,15 @@ export default function TurkeyMotorcycleMap() {
                   onMouseEnter={() => setHoveredProvinceId(feature.id)}
                   onMouseLeave={() => setHoveredProvinceId(null)}
                   onClick={() => setSelectedProvinceId(feature.id)}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    setSelectedProvinceId(feature.id);
+                  }}
+                  style={{
+                    cursor: "pointer",
+                    touchAction: "manipulation",
+                    pointerEvents: "auto",
+                  }}
                 />
               );
             })}
@@ -326,6 +334,10 @@ export default function TurkeyMotorcycleMap() {
                     cardRefs.current[feature.id] = el;
                   }}
                   onClick={() => setSelectedProvinceId(feature.id)}
+                  onTouchEnd={(e) => {
+                    e.stopPropagation();
+                    setSelectedProvinceId(feature.id);
+                  }}
                   className={`snap-center shrink-0 w-[180px] rounded-xl p-2.5 border transition-all cursor-pointer ${
                     isSelected
                       ? "border-amber-500 bg-amber-500/10 shadow-sm"

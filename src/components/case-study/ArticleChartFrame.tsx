@@ -94,15 +94,15 @@ export default function ArticleChartFrame({
                   </div>
                 )}
                 {primaryMetric && (
-                  <div className="inline-flex min-h-8 max-w-full items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.045] px-3 py-1.5">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/80">
+                  <div className="inline-flex min-h-8 max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 rounded-2xl border border-primary/15 bg-primary/[0.045] px-3 py-1.5 sm:rounded-full">
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/80 shrink-0">
                       {primaryMetric.label}
                     </span>
-                    <strong className="font-display text-base leading-none text-foreground">
+                    <strong className="font-display text-base leading-none text-foreground shrink-0">
                       {primaryMetric.value}
                     </strong>
                     {primaryMetric.detail && (
-                      <span className="truncate text-xs leading-5 text-muted-foreground/80">
+                      <span className="text-xs leading-5 text-muted-foreground/80 shrink-0">
                         {primaryMetric.detail}
                       </span>
                     )}
