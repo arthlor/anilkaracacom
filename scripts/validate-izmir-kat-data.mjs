@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = process.cwd();
@@ -9,6 +9,7 @@ const summaryPath = resolve(
 );
 const rawJsonPath = resolve(root, "kat.json");
 const publicJsonPath = resolve(root, "public/data/izmir-kat/kat.json");
+const shapePath = resolve(root, "public/data/izmir-kat/district_shapes.json");
 
 const tierKeys = [
   "tier_1_2",
@@ -76,6 +77,8 @@ const csv = (await readFile(csvPath, "utf8"))
 const summary = JSON.parse(await readFile(summaryPath, "utf8"));
 const rawJson = JSON.parse(await readFile(rawJsonPath, "utf8"));
 const publicJson = JSON.parse(await readFile(publicJsonPath, "utf8"));
+const shapes = JSON.parse(await readFile(shapePath, "utf8"));
+const shapeSize = (await stat(shapePath)).size;
 
 const summarize = (records) => {
   const totals = emptyTiers();
@@ -178,6 +181,26 @@ assert(
   summary.length === rawExpected.districts,
   "derived district count differs",
 );
+assert(shapes.length === rawExpected.districts, "shape district count differs");
+assert(shapeSize < 1_000_000, `shape payload exceeds 1 MB: ${shapeSize}`);
+assert(
+  shapes.every(
+    (shape) =>
+      typeof shape.district === "string" &&
+      Array.isArray(shape.centroid) &&
+      shape.centroid.length === 2 &&
+      shape.polygons.every(
+        (polygon) =>
+          polygon.length >= 3 &&
+          polygon.every(
+            (point) =>
+              point.length === 2 &&
+              point.every((value) => Number.isFinite(value)),
+          ),
+      ),
+  ),
+  "shape payload contains invalid geometry",
+);
 
 for (const row of summary) {
   const expected = editorial.byDistrict.get(row.district);
@@ -210,4 +233,7 @@ console.log(
 );
 console.log(
   `✓ Editoryal görünüm: ${editorialExpected.total.toLocaleString("tr-TR")} kayıt, ${editorialExpected.tiers.tier_20_plus.toLocaleString("tr-TR")} adet 20+ kat kaydı; ${editorialExclusions.size} teknik satırdaki 11 bina kaydı hariç.`,
+);
+console.log(
+  `✓ Harita geometrisi: ${shapes.length} ilçe, ${shapeSize.toLocaleString("tr-TR")} bayt; production varlık sınırının altında.`,
 );
