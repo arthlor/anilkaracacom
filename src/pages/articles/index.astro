@@ -30,7 +30,7 @@ const formatDate = (date: Date) =>
   title="Articles"
   description="Published article archive for Anil Karaca in English and Turkish, grouped by data journalism, systems analysis, and political reporting."
 >
-  <section class="articles-archive" data-articles-archive>
+  <section class="articles-archive">
     <div class="articles-archive__shell">
       <header class="articles-archive__hero">
         <div class="articles-archive__hero-copy">
@@ -43,70 +43,6 @@ const formatDate = (date: Date) =>
         </div>
       </header>
 
-      <div class="articles-archive__controls">
-        <div
-          class="articles-archive__filter-group"
-          role="group"
-          aria-label="Article sections"
-        >
-          <button
-            class="articles-archive__filter"
-            type="button"
-            data-filter="all"
-            data-active="true"
-            aria-pressed="true"
-          >
-            All
-          </button>
-          {
-            grouped.map((section) => (
-              <button
-                class="articles-archive__filter"
-                type="button"
-                data-filter={section.pillar}
-                data-active="false"
-                aria-pressed="false"
-              >
-                {section.shortTitle}
-              </button>
-            ))
-          }
-        </div>
-
-        <div
-          class="articles-archive__filter-group"
-          role="group"
-          aria-label="Article languages"
-        >
-          <button
-            class="articles-archive__filter"
-            type="button"
-            data-lang-filter="all"
-            data-active="true"
-            aria-pressed="true"
-          >
-            All languages
-          </button>
-          <button
-            class="articles-archive__filter"
-            type="button"
-            data-lang-filter="en"
-            data-active="false"
-            aria-pressed="false"
-          >
-            English
-          </button>
-          <button
-            class="articles-archive__filter"
-            type="button"
-            data-lang-filter="tr"
-            data-active="false"
-            aria-pressed="false"
-          >
-            Turkish
-          </button>
-        </div>
-      </div>
 
       <div class="articles-archive__content">
         <div class="articles-archive__sections">
@@ -115,7 +51,6 @@ const formatDate = (date: Date) =>
               <section
                 class="articles-section"
                 id={section.pillar}
-                data-section={section.pillar}
               >
                 <div class="articles-section__head">
                   <h2>{section.title}</h2>
@@ -129,13 +64,7 @@ const formatDate = (date: Date) =>
                     const primaryMetric = entry.data.metrics[0];
 
                     return (
-                      <article
-                        class="article-card"
-                        data-article-card
-                        data-pillar={section.pillar}
-                        data-language={entry.data.language}
-                        data-featured={String(entry.data.featured)}
-                      >
+                      <article class="article-card">
                         <a
                           class="article-card__media"
                           href={getArticleHref(entry)}
@@ -199,132 +128,7 @@ const formatDate = (date: Date) =>
   </section>
 </MainLayout>
 
-<script is:inline>
-  const archive = document.querySelector("[data-articles-archive]");
 
-  if (archive instanceof HTMLElement) {
-    const filterButtons = Array.from(archive.querySelectorAll("[data-filter]"));
-    const languageButtons = Array.from(
-      archive.querySelectorAll("[data-lang-filter]"),
-    );
-    const sections = Array.from(archive.querySelectorAll("[data-section]"));
-    const cards = Array.from(archive.querySelectorAll("[data-article-card]"));
-    const validFilters = new Set(
-      filterButtons
-        .map((button) =>
-          button instanceof HTMLElement ? button.dataset.filter : null,
-        )
-        .filter(Boolean),
-    );
-    const validLanguages = new Set(["all", "en", "tr"]);
-
-    const applyFilters = (
-      sectionFilter,
-      languageFilter,
-      { updateUrl = true } = {},
-    ) => {
-      const nextSection = validFilters.has(sectionFilter)
-        ? sectionFilter
-        : "all";
-      const nextLanguage = validLanguages.has(languageFilter)
-        ? languageFilter
-        : "all";
-
-      filterButtons.forEach((button) => {
-        if (button instanceof HTMLElement) {
-          const isActive = button.dataset.filter === nextSection;
-          button.dataset.active = String(isActive);
-          button.setAttribute("aria-pressed", String(isActive));
-        }
-      });
-
-      languageButtons.forEach((button) => {
-        if (button instanceof HTMLElement) {
-          const isActive = button.dataset.langFilter === nextLanguage;
-          button.dataset.active = String(isActive);
-          button.setAttribute("aria-pressed", String(isActive));
-        }
-      });
-
-      sections.forEach((section) => {
-        if (!(section instanceof HTMLElement)) return;
-
-        const sectionVisible =
-          nextSection === "all" || section.dataset.section === nextSection;
-        let visibleCards = 0;
-
-        cards.forEach((card) => {
-          if (!(card instanceof HTMLElement)) return;
-          if (!section.contains(card)) return;
-
-          const languageMatches =
-            nextLanguage === "all" || card.dataset.language === nextLanguage;
-          const cardVisible = sectionVisible && languageMatches;
-          card.toggleAttribute("hidden", !cardVisible);
-          if (cardVisible) visibleCards += 1;
-        });
-
-        section.toggleAttribute("hidden", !sectionVisible || visibleCards === 0);
-      });
-
-      if (updateUrl) {
-        const url = new URL(window.location.href);
-        if (nextSection === "all") {
-          url.searchParams.delete("section");
-        } else {
-          url.searchParams.set("section", nextSection);
-        }
-
-        if (nextLanguage === "all") {
-          url.searchParams.delete("lang");
-        } else {
-          url.searchParams.set("lang", nextLanguage);
-        }
-
-        window.history.pushState(
-          { section: nextSection, lang: nextLanguage },
-          "",
-          url,
-        );
-      }
-    };
-
-    filterButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!(button instanceof HTMLElement) || !button.dataset.filter) return;
-        const currentLanguage =
-          new URL(window.location.href).searchParams.get("lang") || "all";
-        applyFilters(button.dataset.filter, currentLanguage);
-      });
-    });
-
-    languageButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!(button instanceof HTMLElement) || !button.dataset.langFilter) {
-          return;
-        }
-        const currentSection =
-          new URL(window.location.href).searchParams.get("section") || "all";
-        applyFilters(currentSection, button.dataset.langFilter);
-      });
-    });
-
-    const initialSection =
-      new URL(window.location.href).searchParams.get("section") || "all";
-    const initialLanguage =
-      new URL(window.location.href).searchParams.get("lang") || "all";
-    applyFilters(initialSection, initialLanguage, { updateUrl: false });
-
-    window.addEventListener("popstate", () => {
-      const url = new URL(window.location.href);
-      applyFilters(
-        url.searchParams.get("section") || "all",
-        url.searchParams.get("lang") || "all",
-        { updateUrl: false },
-      );
-    });
-  }
-</script>
 
 <style>
   .articles-archive {
@@ -367,50 +171,6 @@ const formatDate = (date: Date) =>
     color: hsl(var(--muted-foreground));
   }
 
-  .articles-archive__controls {
-    position: sticky;
-    top: 78px;
-    z-index: 30;
-    margin-top: 1.5rem;
-    padding: 0.85rem 0;
-    background: hsl(var(--background) / 0.88);
-    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
-    backdrop-filter: blur(16px);
-  }
-
-  .articles-archive__filter-group {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .articles-archive__filter {
-    min-height: 2.1rem;
-    padding: 0.45rem 0.9rem;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    background: transparent;
-    color: hsl(var(--muted-foreground));
-    font-size: 0.8rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition:
-      border-color 180ms ease,
-      background 180ms ease,
-      color 180ms ease;
-  }
-
-  .articles-archive__filter:hover {
-    color: hsl(var(--foreground));
-    background: hsl(var(--foreground) / 0.04);
-  }
-
-  .articles-archive__filter[data-active="true"] {
-    border-color: rgba(122, 242, 152, 0.25);
-    background: rgba(122, 242, 152, 0.06);
-    color: var(--premium-accent);
-    font-weight: 600;
-  }
 
   .articles-archive__content {
     margin-top: 3.5rem;
@@ -422,9 +182,6 @@ const formatDate = (date: Date) =>
     min-width: 0;
   }
 
-  .articles-section[hidden] {
-    display: none;
-  }
 
   .articles-section__head {
     display: flex;

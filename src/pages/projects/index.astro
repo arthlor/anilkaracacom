@@ -4,30 +4,30 @@ import { getCollection } from "astro:content";
 import Icon from "../../components/Icon.astro";
 import ProjectArchiveCard from "../../components/ProjectArchiveCard.astro";
 import TechBadge from "../../components/ui/TechBadge.astro";
+import { primaryProductProjectSlugs } from "../../data/portfolio";
 import {
-  primaryProductProjectSlugs,
-  projectShowcaseSections,
-} from "../../data/portfolio";
-import {
-  getArticleHref,
   getEntryHref,
   getEntrySummary,
   getEntryTags,
   getEntryTypeLabel,
   isPublicEntryData,
-  sortEntriesByDateDesc,
   sortEntriesByFeatureAndDate,
 } from "../../lib/content";
 import MainLayout from "../../layouts/MainLayout.astro";
 
-const [projects, latestArticles] = await Promise.all([
-  getCollection("projects", ({ data }) => isPublicEntryData(data)),
-  getCollection("articles", ({ data }) => isPublicEntryData(data)).then(
-    (entries) => sortEntriesByDateDesc(entries).slice(0, 3),
-  ),
-]);
+const projects = await getCollection("projects", ({ data }) =>
+  isPublicEntryData(data),
+);
 
 const featuredProductProjects = new Set<string>(primaryProductProjectSlugs);
+const projectsById = new Map(projects.map((entry) => [entry.id, entry]));
+const mobileProjects = primaryProductProjectSlugs
+  .filter((slug) => slug !== "anil-karaca")
+  .map((slug) => projectsById.get(slug))
+  .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
+const websiteProjects = ["anil-karaca"]
+  .map((slug) => projectsById.get(slug))
+  .filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
 const featuredDocumentaryId = "ekmegimizi-buyutuyoruz";
 const remainingProjects = sortEntriesByFeatureAndDate(
   projects.filter(
@@ -66,8 +66,8 @@ const documentaryBadges = [
 ];
 const documentaryHighlights = [
   {
-    label: "What the film captures",
-    text: "The documentary follows process and impact together: how the team works, which neighborhoods it reaches first, and what those interventions mean in daily life.",
+    label: "The story",
+    text: "The film follows the team at street level: where it goes, how it works, and what those interventions change in daily life.",
   },
 ];
 const featuredDocumentaryVideoId = getYouTubeVideoId(
@@ -82,7 +82,7 @@ const featuredDocumentaryVideoUrl =
 
 <MainLayout
   title="Projects"
-  description="Project archive organized into mobile apps, websites, and interactive case studies."
+  description="Apps, websites, interactive reporting, and films made by Anil Karaca."
 >
   <section class="projects-archive" data-projects-archive>
     <div class="projects-archive__shell">
@@ -91,7 +91,7 @@ const featuredDocumentaryVideoUrl =
           <p class="projects-archive__eyebrow">Project archive</p>
           <h1>Projects</h1>
           <p class="projects-archive__subtitle">
-            A comprehensive archive of shipped mobile apps, data visualizations, municipal communications, and interactive case studies.
+            Apps, websites, interactive reporting, and films I’ve made.
           </p>
         </div>
       </header>
@@ -99,7 +99,7 @@ const featuredDocumentaryVideoUrl =
       <div class="projects-archive__controls">
         <div
           class="projects-archive__filter-group"
-          role="tablist"
+          role="group"
           aria-label="Project categories"
         >
           <button
@@ -107,6 +107,7 @@ const featuredDocumentaryVideoUrl =
             type="button"
             data-filter="all"
             data-active="true"
+            aria-pressed="true"
           >
             All
           </button>
@@ -115,6 +116,7 @@ const featuredDocumentaryVideoUrl =
             type="button"
             data-filter="mobile-apps"
             data-active="false"
+            aria-pressed="false"
           >
             Mobile Apps
           </button>
@@ -123,6 +125,7 @@ const featuredDocumentaryVideoUrl =
             type="button"
             data-filter="websites"
             data-active="false"
+            aria-pressed="false"
           >
             Websites
           </button>
@@ -131,89 +134,71 @@ const featuredDocumentaryVideoUrl =
             type="button"
             data-filter="data-journalism"
             data-active="false"
+            aria-pressed="false"
           >
-            Data Journalism & Case Studies
+            Reporting & Film
           </button>
         </div>
       </div>
 
       <div class="projects-archive__content">
         <div class="projects-archive__sections">
-          <!-- Mobile Apps Section -->
-          {
-            projectShowcaseSections
-              .filter((s) => s.slug === "mobile-apps")
-              .map((section) => (
-                <section
-                  class="projects-section"
-                  id="mobile-apps"
-                  data-section="mobile-apps"
-                >
-                  <div class="projects-section__head">
-                    <h2>{section.title}</h2>
-                    <span class="projects-section__count">
-                      {section.entries.length} shipped
-                    </span>
-                  </div>
-                  <div class="projects-section__grid">
-                    {section.entries.map((entry) => (
-                      <ProjectArchiveCard
-                        title={entry.title}
-                        eyebrow={entry.eyebrow}
-                        meta={entry.meta}
-                        description={entry.description}
-                        href={entry.href}
-                        external={entry.external}
-                        role={entry.role}
-                        impact={entry.impact}
-                        tags={entry.tags}
-                        image={entry.image}
-                        imageFit={entry.imageFit ?? "cover"}
-                        ctaLabel={entry.ctaLabel}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))
-          }
+          <section
+            class="projects-section"
+            id="mobile-apps"
+            data-section="mobile-apps"
+          >
+            <div class="projects-section__head">
+              <h2>Mobile apps I’ve shipped</h2>
+              <span class="projects-section__count">
+                {mobileProjects.length} apps
+              </span>
+            </div>
+            <div class="projects-section__grid">
+              {
+                mobileProjects.map((entry) => (
+                  <ProjectArchiveCard
+                    title={entry.data.title}
+                    eyebrow="iOS app"
+                    description={getEntrySummary(entry)}
+                    href={getEntryHref(entry)}
+                    tags={getEntryTags(entry)}
+                    image={entry.data.heroImage!}
+                    imageFit="contain"
+                    ctaLabel="See project"
+                  />
+                ))
+              }
+            </div>
+          </section>
 
-          <!-- Websites Section -->
-          {
-            projectShowcaseSections
-              .filter((s) => s.slug === "websites")
-              .map((section) => (
-                <section
-                  class="projects-section"
-                  id="websites"
-                  data-section="websites"
-                >
-                  <div class="projects-section__head">
-                    <h2>{section.title}</h2>
-                    <span class="projects-section__count">
-                      {section.entries.length} live
-                    </span>
-                  </div>
-                  <div class="projects-section__grid">
-                    {section.entries.map((entry) => (
-                      <ProjectArchiveCard
-                        title={entry.title}
-                        eyebrow={entry.eyebrow}
-                        meta={entry.meta}
-                        description={entry.description}
-                        href={entry.href}
-                        external={entry.external}
-                        role={entry.role}
-                        impact={entry.impact}
-                        tags={entry.tags}
-                        image={entry.image}
-                        imageFit={entry.imageFit ?? "cover"}
-                        ctaLabel={entry.ctaLabel}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))
-          }
+          <section
+            class="projects-section"
+            id="websites"
+            data-section="websites"
+          >
+            <div class="projects-section__head">
+              <h2>Websites and editorial systems</h2>
+              <span class="projects-section__count">
+                {websiteProjects.length} site
+              </span>
+            </div>
+            <div class="projects-section__grid">
+              {
+                websiteProjects.map((entry) => (
+                  <ProjectArchiveCard
+                    title={entry.data.title}
+                    eyebrow="Website"
+                    description={getEntrySummary(entry)}
+                    href={getEntryHref(entry)}
+                    tags={getEntryTags(entry)}
+                    image={entry.data.heroImage!}
+                    ctaLabel="See project"
+                  />
+                ))
+              }
+            </div>
+          </section>
 
           <!-- Data Journalism Section -->
           <section
@@ -222,10 +207,7 @@ const featuredDocumentaryVideoUrl =
             data-section="data-journalism"
           >
             <div class="projects-section__head">
-              <h2>
-                Reporting-driven investigations, scrollytelling builds, and
-                documentary work.
-              </h2>
+              <h2>Interactive reporting and documentary work</h2>
               <span class="projects-section__count">
                 {(featuredDocumentary ? 1 : 0) + remainingProjects.length} case studies
               </span>
@@ -279,9 +261,9 @@ const featuredDocumentaryVideoUrl =
                       </div>
 
                       <p class="projects-documentary__player-caption">
-                        A municipal field documentary centered on visible
-                        neighborhood change, urgent service delivery, and civic
-                        storytelling told at street level.
+                        A nine-minute documentary I wrote, shot, and edited
+                        about İzmir’s Acil Çözüm Ekibi and the neighborhoods it
+                        serves.
                       </p>
                     </div>
 
@@ -291,9 +273,7 @@ const featuredDocumentaryVideoUrl =
                           <div class="page-icon-tile h-12 w-12 shrink-0">
                             <Icon name="video" size={20} />
                           </div>
-                          <span class="page-kicker">
-                            Written, shot, and edited by me
-                          </span>
+                          <span class="page-kicker">My documentary work</span>
                         </div>
                         <h3 class="projects-documentary__title">
                           {featuredDocumentary.data.title}
@@ -325,7 +305,7 @@ const featuredDocumentaryVideoUrl =
                               href={featuredDocumentaryHref}
                               class="page-inline-link"
                             >
-                              Open case study
+                              See project
                               <Icon name="arrow-right" size={16} />
                             </a>
                           )}
@@ -374,57 +354,13 @@ const featuredDocumentaryVideoUrl =
                           ? "contain"
                           : "cover"
                       }
-                      ctaLabel="Open case study"
+                      ctaLabel="See project"
                     />
                   ))}
                 </div>
               )
             }
           </section>
-
-          <!-- Latest Articles Section (Hidden when specific category is filtered) -->
-          {
-            latestArticles.length > 0 && (
-              <section
-                class="projects-section"
-                id="latest-articles"
-                data-section="latest-articles"
-              >
-                <div class="projects-section__head">
-                  <h2>
-                    The latest reporting, investigations, and analysis from the
-                    writing archive.
-                  </h2>
-                  <span class="projects-section__count">Recent writing</span>
-                </div>
-
-                <div class="projects-section__grid">
-                  {latestArticles.map((entry) => (
-                    <ProjectArchiveCard
-                      title={entry.data.title}
-                      eyebrow={getEntryTypeLabel(entry)}
-                      meta={entry.data.pubDate.toLocaleDateString(
-                        entry.data.language === "tr" ? "tr-TR" : "en-US",
-                        {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        },
-                      )}
-                      description={getEntrySummary(entry)}
-                      href={getArticleHref(entry)}
-                      external={false}
-                      role={entry.data.role}
-                      impact={entry.data.impact}
-                      tags={getEntryTags(entry)}
-                      image={entry.data.heroImage}
-                      ctaLabel="Read article"
-                    />
-                  ))}
-                </div>
-              </section>
-            )
-          }
         </div>
       </div>
     </div>
@@ -441,14 +377,14 @@ const featuredDocumentaryVideoUrl =
     const applyFilter = (filter) => {
       filterButtons.forEach((button) => {
         if (button instanceof HTMLElement) {
-          button.dataset.active = String(button.dataset.filter === filter);
+          const isActive = button.dataset.filter === filter;
+          button.dataset.active = String(isActive);
+          button.setAttribute("aria-pressed", String(isActive));
         }
       });
 
       sections.forEach((section) => {
         if (section instanceof HTMLElement) {
-          // If all is selected, show all project sections + latest articles
-          // If specific filter, show matching section and hide others (including latest articles)
           const visible =
             filter === "all" || section.dataset.section === filter;
           section.toggleAttribute("hidden", !visible);
@@ -525,8 +461,8 @@ const featuredDocumentaryVideoUrl =
   }
 
   .projects-archive__filter {
-    min-height: 2.1rem;
-    padding: 0.45rem 0.9rem;
+    min-height: 2.75rem;
+    padding: 0.6rem 1rem;
     border: 1px solid transparent;
     border-radius: 999px;
     background: transparent;
@@ -543,6 +479,11 @@ const featuredDocumentaryVideoUrl =
   .projects-archive__filter:hover {
     color: hsl(var(--foreground));
     background: hsl(var(--foreground) / 0.04);
+  }
+
+  .projects-archive__filter:focus-visible {
+    outline: 2px solid var(--premium-accent);
+    outline-offset: 3px;
   }
 
   .projects-archive__filter[data-active="true"] {

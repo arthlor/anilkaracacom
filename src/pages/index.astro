@@ -3,9 +3,9 @@ import { getCollection } from "astro:content";
 
 import JsonLd from "@components/JsonLd.astro";
 import {
-  appProjects,
   credibilityHighlights,
   featuredArticleSlugs,
+  primaryProductProjectSlugs,
   workplaces,
 } from "@/data/portfolio";
 import {
@@ -29,7 +29,9 @@ const [projects, articles] = await Promise.all([
   getCollection("articles", ({ data }) => isPublicEntryData(data)),
 ]);
 const featuredWork = sortEntriesByFeatureAndDate(projects).slice(0, 6);
-const featuredArticles = pickEntriesBySlug(articles, featuredArticleSlugs);
+const featuredArticles = pickEntriesBySlug(articles, featuredArticleSlugs).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
 
 const homeStats = [
   {
@@ -41,7 +43,7 @@ const homeStats = [
     label: "Newsrooms and public institutions",
   },
   {
-    value: `${appProjects.length}`,
+    value: `${primaryProductProjectSlugs.length - 1}`,
     label: "iOS apps shipped to the App Store",
   },
 ] as const;
@@ -430,6 +432,17 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
                   href={getEntryHref(entry)}
                   class="portfolio-home__writing-card"
                 >
+                  {entry.data.heroImage && (
+                    <div class="portfolio-home__writing-image">
+                      <Image
+                        src={entry.data.heroImage}
+                        alt={entry.data.title}
+                        width={600}
+                        height={375}
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
                   <div class="portfolio-home__writing-copy">
                     <p class="portfolio-home__writing-meta">
                       {entry.data.language === "tr" ? "Turkish" : "English"} ·{" "}
@@ -439,14 +452,7 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
                       })}
                     </p>
                     <h3>{entry.data.title}</h3>
-                    <p>{getEntrySummary(entry)}</p>
-                  </div>
-                  <div class="portfolio-home__tag-row">
-                    {getEntryTags(entry)
-                      .slice(0, 3)
-                      .map((tag) => (
-                        <span>{tag}</span>
-                      ))}
+                    <p>{entry.data.description}</p>
                   </div>
                 </a>
               ))}
@@ -1296,10 +1302,8 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
     .portfolio-home__writing-card {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 1.25rem;
-      min-height: 240px;
-      padding: 1.5rem;
+      gap: 0;
+      overflow: hidden;
       border: 1px solid hsl(var(--foreground) / 0.1);
       border-radius: 1.25rem;
       background: hsl(var(--foreground) / 0.025);
@@ -1308,13 +1312,40 @@ const repeatedWorkplaces = [...workplaces, ...workplaces];
       transition:
         border-color 180ms ease,
         transform 180ms ease,
-        background 180ms ease;
+        background 180ms ease,
+        box-shadow 180ms ease;
     }
 
     .portfolio-home__writing-card:hover {
       transform: translateY(-2px);
       border-color: rgba(122, 242, 152, 0.35);
       background: hsl(var(--foreground) / 0.045);
+      box-shadow: 0 16px 36px hsl(var(--foreground) / 0.1);
+    }
+
+    .portfolio-home__writing-image {
+      aspect-ratio: 16 / 10;
+      overflow: hidden;
+      border-bottom: 1px solid hsl(var(--foreground) / 0.08);
+    }
+
+    .portfolio-home__writing-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(100%);
+      transition:
+        transform 400ms ease,
+        filter 400ms ease;
+    }
+
+    .portfolio-home__writing-card:hover .portfolio-home__writing-image img {
+      transform: scale(1.03);
+      filter: grayscale(90%);
+    }
+
+    .portfolio-home__writing-copy {
+      padding: 1.25rem;
     }
 
     .portfolio-home__writing-meta {
