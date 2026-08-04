@@ -23,8 +23,7 @@ interface Props {
 
 const { entry, collection, Content } = Astro.props;
 const isTurkish = entry.data.language === "tr";
-const isPublishedArticle =
-  collection === "articles" && isPublicEntry(entry);
+const isPublishedArticle = collection === "articles" && isPublicEntry(entry);
 const seo = getEntrySeo(collection, entry);
 const noindex = collection === "articles" && !isPublicEntry(entry);
 
@@ -46,7 +45,7 @@ const copy = isTurkish
       contextLabel: "Bağlam ve Problem Alanı",
       challengeLabel: "Üretim Zorluğu",
       codeLabel: "Etkileşimli Sistem Notu",
-      conclusionLabel: "Sonuç ve Değer",
+      conclusionLabel: collection === "articles" ? "Son söz" : "Sonuç ve Değer",
       narrativeLabel: "Makale ve Görsel Okuma",
     }
   : {
@@ -77,20 +76,16 @@ const schema =
   noindex={noindex}
   article={collection === "articles"}
   lang={entry.data.language}
-  articlePublishedTime={
-    collection === "articles" ? entry.data.pubDate.toISOString() : undefined
-  }
-  articleModifiedTime={
-    collection === "articles"
-      ? (entry.data.updatedDate ?? entry.data.pubDate).toISOString()
-      : undefined
-  }
+  articlePublishedTime={collection === "articles"
+    ? entry.data.pubDate.toISOString()
+    : undefined}
+  articleModifiedTime={collection === "articles"
+    ? (entry.data.updatedDate ?? entry.data.pubDate).toISOString()
+    : undefined}
   articleAuthor={siteConfig.personName}
-  articleSection={
-    collection === "articles"
-      ? pillarConfig[entry.data.pillar].title
-      : undefined
-  }
+  articleSection={collection === "articles"
+    ? pillarConfig[entry.data.pillar].title
+    : undefined}
 >
   <JsonLd schema={schema} />
 
@@ -98,13 +93,15 @@ const schema =
 
   <section class="case-study-layout" data-case-study={collection}>
     <div class={contentGridClass}>
-      <div>
+      <div class="min-w-0">
         <div class="case-study-layout__panel case-study-layout__panel--main">
           {
             isPublishedArticle ? (
               <div class="article-dashboard">
-
-                <section id="visual-analysis">
+                <section
+                  id="visual-analysis"
+                  aria-label="Makale görselleştirmeleri"
+                >
                   <div class="prose-article max-w-none">
                     <Content components={mdxComponents} />
                   </div>
@@ -114,7 +111,9 @@ const schema =
                 <div class="article-dashboard__outro-grid">
                   {entry.data.challenge && (
                     <section class="article-dashboard__card">
-                      <p class="case-study-layout__label">{copy.challengeLabel}</p>
+                      <p class="case-study-layout__label">
+                        {copy.challengeLabel}
+                      </p>
                       <p class="article-dashboard__copy mt-3">
                         {entry.data.challenge}
                       </p>
@@ -132,7 +131,9 @@ const schema =
 
                   {entry.data.conclusion && (
                     <section class="article-dashboard__card md:col-span-2 lg:col-span-2">
-                      <p class="case-study-layout__label">{copy.conclusionLabel}</p>
+                      <p class="case-study-layout__label">
+                        {copy.conclusionLabel}
+                      </p>
                       <p class="article-dashboard__copy mt-3">
                         {entry.data.conclusion}
                       </p>
@@ -334,7 +335,7 @@ const schema =
     padding: 0.75rem 1rem;
     border-left: 2px solid rgba(122, 242, 152, 0.15);
     background: hsl(var(--muted) / 0.45);
-    font-size: 0.90rem;
+    font-size: 0.9rem;
     line-height: 1.6;
     color: hsl(var(--foreground));
   }
@@ -469,15 +470,51 @@ const schema =
 
   .case-study-layout[data-case-study="articles"]
     :global(
-      .prose-article > :where(p, h2, h3, h4, ul, ol, blockquote, pre, hr, img)
+      .prose-article
+        > :where(p, h2, h3, h4, ul, ol, blockquote, pre, hr, img, table)
     ) {
     max-width: 52rem;
     margin-left: auto;
     margin-right: auto;
   }
 
+  .case-study-layout[data-case-study="articles"] .prose-article {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .case-study-layout[data-case-study="articles"] :global(.article-dashboard) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .case-study-layout[data-case-study="articles"] :global(#visual-analysis),
+  .case-study-layout[data-case-study="articles"]
+    :global(.article-dashboard__outro-grid) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .case-study-layout[data-case-study="articles"]
+    :global(
+      .prose-article
+        > :where(p, h2, h3, h4, ul, ol, blockquote, pre, hr, img, table)
+    ) {
+    min-width: 0;
+    max-width: 52rem;
+  }
+
+  .case-study-layout[data-case-study="articles"]
+    :global(.prose-article > :where(pre, table)) {
+    overflow-x: auto;
+  }
+
   .case-study-layout[data-case-study="articles"]
     :global(.prose-article > :where(.article-visual-frame, [data-story-root])) {
+    width: 100%;
+    min-width: 0;
     max-width: none;
     scroll-margin-top: 7rem;
   }
@@ -499,6 +536,48 @@ const schema =
   }
 
   @media (max-width: 720px) {
+    .case-study-layout {
+      padding-bottom: 4.5rem;
+    }
+
+    .case-study-layout[data-case-study="articles"]
+      .case-study-layout__panel--main {
+      padding-inline: 0;
+    }
+
+    .case-study-layout[data-case-study="articles"] :global(.prose-article h2) {
+      margin-top: 2.8rem;
+      margin-bottom: 1.2rem;
+      font-size: clamp(1.65rem, 8vw, 2rem);
+      line-height: 1.12;
+    }
+
+    .case-study-layout[data-case-study="articles"] :global(.prose-article h3) {
+      margin-top: 2.4rem;
+      font-size: 1.4rem;
+      line-height: 1.2;
+    }
+
+    .case-study-layout[data-case-study="articles"] :global(.prose-article p) {
+      margin-bottom: 1.35rem;
+      font-size: 1rem;
+      line-height: 1.75;
+    }
+
+    .case-study-layout[data-case-study="articles"] :global(.prose-article hr) {
+      margin-block: 3rem;
+    }
+
+    .article-dashboard__outro-grid {
+      gap: 1rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+    }
+
+    .article-dashboard__card {
+      padding: 1.25rem;
+    }
+
     .article-dashboard {
       gap: 1rem;
     }

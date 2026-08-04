@@ -1,0 +1,452 @@
+[
+  {
+    "district": "ALİAĞA",
+    "total_buildings": 18938,
+    "raw_max_floor": 14,
+    "clean_max_floor": 14,
+    "x": -21.7,
+    "z": -12.32,
+    "tiers": {
+      "tier_1_2": 13023,
+      "tier_3_5": 4816,
+      "tier_6_9": 1062,
+      "tier_10_19": 37,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "BALÇOVA",
+    "total_buildings": 6917,
+    "raw_max_floor": 29,
+    "clean_max_floor": 29,
+    "x": -18.76,
+    "z": 11.46,
+    "tiers": {
+      "tier_1_2": 1305,
+      "tier_3_5": 4736,
+      "tier_6_9": 801,
+      "tier_10_19": 72,
+      "tier_20_plus": 3
+    }
+  },
+  {
+    "district": "BAYINDIR",
+    "total_buildings": 20038,
+    "raw_max_floor": 11,
+    "clean_max_floor": 11,
+    "x": 14.16,
+    "z": 24.09,
+    "tiers": {
+      "tier_1_2": 18851,
+      "tier_3_5": 1140,
+      "tier_6_9": 46,
+      "tier_10_19": 1,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "BAYRAKLI",
+    "total_buildings": 33149,
+    "raw_max_floor": 55,
+    "clean_max_floor": 48,
+    "x": -12.37,
+    "z": 7.56,
+    "tiers": {
+      "tier_1_2": 13139,
+      "tier_3_5": 16939,
+      "tier_6_9": 2505,
+      "tier_10_19": 537,
+      "tier_20_plus": 29
+    }
+  },
+  {
+    "district": "BERGAMA",
+    "total_buildings": 35527,
+    "raw_max_floor": 11,
+    "clean_max_floor": 11,
+    "x": -10.68,
+    "z": -31.7,
+    "tiers": {
+      "tier_1_2": 30164,
+      "tier_3_5": 4740,
+      "tier_6_9": 619,
+      "tier_10_19": 4,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "BEYDAĞ",
+    "total_buildings": 6130,
+    "raw_max_floor": 6,
+    "clean_max_floor": 6,
+    "x": 52.39,
+    "z": 29.95,
+    "tiers": {
+      "tier_1_2": 5211,
+      "tier_3_5": 916,
+      "tier_6_9": 3,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "BORNOVA",
+    "total_buildings": 63434,
+    "raw_max_floor": 55,
+    "clean_max_floor": 50,
+    "x": -6.06,
+    "z": 8.64,
+    "tiers": {
+      "tier_1_2": 25719,
+      "tier_3_5": 34240,
+      "tier_6_9": 3080,
+      "tier_10_19": 372,
+      "tier_20_plus": 23
+    }
+  },
+  {
+    "district": "BUCA",
+    "total_buildings": 57628,
+    "raw_max_floor": 51,
+    "clean_max_floor": 51,
+    "x": -6.05,
+    "z": 16.21,
+    "tiers": {
+      "tier_1_2": 21096,
+      "tier_3_5": 32911,
+      "tier_6_9": 3067,
+      "tier_10_19": 547,
+      "tier_20_plus": 7
+    }
+  },
+  {
+    "district": "DİKİLİ",
+    "total_buildings": 41011,
+    "raw_max_floor": 10,
+    "clean_max_floor": 10,
+    "x": -27.01,
+    "z": -26.51,
+    "tiers": {
+      "tier_1_2": 34021,
+      "tier_3_5": 6664,
+      "tier_6_9": 318,
+      "tier_10_19": 8,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "FOÇA",
+    "total_buildings": 22729,
+    "raw_max_floor": 7,
+    "clean_max_floor": 7,
+    "x": -32.36,
+    "z": -4.73,
+    "tiers": {
+      "tier_1_2": 17759,
+      "tier_3_5": 4957,
+      "tier_6_9": 13,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "GAZİEMİR",
+    "total_buildings": 15856,
+    "raw_max_floor": 17,
+    "clean_max_floor": 17,
+    "x": -13.32,
+    "z": 16.56,
+    "tiers": {
+      "tier_1_2": 6908,
+      "tier_3_5": 7696,
+      "tier_6_9": 1190,
+      "tier_10_19": 62,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "GÜZELBAHÇE",
+    "total_buildings": 11837,
+    "raw_max_floor": 9,
+    "clean_max_floor": 9,
+    "x": -28.31,
+    "z": 15.69,
+    "tiers": {
+      "tier_1_2": 5351,
+      "tier_3_5": 6331,
+      "tier_6_9": 155,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "KARABAĞLAR",
+    "total_buildings": 51929,
+    "raw_max_floor": 25,
+    "clean_max_floor": 25,
+    "x": -17.66,
+    "z": 14.83,
+    "tiers": {
+      "tier_1_2": 18695,
+      "tier_3_5": 27708,
+      "tier_6_9": 4939,
+      "tier_10_19": 585,
+      "tier_20_plus": 2
+    }
+  },
+  {
+    "district": "KARABURUN",
+    "total_buildings": 17578,
+    "raw_max_floor": 7,
+    "clean_max_floor": 7,
+    "x": -51.66,
+    "z": 3.35,
+    "tiers": {
+      "tier_1_2": 14826,
+      "tier_3_5": 2750,
+      "tier_6_9": 2,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "KARŞIYAKA",
+    "total_buildings": 22275,
+    "raw_max_floor": 35,
+    "clean_max_floor": 35,
+    "x": -15.48,
+    "z": 7.47,
+    "tiers": {
+      "tier_1_2": 5010,
+      "tier_3_5": 8958,
+      "tier_6_9": 7639,
+      "tier_10_19": 622,
+      "tier_20_plus": 46
+    }
+  },
+  {
+    "district": "KEMALPAŞA",
+    "total_buildings": 38091,
+    "raw_max_floor": 16,
+    "clean_max_floor": 16,
+    "x": 11.17,
+    "z": 10.5,
+    "tiers": {
+      "tier_1_2": 28841,
+      "tier_3_5": 8698,
+      "tier_6_9": 535,
+      "tier_10_19": 17,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "KINIK",
+    "total_buildings": 10365,
+    "raw_max_floor": 9,
+    "clean_max_floor": 9,
+    "x": 2.04,
+    "z": -28.07,
+    "tiers": {
+      "tier_1_2": 9716,
+      "tier_3_5": 608,
+      "tier_6_9": 41,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "KONAK",
+    "total_buildings": 63238,
+    "raw_max_floor": 65,
+    "clean_max_floor": 58,
+    "x": -13.63,
+    "z": 11.35,
+    "tiers": {
+      "tier_1_2": 32769,
+      "tier_3_5": 24338,
+      "tier_6_9": 5390,
+      "tier_10_19": 679,
+      "tier_20_plus": 62
+    }
+  },
+  {
+    "district": "KİRAZ",
+    "total_buildings": 19686,
+    "raw_max_floor": 7,
+    "clean_max_floor": 7,
+    "x": 59.17,
+    "z": 25.3,
+    "tiers": {
+      "tier_1_2": 18515,
+      "tier_3_5": 1073,
+      "tier_6_9": 98,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "MENDERES",
+    "total_buildings": 42306,
+    "raw_max_floor": 14,
+    "clean_max_floor": 14,
+    "x": -12.91,
+    "z": 27.2,
+    "tiers": {
+      "tier_1_2": 33167,
+      "tier_3_5": 8766,
+      "tier_6_9": 369,
+      "tier_10_19": 4,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "MENEMEN",
+    "total_buildings": 32840,
+    "raw_max_floor": 18,
+    "clean_max_floor": 18,
+    "x": -20.21,
+    "z": -1.2,
+    "tiers": {
+      "tier_1_2": 21747,
+      "tier_3_5": 9249,
+      "tier_6_9": 1461,
+      "tier_10_19": 383,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "NARLIDERE",
+    "total_buildings": 7051,
+    "raw_max_floor": 23,
+    "clean_max_floor": 23,
+    "x": -22.52,
+    "z": 13.39,
+    "tiers": {
+      "tier_1_2": 3884,
+      "tier_3_5": 2216,
+      "tier_6_9": 705,
+      "tier_10_19": 245,
+      "tier_20_plus": 1
+    }
+  },
+  {
+    "district": "SEFERİHİSAR",
+    "total_buildings": 33299,
+    "raw_max_floor": 12,
+    "clean_max_floor": 12,
+    "x": -30.53,
+    "z": 24.01,
+    "tiers": {
+      "tier_1_2": 22782,
+      "tier_3_5": 10305,
+      "tier_6_9": 211,
+      "tier_10_19": 1,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "SELÇUK",
+    "total_buildings": 10031,
+    "raw_max_floor": 15,
+    "clean_max_floor": 15,
+    "x": 1.37,
+    "z": 38.38,
+    "tiers": {
+      "tier_1_2": 6705,
+      "tier_3_5": 3054,
+      "tier_6_9": 270,
+      "tier_10_19": 2,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "TORBALI",
+    "total_buildings": 36903,
+    "raw_max_floor": 19,
+    "clean_max_floor": 19,
+    "x": -0.05,
+    "z": 23.24,
+    "tiers": {
+      "tier_1_2": 26295,
+      "tier_3_5": 8524,
+      "tier_6_9": 1980,
+      "tier_10_19": 104,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "TİRE",
+    "total_buildings": 29010,
+    "raw_max_floor": 12,
+    "clean_max_floor": 12,
+    "x": 21.1,
+    "z": 32.1,
+    "tiers": {
+      "tier_1_2": 24530,
+      "tier_3_5": 3512,
+      "tier_6_9": 962,
+      "tier_10_19": 6,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "URLA",
+    "total_buildings": 41004,
+    "raw_max_floor": 10,
+    "clean_max_floor": 10,
+    "x": -41.19,
+    "z": 16.17,
+    "tiers": {
+      "tier_1_2": 32674,
+      "tier_3_5": 8305,
+      "tier_6_9": 22,
+      "tier_10_19": 3,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "ÇEŞME",
+    "total_buildings": 41807,
+    "raw_max_floor": 11,
+    "clean_max_floor": 9,
+    "x": -59.45,
+    "z": 17.48,
+    "tiers": {
+      "tier_1_2": 34719,
+      "tier_3_5": 7005,
+      "tier_6_9": 81,
+      "tier_10_19": 2,
+      "tier_20_plus": 0
+    }
+  },
+  {
+    "district": "ÇİĞLİ",
+    "total_buildings": 22637,
+    "raw_max_floor": 34,
+    "clean_max_floor": 34,
+    "x": -21.75,
+    "z": 5.31,
+    "tiers": {
+      "tier_1_2": 11200,
+      "tier_3_5": 8622,
+      "tier_6_9": 2375,
+      "tier_10_19": 437,
+      "tier_20_plus": 3
+    }
+  },
+  {
+    "district": "ÖDEMİŞ",
+    "total_buildings": 46192,
+    "raw_max_floor": 9,
+    "clean_max_floor": 9,
+    "x": 38.69,
+    "z": 25.52,
+    "tiers": {
+      "tier_1_2": 38675,
+      "tier_3_5": 6463,
+      "tier_6_9": 1054,
+      "tier_10_19": 0,
+      "tier_20_plus": 0
+    }
+  }
+]

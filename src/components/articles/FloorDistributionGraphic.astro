@@ -1,0 +1,284 @@
+---
+const rows = [
+  {
+    label: "1–2 kat",
+    count: "577.297",
+    share: "64,18",
+    width: 64.18,
+    color: "sky",
+  },
+  {
+    label: "3–5 kat",
+    count: "276.240",
+    share: "30,71",
+    width: 30.71,
+    color: "indigo",
+  },
+  {
+    label: "6–9 kat",
+    count: "40.993",
+    share: "4,56",
+    width: 4.56,
+    color: "violet",
+  },
+  {
+    label: "10–19 kat",
+    count: "4.730",
+    share: "0,53",
+    width: 0.53,
+    color: "rose",
+  },
+  {
+    label: "20+ kat",
+    count: "176",
+    share: "0,02",
+    width: 0.02,
+    color: "amber",
+  },
+];
+---
+
+<figure class="floor-graphic" aria-labelledby="floor-graphic-title">
+  <header class="floor-graphic__header">
+    <div>
+      <h3 id="floor-graphic-title">Kat sayısı kıyaslaması</h3>
+    </div>
+    <div
+      class="floor-graphic__hero-stat"
+      aria-label="Kayıtların yüzde 94,90'ı 1 ile 5 kat arasında"
+    >
+      <strong>%94,90</strong>
+      <span>1–5 kat</span>
+    </div>
+  </header>
+  <ol class="floor-graphic__rows" aria-label="İzmir bina kat aralığı dağılımı">
+    {
+      rows.map((row) => (
+        <li class={`floor-graphic__row floor-graphic__row--${row.color}`}>
+          <div class="floor-graphic__label">
+            <span>{row.label}</span>
+            <strong>{row.count}</strong>
+          </div>
+          <div class="floor-graphic__track" aria-hidden="true">
+            <span class="floor-graphic__bar" style={`--share: ${row.width}%`} />
+          </div>
+          <span class="floor-graphic__share">%{row.share}</span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <figcaption>
+    Her satır, veri setindeki kat aralığına göre bina kaydı sayısını gösterir.
+    20+ kat satırı, doğrulanmış bir bina türü sayısı değildir.
+  </figcaption>
+</figure>
+
+<style>
+  .floor-graphic {
+    --sky: #38bdf8;
+    --indigo: #6366f1;
+    --violet: #a855f7;
+    --rose: #ec4899;
+    --amber: #f59e0b;
+    margin: 2.5rem auto;
+    max-width: 52rem;
+    overflow: hidden;
+    border: 1px solid hsl(var(--border));
+    border-radius: 1.35rem;
+    background:
+      radial-gradient(
+        circle at 100% 0%,
+        hsl(var(--primary) / 0.1),
+        transparent 34%
+      ),
+      hsl(var(--card));
+    box-shadow: 0 1.5rem 3.5rem hsl(var(--foreground) / 0.08);
+  }
+
+  .floor-graphic__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: clamp(1.25rem, 3vw, 2.2rem) clamp(1.25rem, 4vw, 2.75rem) 1.25rem;
+  }
+
+  .floor-graphic__eyebrow {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  h3 {
+    max-width: 28rem;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2.1rem);
+    line-height: 1.06;
+    letter-spacing: -0.045em;
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__hero-stat {
+    flex: 0 0 auto;
+    min-width: 7.1rem;
+    padding: 0.8rem 0.95rem;
+    border: 1px solid hsl(var(--primary) / 0.25);
+    border-radius: 0.9rem;
+    background: hsl(var(--primary) / 0.08);
+    text-align: right;
+  }
+
+  .floor-graphic__hero-stat strong,
+  .floor-graphic__hero-stat span {
+    display: block;
+  }
+
+  .floor-graphic__hero-stat strong {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    line-height: 1;
+    letter-spacing: -0.07em;
+    color: hsl(var(--primary));
+  }
+
+  .floor-graphic__hero-stat span {
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .floor-graphic__callout {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0 clamp(1.25rem, 4vw, 2.75rem);
+    padding: 0.8rem 0;
+    border-top: 1px solid hsl(var(--border));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .floor-graphic__callout p {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .floor-graphic__callout strong {
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__rule {
+    width: 2.3rem;
+    height: 0.25rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--sky), var(--indigo));
+  }
+
+  .floor-graphic__rows {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 1.45rem clamp(1.25rem, 4vw, 2.75rem) 1.6rem;
+    list-style: none;
+  }
+
+  .floor-graphic__row {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 0.7fr) minmax(0, 2fr) 3.9rem;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .floor-graphic__row::before {
+    display: none;
+    content: none;
+  }
+
+  .floor-graphic__label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.16rem;
+    min-width: 0;
+  }
+
+  .floor-graphic__label span {
+    font-size: 0.84rem;
+    font-weight: 650;
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__label strong,
+  .floor-graphic__share {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .floor-graphic__track {
+    height: 0.82rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: hsl(var(--muted));
+  }
+
+  .floor-graphic__bar {
+    display: block;
+    width: max(3px, var(--share));
+    height: 100%;
+    border-radius: inherit;
+  }
+
+  .floor-graphic__row--sky .floor-graphic__bar {
+    background: var(--sky);
+  }
+  .floor-graphic__row--indigo .floor-graphic__bar {
+    background: var(--indigo);
+  }
+  .floor-graphic__row--violet .floor-graphic__bar {
+    background: var(--violet);
+  }
+  .floor-graphic__row--rose .floor-graphic__bar {
+    background: var(--rose);
+  }
+  .floor-graphic__row--amber .floor-graphic__bar {
+    background: var(--amber);
+  }
+
+  .floor-graphic__share {
+    text-align: right;
+    color: hsl(var(--foreground));
+  }
+
+  figcaption {
+    margin: 0;
+    padding: 1rem clamp(1.25rem, 4vw, 2.75rem) 1.25rem;
+    border-top: 1px solid hsl(var(--border));
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: hsl(var(--muted-foreground));
+  }
+
+  @media (max-width: 520px) {
+    .floor-graphic__header {
+      display: block;
+    }
+    .floor-graphic__hero-stat {
+      display: inline-block;
+      margin-top: 1.15rem;
+      text-align: left;
+    }
+    .floor-graphic__row {
+      grid-template-columns: minmax(5.8rem, 1fr) minmax(0, 1.45fr) 3.25rem;
+      gap: 0.65rem;
+    }
+  }
+</style>

@@ -6,6 +6,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",
+    "validate:izmir-kat": "node scripts/validate-izmir-kat-data.mjs",
+    "audit:izmir-kat": "node scripts/audit-izmir-kat-integrity.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
