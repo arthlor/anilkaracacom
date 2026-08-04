@@ -46,7 +46,7 @@ const {
   <div class="portfolio-shell">
     <div class="portfolio-shell__texture" aria-hidden="true"></div>
     <Header />
-    <main class="portfolio-shell__main">
+    <main id="main-content" class="portfolio-shell__main">
       <slot />
     </main>
     <Footer />
@@ -63,7 +63,9 @@ const {
     background: hsl(var(--background));
     color: hsl(var(--foreground));
     isolation: isolate;
-    transition: background-color var(--transition-normal), color var(--transition-normal);
+    transition:
+      background-color var(--transition-normal),
+      color var(--transition-normal);
   }
 
   .portfolio-shell__texture {

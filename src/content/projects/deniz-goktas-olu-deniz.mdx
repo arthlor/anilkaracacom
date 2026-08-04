@@ -1,11 +1,12 @@
 ---
 title: "Deniz Göktaş: Ölü Deniz"
-description: "An interactive transcript analysis mapping the structure and narrative flow of comedian Deniz Göktaş's stand-up show."
+description: "An interactive breakdown of how Deniz Göktaş’s 11,208-word stand-up show moves across themes, stories, and punchlines."
 pubDate: 2026-07-03
 heroImage: "../../assets/images/projects/deniz-goktas.png"
 demoUrl: "/deliverables/deniz-goktas-olu-deniz/report.html"
 liveUrl: "/deliverables/deniz-goktas-olu-deniz/report.html"
-techStack: ["Apache ECharts", "HTML/CSS", "JavaScript", "Python", "Data Journalism"]
+techStack:
+  ["Apache ECharts", "HTML/CSS", "JavaScript", "Python", "Data Journalism"]
 technologies: ["Apache ECharts", "JavaScript", "Python"]
 featured: true
 published: true
@@ -14,56 +15,30 @@ track: "data-journalism"
 language: "en"
 pillar: "data-journalism-civic-tech"
 metrics:
-  - label: "Visualizations"
-    value: "Interactive ECharts"
-    detail: "Visualizes the flow of the show and thematic distribution with interactive charts."
-  - label: "Analysis"
-    value: "Narrative & Structure"
-    detail: "Deep dive into the themes and narrative structure of the stand-up transcript."
-  - label: "Word Count"
+  - label: "Transcript"
     value: "11,208 words"
-    detail: "A structural breakdown of the comedian's entire 1.5-hour performance."
-executiveSummary: "An interactive analysis of comedian Deniz Göktaş's 11,208-word stand-up show. By mapping the full transcript across themes and timelines, the project visualizes the flow of his performance and analyzes the distribution of his jokes."
-context: "Comedic performances are complex, layered narratives. This project breaks down Deniz Göktaş's performance to map exactly what was said, how different themes are distributed, and how specific sections relate to the overall show."
+    detail: "The full 90-minute performance was included in the analysis."
+  - label: "Structure"
+    value: "34 sections"
+    detail: "Each section was mapped by theme and position in the show."
+  - label: "Themes"
+    value: "5 groups"
+    detail: "Interactive charts connect individual passages to the larger performance."
+executiveSummary: "An interactive reading of Deniz Göktaş’s full stand-up transcript, mapping 34 sections across five themes to reveal how the show is built."
+context: "A stand-up special feels spontaneous, but its stories and callbacks form a deliberate structure. I wanted to make that structure visible without reducing the performance to a list of isolated jokes."
 methodology:
-  - "Grouped the 34 sections of the performance into 5 narrative themes to show the context of the jokes."
-  - "Created interactive charts showing the structure and thematic flow of the show."
-  - "Analyzed the relative weight and distribution of political, social, and personal topics in the performance."
-challenge: "Visualizing a long text transcript and complex thematic data in a clean, responsive, and easy-to-read format."
-conclusion: "The project shows how data visualization can reveal the underlying structure of a live performance, making complex spoken narratives easier to explore and understand."
-summaryEn: "An interactive investigation analyzing the structure and themes of comedian Deniz Göktaş's stand-up show."
-role: "Transcript analysis, data visualization (ECharts), interface design, and writing"
-impact: "Maps out a full comedic performance to provide clear structural context."
+  - "Split the 11,208-word transcript into 34 chronological sections."
+  - "Grouped the sections into five themes covering personal stories, public life, media, family, and politics."
+  - "Built interactive charts that let readers follow both the order of the show and the weight of each theme."
+challenge: "The analysis had to stay readable without stripping the jokes of their context. I kept the chronology visible so individual passages could always be understood as part of the full performance."
+codeProof: "Python supports the transcript analysis, while Apache ECharts and JavaScript power the interactive report."
+conclusion: "The report gives readers a new way to see the rhythm, balance, and narrative construction of a 90-minute performance."
+summaryEn: "An interactive breakdown of how Deniz Göktaş’s 11,208-word stand-up show moves across themes, stories, and punchlines."
+role: "Transcript analysis, writing, data visualization, and interface design"
+impact: "Mapped the full performance into a clear, explorable structure."
 relatedContent:
   - collection: "projects"
     slug: "crackdown-on-chp"
   - collection: "projects"
     slug: "parliament-analysis"
 ---
-
-# Deniz Göktaş: Ölü Deniz (Thematic & Structural Analysis)
-
-Following the online release of Turkish stand-up comedian Deniz Göktaş's show "Ölü Deniz," this project maps the structural and narrative flow of his performance.
-
-## Thematic Structure
-
-The project organizes Göktaş’s performance to look at the broader context of his humor:
-- **Thematic Balance**: The show is divided into 34 chronological sections covering diverse themes such as daily life, family, and media culture.
-- **Contextual Reading**: By mapping the entire transcript, we see how specific jokes are situated within a larger comedic narrative rather than being isolated statements.
-- **Narrative Flow**: The analysis highlights how the performance shifts between personal storytelling and social satire.
-
-## Timeline of the Release
-
-- **June 24**: The show "Ölü Deniz" was uploaded to YouTube, quickly reaching a wide audience.
-- **Late June**: The show generated significant public discussion online, with individual clips shared widely.
-- **July**: The project was compiled to document the complete structure of the show as it originally aired.
-
-## Targets of Satire
-
-The show mocks public figures and groups across the political and social spectrum:
-- **Politicians**: Parodies both government and opposition figures, including Recep Tayyip Erdoğan, Ekrem İmamoğlu, Özgür Özel, and Ümit Özdağ.
-- **Media & Academics**: Satirizes prominent commentators and scholars like Fatih Altaylı, Celal Şengör, and İlber Ortaylı.
-- **Social Groups**: Pokes fun at the contradictions of both secular and conservative segments of Turkish society.
-- **Self-Deprecation**: Focuses heavily on the comedian’s own background, family, and career struggles.
-
-[View Interactive Investigation →](/deliverables/deniz-goktas-olu-deniz/report.html)

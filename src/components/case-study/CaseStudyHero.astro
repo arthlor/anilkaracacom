@@ -14,9 +14,6 @@ interface Props {
     backLabel: string;
     publishedLabel: string;
     roleLabel: string;
-    impactLabel: string;
-    summaryLabel: string;
-    methodologyLabel: string;
   };
 }
 
@@ -36,10 +33,11 @@ const demoUrl =
     ? entry.data.demoUrl || entry.data.liveUrl
     : undefined;
 const githubUrl = "githubUrl" in entry.data ? entry.data.githubUrl : undefined;
-const heroSummary = isPublishedArticle
-  ? entry.data.executiveSummary.split(/[.!?]/).filter(Boolean)[0]?.trim() ||
-    entry.data.executiveSummary
-  : entry.data.executiveSummary;
+const liveProjectLabel = demoUrl?.includes("apps.apple.com")
+  ? "View on the App Store"
+  : demoUrl?.includes("youtube.com")
+    ? "Watch the film"
+    : "Open project";
 const heroImageFit =
   collection === "projects" &&
   (entry.id === "yeser" || entry.id === "ai-fit-check")
@@ -77,69 +75,44 @@ const heroImageFit =
           </div>
 
           {
-            !isPublishedArticle && (
-              <div class="case-study-hero__summary">
-                <p class="case-study-hero__label">{locale.summaryLabel}</p>
-                <p class="case-study-hero__summary-copy">{heroSummary}</p>
-
-                {(entry.data.role || entry.data.impact) && (
-                  <div class="case-study-hero__facts">
-                    {entry.data.role && (
-                      <div class="case-study-hero__fact">
-                        <p class="case-study-hero__fact-label">
-                          {locale.roleLabel}
-                        </p>
-                        <p class="case-study-hero__fact-copy">
-                          {entry.data.role}
-                        </p>
-                      </div>
-                    )}
-                    {entry.data.impact && (
-                      <div class="case-study-hero__fact">
-                        <p class="case-study-hero__fact-label">
-                          {locale.impactLabel}
-                        </p>
-                        <p class="case-study-hero__fact-copy">
-                          {entry.data.impact}
-                        </p>
-                      </div>
-                    )}
-                  </div>
+            !isPublishedArticle && (demoUrl || githubUrl) && (
+              <div class="case-study-hero__actions">
+                {demoUrl && (
+                  <a
+                    href={demoUrl}
+                    target={demoUrl.startsWith("http") ? "_blank" : undefined}
+                    rel={
+                      demoUrl.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
+                    class="case-study-hero__action case-study-hero__action--primary"
+                  >
+                    {liveProjectLabel}
+                    <Icon name="arrow-right" size={16} />
+                  </a>
                 )}
-
-                {(demoUrl || githubUrl) && (
-                  <div class="case-study-hero__actions">
-                    {demoUrl && (
-                      <a
-                        href={demoUrl}
-                        target={
-                          demoUrl.startsWith("http") ? "_blank" : undefined
-                        }
-                        rel={
-                          demoUrl.startsWith("http")
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                        class="case-study-hero__action case-study-hero__action--primary"
-                      >
-                        Open live project
-                        <Icon name="arrow-right" size={16} />
-                      </a>
-                    )}
-                    {githubUrl && (
-                      <a
-                        href={githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="case-study-hero__action case-study-hero__action--secondary"
-                      >
-                        View source
-                        <Icon name="external-link" size={16} />
-                      </a>
-                    )}
-                  </div>
+                {githubUrl && (
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="case-study-hero__action case-study-hero__action--secondary"
+                  >
+                    View source
+                    <Icon name="external-link" size={16} />
+                  </a>
                 )}
               </div>
+            )
+          }
+
+          {
+            !isPublishedArticle && entry.data.role && (
+              <p class="case-study-hero__role">
+                <span>{locale.roleLabel}</span>
+                {entry.data.role}
+              </p>
             )
           }
         </div>
@@ -256,59 +229,31 @@ const heroImageFit =
     margin-top: 1.15rem;
   }
 
-  .case-study-hero__summary {
-    margin-top: 1.35rem;
-    padding: 1rem 0 0;
-    border-top: 1px solid hsl(var(--border));
-  }
-
-  .case-study-hero__label,
-  .case-study-hero__fact-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-  }
-
-  .case-study-hero__label {
-    color: var(--premium-accent);
-  }
-
-  .case-study-hero__summary-copy {
-    margin-top: 0.65rem;
-    font-size: 1rem;
-    line-height: 1.65;
-    color: hsl(var(--foreground));
-  }
-
-  .case-study-hero__facts {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-
-  .case-study-hero__fact {
-    padding-top: 1rem;
-    border-top: 1px solid hsl(var(--border));
-  }
-
-  .case-study-hero__fact-label {
-    color: hsl(var(--muted-foreground));
-  }
-
-  .case-study-hero__fact-copy {
-    margin-top: 0.55rem;
-    font-size: 0.95rem;
-    line-height: 1.75;
-    color: hsl(var(--foreground));
-  }
-
   .case-study-hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.85rem;
     margin-top: 1.5rem;
+  }
+
+  .case-study-hero__role {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 40rem;
+    margin-top: 1.3rem;
+    padding-top: 1rem;
+    border-top: 1px solid hsl(var(--border));
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .case-study-hero__role span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--premium-accent);
   }
 
   .case-study-hero__action {
@@ -387,10 +332,6 @@ const heroImageFit =
     max-width: 38rem;
   }
 
-  :global(.case-study-hero-shell--article) .case-study-hero__summary {
-    max-width: 44rem;
-  }
-
   @media (max-width: 760px) {
     :global(.case-study-hero-shell--article) .case-study-hero__side {
       display: none;
@@ -398,10 +339,6 @@ const heroImageFit =
 
     :global(.case-study-hero-shell--article) .case-study-hero__stack {
       display: none;
-    }
-
-    :global(.case-study-hero-shell--article) .case-study-hero__summary {
-      margin-top: 1rem;
     }
   }
 
@@ -420,7 +357,6 @@ const heroImageFit =
       line-height: 1.6;
     }
 
-    .case-study-hero__facts,
     .case-study-hero__metrics {
       grid-template-columns: 1fr;
     }

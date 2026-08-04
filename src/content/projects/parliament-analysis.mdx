@@ -1,6 +1,6 @@
 ---
 title: "Parliament Analysis"
-description: "Interactive analysis of the Turkish Parliament's legislative work, exploring voting patterns and party dynamics"
+description: "A searchable look at parliamentary proposals, voting patterns, and party behavior in Turkey."
 pubDate: 2024-06-15
 heroImage: "../../assets/images/projects/parliament.webp"
 demoUrl: "https://arthlor.github.io/TBMM-Onerge-Analizi/"
@@ -15,48 +15,30 @@ track: "data-journalism"
 language: "en"
 pillar: "geopolitical-network-analysis"
 metrics:
-  - label: "Domain"
+  - label: "Subject"
     value: "Legislative data"
-    detail: "Parliamentary proposals and party behavior translated into an explorable interface."
-  - label: "Core stack"
+    detail: "Proposals and party behavior are translated into searchable views."
+  - label: "Interface"
     value: "React + D3"
-    detail: "Frontend system built on top of processed parliamentary data."
-  - label: "Pipeline"
+    detail: "Readers can compare patterns instead of working through raw records."
+  - label: "Data work"
     value: "Python + Pandas"
-    detail: "Pre-processing and structuring used to feed the interface."
-executiveSummary: "A public-interest interface for Turkish parliamentary data that combines a Python processing pipeline with a React and D3 frontend to make legislative behavior explorable."
-context: "Parliamentary proposal data is institutionally important but operationally unreadable for most audiences. The project reframes those records into an interface that can support both journalistic interpretation and direct user exploration."
+    detail: "The source material is cleaned and structured before publication."
+executiveSummary: "A public-interest interface that makes Turkish parliamentary proposals, votes, and party patterns easier to search and compare."
+context: "Parliamentary records matter, but their official form is difficult to read at scale. I built a clearer way to explore who proposed what, how parties behaved, and how those patterns changed."
 methodology:
-  - "Processed institutional data in Python and Pandas before shaping it for the frontend."
-  - "Used React and D3 to organize multiple views of parliamentary behavior in a single interface."
-  - "Positioned the project as both journalism and editorial-product engineering."
-challenge: "The main challenge was bridging institutional complexity and interface clarity. The frontend needed to feel like a product, not a one-off chart dump, while still keeping the underlying data legible."
-codeProof: "This case study sits at the overlap between reporting and frontend systems design: the data pipeline, interaction model, and presentation layer were all tailored to the editorial use case."
-conclusion: "The result is stronger than a static explainer because it lets readers interrogate legislative behavior directly, while still benefiting from journalistic framing."
-summaryEn: "Interactive reporting project analyzing parliamentary proposals, voting patterns, and party behavior in Turkey."
-role: "Data analysis, story framing, interactive frontend implementation"
-impact: "Turns institutional parliamentary data into a public-interest interface people can explore directly."
+  - "Cleaned and structured the parliamentary records with Python and Pandas."
+  - "Built React and D3 views for searching, filtering, and comparing the data."
+  - "Added editorial context so the interface explains the patterns without closing off exploration."
+challenge: "The hard part was reducing institutional complexity without hiding it. I kept the original categories traceable while giving readers a much simpler path through the records."
+codeProof: "Python and Pandas prepare the source records, while React and D3 power the searchable reader-facing interface."
+conclusion: "The project turns difficult institutional records into a tool that readers can inspect directly."
+summaryEn: "A searchable look at parliamentary proposals, voting patterns, and party behavior in Turkey."
+role: "Data analysis, story framing, and interactive development"
+impact: "Made parliamentary records easier to search, compare, and understand."
 relatedContent:
   - collection: "projects"
     slug: "crackdown-on-chp"
   - collection: "articles"
     slug: "turkey-elections-red-wave"
 ---
-
-# Parliament Analysis (TBMM Önerge Analizi)
-
-An interactive data journalism project analyzing the legislative work of the Turkish Grand National Assembly.
-
-## Overview
-
-This project visualizes parliamentary data to reveal patterns in:
-
-- Voting behavior across political parties
-- Bill proposal patterns
-- Legislative activity over time
-
-## Technical Implementation
-
-Built with React and D3.js for interactive visualizations, with Python/Pandas for data processing.
-
-[View Live Project →](https://arthlor.github.io/TBMM-Onerge-Analizi/)

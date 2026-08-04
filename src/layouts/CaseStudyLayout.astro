@@ -31,36 +31,42 @@ setStorySteps(entry.data.storySteps ?? []);
 const contentGridClass =
   collection === "articles"
     ? "mx-auto w-full max-w-[1660px] px-4 sm:px-6 lg:px-8 min-w-0"
-    : "mx-auto grid w-full max-w-[1440px] gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.5fr)] lg:px-8 min-w-0";
+    : "mx-auto w-full max-w-[1120px] px-4 sm:px-6 lg:px-8 min-w-0";
 
 const copy = isTurkish
   ? {
       backLabel:
         collection === "articles" ? "Yazılara geri dön" : "Projelere geri dön",
-      publishedLabel: "Yayın",
-      roleLabel: "Rol",
-      impactLabel: "Etkisi",
-      summaryLabel: "Kısa Özet",
-      methodologyLabel: "Üretim Akışı",
-      contextLabel: "Bağlam ve Problem Alanı",
-      challengeLabel: "Üretim Zorluğu",
-      codeLabel: "Etkileşimli Sistem Notu",
-      conclusionLabel: collection === "articles" ? "Son söz" : "Sonuç ve Değer",
-      narrativeLabel: "Makale ve Görsel Okuma",
+      publishedLabel: collection === "articles" ? "Yayın" : "Yayınlandı",
+      roleLabel: collection === "articles" ? "Rol" : "Benim rolüm",
+      methodologyLabel:
+        collection === "articles" ? "Üretim Akışı" : "Ne yaptım",
+      contextLabel:
+        collection === "articles" ? "Bağlam ve Problem Alanı" : "Neden yaptım",
+      challengeLabel:
+        collection === "articles" ? "Üretim Zorluğu" : "En zor karar",
+      codeLabel:
+        collection === "articles" ? "Etkileşimli Sistem Notu" : "Altyapı",
+      conclusionLabel: collection === "articles" ? "Son söz" : "Sonuç",
     }
   : {
       backLabel:
         collection === "articles" ? "Back to articles" : "Back to projects",
-      publishedLabel: "Published",
-      roleLabel: "Role",
-      impactLabel: "Impact",
-      summaryLabel: "Executive Summary",
-      methodologyLabel: "Reporting Workflow",
-      contextLabel: "Context & Problem Space",
-      challengeLabel: "Production Challenge",
-      codeLabel: "Interactive System Note",
-      conclusionLabel: "Conclusion & Value",
-      narrativeLabel: "Article & Visual Analysis",
+      publishedLabel: collection === "articles" ? "Published" : "Released",
+      roleLabel: collection === "articles" ? "Role" : "My role",
+      methodologyLabel:
+        collection === "articles" ? "Reporting workflow" : "What I built",
+      contextLabel:
+        collection === "articles"
+          ? "Context and problem space"
+          : "Why I made it",
+      challengeLabel:
+        collection === "articles" ? "Production challenge" : "The key decision",
+      codeLabel:
+        collection === "articles"
+          ? "Interactive system note"
+          : "Under the hood",
+      conclusionLabel: collection === "articles" ? "Conclusion" : "Outcome",
     };
 
 const schema =
@@ -142,32 +148,49 @@ const schema =
                 </div>
               </div>
             ) : (
-              <div class="grid gap-8">
-                <section>
+              <div class="project-story">
+                <section class="project-story__intro">
                   <p class="case-study-layout__label">{copy.contextLabel}</p>
-                  <p class="case-study-layout__copy mt-4">
-                    {entry.data.context}
-                  </p>
+                  <p class="project-story__lead">{entry.data.context}</p>
                 </section>
 
                 {entry.data.methodology.length > 0 && (
-                  <section>
+                  <section class="project-story__section">
                     <p class="case-study-layout__label">
                       {copy.methodologyLabel}
                     </p>
-                    <ul class="case-study-layout__methodology mt-4">
-                      {entry.data.methodology.map((item) => (
-                        <li>{item}</li>
+                    <ol class="project-story__steps">
+                      {entry.data.methodology.map((item, index) => (
+                        <li>
+                          <span>{String(index + 1).padStart(2, "0")}</span>
+                          <p>{item}</p>
+                        </li>
                       ))}
-                    </ul>
+                    </ol>
                   </section>
                 )}
 
-                <section>
-                  <p class="case-study-layout__label">{copy.narrativeLabel}</p>
-                  <div class="prose-article mt-5 max-w-none">
-                    <Content components={mdxComponents} />
-                  </div>
+                <div class="project-story__details">
+                  {entry.data.challenge && (
+                    <section>
+                      <p class="case-study-layout__label">
+                        {copy.challengeLabel}
+                      </p>
+                      <p class="project-story__copy">{entry.data.challenge}</p>
+                    </section>
+                  )}
+
+                  {entry.data.codeProof && (
+                    <section>
+                      <p class="case-study-layout__label">{copy.codeLabel}</p>
+                      <p class="project-story__copy">{entry.data.codeProof}</p>
+                    </section>
+                  )}
+                </div>
+
+                <section class="project-story__outcome">
+                  <p class="case-study-layout__label">{copy.conclusionLabel}</p>
+                  <p>{entry.data.conclusion}</p>
                 </section>
               </div>
             )
@@ -182,37 +205,6 @@ const schema =
           relatedContent={entry.data.relatedContent}
         />
       </div>
-
-      {
-        collection === "projects" && (
-          <aside class="case-study-layout__sidebar">
-            {entry.data.challenge && (
-              <div class="case-study-layout__panel">
-                <p class="case-study-layout__label">{copy.challengeLabel}</p>
-                <p class="case-study-layout__sidebar-copy">
-                  {entry.data.challenge}
-                </p>
-              </div>
-            )}
-
-            {entry.data.codeProof && (
-              <div class="case-study-layout__panel">
-                <p class="case-study-layout__label">{copy.codeLabel}</p>
-                <p class="case-study-layout__sidebar-copy">
-                  {entry.data.codeProof}
-                </p>
-              </div>
-            )}
-
-            <div class="case-study-layout__panel">
-              <p class="case-study-layout__label">{copy.conclusionLabel}</p>
-              <p class="case-study-layout__sidebar-copy">
-                {entry.data.conclusion}
-              </p>
-            </div>
-          </aside>
-        )
-      }
     </div>
   </section>
 </MainLayout>
@@ -232,12 +224,6 @@ const schema =
     overflow: visible;
   }
 
-  .case-study-layout__sidebar .case-study-layout__panel {
-    border-left: 2px solid rgba(122, 242, 152, 0.15);
-    background: hsl(var(--card));
-    border-radius: 0 12px 12px 0;
-  }
-
   .case-study-layout__label {
     font-size: 0.72rem;
     font-weight: 600;
@@ -246,39 +232,87 @@ const schema =
     color: var(--premium-accent);
   }
 
-  .case-study-layout__copy {
-    font-size: 1rem;
-    line-height: 1.9;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .case-study-layout__methodology {
+  .project-story {
     display: grid;
-    gap: 0.75rem;
-    padding: 0;
-    list-style: none;
+    gap: clamp(3rem, 7vw, 5.5rem);
   }
 
-  .case-study-layout__methodology li {
-    padding: 0.95rem 1rem;
-    border-left: 1px solid rgba(122, 242, 152, 0.18);
-    background: hsl(var(--muted) / 0.5);
-    font-size: 0.95rem;
-    line-height: 1.75;
+  .project-story__intro {
+    max-width: 50rem;
+  }
+
+  .project-story__lead {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 2.25rem);
+    line-height: 1.35;
     color: hsl(var(--foreground));
   }
 
-  .case-study-layout__sidebar {
+  .project-story__steps {
     display: grid;
-    gap: 1rem;
-    align-content: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    margin-top: 1.5rem;
+    padding: 0;
+    border-top: 1px solid hsl(var(--border));
+    list-style: none;
   }
 
-  .case-study-layout__sidebar-copy {
-    margin-top: 1rem;
-    font-size: 0.95rem;
+  .project-story__steps li {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 1.5rem 1.5rem 1.5rem 0;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .project-story__steps li:nth-child(odd) {
+    padding-right: 2rem;
+  }
+
+  .project-story__steps li:nth-child(even) {
+    padding-left: 2rem;
+    border-left: 1px solid hsl(var(--border));
+  }
+
+  .project-story__steps span {
+    color: var(--premium-accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .project-story__steps p,
+  .project-story__copy {
+    font-size: 0.98rem;
     line-height: 1.8;
     color: hsl(var(--muted-foreground));
+  }
+
+  .project-story__details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  .project-story__copy {
+    margin-top: 1rem;
+  }
+
+  .project-story__outcome {
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-left: 2px solid var(--premium-accent);
+    background: hsl(var(--muted) / 0.45);
+  }
+
+  .project-story__outcome > p:last-child {
+    max-width: 52rem;
+    margin-top: 0.85rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+    line-height: 1.45;
+    color: hsl(var(--foreground));
   }
 
   .article-dashboard {
@@ -543,6 +577,22 @@ const schema =
     .case-study-layout[data-case-study="articles"]
       .case-study-layout__panel--main {
       padding-inline: 0;
+    }
+
+    .case-study-layout[data-case-study="projects"]
+      .case-study-layout__panel--main {
+      padding-inline: 0;
+    }
+
+    .project-story__steps,
+    .project-story__details {
+      grid-template-columns: 1fr;
+    }
+
+    .project-story__steps li:nth-child(odd),
+    .project-story__steps li:nth-child(even) {
+      padding: 1.25rem 0;
+      border-left: 0;
     }
 
     .case-study-layout[data-case-study="articles"] :global(.prose-article h2) {

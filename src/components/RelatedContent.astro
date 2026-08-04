@@ -45,7 +45,14 @@ const entries = resolveRelatedEntries({
   relatedContent,
 });
 
-const heading = language === "tr" ? "Daha fazla" : "More";
+const heading =
+  language === "tr"
+    ? currentCollection === "projects"
+      ? "İlgili projeler"
+      : "İlgili içerikler"
+    : currentCollection === "projects"
+      ? "Related projects"
+      : "Related reading";
 ---
 
 {
@@ -74,9 +81,7 @@ const heading = language === "tr" ? "Daha fazla" : "More";
             description={getEntrySummary(entry)}
             href={getEntryHref(entry)}
             external={false}
-            role={entry.data.role}
-            impact={entry.data.impact}
-            tags={getEntryTags(entry).slice(0, 4)}
+            tags={getEntryTags(entry).slice(0, 2)}
             image={entry.data.heroImage}
             imageFit={
               entry.collection === "projects" &&
@@ -85,9 +90,7 @@ const heading = language === "tr" ? "Daha fazla" : "More";
                 : "cover"
             }
             ctaLabel={
-              entry.collection === "projects"
-                ? "Open case study"
-                : "Read article"
+              entry.collection === "projects" ? "See project" : "Read article"
             }
           />
         ))}

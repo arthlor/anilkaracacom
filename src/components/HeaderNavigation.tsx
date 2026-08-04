@@ -21,6 +21,8 @@ export default function HeaderNavigation({
 }: HeaderNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
@@ -113,14 +115,46 @@ export default function HeaderNavigation({
       (link.href !== "/" && currentPath.startsWith(link.href)),
   );
 
-  // Close menu on escape
+  // Keep keyboard focus inside the open mobile menu.
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsOpen(false);
+      if (!isOpen) return;
+
+      if (e.key === "Escape") {
+        setIsOpen(false);
+        menuButtonRef.current?.focus();
+        return;
+      }
+
+      if (e.key !== "Tab" || !mobileMenuRef.current) return;
+
+      const focusable = Array.from(
+        mobileMenuRef.current.querySelectorAll<HTMLElement>("a[href], button"),
+      );
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    requestAnimationFrame(() => {
+      mobileMenuRef.current?.querySelector<HTMLElement>("a[href]")?.focus();
+    });
+  }, [isOpen]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -138,7 +172,12 @@ export default function HeaderNavigation({
   useEffect(() => {
     if (!isOpen) return;
     const handleClick = (e: MouseEvent) => {
-      if (navRef.current && !navRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        navRef.current &&
+        !navRef.current.contains(target) &&
+        !mobileMenuRef.current?.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -163,6 +202,7 @@ export default function HeaderNavigation({
           <a
             key={link.href}
             href={link.href}
+            aria-current={activeIndex === idx ? "page" : undefined}
             className={cn(
               "relative px-4 py-2 text-[0.8rem] font-medium tracking-wide transition-colors duration-200 rounded-lg",
               activeIndex === idx
@@ -194,7 +234,7 @@ export default function HeaderNavigation({
       {/* Theme Toggle Button */}
       <button
         onClick={toggleTheme}
-        className="flex items-center justify-center w-10 h-10 rounded-xl text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-white/[0.06] transition-colors active:scale-[0.95]"
+        className="flex items-center justify-center w-10 h-10 rounded-xl text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-white/[0.06] transition-colors active:scale-[0.95] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
         aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
         aria-pressed={theme === "dark"}
       >
@@ -228,9 +268,11 @@ export default function HeaderNavigation({
 
       {/* Mobile Menu Toggle */}
       <button
+        ref={menuButtonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.06] transition-colors"
+        className="md:hidden flex items-center justify-center w-10 h-10 rounded-xl text-neutral-500 hover:text-neutral-950 hover:bg-neutral-100 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.06] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
         aria-expanded={isOpen}
+        aria-controls="mobile-navigation"
         aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
       >
         <div className="relative w-[18px] h-[14px] flex flex-col justify-between">
@@ -280,6 +322,8 @@ export default function HeaderNavigation({
 
                 {/* Dropdown Sheet */}
                 <motion.nav
+                  ref={mobileMenuRef}
+                  id="mobile-navigation"
                   initial={{ opacity: 0, y: -8, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -8, scale: 0.98 }}
@@ -307,6 +351,9 @@ export default function HeaderNavigation({
                         <a
                           key={link.href}
                           href={link.href}
+                          aria-current={
+                            activeIndex === idx ? "page" : undefined
+                          }
                           onClick={() => setIsOpen(false)}
                           className={cn(
                             "flex items-center gap-3 px-4 py-3.5 rounded-xl text-[0.9rem] font-medium tracking-wide transition-colors duration-150",
