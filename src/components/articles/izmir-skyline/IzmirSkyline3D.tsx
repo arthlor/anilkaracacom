@@ -154,7 +154,9 @@ function IzmirSkyline3D() {
   const [activeTierFilter, setActiveTierFilter] = useState<"all" | TierKey>(
     "all",
   );
-  const [isMobile, setIsMobile] = useState(false);
+  // null until the first media check, so the scene is built once, at the
+  // right size, instead of desktop-first and then again for phones.
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [is3dTouchActive, setIs3dTouchActive] = useState(false);
   const [activeMobileTab, setActiveMobileTab] = useState<"filter" | "info">(
     "filter",
@@ -203,11 +205,23 @@ function IzmirSkyline3D() {
 
   useEffect(() => {
     const container = mountRef.current;
-    if (!container || districtData.length === 0 || districtShapes.length === 0)
+    if (
+      !container ||
+      isMobile === null ||
+      districtData.length === 0 ||
+      districtShapes.length === 0
+    )
       return;
 
     const setupStarted = performance.now();
     const mobileDevice = isMobile;
+    // GPU budget follows the device, not the layout: a phone in landscape is
+    // wider than the mobile breakpoint but has the same memory.
+    const lowPower =
+      mobileDevice ||
+      (navigator.maxTouchPoints > 0 &&
+        Math.min(window.screen.width, window.screen.height) < 820);
+    const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -244,7 +258,7 @@ function IzmirSkyline3D() {
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
-        antialias: !mobileDevice,
+        antialias: !lowPower,
         alpha: false,
         powerPreference: "high-performance",
         stencil: false,
@@ -255,10 +269,16 @@ function IzmirSkyline3D() {
       return;
     }
 
+    // iOS can hand back a context that is already lost after earlier losses;
+    // say so instead of leaving a black canvas.
+    if (renderer.getContext().isContextLost()) {
+      renderer.dispose();
+      setSceneError("Bu cihazda 3D harita başlatılamadı.");
+      return;
+    }
+
     renderer.setSize(width, height);
-    renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio, mobileDevice ? 1 : 1.5),
-    );
+    renderer.setPixelRatio(pixelRatio);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.92;
@@ -308,13 +328,13 @@ function IzmirSkyline3D() {
     scene.add(new THREE.HemisphereLight(0xc9d6e4, 0x2e2b22, 0.55));
     const sunLight = new THREE.DirectionalLight(0xffc68c, 2.7);
     sunLight.castShadow = true;
-    const shadowSize = mobileDevice
-      ? 2048
+    const shadowSize = lowPower
+      ? 1024
       : Math.min(4096, renderer.capabilities.maxTextureSize);
     sunLight.shadow.mapSize.set(shadowSize, shadowSize);
     sunLight.shadow.camera.near = 1;
     sunLight.shadow.camera.far = 420;
-    sunLight.shadow.radius = mobileDevice ? 1 : 2.5;
+    sunLight.shadow.radius = lowPower ? 1 : 2.5;
     scene.add(sunLight, sunLight.target);
     const bayFill = new THREE.DirectionalLight(0x9bc6ca, 0.45);
     bayFill.position.set(72, 38, -76);
@@ -418,8 +438,9 @@ function IzmirSkyline3D() {
         geometry.rotateX(-Math.PI / 2);
         geometry.computeVertexNormals();
         const land = new THREE.Mesh(geometry, material);
+        // Land only receives: casting would shade its own top inside the
+        // shadow frustum and leave a visible band at the frustum's edge.
         land.receiveShadow = true;
-        land.castShadow = true;
         land.userData = { districtData: district };
         scene.add(land);
         pickableObjects.push(land);
@@ -445,8 +466,8 @@ function IzmirSkyline3D() {
     }
 
     const city = layoutCity(districtData, districtShapes, {
-      density: mobileDevice ? 3000 : 1700,
-      treeDensity: mobileDevice ? 0.22 : 0.55,
+      density: lowPower ? 4200 : 1700,
+      treeDensity: lowPower ? 0.14 : 0.55,
     });
 
     const matrix = new THREE.Matrix4();
@@ -516,10 +537,10 @@ function IzmirSkyline3D() {
     }
 
     const { material: facadeMaterial } = createFacadeMaterial(
-      mobileDevice ? 0.55 : 0.7,
+      lowPower ? 0.55 : 0.7,
     );
     const detailMaterial = createDetailMaterial();
-    const detailLevel = mobileDevice ? "lite" : "full";
+    const detailLevel = lowPower ? "lite" : "full";
 
     const byVariant = new Map<string, PlacedBuilding[]>();
     placedBuildings.forEach((building) => {
@@ -889,9 +910,7 @@ function IzmirSkyline3D() {
       const nextHeight = Math.max(container.clientHeight, 1);
       camera.aspect = nextWidth / nextHeight;
       camera.updateProjectionMatrix();
-      renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio, mobileDevice ? 1 : 1.5),
-      );
+      renderer.setPixelRatio(pixelRatio);
       renderer.setSize(nextWidth, nextHeight, false);
       render();
     });
