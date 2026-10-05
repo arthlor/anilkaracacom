@@ -49,7 +49,7 @@ export const pillarConfig: Record<
     title: "Data Journalism & Civic Technology",
     shortTitle: "Public-interest reporting",
     description:
-      "Reporting and tools that make public data and institutions easier to understand.",
+      "Reporting and tools that make data and institutions easier to understand.",
     icon: "data-journalism",
     accentClass: "text-primary",
   },

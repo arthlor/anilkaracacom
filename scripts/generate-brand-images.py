@@ -118,7 +118,7 @@ def og_image() -> Image.Image:
 
     text(draw, (88, 150), "Anıl Karaca.", 96, 650, INK, tracking=-0.045)
     text(draw, (92, 272), "Communications. Data. Development.", 42, 500, MUTED, tracking=-0.03)
-    text(draw, (92, 352), "Reporting with public data. Apps, games", 30, 420, MUTED, -0.012)
+    text(draw, (92, 352), "Reporting with data. Apps, games", 30, 420, MUTED, -0.012)
     text(draw, (92, 396), "and digital products from İzmir.", 30, 420, MUTED, -0.012)
 
     mono = ImageFont.truetype(str(MONO / "jetbrains-mono-latin-400-normal.woff2"), 24)

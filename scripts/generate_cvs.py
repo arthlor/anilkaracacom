@@ -87,7 +87,7 @@ def entry(title, meta, bullets=()):
 
 # ── Shared facts ─────────────────────────────────────────────────────
 SITE = "https://anilkaraca.com"
-EMAIL = "anilkaraca140@gmail.com"
+EMAIL = "info@anilkaraca.com"
 PROFILES = (
     f"{link('linkedin.com/in/anil-karaca', 'https://www.linkedin.com/in/anil-karaca/')} | "
     f"{link('github.com/arthlor', 'https://github.com/arthlor')} | "
@@ -160,7 +160,7 @@ CVS = [
             "keywords": "data journalism, data analysis, data visualization, Python, pandas, SQL, PostgreSQL, Excel, D3.js, React, Three.js, QGIS, Datawrapper, Flourish, Tableau, fact-checking",
             "order": ["summary", "skills", "experience", "education"],
             "summary": "Data journalist and analyst with ten years in digital newsrooms and public-sector communications. "
-            "Collects, cleans, and analyzes public data with Python and SQL, and publishes the findings as clear, "
+            "Collects, cleans, and analyzes data with Python and SQL, and publishes the findings as clear, "
             "interactive stories and visualizations in English and Turkish.",
             "skills": [
                 ("Data analysis", "Python (pandas, NumPy), SQL (PostgreSQL), Excel, data cleaning, web scraping, descriptive statistics"),
@@ -177,7 +177,7 @@ CVS = [
                 ("Communications Advisor and Data Specialist", CITY["en"] + " | 2019 - 2024", [
                     "Analyzed municipal datasets, including traffic and transit records, with Python and SQL.",
                     "Built dashboards, charts, and reports for decision-makers and the public.",
-                    "Turned complex public data into briefings, visual assets, and public data stories.",
+                    "Turned complex data into briefings, visual assets, and data stories.",
                 ]),
                 ("Digital Journalist and Editor", NEWSROOMS + " | 2014 - 2019", [
                     "Reported, verified, and edited news for digital desks on daily deadlines.",
@@ -247,7 +247,7 @@ CVS = [
                 ]),
                 ("Digital Journalist and Editor", NEWSROOMS + " | 2014 - 2019", [
                     "Built reader-facing interactive graphics and data tools for digital coverage.",
-                    "Analyzed public data with SQL and Excel on daily deadlines.",
+                    "Analyzed data with SQL and Excel on daily deadlines.",
                 ]),
             ],
         },
@@ -308,7 +308,7 @@ CVS = [
                     "Briefed advertising and media agencies and reviewed their work through delivery.",
                     "Kept messaging and visual identity consistent across channels and departments.",
                     "Wrote, shot, and edited a short documentary on a municipal field team.",
-                    "Prepared dashboards and visual reports that explained public data to executives.",
+                    "Prepared dashboards and visual reports that explained data to executives.",
                 ]),
                 ("Digital Journalist and Editor", NEWSROOMS + " | 2014 - 2019", [
                     "Reported, verified, and edited news for digital desks on daily deadlines.",

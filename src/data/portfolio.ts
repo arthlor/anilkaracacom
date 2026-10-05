@@ -45,7 +45,7 @@ export const experienceEntries: ExperienceEntry[] = [
     role: "Data journalist and developer",
     organization: "Independent",
     summary:
-      "Reporting with public data, and building apps, games, and browser tools.",
+      "Reporting with data, and building apps, games, and browser tools.",
   },
   {
     period: "2019–2024",

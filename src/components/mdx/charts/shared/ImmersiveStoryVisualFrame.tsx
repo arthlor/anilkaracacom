@@ -86,13 +86,18 @@ export default function ImmersiveStoryVisualFrame({
               initial={false}
               animate={{
                 opacity: isActive ? 1 : 0,
-                y: isActive ? 0 : index < activeIndex ? -10 : 10,
-                scale: isActive ? 1 : 0.992,
+                y: isActive ? 0 : index < activeIndex ? -8 : 8,
+                scale: isActive ? 1 : 0.994,
               }}
-              transition={{
-                duration: reduceMotion ? 0 : 0.22,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              // The outgoing view lingers under the incoming one so the
+              // canvas never dips to empty between steps.
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : isActive
+                    ? { duration: 0.46, ease: [0.22, 1, 0.36, 1] }
+                    : { duration: 0.34, delay: 0.12, ease: [0.4, 0, 0.2, 1] }
+              }
               aria-hidden={!isActive}
               inert={!isActive}
             >

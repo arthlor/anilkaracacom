@@ -85,7 +85,9 @@ const year = new Date().getFullYear();
       field.style.opacity = "0";
       document.body.append(field);
       field.select();
-      const copied = document.execCommand("copy");
+      const copied = (
+        document as unknown as { execCommand: (command: string) => boolean }
+      ).execCommand("copy");
       field.remove();
       return copied;
     }

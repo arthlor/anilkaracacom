@@ -125,19 +125,35 @@ const { id, title, summary } = Astro.props;
   }
 
   @media (max-width: 1023px) {
+    /* Each card is followed by the gap set on the scrolly container, so the
+       block top is the card top and hash links land like the step controls. */
     :global([data-scrolly-mode="immersive"]) .scrolly-step-block {
-      display: flex !important;
-      min-height: max(72svh, 520px);
-      align-items: flex-end;
-      padding-block: clamp(4rem, 10svh, 7rem);
+      display: block !important;
+      min-height: 0;
+      padding: 0 0 var(--scrolly-step-gap, 82svh);
       pointer-events: none;
+      scroll-margin-top: calc(
+        var(--scrolly-sticky-offset, 68px) +
+          var(--immersive-canvas-height, 420px) - var(--nav-h)
+      );
+    }
+
+    :global([data-scrolly-mode="immersive"]) .scrolly-step-block:first-child {
+      padding: 0 0 var(--scrolly-step-gap, 82svh);
+    }
+
+    :global([data-scrolly-mode="immersive"]) .scrolly-step-block:last-child {
+      padding-top: 0;
+      padding-bottom: var(--scrolly-end-space, 70svh);
     }
 
     :global([data-scrolly-mode="immersive"]) .scrolly-step-card {
       max-width: 42rem;
       margin-inline: auto;
-      background: hsl(var(--card) / 0.94);
-      box-shadow: 0 12px 40px hsl(var(--foreground) / 0.12);
+      background: hsl(var(--card) / 0.96);
+      box-shadow:
+        0 18px 48px hsl(var(--foreground) / 0.14),
+        0 2px 6px hsl(var(--foreground) / 0.06);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       pointer-events: auto;
@@ -145,11 +161,6 @@ const { id, title, summary } = Astro.props;
   }
 
   @media (max-width: 420px) {
-    :global([data-scrolly-mode="immersive"]) .scrolly-step-block {
-      min-height: max(68svh, 480px);
-      padding-block: 3.5rem;
-    }
-
     :global([data-scrolly-mode="immersive"]) .scrolly-step-card {
       padding: 1.2rem;
     }

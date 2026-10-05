@@ -58,7 +58,7 @@ export function buildPersonSchema(image?: string) {
     ...(image && { image: getCanonicalUrl(image) }),
     jobTitle: siteConfig.role,
     description:
-      "Data journalist and developer based in İzmir, Türkiye. Reports with public data in English and Turkish, and builds iOS apps, a Chrome extension, and a game.",
+      "Data journalist and developer based in İzmir, Türkiye. Reports with data in English and Turkish, and builds iOS apps, a Chrome extension, and a game.",
     email: `mailto:${siteConfig.contactEmail}`,
     address: {
       "@type": "PostalAddress",
@@ -68,7 +68,7 @@ export function buildPersonSchema(image?: string) {
     knowsAbout: [
       "Data journalism",
       "Data visualization",
-      "Public data analysis",
+      "Data analysis",
       "iOS app development",
       "Game development",
     ],

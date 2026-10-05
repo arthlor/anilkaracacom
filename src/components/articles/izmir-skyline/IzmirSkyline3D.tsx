@@ -1,74 +1,59 @@
 import { useEffect, useRef, useState } from "react";
-import { scaleSqrt } from "d3-scale";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { Sky } from "three/examples/jsm/objects/Sky.js";
 import {
+  LOT,
   TIER_META,
   TIER_ORDER,
-  VARIANTS_BY_TIER,
-  createArchitectureVariants,
+  addInstanceAttributes,
+  buildTree,
+  buildVariant,
+  chooseMainPolygon,
+  createDetailMaterial,
+  createFacadeMaterial,
   createFolkartLandmark,
-  createMaterial,
-  makeFacadeTextures,
-  type BuildingFinish,
+  layoutCity,
+  polygonArea,
+  variantKey,
+  type DistrictData,
+  type DistrictShape,
+  type PlacedBuilding,
+  type PlacedTree,
   type TierKey,
 } from "./architecture";
 import { loadJson } from "./loadJson";
 import { TIER_DARK_HEX } from "./tierPalette";
 import { withChartBoundary } from "../../case-study/ChartBoundary";
 
-interface DistrictTier {
-  tier_1_2: number;
-  tier_3_5: number;
-  tier_6_9: number;
-  tier_10_19: number;
-  tier_20_plus: number;
-}
+/** Top of the extruded district slabs; the city stands on it. */
+const LAND_TOP = 1.05;
+const PAD_HEIGHT = 0.012;
+const GROUND = LAND_TOP + PAD_HEIGHT;
 
-interface DistrictData {
-  district: string;
-  total_buildings: number;
-  raw_max_floor: number;
-  clean_max_floor: number;
-  x: number;
-  z: number;
-  tiers: DistrictTier;
-}
+/** Low sun from just south of west: side light and long eastward shadows. */
+const SUN_DIRECTION = new THREE.Vector3().setFromSphericalCoords(
+  1,
+  THREE.MathUtils.degToRad(66),
+  THREE.MathUtils.degToRad(290),
+);
 
-interface DistrictShape {
-  district: string;
-  centroid: [number, number];
-  polygons: [number, number][][];
-}
+/* Highlight brightness for buildings and trees. */
+const STATE_NORMAL = 1;
+const STATE_ACTIVE = 1.1;
+const STATE_DIMMED = 0.14;
 
-interface BuildingInstance {
-  district: DistrictData;
+interface BuildingGroup {
   tier: TierKey;
-  variant: number;
-  position: THREE.Vector3;
-  rotation: number;
-  scale: THREE.Vector3;
-  baseColor: THREE.Color;
+  items: PlacedBuilding[];
+  meshes: THREE.InstancedMesh[];
+  states: THREE.InstancedBufferAttribute[];
 }
 
-interface InstanceMeshEntry {
-  mesh: THREE.InstancedMesh;
-  tier: TierKey;
-  finish: BuildingFinish;
-  instances: BuildingInstance[];
+interface TreeGroup {
+  items: PlacedTree[];
+  state: THREE.InstancedBufferAttribute;
 }
-
-interface NearMeshEntry {
-  mesh: THREE.InstancedMesh;
-  variant: number;
-  tier: TierKey;
-  finish: BuildingFinish;
-}
-
-const ACTIVE_INSTANCE = new THREE.Color(0xfff0cf);
-const DIMMED_INSTANCE = new THREE.Color(0x686762);
-const WHITE_INSTANCE = new THREE.Color(0xffffff);
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat("tr-TR").format(value);
@@ -76,60 +61,6 @@ function formatNumber(value: number) {
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
-}
-
-function hashString(value: string) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function mulberry32(seed: number) {
-  return () => {
-    let value = (seed += 0x6d2b79f5);
-    value = Math.imul(value ^ (value >>> 15), value | 1);
-    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-    return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-function shuffle<T>(values: T[], random: () => number) {
-  for (let index = values.length - 1; index > 0; index -= 1) {
-    const next = Math.floor(random() * (index + 1));
-    [values[index], values[next]] = [values[next]!, values[index]!];
-  }
-  return values;
-}
-
-function pointInPolygon(point: [number, number], polygon: [number, number][]) {
-  let inside = false;
-  for (
-    let current = 0, previous = polygon.length - 1;
-    current < polygon.length;
-    previous = current++
-  ) {
-    const [x, y] = polygon[current]!;
-    const [previousX, previousY] = polygon[previous]!;
-    const intersects =
-      y > point[1] !== previousY > point[1] &&
-      point[0] <
-        ((previousX - x) * (point[1] - y)) / (previousY - y || 1e-9) + x;
-    if (intersects) inside = !inside;
-  }
-  return inside;
-}
-
-function polygonArea(polygon: [number, number][]) {
-  let sum = 0;
-  for (let index = 0; index < polygon.length; index += 1) {
-    const current = polygon[index]!;
-    const next = polygon[(index + 1) % polygon.length]!;
-    sum += current[0] * next[1] - next[0] * current[1];
-  }
-  return Math.abs(sum / 2);
 }
 
 function simplifyRing(
@@ -154,103 +85,6 @@ function simplifyRing(
   return simplified.length >= 3 ? simplified : points;
 }
 
-function chooseMainPolygon(shape: DistrictShape) {
-  const containing = shape.polygons.find((polygon) =>
-    pointInPolygon(shape.centroid, polygon),
-  );
-  if (containing) return containing;
-  return [...shape.polygons].sort(
-    (first, second) => polygonArea(second) - polygonArea(first),
-  )[0]!;
-}
-
-function findInteriorCenter(
-  polygon: [number, number][],
-  preferred: [number, number],
-  random: () => number,
-) {
-  if (pointInPolygon(preferred, polygon)) return preferred;
-  const xs = polygon.map(([x]) => x);
-  const ys = polygon.map(([, y]) => y);
-  const minX = Math.min(...xs);
-  const maxX = Math.max(...xs);
-  const minY = Math.min(...ys);
-  const maxY = Math.max(...ys);
-  const average: [number, number] = [
-    polygon.reduce((sum, [x]) => sum + x, 0) / polygon.length,
-    polygon.reduce((sum, [, y]) => sum + y, 0) / polygon.length,
-  ];
-  if (pointInPolygon(average, polygon)) return average;
-  for (let attempt = 0; attempt < 240; attempt += 1) {
-    const candidate: [number, number] = [
-      minX + random() * (maxX - minX),
-      minY + random() * (maxY - minY),
-    ];
-    if (pointInPolygon(candidate, polygon)) return candidate;
-  }
-  return polygon[0]!;
-}
-
-function sampleClusterPositions(
-  shape: DistrictShape,
-  count: number,
-  random: () => number,
-) {
-  const polygon = chooseMainPolygon(shape);
-  const area = Math.max(polygonArea(polygon), 1);
-  const center = findInteriorCenter(polygon, shape.centroid, random);
-  const radius = clamp(Math.sqrt(area) * 0.28, 2.2, 7.8);
-  const placed: [number, number][] = [];
-
-  for (let index = 0; index < count; index += 1) {
-    let accepted: [number, number] | null = null;
-    for (let attempt = 0; attempt < 180; attempt += 1) {
-      const angle = random() * Math.PI * 2;
-      const distance = Math.sqrt(random()) * radius;
-      const candidate: [number, number] = [
-        center[0] + Math.cos(angle) * distance,
-        center[1] + Math.sin(angle) * distance * 0.76,
-      ];
-      const minimumDistance = attempt > 120 ? 0.58 : 0.88;
-      const clear = placed.every(
-        ([x, y]) =>
-          Math.hypot(candidate[0] - x, candidate[1] - y) > minimumDistance,
-      );
-      if (clear && pointInPolygon(candidate, polygon)) {
-        accepted = candidate;
-        break;
-      }
-    }
-    placed.push(accepted ?? center);
-  }
-  return placed;
-}
-
-function allocateTierCounts(tiers: DistrictTier, count: number) {
-  const allocations = Object.fromEntries(
-    TIER_ORDER.map((tier) => [tier, 0]),
-  ) as Record<TierKey, number>;
-  const active = TIER_ORDER.filter((tier) => tiers[tier] > 0);
-  active.forEach((tier) => {
-    allocations[tier] = 1;
-  });
-  const total = Math.max(
-    active.reduce((sum, tier) => sum + tiers[tier], 0),
-    1,
-  );
-  let remaining = Math.max(0, count - active.length);
-  while (remaining > 0) {
-    const nextTier = active.reduce((best, tier) => {
-      const deficit = (tiers[tier] / total) * count - allocations[tier];
-      const bestDeficit = (tiers[best] / total) * count - allocations[best];
-      return deficit > bestDeficit ? tier : best;
-    }, active[0]!);
-    allocations[nextTier] += 1;
-    remaining -= 1;
-  }
-  return allocations;
-}
-
 function makeWaterTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
@@ -258,17 +92,17 @@ function makeWaterTexture() {
   const context = canvas.getContext("2d");
   if (context) {
     const gradient = context.createLinearGradient(0, 0, 512, 512);
-    gradient.addColorStop(0, "#173b43");
-    gradient.addColorStop(0.42, "#0c2934");
-    gradient.addColorStop(1, "#061923");
+    gradient.addColorStop(0, "#1b4049");
+    gradient.addColorStop(0.42, "#123240");
+    gradient.addColorStop(1, "#0a2230");
     context.fillStyle = gradient;
     context.fillRect(0, 0, 512, 512);
     context.lineWidth = 1;
-    for (let row = -12; row < 530; row += 22) {
+    for (let row = -12; row < 530; row += 18) {
       context.beginPath();
-      context.strokeStyle = `rgba(255, 198, 130, ${0.025 + ((row + 12) % 66) / 2200})`;
-      for (let x = -24; x <= 536; x += 10) {
-        const y = row + Math.sin(x * 0.038 + row * 0.02) * 2;
+      context.strokeStyle = `rgba(255, 214, 160, ${0.03 + ((row + 12) % 54) / 1800})`;
+      for (let x = -24; x <= 536; x += 8) {
+        const y = row + Math.sin(x * 0.045 + row * 0.03) * 2.2;
         if (x === -24) context.moveTo(x, y);
         else context.lineTo(x, y);
       }
@@ -279,7 +113,7 @@ function makeWaterTexture() {
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(2.5, 2.5);
+  texture.repeat.set(3, 3);
   texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.magFilter = THREE.LinearFilter;
   texture.generateMipmaps = true;
@@ -288,16 +122,11 @@ function makeWaterTexture() {
 
 function setSky(sky: Sky) {
   const uniforms = sky.material.uniforms;
-  uniforms.turbidity!.value = 8.5;
-  uniforms.rayleigh!.value = 1.45;
+  uniforms.turbidity!.value = 7.5;
+  uniforms.rayleigh!.value = 1.6;
   uniforms.mieCoefficient!.value = 0.006;
-  uniforms.mieDirectionalG!.value = 0.82;
-  const sun = new THREE.Vector3().setFromSphericalCoords(
-    1,
-    THREE.MathUtils.degToRad(82),
-    THREE.MathUtils.degToRad(238),
-  );
-  uniforms.sunPosition!.value.copy(sun);
+  uniforms.mieDirectionalG!.value = 0.84;
+  uniforms.sunPosition!.value.copy(SUN_DIRECTION);
   sky.scale.setScalar(10000);
 }
 
@@ -308,8 +137,7 @@ function IzmirSkyline3D() {
     ((district: DistrictData | null) => void) | null
   >(null);
   const renderRef = useRef<(() => void) | null>(null);
-  const filterEntriesRef = useRef<InstanceMeshEntry[]>([]);
-  const nearEntriesRef = useRef<NearMeshEntry[]>([]);
+  const buildingGroupsRef = useRef<BuildingGroup[]>([]);
   const folkartLandmarkRef = useRef<THREE.Group | null>(null);
   const activeTierFilterRef = useRef<"all" | TierKey>("all");
   const hoveredDistrictRef = useRef<DistrictData | null>(null);
@@ -378,6 +206,7 @@ function IzmirSkyline3D() {
     if (!container || districtData.length === 0 || districtShapes.length === 0)
       return;
 
+    const setupStarted = performance.now();
     const mobileDevice = isMobile;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
@@ -394,14 +223,22 @@ function IzmirSkyline3D() {
     const camera = new THREE.PerspectiveCamera(
       mobileDevice ? 47 : 35,
       width / height,
-      0.1,
+      0.05,
       520,
     );
-    const initialCamera = mobileDevice
-      ? new THREE.Vector3(8, 154, 148)
-      : new THREE.Vector3(-20, 116, 134);
-    const entryCamera = initialCamera.clone().multiplyScalar(1.12);
-    const initialTarget = new THREE.Vector3(-2, 0, 7);
+    // Open on the metropolitan bay, where most of the buildings are; zoom
+    // out for the whole province.
+    const initialTarget = new THREE.Vector3(-12.5, LAND_TOP, 10.5);
+    const initialCamera = initialTarget
+      .clone()
+      .add(
+        new THREE.Vector3(-0.16, 0.6, 0.78)
+          .normalize()
+          .multiplyScalar(mobileDevice ? 94 : 72),
+      );
+    const entryCamera = initialTarget
+      .clone()
+      .add(initialCamera.clone().sub(initialTarget).multiplyScalar(1.25));
     camera.position.copy(reducedMotion ? initialCamera : entryCamera);
 
     let renderer: THREE.WebGLRenderer;
@@ -420,11 +257,13 @@ function IzmirSkyline3D() {
 
     renderer.setSize(width, height);
     renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio, mobileDevice ? 1 : 1.35),
+      Math.min(window.devicePixelRatio, mobileDevice ? 1 : 1.5),
     );
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.08;
+    renderer.toneMappingExposure = 0.92;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
     container.replaceChildren(renderer.domElement);
     renderer.domElement.setAttribute("aria-hidden", "true");
 
@@ -444,10 +283,11 @@ function IzmirSkyline3D() {
     controls.enableDamping = true;
     controls.dampingFactor = 0.075;
     controls.enablePan = !mobileDevice;
-    controls.minDistance = mobileDevice ? 74 : 44;
+    // Close enough to read balconies and rooftop heaters.
+    controls.minDistance = mobileDevice ? 9 : 5;
     controls.maxDistance = mobileDevice ? 285 : 245;
-    controls.minPolarAngle = Math.PI * 0.15;
-    controls.maxPolarAngle = Math.PI * 0.47;
+    controls.minPolarAngle = Math.PI * 0.12;
+    controls.maxPolarAngle = Math.PI * 0.46;
     controls.target.copy(initialTarget);
 
     const pmrem = new THREE.PMREMGenerator(renderer);
@@ -463,14 +303,48 @@ function IzmirSkyline3D() {
       20000,
     );
     scene.environment = environmentTarget.texture;
+    scene.environmentIntensity = 0.42;
 
-    scene.add(new THREE.HemisphereLight(0xf6d7bb, 0x35413e, 1.68));
-    const sunLight = new THREE.DirectionalLight(0xffc67e, 3.2);
-    sunLight.position.set(-86, 92, 58);
-    scene.add(sunLight);
-    const bayFill = new THREE.DirectionalLight(0x9bc6ca, 1.08);
+    scene.add(new THREE.HemisphereLight(0xc9d6e4, 0x2e2b22, 0.55));
+    const sunLight = new THREE.DirectionalLight(0xffc68c, 2.7);
+    sunLight.castShadow = true;
+    const shadowSize = mobileDevice
+      ? 2048
+      : Math.min(4096, renderer.capabilities.maxTextureSize);
+    sunLight.shadow.mapSize.set(shadowSize, shadowSize);
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 420;
+    sunLight.shadow.radius = mobileDevice ? 1 : 2.5;
+    scene.add(sunLight, sunLight.target);
+    const bayFill = new THREE.DirectionalLight(0x9bc6ca, 0.45);
     bayFill.position.set(72, 38, -76);
     scene.add(bayFill);
+
+    // The shadow frustum follows the view: the whole province from afar,
+    // a single neighbourhood up close, so shadows stay sharp when zoomed.
+    let shadowExtent = 0;
+    const fitShadow = () => {
+      const distance = camera.position.distanceTo(controls.target);
+      const extent = clamp(distance * 0.62, 4, 84);
+      const center = controls.target;
+      sunLight.target.position.set(center.x, LAND_TOP, center.z);
+      sunLight.position
+        .copy(SUN_DIRECTION)
+        .multiplyScalar(200)
+        .add(sunLight.target.position);
+      if (Math.abs(extent - shadowExtent) > shadowExtent * 0.04) {
+        shadowExtent = extent;
+        const shadowCamera = sunLight.shadow.camera;
+        shadowCamera.left = -extent;
+        shadowCamera.right = extent;
+        shadowCamera.top = extent;
+        shadowCamera.bottom = -extent;
+        shadowCamera.updateProjectionMatrix();
+        const texel = (extent * 2) / shadowSize;
+        sunLight.shadow.normalBias = texel * 1.4;
+        sunLight.shadow.bias = -0.00025;
+      }
+    };
 
     const waterTexture = makeWaterTexture();
     waterTexture.anisotropy = Math.min(
@@ -479,21 +353,26 @@ function IzmirSkyline3D() {
     );
     const seaMaterial = new THREE.MeshStandardMaterial({
       map: waterTexture,
-      color: 0x15343d,
-      roughness: 0.66,
-      metalness: 0.2,
-      envMapIntensity: 0.75,
+      color: 0x1a3c46,
+      roughness: 0.62,
+      metalness: 0.02,
+      envMapIntensity: 0.22,
     });
     const sea = new THREE.Mesh(new THREE.PlaneGeometry(360, 300), seaMaterial);
     sea.rotation.x = -Math.PI / 2;
-    sea.position.set(0, -1.05, 1);
+    // Just under the land: shores stand a storey above the water, not a cliff.
+    sea.position.set(0, LAND_TOP - 0.035, 1);
+    sea.receiveShadow = true;
     scene.add(sea);
 
     const dataMap = new Map(
       districtData.map((district) => [district.district, district]),
     );
-    const shapeMap = new Map(
-      districtShapes.map((shape) => [shape.district, shape]),
+    const districtArea = new Map(
+      districtShapes.map((shape) => [
+        shape.district,
+        polygonArea(chooseMainPolygon(shape)),
+      ]),
     );
     const pickableObjects: THREE.Object3D[] = [];
     const districtMaterials = new Map<
@@ -503,7 +382,7 @@ function IzmirSkyline3D() {
     const borderMaterial = new THREE.LineBasicMaterial({
       color: 0xd5a06b,
       transparent: true,
-      opacity: 0.44,
+      opacity: 0.3,
       depthWrite: false,
     });
     const borderSegments: THREE.Vector3[] = [];
@@ -511,17 +390,12 @@ function IzmirSkyline3D() {
     districtShapes.forEach((districtShape) => {
       const district = dataMap.get(districtShape.district);
       if (!district) return;
-      const verticalShare =
-        (district.tiers.tier_10_19 + district.tiers.tier_20_plus) /
-        Math.max(district.total_buildings, 1);
-      const base = new THREE.Color(0x32423f).lerp(
-        new THREE.Color(0x62554a),
-        Math.min(verticalShare * 58, 0.72),
-      );
+      // Countryside reads olive; the city reads from its streets and roofs.
+      const base = new THREE.Color(0x4d5038);
       const material = new THREE.MeshStandardMaterial({
-        color: base,
-        roughness: 0.88,
-        metalness: 0.02,
+        color: base.clone(),
+        roughness: 0.95,
+        metalness: 0,
         emissive: 0x121c1d,
         emissiveIntensity: 0.12,
       });
@@ -529,14 +403,14 @@ function IzmirSkyline3D() {
 
       districtShape.polygons.forEach((polygon) => {
         if (polygon.length < 3) return;
-        const simplified = simplifyRing(polygon, mobileDevice ? 0.22 : 0.16);
+        const simplified = simplifyRing(polygon, mobileDevice ? 0.22 : 0.12);
         const shape = new THREE.Shape();
         simplified.forEach(([x, y], index) => {
           if (index === 0) shape.moveTo(x, -y);
           else shape.lineTo(x, -y);
         });
         const geometry = new THREE.ExtrudeGeometry(shape, {
-          depth: 1.05,
+          depth: LAND_TOP,
           steps: 1,
           bevelEnabled: false,
           curveSegments: 1,
@@ -544,6 +418,8 @@ function IzmirSkyline3D() {
         geometry.rotateX(-Math.PI / 2);
         geometry.computeVertexNormals();
         const land = new THREE.Mesh(geometry, material);
+        land.receiveShadow = true;
+        land.castShadow = true;
         land.userData = { districtData: district };
         scene.add(land);
         pickableObjects.push(land);
@@ -552,8 +428,8 @@ function IzmirSkyline3D() {
           simplified.forEach(([x, y], index) => {
             const [nextX, nextY] = simplified[(index + 1) % simplified.length]!;
             borderSegments.push(
-              new THREE.Vector3(x, 1.12, y),
-              new THREE.Vector3(nextX, 1.12, nextY),
+              new THREE.Vector3(x, LAND_TOP + 0.03, y),
+              new THREE.Vector3(nextX, LAND_TOP + 0.03, nextY),
             );
           });
         }
@@ -568,229 +444,70 @@ function IzmirSkyline3D() {
       scene.add(borders);
     }
 
-    const totals = districtData.map((district) => district.total_buildings);
-    const buildingCount = scaleSqrt()
-      .domain([Math.min(...totals), Math.max(...totals)])
-      .range([6, 18])
-      .clamp(true);
-    const instancesByVariant = Array.from(
-      { length: 13 },
-      () => [] as BuildingInstance[],
-    );
-    const allInstances: BuildingInstance[] = [];
-
-    districtData.forEach((district) => {
-      const shape = shapeMap.get(district.district);
-      if (!shape) return;
-      const random = mulberry32(hashString(district.district));
-      const count = Math.round(buildingCount(district.total_buildings));
-      const allocations = allocateTierCounts(district.tiers, count);
-      const tierList = shuffle(
-        TIER_ORDER.flatMap((tier) =>
-          Array.from({ length: allocations[tier] }, () => tier),
-        ),
-        random,
-      );
-      const positions = sampleClusterPositions(shape, count, random);
-      tierList.forEach((tier, index) => {
-        const variants = VARIANTS_BY_TIER[tier];
-        const variant = variants[Math.floor(random() * variants.length)]!;
-        const [x, z] = positions[index]!;
-        const baseScale = (0.76 + random() * 0.2) * (mobileDevice ? 1.12 : 1);
-        const heightScale =
-          tier === "tier_20_plus"
-            ? 0.76 + clamp((district.clean_max_floor - 20) / 38, 0, 1) * 0.28
-            : tier === "tier_10_19"
-              ? 0.82 + clamp((district.clean_max_floor - 10) / 10, 0, 1) * 0.16
-              : 0.9 + random() * 0.12;
-        const baseColor = new THREE.Color(0xffffff);
-        baseColor.offsetHSL(
-          0,
-          (random() - 0.5) * 0.025,
-          (random() - 0.5) * 0.1,
-        );
-        const instance: BuildingInstance = {
-          district,
-          tier,
-          variant,
-          position: new THREE.Vector3(x, 1.08, z),
-          rotation: random() * Math.PI,
-          scale: new THREE.Vector3(baseScale, heightScale, baseScale),
-          baseColor,
-        };
-        instancesByVariant[variant]!.push(instance);
-        allInstances.push(instance);
-      });
+    const city = layoutCity(districtData, districtShapes, {
+      density: mobileDevice ? 3000 : 1700,
+      treeDensity: mobileDevice ? 0.22 : 0.55,
     });
 
-    const facadeTextures = makeFacadeTextures(renderer);
-    const variants = createArchitectureVariants(mobileDevice);
-    const meshEntries: InstanceMeshEntry[] = [];
     const matrix = new THREE.Matrix4();
     const quaternion = new THREE.Quaternion();
+    const position = new THREE.Vector3();
+    const scale = new THREE.Vector3();
+    const up = new THREE.Vector3(0, 1, 0);
 
-    variants.forEach((variant, variantIndex) => {
-      const instances = instancesByVariant[variantIndex]!;
-      if (instances.length === 0) return;
-      (
-        Object.entries(variant.far) as [BuildingFinish, THREE.BufferGeometry][]
-      ).forEach(([finish, geometry]) => {
-        const material = createMaterial(
-          variantIndex,
-          finish,
-          variant.tier,
-          facadeTextures,
+    // City blocks: pavements on every built lot, over an asphalt layer one
+    // street wider, so the gaps between blocks read as roads.
+    const paving = (
+      size: number,
+      thickness: number,
+      color: number,
+      roughness: number,
+    ) => {
+      const mesh = new THREE.InstancedMesh(
+        new THREE.BoxGeometry(size, thickness, size),
+        new THREE.MeshStandardMaterial({ color, roughness, envMapIntensity: 0.4 }),
+        city.pads.length,
+      );
+      city.pads.forEach((pad, index) => {
+        quaternion.setFromAxisAngle(up, pad.rotation);
+        matrix.compose(
+          position.set(pad.x, LAND_TOP + thickness / 2, pad.z),
+          quaternion,
+          scale.set(1, 1, 1),
         );
-        const mesh = new THREE.InstancedMesh(
-          geometry,
-          material,
-          instances.length,
-        );
-        instances.forEach((instance, instanceIndex) => {
-          quaternion.setFromEuler(new THREE.Euler(0, instance.rotation, 0));
-          matrix.compose(instance.position, quaternion, instance.scale);
-          mesh.setMatrixAt(instanceIndex, matrix);
-          mesh.setColorAt(
-            instanceIndex,
-            finish === "facade" || finish === "roof"
-              ? instance.baseColor
-              : WHITE_INSTANCE,
-          );
-        });
-        mesh.instanceMatrix.needsUpdate = true;
-        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-        mesh.computeBoundingSphere();
-        const districts = instances.map((instance) => instance.district);
-        mesh.userData = { instanceDistricts: districts };
-        scene.add(mesh);
-        pickableObjects.push(mesh);
-        meshEntries.push({
-          mesh,
-          tier: variant.tier,
-          finish,
-          instances,
-        });
+        mesh.setMatrixAt(index, matrix);
       });
-    });
-    filterEntriesRef.current = meshEntries;
-    meshEntries.forEach((entry) => {
-      entry.mesh.visible =
-        activeTierFilterRef.current === "all" ||
-        activeTierFilterRef.current === entry.tier;
-    });
-
-    const nearMeshEntries: NearMeshEntry[] = [];
-    variants.forEach((variant, variantIndex) => {
-      (
-        Object.entries(variant.near) as [BuildingFinish, THREE.BufferGeometry][]
-      ).forEach(([finish, geometry]) => {
-        const mesh = new THREE.InstancedMesh(
-          geometry,
-          createMaterial(variantIndex, finish, variant.tier, facadeTextures),
-          18,
-        );
-        mesh.count = 0;
-        mesh.visible = false;
-        mesh.frustumCulled = false;
-        scene.add(mesh);
-        nearMeshEntries.push({
-          mesh,
-          variant: variantIndex,
-          tier: variant.tier,
-          finish,
-        });
-      });
-    });
-    nearEntriesRef.current = nearMeshEntries;
-
-    const updateNearDetails = (district: DistrictData | null) => {
-      const selectedInstances = district
-        ? allInstances
-            .filter(
-              (instance) => instance.district.district === district.district,
-            )
-            .slice(0, 18)
-        : [];
-      nearMeshEntries.forEach((entry) => {
-        const matches = selectedInstances.filter(
-          (instance) => instance.variant === entry.variant,
-        );
-        entry.mesh.count = matches.length;
-        matches.forEach((instance, index) => {
-          quaternion.setFromEuler(new THREE.Euler(0, instance.rotation, 0));
-          matrix.compose(instance.position, quaternion, instance.scale);
-          entry.mesh.setMatrixAt(index, matrix);
-          entry.mesh.setColorAt(
-            index,
-            entry.finish === "facade" || entry.finish === "roof"
-              ? instance.baseColor
-              : WHITE_INSTANCE,
-          );
-        });
-        entry.mesh.instanceMatrix.needsUpdate = true;
-        if (entry.mesh.instanceColor)
-          entry.mesh.instanceColor.needsUpdate = true;
-        entry.mesh.visible =
-          matches.length > 0 &&
-          (activeTierFilterRef.current === "all" ||
-            activeTierFilterRef.current === entry.tier);
-      });
+      mesh.receiveShadow = true;
+      mesh.instanceMatrix.needsUpdate = true;
+      mesh.computeBoundingSphere();
+      scene.add(mesh);
     };
+    paving(LOT + 0.13, PAD_HEIGHT * 0.4, 0x3a3c3d, 0.9);
+    paving(LOT, PAD_HEIGHT, 0x9a948a, 0.92);
 
-    const shadowCanvas = document.createElement("canvas");
-    shadowCanvas.width = 128;
-    shadowCanvas.height = 64;
-    const shadowContext = shadowCanvas.getContext("2d");
-    if (shadowContext) {
-      const gradient = shadowContext.createRadialGradient(
-        34,
-        32,
-        3,
-        74,
-        32,
-        60,
-      );
-      gradient.addColorStop(0, "rgba(4, 9, 12, .44)");
-      gradient.addColorStop(0.46, "rgba(4, 9, 12, .19)");
-      gradient.addColorStop(1, "rgba(4, 9, 12, 0)");
-      shadowContext.fillStyle = gradient;
-      shadowContext.fillRect(0, 0, 128, 64);
-    }
-    const shadowTexture = new THREE.CanvasTexture(shadowCanvas);
-    const shadowMaterial = new THREE.MeshBasicMaterial({
-      map: shadowTexture,
-      transparent: true,
-      opacity: mobileDevice ? 0.26 : 0.36,
-      depthWrite: false,
-    });
-    const shadowMesh = new THREE.InstancedMesh(
-      new THREE.PlaneGeometry(2.45, 1),
-      shadowMaterial,
-      allInstances.length,
-    );
-    allInstances.forEach((instance, index) => {
-      quaternion.setFromEuler(
-        new THREE.Euler(-Math.PI / 2, THREE.MathUtils.degToRad(58), 0),
-      );
-      matrix.compose(
-        new THREE.Vector3(instance.position.x, 1.1, instance.position.z),
-        quaternion,
-        new THREE.Vector3(1.35 * instance.scale.x, 1.18 * instance.scale.z, 1),
-      );
-      shadowMesh.setMatrixAt(index, matrix);
-    });
-    shadowMesh.instanceMatrix.needsUpdate = true;
-    scene.add(shadowMesh);
-
+    // Bayraklı's first tower becomes the Folkart landmark.
     const bayrakli = dataMap.get("BAYRAKLI");
-    if (bayrakli) {
+    const folkartSite = city.buildings.findIndex(
+      (building) =>
+        building.district.district === "BAYRAKLI" &&
+        building.spec.kind === "tower",
+    );
+    const placedBuildings =
+      folkartSite >= 0
+        ? city.buildings.filter((_, index) => index !== folkartSite)
+        : city.buildings;
+    if (bayrakli && folkartSite >= 0) {
+      const site = city.buildings[folkartSite]!;
       const landmark = createFolkartLandmark();
-      const heightScale =
-        0.82 + clamp((bayrakli.clean_max_floor - 20) / 38, 0, 1) * 0.28;
-      landmark.position.set(bayrakli.x + 1.15, 1.08, bayrakli.z - 0.85);
-      landmark.rotation.y = 0.42;
-      landmark.scale.setScalar(1.08 * heightScale);
+      landmark.position.set(site.x, GROUND, site.z);
+      landmark.rotation.y = site.rotation;
+      // 47 storeys at the model's storey height.
+      landmark.scale.setScalar(0.21);
       landmark.userData.districtData = bayrakli;
+      landmark.traverse((object) => {
+        object.castShadow = true;
+        object.receiveShadow = true;
+      });
       scene.add(landmark);
       folkartLandmarkRef.current = landmark;
       landmark.visible =
@@ -798,13 +515,109 @@ function IzmirSkyline3D() {
         activeTierFilterRef.current === "tier_20_plus";
     }
 
+    const { material: facadeMaterial } = createFacadeMaterial(
+      mobileDevice ? 0.55 : 0.7,
+    );
+    const detailMaterial = createDetailMaterial();
+    const detailLevel = mobileDevice ? "lite" : "full";
+
+    const byVariant = new Map<string, PlacedBuilding[]>();
+    placedBuildings.forEach((building) => {
+      const key = variantKey(building.spec);
+      const list = byVariant.get(key);
+      if (list) list.push(building);
+      else byVariant.set(key, [building]);
+    });
+
+    const buildingGroups: BuildingGroup[] = [];
+    byVariant.forEach((items) => {
+      const variant = buildVariant(items[0]!.spec, detailLevel);
+      const seeds = new Float32Array(items.map((item) => item.seed));
+      const districts = items.map((item) => item.district);
+      const meshes: THREE.InstancedMesh[] = [];
+      const states: THREE.InstancedBufferAttribute[] = [];
+      (
+        [
+          [variant.shell, facadeMaterial, "paint"],
+          [variant.detail, detailMaterial, "tint"],
+        ] as const
+      ).forEach(([geometry, material, colorKey]) => {
+        if (!geometry.getAttribute("position")?.count) {
+          geometry.dispose();
+          return;
+        }
+        states.push(addInstanceAttributes(geometry, seeds));
+        const mesh = new THREE.InstancedMesh(geometry, material, items.length);
+        items.forEach((item, index) => {
+          quaternion.setFromAxisAngle(up, item.rotation);
+          matrix.compose(
+            position.set(item.x, GROUND, item.z),
+            quaternion,
+            scale.set(item.scale, 1, item.scale),
+          );
+          mesh.setMatrixAt(index, matrix);
+          mesh.setColorAt(index, item[colorKey]);
+        });
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.instanceMatrix.needsUpdate = true;
+        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+        mesh.computeBoundingSphere();
+        mesh.userData = { instanceDistricts: districts };
+        scene.add(mesh);
+        meshes.push(mesh);
+        // Walls are enough to hit; roofs sit inside the same footprint.
+        if (material === facadeMaterial) pickableObjects.push(mesh);
+      });
+      buildingGroups.push({ tier: items[0]!.tier, items, meshes, states });
+    });
+    buildingGroupsRef.current = buildingGroups;
+    buildingGroups.forEach((group) => {
+      group.meshes.forEach((mesh) => {
+        mesh.visible =
+          activeTierFilterRef.current === "all" ||
+          activeTierFilterRef.current === group.tier;
+      });
+    });
+
+    const treeGroups: TreeGroup[] = [];
+    (["round", "cypress"] as const).forEach((type) => {
+      const items = city.trees.filter((tree) => tree.type === type);
+      if (items.length === 0) return;
+      const geometry = buildTree(type);
+      const state = addInstanceAttributes(
+        geometry,
+        new Float32Array(items.length),
+      );
+      const mesh = new THREE.InstancedMesh(geometry, detailMaterial, items.length);
+      items.forEach((tree, index) => {
+        quaternion.setFromAxisAngle(up, tree.rotation);
+        matrix.compose(
+          position.set(tree.x, LAND_TOP, tree.z),
+          quaternion,
+          scale.setScalar(tree.scale),
+        );
+        mesh.setMatrixAt(index, matrix);
+        mesh.setColorAt(index, tree.tint);
+      });
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      mesh.instanceMatrix.needsUpdate = true;
+      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      mesh.computeBoundingSphere();
+      scene.add(mesh);
+      treeGroups.push({ items, state });
+    });
+
     const render = () => {
+      fitShadow();
       renderer.render(scene, camera);
       container.dataset.drawCalls = String(renderer.info.render.calls);
       container.dataset.triangles = String(renderer.info.render.triangles);
       container.dataset.geometries = String(renderer.info.memory.geometries);
       container.dataset.textures = String(renderer.info.memory.textures);
       container.dataset.programs = String(renderer.info.programs?.length ?? 0);
+      container.dataset.buildings = String(placedBuildings.length);
     };
     renderRef.current = render;
     let interactionFrame: number | null = null;
@@ -876,26 +689,33 @@ function IzmirSkyline3D() {
         const active = districtName === district?.district;
         material.color
           .copy(base)
-          .lerp(new THREE.Color(0xc9a979), active ? 0.38 : 0);
+          .lerp(new THREE.Color(0xc9a979), active ? 0.22 : 0);
         material.emissive.set(active ? 0x4a3525 : 0x121c1d);
-        material.emissiveIntensity = active ? 0.28 : 0.12;
+        material.emissiveIntensity = active ? 0.24 : 0.12;
       });
-      meshEntries.forEach((entry) => {
-        entry.instances.forEach((instance, index) => {
-          const base =
-            entry.finish === "facade" || entry.finish === "roof"
-              ? instance.baseColor
-              : WHITE_INSTANCE;
-          const color = base.clone();
-          if (district) {
-            if (instance.district.district === district.district)
-              color.lerp(ACTIVE_INSTANCE, 0.2);
-            else color.multiply(DIMMED_INSTANCE);
-          }
-          entry.mesh.setColorAt(index, color);
+      const stateFor = (name: string) =>
+        !district
+          ? STATE_NORMAL
+          : name === district.district
+            ? STATE_ACTIVE
+            : STATE_DIMMED;
+      buildingGroups.forEach((group) => {
+        group.states.forEach((state) => {
+          group.items.forEach((item, index) => {
+            state.setX(index, stateFor(item.district.district));
+          });
+          state.needsUpdate = true;
         });
-        if (entry.mesh.instanceColor)
-          entry.mesh.instanceColor.needsUpdate = true;
+      });
+      treeGroups.forEach((group) => {
+        group.items.forEach((tree, index) => {
+          // Trees fade less than buildings, so dimmed land doesn't go black.
+          group.state.setX(
+            index,
+            clamp(stateFor(tree.district.district), 0.45, STATE_NORMAL),
+          );
+        });
+        group.state.needsUpdate = true;
       });
       const landmark = folkartLandmarkRef.current;
       if (landmark) {
@@ -929,14 +749,7 @@ function IzmirSkyline3D() {
       setSelectedDistrict(null);
       setHoveredDistrict(null);
       setHighlight(null);
-      if (moveCamera) {
-        animateCamera(initialCamera, initialTarget, 650, () => {
-          updateNearDetails(null);
-          render();
-        });
-      } else {
-        updateNearDetails(null);
-      }
+      if (moveCamera) animateCamera(initialCamera, initialTarget, 650);
     };
 
     const focusDistrict = (district: DistrictData | null) => {
@@ -949,14 +762,19 @@ function IzmirSkyline3D() {
       setHoveredDistrict(null);
       setActiveMobileTab("info");
       setHighlight(district);
-      updateNearDetails(district);
-      const nextTarget = new THREE.Vector3(district.x, 4, district.z);
+      const nextTarget = new THREE.Vector3(district.x, LAND_TOP + 0.3, district.z);
       const offset = camera.position.clone().sub(controls.target).normalize();
-      const distance = mobileDevice ? 88 : 58;
+      // Small city districts get a close look; big rural ones stay wide.
+      const size = Math.sqrt(districtArea.get(district.district) ?? 64);
+      const distance = clamp(
+        size * (mobileDevice ? 4.6 : 3.4),
+        mobileDevice ? 16 : 10,
+        mobileDevice ? 92 : 64,
+      );
       animateCamera(
         nextTarget.clone().add(offset.multiplyScalar(distance)),
         nextTarget,
-        650,
+        700,
       );
     };
     focusDistrictRef.current = focusDistrict;
@@ -976,7 +794,10 @@ function IzmirSkyline3D() {
         -((pointerPosition.y - rect.top) / rect.height) * 2 + 1,
       );
       raycaster.setFromCamera(pointer, camera);
-      const intersections = raycaster.intersectObjects(pickableObjects, false);
+      const intersections = raycaster.intersectObjects(
+        pickableObjects.filter((object) => object.visible),
+        false,
+      );
       let district: DistrictData | null = null;
       for (const intersection of intersections) {
         const instanceDistricts = intersection.object.userData
@@ -986,7 +807,8 @@ function IzmirSkyline3D() {
           break;
         }
         const shapeDistrict = intersection.object.userData.districtData as
-          DistrictData | undefined;
+          | DistrictData
+          | undefined;
         if (shapeDistrict) {
           district = shapeDistrict;
           break;
@@ -1068,7 +890,7 @@ function IzmirSkyline3D() {
       camera.aspect = nextWidth / nextHeight;
       camera.updateProjectionMatrix();
       renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio, mobileDevice ? 1 : 1.35),
+        Math.min(window.devicePixelRatio, mobileDevice ? 1 : 1.5),
       );
       renderer.setSize(nextWidth, nextHeight, false);
       render();
@@ -1076,8 +898,8 @@ function IzmirSkyline3D() {
     resizeObserver.observe(container);
 
     controls.update();
-    updateNearDetails(selectedDistrictRef.current);
     setHighlight(selectedDistrictRef.current);
+    container.dataset.setupMs = String(Math.round(performance.now() - setupStarted));
     if (!reducedMotion) animateCamera(initialCamera, initialTarget, 900);
 
     return () => {
@@ -1108,8 +930,7 @@ function IzmirSkyline3D() {
       if (interactionFrame !== null) cancelAnimationFrame(interactionFrame);
       if (cameraFrame !== null) cancelAnimationFrame(cameraFrame);
       controls.dispose();
-      filterEntriesRef.current = [];
-      nearEntriesRef.current = [];
+      buildingGroupsRef.current = [];
       folkartLandmarkRef.current = null;
       if (renderRef.current === render) renderRef.current = null;
       resetCameraRef.current = null;
@@ -1121,6 +942,7 @@ function IzmirSkyline3D() {
         const renderable = object as THREE.Object3D & {
           geometry?: THREE.BufferGeometry;
           material?: THREE.Material | THREE.Material[];
+          dispose?: () => void;
         };
         if (renderable.geometry && !geometries.has(renderable.geometry)) {
           renderable.geometry.dispose();
@@ -1136,12 +958,10 @@ function IzmirSkyline3D() {
           material.dispose();
           materials.add(material);
         });
+        if (object instanceof THREE.InstancedMesh) object.dispose();
       });
-      facadeTextures.albedo.dispose();
-      facadeTextures.surface.dispose();
-      facadeTextures.emissive.dispose();
+      sunLight.shadow.dispose();
       waterTexture.dispose();
-      shadowTexture.dispose();
       if (mobileDevice) borderMaterial.dispose();
       environmentTarget.dispose();
       environmentSky.geometry.dispose();
@@ -1157,14 +977,11 @@ function IzmirSkyline3D() {
 
   useEffect(() => {
     activeTierFilterRef.current = activeTierFilter;
-    filterEntriesRef.current.forEach((entry) => {
-      entry.mesh.visible =
-        activeTierFilter === "all" || activeTierFilter === entry.tier;
-    });
-    nearEntriesRef.current.forEach((entry) => {
-      entry.mesh.visible =
-        entry.mesh.count > 0 &&
-        (activeTierFilter === "all" || activeTierFilter === entry.tier);
+    buildingGroupsRef.current.forEach((group) => {
+      group.meshes.forEach((mesh) => {
+        mesh.visible =
+          activeTierFilter === "all" || activeTierFilter === group.tier;
+      });
     });
     if (folkartLandmarkRef.current) {
       folkartLandmarkRef.current.visible =
@@ -1193,10 +1010,10 @@ function IzmirSkyline3D() {
       className="group relative my-12 h-[68svh] max-h-[620px] min-h-[500px] w-full min-w-0 max-w-full overflow-hidden rounded-[18px] border border-border bg-[#111413] text-white md:h-[min(78svh,760px)] md:max-h-[760px] md:min-h-[620px]"
     >
       <p id="izmir-map-description" className="sr-only">
-        Harita, İzmir’in 30 ilçesindeki 899.436 bina kaydını küçük temsili kent
-        kümeleriyle gösterir. Mimari tipler gerçek bina ayak izleri değildir.
-        İlçe seçmek ve kat filtresi uygulamak için kontrolleri
-        kullanabilirsiniz.
+        Harita, İzmir’in 30 ilçesindeki 899.436 bina kaydını temsili bir kent
+        modeliyle gösterir: her model bina yüzlerce gerçek binayı temsil eder,
+        konumlar gerçek bina ayak izleri değildir. İlçe seçmek ve kat filtresi
+        uygulamak için kontrolleri kullanabilirsiniz.
       </p>
 
       <header className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-2 bg-gradient-to-b from-[#111413]/90 to-transparent px-3 pb-14 pt-3 text-white sm:px-4 sm:pt-4 md:px-6 md:pt-5">
@@ -1279,7 +1096,7 @@ function IzmirSkyline3D() {
         !isLoading &&
         !loadError &&
         !sceneError && (
-          <div className="pointer-events-none absolute inset-0 z-20 flex items-end justify-center px-4 pb-[7.9rem]">
+          <div className="pointer-events-none absolute inset-0 z-20 flex items-end justify-center px-4 pb-[12rem]">
             <button
               type="button"
               onClick={() => setIs3dTouchActive(true)}
@@ -1299,30 +1116,6 @@ function IzmirSkyline3D() {
           Sayfayı kaydır
         </button>
       )}
-
-      <div className="absolute right-6 top-[5.5rem] z-10 hidden w-40 rounded-xl border border-white/10 bg-black/45 p-3 text-[11px] text-white/80 backdrop-blur-md lg:block">
-        <div className="mb-2 text-white/55">Kat aralıkları</div>
-        <div className="space-y-1.5">
-          {TIER_ORDER.map((tier) => (
-            <div key={tier} className="flex items-center justify-between gap-3">
-              <span className="flex items-center gap-2">
-                <span
-                  className="h-2 w-2 rounded-full"
-                  style={{
-                    backgroundColor: TIER_DARK_HEX[tier],
-                  }}
-                />
-                {TIER_META[tier].label}
-              </span>
-              {tier === "tier_20_plus" && (
-                <span className="font-mono tabular-nums text-white/55">
-                  176
-                </span>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
 
       {!isMobile && activeDistrict && (
         <DistrictInfo district={activeDistrict} />

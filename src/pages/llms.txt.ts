@@ -45,7 +45,7 @@ export const GET: APIRoute = async () => {
 
   const body = `# ${siteConfig.displayName}
 
-> ${siteConfig.displayName} (also written ${siteConfig.personName}) is a data journalist and developer based in ${siteConfig.location}. He reports with public data in English and Turkish, and builds iOS apps, a Chrome extension, and a game.
+> ${siteConfig.displayName} (also written ${siteConfig.personName}) is a data journalist and developer based in ${siteConfig.location}. He reports with data in English and Turkish, and builds iOS apps, a Chrome extension, and a game.
 
 ## About
 

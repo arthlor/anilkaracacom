@@ -4,6 +4,10 @@ interface Props {
 }
 
 const { mode = "pager" } = Astro.props;
+
+// "stage" sits under the visual (pager, desktop immersive); "dock" is the
+// fixed bottom control bar used by immersive mode on small screens.
+const navVariants = mode === "immersive" ? ["stage", "dock"] : ["stage"];
 ---
 
 <div
@@ -23,58 +27,124 @@ const { mode = "pager" } = Astro.props;
           <slot name="visual" />
         </div>
 
-        <nav class="scrolly-mobile-nav" aria-label="Story chapters">
-          <button
-            type="button"
-            class="scrolly-nav-btn scrolly-nav-btn--prev"
-            aria-label="Previous step"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
+        {
+          navVariants.includes("stage") && (
+            <nav
+              class="scrolly-mobile-nav"
+              data-scrolly-nav="stage"
+              aria-label="Story chapters"
             >
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
+              <button
+                type="button"
+                class="scrolly-nav-btn scrolly-nav-btn--prev"
+                aria-label="Previous step"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
 
-          <div class="scrolly-progress" aria-live="polite">
-            <span class="scrolly-progress__current">01</span>
-            <span class="scrolly-progress__divider" aria-hidden="true"></span>
-            <span class="scrolly-progress__total">03</span>
-          </div>
+              <div class="scrolly-progress" aria-hidden="true">
+                <span class="scrolly-progress__current">01</span>
+                <span class="scrolly-progress__divider" />
+                <span class="scrolly-progress__total">03</span>
+              </div>
 
-          <div class="scrolly-nav-dots"></div>
+              <div class="scrolly-nav-dots" />
 
-          <button
-            type="button"
-            class="scrolly-nav-btn scrolly-nav-btn--next"
-            aria-label="Next step"
-          >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-        </nav>
+              <button
+                type="button"
+                class="scrolly-nav-btn scrolly-nav-btn--next"
+                aria-label="Next step"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            </nav>
+          )
+        }
       </div>
     </div>
   </div>
+
+  {
+    navVariants.includes("dock") && (
+      <nav
+        class="scrolly-mobile-nav scrolly-dock"
+        data-scrolly-nav="dock"
+        aria-label="Story chapters"
+      >
+        <button
+          type="button"
+          class="scrolly-nav-btn scrolly-nav-btn--prev"
+          aria-label="Previous step"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
+
+        <div class="scrolly-progress" aria-hidden="true">
+          <span class="scrolly-progress__current">01</span>
+          <span class="scrolly-progress__divider" />
+          <span class="scrolly-progress__total">03</span>
+        </div>
+
+        <div class="scrolly-nav-dots" />
+
+        <button
+          type="button"
+          class="scrolly-nav-btn scrolly-nav-btn--next"
+          aria-label="Next step"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </nav>
+    )
+  }
 </div>
 
 <style>
@@ -148,10 +218,14 @@ const { mode = "pager" } = Astro.props;
     border-radius: 999px;
     background: hsl(var(--foreground) / 0.025);
     color: hsl(var(--muted-foreground));
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition:
       color 180ms ease,
       background 180ms ease,
-      border-color 180ms ease;
+      border-color 180ms ease,
+      opacity 180ms ease;
   }
 
   .scrolly-nav-btn:hover,
@@ -162,9 +236,20 @@ const { mode = "pager" } = Astro.props;
     outline: none;
   }
 
-  .scrolly-nav-btn:disabled {
-    pointer-events: none;
+  .scrolly-nav-btn:active {
+    background: hsl(var(--primary) / 0.14);
+  }
+
+  /* aria-disabled keeps focus on the button when it reaches either end. */
+  .scrolly-nav-btn[aria-disabled="true"] {
+    cursor: default;
     opacity: 0.3;
+  }
+
+  .scrolly-nav-btn[aria-disabled="true"]:hover {
+    border-color: hsl(var(--border));
+    background: hsl(var(--foreground) / 0.025);
+    color: hsl(var(--muted-foreground));
   }
 
   .scrolly-nav-dots {
@@ -204,6 +289,8 @@ const { mode = "pager" } = Astro.props;
     border-radius: 999px;
     background: transparent;
     cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   :global(.scrolly-dot)::after {
@@ -232,6 +319,59 @@ const { mode = "pager" } = Astro.props;
     width: 1.55rem;
     border-radius: 999px;
     background: hsl(var(--foreground));
+  }
+
+  /* Fixed bottom dock: only rendered in immersive mode, only shown < 1024px. */
+  .scrolly-dock {
+    position: fixed;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+    left: 50%;
+    z-index: 60;
+    width: min(calc(100% - 2rem), 24rem);
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.3rem;
+    background: hsl(var(--card) / 0.9);
+    box-shadow:
+      0 10px 32px hsl(var(--foreground) / 0.14),
+      0 1px 3px hsl(var(--foreground) / 0.08);
+    opacity: 0;
+    translate: -50% 1rem;
+    visibility: hidden;
+    transition:
+      opacity 220ms ease,
+      translate 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 260ms;
+  }
+
+  .sticky-scrolly-container[data-dock="visible"] .scrolly-dock {
+    opacity: 1;
+    translate: -50% 0;
+    visibility: visible;
+    transition:
+      opacity 220ms ease,
+      translate 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      visibility 0s linear 0s;
+  }
+
+  .scrolly-dock .scrolly-nav-dots {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .scrolly-dock :global(.scrolly-dot) {
+    min-width: 1.75rem;
+    flex: 0 1 2.75rem;
+  }
+
+  .scrolly-dock .scrolly-progress {
+    display: flex;
+    gap: 0.3rem;
+    padding-left: 0.35rem;
+  }
+
+  .scrolly-dock .scrolly-progress__divider {
+    width: 0.7rem;
   }
 
   @media (min-width: 1280px) {
@@ -270,21 +410,21 @@ const { mode = "pager" } = Astro.props;
     max-width: 1380px;
   }
 
-  .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-mobile-nav {
+  .sticky-scrolly-container[data-scrolly-mode="immersive"]
+    .scrolly-mobile-nav[data-scrolly-nav="stage"] {
     display: flex;
-  }
-
-  .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-progress {
-    display: flex;
-  }
-
-  .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-nav-btn {
-    display: none;
   }
 
   .sticky-scrolly-container[data-scrolly-mode="immersive"]
-    .sticky-visual-stage {
-    transition: opacity 180ms ease;
+    .scrolly-mobile-nav[data-scrolly-nav="stage"]
+    .scrolly-progress {
+    display: flex;
+  }
+
+  .sticky-scrolly-container[data-scrolly-mode="immersive"]
+    .scrolly-mobile-nav[data-scrolly-nav="stage"]
+    .scrolly-nav-btn {
+    display: none;
   }
 
   @media (min-width: 1024px) {
@@ -309,6 +449,19 @@ const { mode = "pager" } = Astro.props;
   }
 
   @media (max-width: 1023px) {
+    /* Cards scroll over a pinned graphic that never fades. The gap between
+       cards lets each chart state be seen unobstructed before the next card
+       arrives; the end space keeps the final state on screen after the last
+       card has passed. */
+    .sticky-scrolly-container[data-scrolly-mode="immersive"] {
+      --immersive-canvas-height: min(
+        clamp(340px, 52svh, 500px),
+        max(240px, calc(100svh - 9rem))
+      );
+      --scrolly-step-gap: 82svh;
+      --scrolly-end-space: calc(var(--immersive-canvas-height) + 16svh);
+    }
+
     .sticky-scrolly-container[data-scrolly-mode="immersive"]
       .sticky-scrolly-grid {
       grid-template-areas: "story";
@@ -324,7 +477,7 @@ const { mode = "pager" } = Astro.props;
 
     .sticky-scrolly-container[data-scrolly-mode="immersive"]
       .scrolly-visual-col {
-      z-index: 8;
+      z-index: 1;
       min-height: 100%;
       pointer-events: none;
     }
@@ -338,18 +491,17 @@ const { mode = "pager" } = Astro.props;
     .sticky-scrolly-container[data-scrolly-mode="immersive"]
       .scrolly-narrative-col {
       z-index: 2;
-      padding-top: calc(var(--immersive-canvas-height) + 9rem);
+      padding-top: calc(var(--immersive-canvas-height) + 1.5rem);
+      pointer-events: none;
     }
 
     .sticky-scrolly-container[data-scrolly-mode="immersive"]
-      .scrolly-mobile-nav {
-      margin-inline: 0.25rem;
+      .scrolly-mobile-nav[data-scrolly-nav="stage"] {
+      display: none;
     }
 
-    .sticky-scrolly-container[data-scrolly-mode="immersive"][data-mobile-reading="true"]
-      .sticky-visual-stage {
-      opacity: 0;
-      pointer-events: none;
+    .sticky-scrolly-container[data-scrolly-mode="immersive"] .scrolly-dock {
+      display: flex;
     }
   }
 
@@ -357,24 +509,19 @@ const { mode = "pager" } = Astro.props;
     .sticky-scrolly-container {
       --scrolly-sticky-offset: 74px;
     }
+  }
 
-    .sticky-scrolly-container[data-scrolly-mode="immersive"]
-      .scrolly-mobile-nav {
-      min-height: 3rem;
-      margin-top: 0.55rem;
-    }
-
-    .sticky-scrolly-container[data-scrolly-mode="immersive"]
-      .scrolly-narrative-col {
-      padding-top: calc(var(--immersive-canvas-height) + 7.5rem);
+  @media (max-width: 359px) {
+    .scrolly-dock .scrolly-progress {
+      display: none;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .scrolly-nav-btn,
     :global(.scrolly-dot)::after,
-    .sticky-scrolly-container[data-scrolly-mode="immersive"]
-      .sticky-visual-stage {
+    .scrolly-dock,
+    .sticky-scrolly-container[data-dock="visible"] .scrolly-dock {
       transition: none;
     }
   }
@@ -395,25 +542,42 @@ const { mode = "pager" } = Astro.props;
     if (steps.length === 0) return;
 
     const mode = container.dataset.scrollyMode ?? "pager";
+    const isImmersive = mode === "immersive";
     const isPagerMobileQuery = window.matchMedia("(max-width: 1279px)");
+    const immersiveMobileQuery = window.matchMedia("(max-width: 1023px)");
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
     let isPagerMobile = isPagerMobileQuery.matches;
     let activeIndex = 0;
     let activeStepId = null;
-    let isMobileReading = false;
     let scrollFrame = 0;
+    let lockedIndex = null;
+    let lockTargetTop = 0;
+    let settleTimer = 0;
+    let lockTimer = 0;
+    let isDockVisible = null;
+    let stickyTop = 0;
 
-    const prevBtn = container.querySelector(".scrolly-nav-btn--prev");
-    const nextBtn = container.querySelector(".scrolly-nav-btn--next");
-    const dotsContainer = container.querySelector(".scrolly-nav-dots");
-    const currentLabel = container.querySelector(".scrolly-progress__current");
-    const totalLabel = container.querySelector(".scrolly-progress__total");
+    const navs = Array.from(container.querySelectorAll("[data-scrolly-nav]"));
+    const prevButtons = container.querySelectorAll(".scrolly-nav-btn--prev");
+    const nextButtons = container.querySelectorAll(".scrolly-nav-btn--next");
+    const currentLabels = container.querySelectorAll(
+      ".scrolly-progress__current",
+    );
     const visualStage = container.querySelector(".sticky-visual-stage");
+    const dock = container.querySelector(".scrolly-dock");
 
-    if (totalLabel) {
-      totalLabel.textContent = String(steps.length).padStart(2, "0");
-    }
+    container
+      .querySelectorAll(".scrolly-progress__total")
+      .forEach((label) => {
+        label.textContent = String(steps.length).padStart(2, "0");
+      });
 
-    if (dotsContainer) {
+    const dots = [];
+    navs.forEach((nav) => {
+      const dotsContainer = nav.querySelector(".scrolly-nav-dots");
+      if (!dotsContainer) return;
       dotsContainer.innerHTML = "";
       steps.forEach((step, index) => {
         const dot = document.createElement("button");
@@ -427,16 +591,46 @@ const { mode = "pager" } = Astro.props;
         );
         dot.dataset.index = String(index);
         dotsContainer.appendChild(dot);
+        dots.push(dot);
       });
+    });
+
+    function isImmersiveMobile() {
+      return isImmersive && immersiveMobileQuery.matches;
     }
 
-    const dots = dotsContainer
-      ? Array.from(dotsContainer.querySelectorAll(".scrolly-dot"))
-      : [];
+    function getCard(step) {
+      return step.querySelector(".scrolly-step-card") ?? step;
+    }
+
+    function measure() {
+      stickyTop =
+        visualStage instanceof HTMLElement
+          ? Number.parseFloat(getComputedStyle(visualStage).top) || 0
+          : 0;
+    }
+
+    // A step activates when its card (mobile) or block (desktop) crosses
+    // this line. Taking the last step above the line makes the result a pure
+    // function of scroll position, so it cannot flicker between steps.
+    function getActivationLine() {
+      return window.innerHeight * (isImmersiveMobile() ? 0.8 : 0.48);
+    }
+
+    function getScrollIndex() {
+      const line = getActivationLine();
+      const mobile = isImmersiveMobile();
+      let index = 0;
+      steps.forEach((step, stepIndex) => {
+        const anchor = mobile ? getCard(step) : step;
+        if (anchor.getBoundingClientRect().top <= line) index = stepIndex;
+      });
+      return index;
+    }
 
     function setStep(index, options = {}) {
       if (index < 0 || index >= steps.length) return;
-      const { scroll = false, force = false } = options;
+      const { force = false } = options;
       const step = steps[index];
       const stepId = step.getAttribute("data-scrolly-step");
       activeIndex = index;
@@ -451,31 +645,24 @@ const { mode = "pager" } = Astro.props;
         }
       });
 
-      dots.forEach((dot, dotIndex) => {
-        const isActive = dotIndex === index;
+      dots.forEach((dot) => {
+        const isActive = Number(dot.dataset.index) === index;
         dot.setAttribute("data-active", String(isActive));
         dot.setAttribute("aria-current", isActive ? "step" : "false");
       });
 
-      if (prevBtn instanceof HTMLButtonElement) {
-        prevBtn.disabled = index === 0;
-      }
-      if (nextBtn instanceof HTMLButtonElement) {
-        nextBtn.disabled = index === steps.length - 1;
-      }
-      if (currentLabel) {
-        currentLabel.textContent = String(index + 1).padStart(2, "0");
-      }
-
-      if (scroll) {
-        step.scrollIntoView({
-          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
-            .matches
-            ? "auto"
-            : "smooth",
-          block: mode === "immersive" ? "center" : "nearest",
-        });
-      }
+      prevButtons.forEach((button) => {
+        button.setAttribute("aria-disabled", String(index === 0));
+      });
+      nextButtons.forEach((button) => {
+        button.setAttribute(
+          "aria-disabled",
+          String(index === steps.length - 1),
+        );
+      });
+      currentLabels.forEach((label) => {
+        label.textContent = String(index + 1).padStart(2, "0");
+      });
 
       if (force || activeStepId !== stepId) {
         activeStepId = stepId;
@@ -488,9 +675,133 @@ const { mode = "pager" } = Astro.props;
       }
     }
 
+    function getTargetScrollTop(index) {
+      const step = steps[index];
+      const viewportHeight = window.innerHeight;
+      let anchorTop;
+      let desiredTop;
+
+      if (isImmersiveMobile()) {
+        // Land with the whole graphic visible and the card's heading
+        // directly beneath it, while staying past the activation line.
+        anchorTop = getCard(step).getBoundingClientRect().top;
+        const stageHeight =
+          visualStage instanceof HTMLElement ? visualStage.offsetHeight : 0;
+        desiredTop = Math.min(
+          stickyTop + stageHeight + 16,
+          getActivationLine() - 24,
+        );
+      } else {
+        const rect = step.getBoundingClientRect();
+        anchorTop = rect.top;
+        desiredTop = Math.min(
+          (viewportHeight - rect.height) / 2,
+          getActivationLine() - 24,
+        );
+      }
+
+      const maxScroll =
+        document.documentElement.scrollHeight - viewportHeight;
+      return Math.max(
+        0,
+        Math.min(maxScroll, window.scrollY + anchorTop - desiredTop),
+      );
+    }
+
+    function releaseLock() {
+      window.clearTimeout(settleTimer);
+      window.clearTimeout(lockTimer);
+      if (lockedIndex === null) return;
+      lockedIndex = null;
+      scheduleUpdate();
+    }
+
+    function armSettle(delay) {
+      window.clearTimeout(settleTimer);
+      settleTimer = window.setTimeout(releaseLock, delay);
+    }
+
+    // Runs on scroll and scrollend. A superseded smooth scroll (rapid taps)
+    // can end short of the current target, so only reaching the target or
+    // the settle timer releases the lock.
+    function handleLockedScroll() {
+      if (lockedIndex === null) return;
+      if (Math.abs(window.scrollY - lockTargetTop) <= 2) {
+        releaseLock();
+      } else {
+        armSettle(240);
+      }
+    }
+
+    // Programmatic navigation: switch the visual immediately, then hold that
+    // step while the page scrolls so intermediate steps never flash past.
+    function goToStep(index) {
+      const target = Math.max(0, Math.min(steps.length - 1, index));
+      setStep(target);
+      if (!isImmersive) return;
+
+      const top = getTargetScrollTop(target);
+      if (Math.abs(top - window.scrollY) < 2) {
+        releaseLock();
+        return;
+      }
+
+      lockedIndex = target;
+      lockTargetTop = top;
+      window.scrollTo({
+        top,
+        behavior: reducedMotionQuery.matches ? "instant" : "smooth",
+      });
+      // Released when the target is reached, scrolling settles, the reader
+      // takes over, or as a last resort after the safety timeout.
+      armSettle(600);
+      window.clearTimeout(lockTimer);
+      lockTimer = window.setTimeout(releaseLock, 2400);
+    }
+
+    function setDockVisible(visible) {
+      if (!(dock instanceof HTMLElement) || visible === isDockVisible) return;
+      isDockVisible = visible;
+      container.dataset.dock = visible ? "visible" : "hidden";
+      dock.inert = !visible;
+      if (visible) {
+        dock.removeAttribute("aria-hidden");
+      } else {
+        dock.setAttribute("aria-hidden", "true");
+      }
+    }
+
+    // Show the dock only while the graphic is pinned, so it never floats over
+    // the surrounding article.
+    function updateDock() {
+      if (!(dock instanceof HTMLElement)) return;
+      if (!isImmersiveMobile() || !(visualStage instanceof HTMLElement)) {
+        setDockVisible(false);
+        return;
+      }
+
+      const stageRect = visualStage.getBoundingClientRect();
+      setDockVisible(
+        stageRect.top <= stickyTop + stageRect.height * 0.35 &&
+          stageRect.top >= stickyTop - stageRect.height * 0.2,
+      );
+    }
+
+    function update() {
+      scrollFrame = 0;
+      if (!isImmersive) return;
+      updateDock();
+      if (lockedIndex === null) setStep(getScrollIndex());
+    }
+
+    function scheduleUpdate() {
+      if (scrollFrame) return;
+      scrollFrame = window.requestAnimationFrame(update);
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (mode === "immersive" || isPagerMobile) return;
+        if (isImmersive || isPagerMobile) return;
 
         const visible = entries
           .filter((entry) => entry.isIntersecting)
@@ -511,128 +822,120 @@ const { mode = "pager" } = Astro.props;
       },
     );
 
-    function updateImmersiveStep() {
-      scrollFrame = 0;
-      if (mode !== "immersive") return;
-
-      const activationLine =
-        window.innerWidth < 1024
-          ? window.innerHeight * 0.78
-          : window.innerHeight * 0.48;
-
-      let nextIndex = activeIndex;
-      let closestDistance = Number.POSITIVE_INFINITY;
-
-      steps.forEach((step, index) => {
-        const rect = step.getBoundingClientRect();
-        const distance =
-          activationLine < rect.top
-            ? rect.top - activationLine
-            : activationLine > rect.bottom
-              ? activationLine - rect.bottom
-              : 0;
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          nextIndex = index;
-        }
-      });
-
-      setStep(nextIndex);
-      updateMobileReadingState();
-    }
-
-    function updateMobileReadingState() {
-      if (
-        mode !== "immersive" ||
-        window.innerWidth >= 1024 ||
-        !(visualStage instanceof HTMLElement)
-      ) {
-        isMobileReading = false;
-        container.removeAttribute("data-mobile-reading");
-        if (visualStage instanceof HTMLElement) {
-          visualStage.inert = false;
-          visualStage.removeAttribute("aria-hidden");
-        }
-        return;
-      }
-
-      const activeStep = steps[activeIndex];
-      const activeCard = activeStep?.querySelector(".scrolly-step-card");
-      const mobileNav = visualStage.querySelector(".scrolly-mobile-nav");
-      if (
-        !(activeCard instanceof HTMLElement) ||
-        !(mobileNav instanceof HTMLElement)
-      ) {
-        return;
-      }
-
-      const cardRect = activeCard.getBoundingClientRect();
-      const navRect = mobileNav.getBoundingClientRect();
-      const enterReadingAt = navRect.bottom - 12;
-      const leaveReadingAt = navRect.bottom + 28;
-      const cardStillOnScreen = cardRect.bottom > 90;
-      const shouldRead = isMobileReading
-        ? cardRect.top < leaveReadingAt && cardStillOnScreen
-        : cardRect.top < enterReadingAt && cardStillOnScreen;
-
-      if (shouldRead === isMobileReading) return;
-      isMobileReading = shouldRead;
-      container.dataset.mobileReading = String(shouldRead);
-      visualStage.inert = shouldRead;
-      visualStage.setAttribute("aria-hidden", String(shouldRead));
-    }
-
-    function scheduleImmersiveUpdate() {
-      if (scrollFrame) return;
-      scrollFrame = window.requestAnimationFrame(updateImmersiveStep);
-    }
-
     function initLayout() {
       isPagerMobile = isPagerMobileQuery.matches;
 
       steps.forEach((step) => observer.unobserve(step));
 
-      if (mode === "immersive") {
-        updateMobileReadingState();
-        scheduleImmersiveUpdate();
+      if (isImmersive) {
+        measure();
+        releaseLock();
+        scheduleUpdate();
         return;
       }
 
-      if (isPagerMobile) {
-        setStep(activeIndex, { force: true });
-      } else {
+      if (!isPagerMobile) {
         steps.forEach((step) => observer.observe(step));
-        setStep(activeIndex, { force: true });
       }
+      setStep(activeIndex, { force: true });
     }
 
-    if (prevBtn) {
-      prevBtn.addEventListener("click", () =>
-        setStep(activeIndex - 1, { scroll: mode === "immersive" }),
-      );
-    }
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () =>
-        setStep(activeIndex + 1, { scroll: mode === "immersive" }),
-      );
+    function getBaseIndex() {
+      return lockedIndex ?? activeIndex;
     }
 
-    dots.forEach((dot, index) => {
-      dot.addEventListener("click", () =>
-        setStep(index, { scroll: mode === "immersive" }),
-      );
+    function isAtEdge(button) {
+      return button.getAttribute("aria-disabled") === "true";
+    }
+
+    prevButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!isAtEdge(button)) goToStep(getBaseIndex() - 1);
+      });
     });
+    nextButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!isAtEdge(button)) goToStep(getBaseIndex() + 1);
+      });
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener("click", () => goToStep(Number(dot.dataset.index)));
+    });
+
+    navs.forEach((nav) => {
+      nav.addEventListener("keydown", (event) => {
+        const base = getBaseIndex();
+        const targets = {
+          ArrowLeft: base - 1,
+          ArrowRight: base + 1,
+          Home: 0,
+          End: steps.length - 1,
+        };
+        if (!(event.key in targets)) return;
+        event.preventDefault();
+        goToStep(targets[event.key]);
+
+        if (
+          document.activeElement instanceof HTMLElement &&
+          document.activeElement.classList.contains("scrolly-dot")
+        ) {
+          nav
+            .querySelector(`.scrolly-dot[data-index="${activeIndex}"]`)
+            ?.focus({ preventScroll: true });
+        }
+      });
+    });
+
+    const scrollKeys = new Set([
+      " ",
+      "ArrowDown",
+      "ArrowUp",
+      "End",
+      "Home",
+      "PageDown",
+      "PageUp",
+    ]);
+
+    // Any direct scroll gesture outside the controls hands control back to
+    // the scroll position immediately.
+    function handleUserScrollIntent(event) {
+      if (lockedIndex === null) return;
+      if (event.type === "keydown" && !scrollKeys.has(event.key)) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest("[data-scrolly-nav]")) {
+        return;
+      }
+      releaseLock();
+    }
 
     isPagerMobileQuery.addEventListener("change", initLayout);
 
-    if (mode === "immersive") {
-      window.addEventListener("scroll", scheduleImmersiveUpdate, {
+    if (isImmersive) {
+      immersiveMobileQuery.addEventListener("change", initLayout);
+      window.addEventListener(
+        "scroll",
+        () => {
+          handleLockedScroll();
+          scheduleUpdate();
+        },
+        { passive: true },
+      );
+      window.addEventListener("scrollend", handleLockedScroll);
+      window.addEventListener("resize", () => {
+        measure();
+        scheduleUpdate();
+      });
+      window.addEventListener("wheel", handleUserScrollIntent, {
         passive: true,
       });
-      window.addEventListener("resize", scheduleImmersiveUpdate);
+      window.addEventListener("touchstart", handleUserScrollIntent, {
+        passive: true,
+      });
+      window.addEventListener("keydown", handleUserScrollIntent);
     }
 
+    setDockVisible(false);
     setStep(0, { force: true });
     initLayout();
   });
