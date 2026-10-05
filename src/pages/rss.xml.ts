@@ -2,18 +2,21 @@ import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import rss from "@astrojs/rss";
 
-import { getEntrySummary, isPublicEntryData } from "../lib/content";
+import {
+  getArticleHref,
+  isPublicEntryData,
+  sortEntriesByDateDesc,
+} from "../lib/content";
 import { siteConfig } from "../lib/site";
 
 export const GET: APIRoute = async (context) => {
-  const articles = (
-    await getCollection("articles", ({ data }) => isPublicEntryData(data))
-  ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const articles = sortEntriesByDateDesc(
+    await getCollection("articles", ({ data }) => isPublicEntryData(data)),
+  );
 
   return rss({
-    title: `${siteConfig.personName} — Articles`,
-    description:
-      "Published data journalism, civic analysis, and political reporting by Anil Karaca.",
+    title: `${siteConfig.displayName} — Articles`,
+    description: "Data journalism by Anıl Karaca, in English and Turkish.",
     site: context.site?.toString() ?? siteConfig.url,
     xmlns: {
       atom: "http://www.w3.org/2005/Atom",
@@ -22,8 +25,8 @@ export const GET: APIRoute = async (context) => {
     items: articles.map((article) => ({
       title: article.data.title,
       pubDate: article.data.pubDate,
-      description: getEntrySummary(article),
-      link: `/articles/${article.id}/`,
+      description: article.data.description,
+      link: article.data.externalUrl ?? `${getArticleHref(article)}/`,
       categories: article.data.tags,
     })),
   });

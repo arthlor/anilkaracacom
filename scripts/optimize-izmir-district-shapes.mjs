@@ -1,8 +1,9 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const root = process.cwd();
-const shapePath = resolve(root, "public/data/izmir-kat/district_shapes.json");
+import { izmirKatPublicDirectory } from "./lib/izmir-kat-paths.mjs";
+
+const shapePath = resolve(izmirKatPublicDirectory, "district_shapes.json");
 const tolerance = 0.04;
 const toleranceSquared = tolerance * tolerance;
 

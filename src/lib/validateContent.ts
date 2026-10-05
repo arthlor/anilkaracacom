@@ -1,33 +1,21 @@
 import { getCollection } from "astro:content";
 
-function isPublicEntryData(data: {
-  published?: boolean | undefined;
-  draft?: boolean | undefined;
-}) {
-  return data.published === true && data.draft !== true;
-}
+import { isPublicEntryData } from "./content";
 
+/** Warns about related-article links that point at missing or hidden pieces. */
 export async function validatePortfolioContent() {
-  const [articles, projects] = await Promise.all([
-    getCollection("articles"),
-    getCollection("projects"),
-  ]);
+  const articles = await getCollection("articles");
+  const publicSlugs = new Set(
+    articles
+      .filter((entry) => isPublicEntryData(entry.data))
+      .map((entry) => entry.id),
+  );
 
-  const publicEntries = new Map<string, (typeof articles)[number] | (typeof projects)[number]>();
-
-  for (const entry of [...articles, ...projects]) {
-    if (isPublicEntryData(entry.data)) {
-      publicEntries.set(`${entry.collection}:${entry.id}`, entry);
-    }
-  }
-
-  for (const entry of [...articles, ...projects]) {
-    for (const ref of entry.data.relatedContent ?? []) {
-      const key = `${ref.collection}:${ref.slug}`;
-
-      if (!publicEntries.has(key)) {
+  for (const entry of articles) {
+    for (const ref of entry.data.relatedContent) {
+      if (!publicSlugs.has(ref.slug)) {
         console.warn(
-          `[relatedContent] Missing or unpublished related entry: ${key} (referenced from ${entry.collection}/${entry.id})`,
+          `[relatedContent] Missing or unpublished article "${ref.slug}" (referenced from ${entry.id})`,
         );
       }
     }

@@ -2,13 +2,13 @@
 
 ## Core Framework
 
-- **Astro.js** (v4+) - Static site generator with islands architecture
+- **Astro.js 7** - Static site generator with islands architecture
 - **MDX** - Markdown with JSX components for rich content
 - **TypeScript** - Type-safe development
 
 ## Styling
 
-- **TailwindCSS v4** - Utility-first CSS framework
+- **TailwindCSS 3** - Utility-first CSS framework
 - **Custom CSS** - For unique design elements
 - **Framer Motion** - Animations and micro-interactions
 
@@ -25,9 +25,9 @@
 
 ## Data Visualization
 
-- **Plotly.js** - Interactive charts
-- **D3.js** - Custom visualizations
-- **Observable Embeds** - For data notebooks
+- **D3.js** - Scales, shapes, and geographic visualizations
+- **Three.js** - Interactive 3D data stories
+- **React** - Stateful visualization islands
 
 ## Media
 
@@ -42,9 +42,8 @@
 
 ## Development Tools
 
-- **ESLint** - Code linting
 - **Prettier** - Code formatting
-- **Husky** - Git hooks
+- **Astro Check** - Type and content validation
 
 ## SEO & Analytics
 

@@ -1,15 +1,19 @@
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const root = process.cwd();
-const csvPath = resolve(root, "add93bea-aa93-4f95-8e0f-2428efea5196.csv");
-const summaryPath = resolve(
-  root,
-  "public/data/izmir-kat/district_summary.json",
+import {
+  izmirKatPublicDirectory,
+  izmirKatSourceDirectory,
+} from "./lib/izmir-kat-paths.mjs";
+
+const csvPath = resolve(
+  izmirKatSourceDirectory,
+  "add93bea-aa93-4f95-8e0f-2428efea5196.csv",
 );
-const rawJsonPath = resolve(root, "kat.json");
-const publicJsonPath = resolve(root, "public/data/izmir-kat/kat.json");
-const shapePath = resolve(root, "public/data/izmir-kat/district_shapes.json");
+const summaryPath = resolve(izmirKatPublicDirectory, "district_summary.json");
+const rawJsonPath = resolve(izmirKatSourceDirectory, "kat.json");
+const publicJsonPath = resolve(izmirKatPublicDirectory, "kat.json");
+const shapePath = resolve(izmirKatPublicDirectory, "district_shapes.json");
 
 const tierKeys = [
   "tier_1_2",

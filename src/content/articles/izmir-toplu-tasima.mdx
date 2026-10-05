@@ -1,6 +1,6 @@
 ---
-title: "İzmir'de toplu taşıma yükünü kim taşıyor?"
-description: "İzmirimKart verisini işletmeci ve yolcu türü katmanlarıyla okuyarak 2021 başından 2024 ilk çeyreğine kadar sistemin hangi omurgayla çalıştığını gösteren analiz."
+title: "İzmir’de toplu taşıma yükünü kim taşıyor?"
+description: "İzmirimKart verisi, 2021 başından Mart 2024’e kadar işletmeci ve yolcu gruplarının sistemdeki payını gösteriyor."
 pubDate: 2023-11-15
 heroImage: "../../assets/images/articles/izmir-toplu-tasima-2025.webp"
 tags: ["izmir", "toplu-tasima", "veri-analizi", "python", "dash"]
@@ -21,22 +21,22 @@ techStack:
 metrics:
   - label: "Veri aralığı"
     value: "2021-2024"
-    detail: "İzmirimKart kullanım kayıtları 2024 Martına kadar aylık akış içinde okundu."
+    detail: "Ocak 2021-Mart 2024 aylık İzmirimKart kayıtları."
   - label: "İşletmeci sayısı"
     value: "6 işletmeci"
-    detail: "Otobüs, metro, İZBAN, vapur ve diğer işletmeciler aynı yüzeyde karşılaştırıldı."
+    detail: "Otobüs, metro, İZBAN, vapur ve diğer işletmeciler."
   - label: "Çıktı"
-    value: "Bağlı görünüm"
-    detail: "Operatör trendi ile yolcu bileşimi aynı ay seçimi üzerinden senkronize çalışıyor."
-executiveSummary: "İzmirimKart kullanım istatistiklerini işletmeci, dönem ve yolcu türü ekseninde toparlayan bu çalışma, toplu taşıma sisteminin hangi araçlar ve hangi kullanıcı profilleriyle çalıştığını görünür kılıyor."
-context: "İzmir'in toplu taşıma ağı çok sayıda işletmeci ve yolcu kategorisi içeriyor. Bu çeşitlilik ham açık veri tablosunda kalınca hangi aracın, hangi dönemde ve hangi kullanıcı profiliyle öne çıktığını görmek zorlaşıyor."
+    value: "Tek ay seçimi"
+    detail: "İşletmeci ve yolcu grubu panelleri aynı aya bağlı."
+executiveSummary: "İzmirimKart kayıtları, otobüslerin toplam hacimde önde olduğunu; tam ve öğrenci kartlarının yolcu bileşimini belirlediğini gösteriyor."
+context: "Ham tabloda işletmecileri, dönemleri ve yolcu gruplarını birlikte okumak zor. Bu çalışma üç katmanı aynı ay seçimine bağlıyor."
 methodology:
-  - "İzmir Büyükşehir Belediyesi açık veri seti aylık operatör toplamları ve yolcu türü serileri olarak yeniden düzenlendi."
-  - "Üst bölümde operatör trendi, sağ panelde seçili ay sıralaması ve alt bölümde yolcu kompozisyonu birlikte çalışacak şekilde tasarlandı."
-  - "Okuyucunun ay seçimini kaybetmeden ilerleyebilmesi için tüm görünüm aynı seçim kilidine bağlandı."
-challenge: "Veri seti hem ulaşım modlarını hem de belediye kartı kullanımının farklı türlerini içerdiği için ana ritmi kaybetmeden okumayı sadeleştirmek gerekiyordu. Tek bir grafik yeterli olmadığından ama iç içe dashboard kutuları da istenmediğinden, anlatıyı tek çerçeveli bağlı görünüm olarak yeniden kurdum."
-codeProof: "Çalışma, eski dış dashboard yerine yerel veri modülleriyle çalışan React grafiklerini kullanıyor. Böylece operatör trendi ve yolcu bileşimi, haber akışı içinde aynı ay seçimi üzerinden birlikte okunabiliyor."
-conclusion: "Bu proje, İzmir'in toplu taşıma sistemindeki baskın araçları ve yolcu profillerini görünür kılıyor; açık verinin, iyi kurgulanmış bir arayüzle çok daha anlaşılır hale gelebileceğini gösteriyor."
+  - "Açık veriyi aylık işletmeci toplamları ve yolcu grupları olarak yeniden düzenledim."
+  - "İşletmeci trendini, seçili ay sıralamasını ve yolcu bileşimini tek görünümde topladım."
+  - "Tüm panelleri aynı ay seçimine bağladım."
+challenge: "Ulaşım modu ile kart türünü aynı anda göstermek kolayca kalabalık bir panele dönüşüyordu. Tek ay seçimi karşılaştırmayı sadeleştirdi."
+codeProof: "Yerel veri modüllerini kullanan React grafikleri, işletmeci ve yolcu bileşimini aynı seçimle güncelliyor."
+conclusion: "Otobüsler toplam kullanımın ana omurgası. Yolcu bileşiminde ise tam ve öğrenci kartları sistemin aylık ritmini belirliyor."
 summaryEn: "An interactive analysis of Izmir public transportation usage between 2021 and 2023 based on open card-usage data."
 role: "Açık veri modelleme, ulaşım anlatısı, etkileşim tasarımı"
 impact: "Kent ölçeğindeki hareketlilik verisini, kamu hizmeti tartışmasına bağlanabilen okunur bir analiz yüzeyine dönüştürüyor."
@@ -47,31 +47,29 @@ relatedContent:
     slug: "turkiye-dogum-istatistikleri"
 ---
 
-import IzmirTransportUsageExplorer from "../../components/mdx/charts/IzmirTransportUsageExplorer";
+import IzmirTransportUsageExplorer from "@/components/mdx/charts/transit/IzmirTransportUsageExplorer";
 
-İzmir'in toplu taşıma sistemi, tek bir araç türüne değil çok katmanlı bir ağa dayanıyor. Otobüsler, metro, İZBAN, vapurlar ve diğer belediye bağlantıları kentin günlük hareketini birlikte taşıyor. Ancak bu ağın hangi dönemlerde hangi taşıyıcıyla öne çıktığını çıplak tabloya bakarak anlamak kolay değil.
+İzmir’in toplu taşıma sistemi otobüs, metro, İZBAN, vapur ve diğer işletmecilerden oluşuyor. Ham tabloda hangi işletmecinin ne zaman öne çıktığını görmek zor.
 
-[İzmir Büyükşehir Belediyesi Açık Veri Portalı'ndaki](https://acikveri.bizizmir.com/tr/dataset/izmirim-kart-kullanim-istatistikleri) İzmirimKart verisi, 2021 başından 2024 Martına kadar sistemin aylık ritmini izlemeye izin veriyor. Bu sürümde eski dashboard düzeni kaldırıldı; bunun yerine işletmeci trendi ile yolcu bileşimini aynı ay seçimine bağlayan tek çerçeveli bir editoryal kurgu kuruldu.
+[İzmir Büyükşehir Belediyesi Açık Veri Portalı’ndaki](https://acikveri.bizizmir.com/tr/dataset/izmirim-kart-kullanim-istatistikleri) İzmirimKart kayıtları Ocak 2021-Mart 2024 dönemini kapsıyor. Görünüm, işletmeci trendi ile yolcu bileşimini aynı ay seçimine bağlıyor.
 
-Üst bölüm işletmecilerin aylık seyrini, sağ panel seçili ayın sıralamasını, alt bölüm ise aynı ayın yolcu türü kompozisyonunu gösteriyor. Böylece okur bir dönemi sabitleyip hem hangi işletmecinin öne çıktığını hem de bu hareketin hangi kullanıcı profiliyle oluştuğunu aynı anda okuyabiliyor.
+Üst panel aylık işletmeci seyrini, sağ panel seçili ayın sıralamasını, alt panel ise yolcu gruplarını gösteriyor.
 
-<IzmirTransportUsageExplorer client:load />
+<IzmirTransportUsageExplorer client:visible={{ rootMargin: "400px" }} />
 
 ## Ana bulgular
 
-- Otobüs ağı, toplam hareketin ana taşıyıcısı olmaya devam ediyor. Kent içi yaygın erişim, bu katmanı diğer işletmecilerden belirgin biçimde ayırıyor.
-- Metro ve İZBAN, özellikle düzenli iş ve okul akışının yoğunlaştığı dönemlerde ikinci büyük omurga olarak öne çıkıyor.
-- Yolcu bileşiminde tam yolcu ve öğrenci grupları, sistemin ritmini belirleyen iki ana kütleyi oluşturuyor. Bu da eğitim takvimi ile gündelik işe gidiş geliş akışının toplu taşımadaki ağırlığını gösteriyor.
+- Otobüsler toplam kullanımda açık ara önde.
+- Metro ve İZBAN ikinci büyük omurgayı oluşturuyor.
+- Tam ve öğrenci kartları yolcu bileşiminin en büyük iki grubu.
 
 ## Neden bu görünüm?
 
-Yıllık toplamlar hangi aracın büyük olduğunu söylüyor; ama ne zaman hızlandığını, hangi dönemde yavaşladığını ve bu değişimin hangi yolcu gruplarıyla geldiğini göstermiyor. Bu nedenle görsel sistem, tek bir tablo ya da ayrı ayrı kutular yerine, ortak ay seçimine bağlı paneller olarak tasarlandı.
-
-Bu yapı özellikle mevsimsel dalgalanmayı ve öğrenci hareketinin sisteme etkisini okumayı kolaylaştırıyor. Belirli bir ay sabitlendiğinde aynı dönemin hem işletmeci sıralaması hem de kullanıcı bileşimi birlikte görülebiliyor.
+Yıllık toplam, hangi işletmecinin büyük olduğunu söyler; değişimin hangi ay ve yolcu grubuyla geldiğini söylemez. Ortak ay seçimi iki soruyu birlikte yanıtlıyor.
 
 ## Sonuç
 
-Kent içi hareketin büyük kısmı birkaç ana işletmecide toplanırken, kullanıcı profili çok daha parçalı bir yapı gösteriyor. Bu ikili tablo, toplu taşıma planlamasında yalnızca kapasiteyi değil sosyal erişimi de birlikte düşünmek gerektiğini hatırlatıyor. Aynı veri, okul takvimi, fiyat hassasiyeti ve kartlı erişim politikalarının ulaşım sistemini doğrudan etkilediğini de açık biçimde ortaya koyuyor.
+Kullanım birkaç ana işletmecide yoğunlaşıyor; yolcu profili ise daha parçalı. Kapasite planlaması kadar hangi yolcu gruplarının sistemi ne zaman kullandığı da önemli.
 
 ---
 

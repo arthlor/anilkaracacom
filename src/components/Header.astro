@@ -1,102 +1,533 @@
 ---
-import { navigationLinks } from "../lib/site";
-import HeaderNavigation from "./HeaderNavigation";
+import PixelHead from "./pixel-me/PixelHead.astro";
+import { navigationLinks, siteConfig, socialLinks } from "../lib/site";
 
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) =>
+  href === "/"
+    ? currentPath === "/"
+    : currentPath === href || currentPath.startsWith(`${href}/`);
+const menuLinks = [{ href: "/", label: "Home" }, ...navigationLinks];
 ---
 
-<header class="site-header" id="site-header">
-  <div class="site-header__bar">
-    <a href="/" class="site-header__brand" aria-label="Home">
-      <span class="brand-text">ANIL KARACA</span>
-      <span class="brand-dot"></span>
+<header
+  class="nav"
+  data-nav
+  data-brand={currentPath === "/" ? "away" : undefined}
+>
+  <div class="nav__bar container">
+    <a
+      href="/"
+      class="nav__brand"
+      aria-current={isActive("/") ? "page" : undefined}
+    >
+      <PixelHead size={20} class="nav__mark" />
+      <span>{siteConfig.displayName}</span>
     </a>
 
-    <HeaderNavigation
-      client:load
-      links={navigationLinks}
-      currentPath={currentPath}
-    />
+    <nav class="nav__links" aria-label="Main">
+      {
+        navigationLinks.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="nav__tools">
+      <button
+        type="button"
+        class="nav__icon"
+        data-theme-toggle
+        aria-label="Toggle dark mode"
+      >
+        <svg class="nav__sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path
+            d="M12 2.5v2M12 19.5v2M4.6 4.6l1.4 1.4M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"
+          ></path>
+        </svg>
+        <svg class="nav__moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"></path>
+        </svg>
+      </button>
+
+      <a class="nav__contact" href="/about#contact">Contact</a>
+
+      <button
+        type="button"
+        class="nav__icon nav__menu-button"
+        data-menu-toggle
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="Menu"
+      >
+        <span class="nav__burger" aria-hidden="true"></span>
+      </button>
+    </div>
   </div>
 </header>
 
-<style>
-  .site-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    padding: 16px 0;
-    pointer-events: none;
-    transition: padding 0.3s ease;
+<div id="nav-menu" class="menu" hidden>
+  <nav class="container" aria-label="Menu">
+    <ul class="menu__links">
+      {
+        menuLinks.map((link, index) => (
+          <li style={`--i: ${index}`}>
+            <a
+              href={link.href}
+              aria-current={isActive(link.href) ? "page" : undefined}
+            >
+              <span class="menu__label">{link.label}</span>
+              <span class="menu__arrow" aria-hidden="true">
+                →
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="menu__footer">
+      <a class="button menu__contact" href="/about#contact">Get in touch</a>
+      <a class="menu__email" href={`mailto:${siteConfig.contactEmail}`}>
+        {siteConfig.contactEmail}
+      </a>
+      <ul class="menu__social">
+        {
+          socialLinks.map((link) => (
+            <li>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {link.label} <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const storageKey = root.dataset.themeStorageKey || "anilkaraca-theme";
+
+  document.querySelector("[data-theme-toggle]")?.addEventListener("click", () => {
+    const next = root.classList.contains("dark") ? "light" : "dark";
+    const apply = () => {
+      root.classList.toggle("dark", next === "dark");
+      root.dataset.theme = next;
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", next === "dark" ? "#111110" : "#fbfaf9");
+      try {
+        localStorage.setItem(storageKey, next);
+      } catch {
+        // Theme still switches when storage is unavailable.
+      }
+      window.dispatchEvent(
+        new CustomEvent("themechange", { detail: { theme: next } }),
+      );
+    };
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (document.startViewTransition && !reduceMotion) {
+      document.startViewTransition(apply);
+    } else {
+      apply();
+    }
+  });
+
+  const header = document.querySelector<HTMLElement>("[data-nav]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+  const menu = document.getElementById("nav-menu");
+
+  // On the home page the hero carries the name, so the bar's brand waits
+  // until the hero name has scrolled up under the bar.
+  const heroName = document.querySelector("[data-hero-name]");
+  if (header?.dataset.brand) {
+    if (!heroName) {
+      header.dataset.brand = "shown";
+    } else {
+      new IntersectionObserver(
+        ([entry]) => {
+          if (!entry) return;
+          const past =
+            !entry.isIntersecting &&
+            entry.boundingClientRect.top < header.offsetHeight;
+          header.dataset.brand = past ? "shown" : "away";
+        },
+        { rootMargin: `-${header.offsetHeight}px 0px 0px 0px` },
+      ).observe(heroName);
+    }
   }
 
-  .site-header__bar {
+  // The hairline appears once content scrolls under the bar.
+  const onScroll = () => {
+    if (header) header.dataset.scrolled = String(window.scrollY > 4);
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    if (!toggle || !menu || !header) return;
+    toggle.setAttribute("aria-expanded", String(open));
+    menu.hidden = !open;
+    header.dataset.open = String(open);
+    document.body.style.overflow = open ? "hidden" : "";
+    if (open) menu.querySelector<HTMLElement>("a")?.focus();
+  };
+
+  toggle?.addEventListener("click", () => {
+    setOpen(toggle.getAttribute("aria-expanded") !== "true");
+  });
+
+  menu?.addEventListener("click", (event) => {
+    if ((event.target as HTMLElement).closest("a")) setOpen(false);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+
+  window.matchMedia("(min-width: 720px)").addEventListener("change", (event) => {
+    if (event.matches) setOpen(false);
+  });
+</script>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid transparent;
+    background: hsl(var(--background) / 0.82);
+    backdrop-filter: saturate(1.8) blur(20px);
+    -webkit-backdrop-filter: saturate(1.8) blur(20px);
+    transition: border-color 250ms ease;
+  }
+
+  .nav[data-scrolled="true"],
+  .nav[data-open="true"] {
+    border-bottom-color: hsl(var(--border));
+  }
+
+  .nav[data-open="true"] {
+    background: hsl(var(--background));
+  }
+
+  .nav__bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: var(--nav-h);
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    justify-self: start;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    transition:
+      opacity 300ms ease,
+      transform 300ms var(--ease);
+  }
+
+  .nav[data-brand="away"]:not([data-open="true"]) .nav__brand {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease,
+      visibility 0s 200ms;
+  }
+
+  .nav__brand :global(.nav__mark) {
+    transition: transform 240ms steps(2, jump-none);
+  }
+
+  /* A little hop, in whole pixels. */
+  .nav__brand:hover :global(.nav__mark) {
+    transform: translateY(-2px);
+  }
+
+  .nav__links {
+    display: flex;
+    gap: 2px;
+  }
+
+  .nav__links a {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: hsl(var(--foreground) / 0.68);
+    transition:
+      color 200ms ease,
+      background-color 200ms ease;
+  }
+
+  .nav__links a:hover {
+    background: hsl(var(--foreground) / 0.04);
+    color: hsl(var(--foreground));
+  }
+
+  .nav__links a[aria-current="page"] {
+    background: hsl(var(--foreground) / 0.06);
+    color: hsl(var(--foreground));
+  }
+
+  .nav__tools {
+    display: flex;
+    justify-self: end;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav__contact {
+    display: inline-flex;
+    align-items: center;
+    min-height: 32px;
+    margin-left: 4px;
+    padding: 0 15px;
+    border-radius: 999px;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: background-color 200ms ease;
+  }
+
+  .nav__contact:hover {
+    background: hsl(var(--foreground) / 0.82);
+  }
+
+  .nav__icon {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: hsl(var(--foreground) / 0.68);
+    cursor: pointer;
+    transition:
+      color 200ms ease,
+      background-color 200ms ease;
+  }
+
+  .nav__icon:hover {
+    background: hsl(var(--foreground) / 0.06);
+    color: hsl(var(--foreground));
+  }
+
+  .nav__icon svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .nav__moon,
+  :global(html.dark) .nav__sun {
+    display: none;
+  }
+
+  :global(html.dark) .nav__moon {
+    display: block;
+  }
+
+  .nav__menu-button {
+    display: none;
+    margin-right: -8px;
+  }
+
+  .nav__burger,
+  .nav__burger::before {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    border-radius: 1px;
+    background: currentColor;
+    transition: transform 300ms var(--ease);
+  }
+
+  .nav__burger {
+    position: relative;
+    transform: translateY(-3px);
+  }
+
+  .nav__burger::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+  }
+
+  .nav[data-open="true"] .nav__burger {
+    transform: translateY(0) rotate(45deg);
+  }
+
+  .nav[data-open="true"] .nav__burger::before {
+    transform: translateY(-6px) rotate(-90deg);
+  }
+
+  /* Sits outside the header: the header's backdrop-filter would otherwise
+     become the containing block for this fixed panel. */
+  .menu {
+    position: fixed;
+    inset: var(--nav-h) 0 0;
+    z-index: 99;
+    overflow-y: auto;
+    background: hsl(var(--background));
+  }
+
+  .menu nav {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding-block: 12px 32px;
+  }
+
+  .menu__links li {
+    animation: menu-in 400ms var(--ease) both;
+    animation-delay: calc(var(--i) * 35ms);
+  }
+
+  .menu__links li + li {
+    border-top: 1px solid hsl(var(--border));
+  }
+
+  .menu__links a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: min(100% - 32px, 1200px);
-    margin-inline: auto;
-    padding: 0 6px 0 20px;
-    height: 56px;
-    border-radius: 16px;
-    border: 1px solid var(--header-border);
-    background: var(--header-bg);
-    backdrop-filter: blur(20px) saturate(1.4);
-    -webkit-backdrop-filter: blur(20px) saturate(1.4);
-    box-shadow:
-      0 1px 0 0 var(--header-highlight) inset,
-      0 16px 48px rgba(0, 0, 0, 0.15);
-    pointer-events: auto;
-    transition: all 0.3s ease;
+    gap: 16px;
+    padding-block: 16px;
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+    color: hsl(var(--foreground) / 0.82);
+    transition: color 200ms ease;
   }
 
-  .site-header__brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
+  .menu__links a[aria-current="page"],
+  .menu__links a:hover {
     color: hsl(var(--foreground));
-    transition: opacity 200ms ease;
-    flex-shrink: 0;
   }
 
-  .site-header__brand:hover {
-    opacity: 0.75;
+  .menu__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  .brand-text {
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .brand-dot {
-    width: 5px;
-    height: 5px;
-    background: var(--premium-accent, #7af298);
+  /* The page you're on gets a dot instead of an arrow. */
+  .menu__links a[aria-current="page"] .menu__label::after {
+    content: "";
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    flex-shrink: 0;
+    background: hsl(var(--primary));
   }
 
-  @media (max-width: 768px) {
-    .site-header {
-      padding: 10px 0;
+  .menu__arrow {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: hsl(var(--muted-foreground));
+    transition: transform 300ms var(--ease);
+  }
+
+  .menu__links a:hover .menu__arrow {
+    transform: translateX(3px);
+  }
+
+  .menu__links a[aria-current="page"] .menu__arrow {
+    visibility: hidden;
+  }
+
+  .menu__footer {
+    display: grid;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 40px;
+    font-size: 0.9375rem;
+    animation: menu-in 400ms var(--ease) 200ms both;
+  }
+
+  .menu__contact {
+    min-height: 48px;
+    font-size: 1rem;
+  }
+
+  .menu__email {
+    justify-self: center;
+    font-weight: 500;
+    color: hsl(var(--foreground) / 0.82);
+  }
+
+  .menu__social {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .menu__social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid hsl(var(--border));
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: hsl(var(--muted-foreground));
+    transition:
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  .menu__social a:hover {
+    border-color: hsl(var(--foreground) / 0.3);
+    color: hsl(var(--foreground));
+  }
+
+  @keyframes menu-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+
+  @media (max-width: 719px) {
+    .nav__bar {
+      grid-template-columns: 1fr auto;
     }
 
-    .site-header__bar {
-      width: min(100% - 24px, 1200px);
-      height: 52px;
-      padding: 0 8px 0 16px;
-      border-radius: 14px;
+    .nav__links,
+    .nav__contact {
+      display: none;
     }
 
-    .brand-text {
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
+    .nav__menu-button {
+      display: inline-grid;
     }
   }
 </style>

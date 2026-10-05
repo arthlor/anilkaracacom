@@ -80,7 +80,7 @@ const { mode = "pager" } = Astro.props;
 <style>
   .sticky-scrolly-container {
     --immersive-canvas-height: clamp(340px, 52svh, 500px);
-    --scrolly-sticky-offset: 82px;
+    --scrolly-sticky-offset: calc(var(--nav-h) + 16px);
     position: relative;
     width: 100%;
     margin-left: auto;
@@ -110,7 +110,7 @@ const { mode = "pager" } = Astro.props;
 
   .sticky-visual-stage {
     position: sticky;
-    top: 140px;
+    top: calc(var(--nav-h) + 48px);
     width: 100%;
   }
 
@@ -133,7 +133,6 @@ const { mode = "pager" } = Astro.props;
     border: 1px solid hsl(var(--border));
     border-radius: 999px;
     background: hsl(var(--card) / 0.88);
-    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.18);
     backdrop-filter: blur(18px) saturate(1.2);
     -webkit-backdrop-filter: blur(18px) saturate(1.2);
   }
@@ -181,8 +180,7 @@ const { mode = "pager" } = Astro.props;
     color: hsl(var(--muted-foreground));
     font-family: var(--font-mono);
     font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0;
   }
 
   .scrolly-progress__current {
@@ -192,11 +190,7 @@ const { mode = "pager" } = Astro.props;
   .scrolly-progress__divider {
     width: clamp(2rem, 8vw, 4rem);
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      hsl(var(--primary) / 0.78),
-      hsl(var(--border))
-    );
+    background: hsl(var(--border));
   }
 
   :global(.scrolly-dot) {
@@ -237,8 +231,7 @@ const { mode = "pager" } = Astro.props;
   :global(.scrolly-dot[data-active="true"])::after {
     width: 1.55rem;
     border-radius: 999px;
-    background: hsl(var(--primary));
-    box-shadow: 0 0 14px hsl(var(--primary) / 0.34);
+    background: hsl(var(--foreground));
   }
 
   @media (min-width: 1280px) {

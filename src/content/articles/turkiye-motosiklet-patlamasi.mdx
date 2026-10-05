@@ -1,6 +1,6 @@
 ---
-title: "Trafiğe Katılan Her 5 Yeni Araçtan 2'si Motosiklet"
-description: "Aralık 2019 - Haziran 2026 arası Türkiye'de motosiklet stoku %123,21 artarak 7,4 milyon adede ulaştı. 6 ilde motosiklet sayısı otomobilleri geride bıraktı."
+title: "Trafiğe katılan her 5 yeni araçtan 2’si motosiklet"
+description: "Türkiye’de motosiklet stoku Aralık 2019-Haziran 2026 arasında %123,21 artarak 7,4 milyona ulaştı. Altı ilde motosiklet sayısı otomobili geçti."
 pubDate: 2026-07-31
 heroImage: "../../assets/images/articles/turkiye-motosiklet-patlamasi-hero.png"
 featured: true
@@ -11,29 +11,29 @@ language: "tr"
 pillar: "data-journalism-civic-tech"
 category: "data-journalism"
 techStack:
-  - "TÜİK Verileri"
-  - "Veri Gazeteciliği"
-  - "Ulaşım Analizi"
+  - "TÜİK verileri"
+  - "Veri gazeteciliği"
+  - "Ulaşım analizi"
 metrics:
-  - label: "Motosiklet Stok Artışı (2019-2026)"
+  - label: "Motosiklet stoku (2019-2026)"
     value: "+%123,21"
     detail: "3,33 milyondan 7,43 milyona ulaştı."
-  - label: "Net Artıştaki Motosiklet Payı"
+  - label: "Net artıştaki pay"
     value: "%40,85"
-    detail: "Aralık 2022'den bu yana eklenen 8,06M aracın 3,29M'u motosiklet."
-  - label: "Motosikletin Otomobili Geçtiği İller"
-    value: "6 İl"
+    detail: "Aralık 2022’den sonra eklenen 8,06 milyon aracın 3,29 milyonu motosiklet."
+  - label: "Motosikletin önde olduğu iller"
+    value: "6 il"
     detail: "Kilis, Iğdır, Manisa, Muğla, Aydın ve Şanlıurfa."
-  - label: "Toplam Araç İçindeki Motosiklet Payı"
+  - label: "Toplam araç içindeki pay"
     value: "%21,52"
-    detail: "Ocak 2005'teki %11,91'lik seviyeden rekor düzeye çıktı."
-executiveSummary: "Türkiye ulaşım filosunda yapısal bir dönüşüm yaşanıyor. Aralık 2019'dan bu yana motosiklet stoku %123,21 büyürken, son dönemde trafiğe katılan her 5 yeni araçtan 2'si motosiklet oldu."
-context: "TÜİK resmi verilerine göre toplam motorlu kara taşıtı sayısı 34,5 milyona yaklaşırken, büyümenin ana motorunu motosiklet satışları oluşturuyor."
+    detail: "Ocak 2005’te %11,91 olan oran Haziran 2026’da %21,52’ye çıktı."
+executiveSummary: "Aralık 2019’dan bu yana motosiklet stoku %123,21 büyüdü; Aralık 2022 sonrası net araç artışının %40,85’i motosikletlerden geldi."
+context: "TÜİK’in taşıt stoku verisi, toplam araç sayısı 34,5 milyona yaklaşırken artışın önemli bölümünün motosikletlerden geldiğini gösteriyor."
 methodology:
-  - "TÜİK Motorlu Kara Taşıtları 2005-2026 Haziran dönemi veri serisi analiz edilmiştir."
-  - "81 ilin tamamı kapsanarak stok değişimi, pay oranları ve medyan değerler hesaplanmıştır."
-  - "Aralık 2022 sonrası net eklenen araç stoku içindeki kırılımlar doğrulanmıştır."
-conclusion: "Motosiklet stokundaki bu devasa sıçrama, şehirlerin ulaşım altyapısı, yol güvenliği ve kentsel hareketlilik politikalarında köklü bir yenilenme ihtiyacını ortaya koyuyor."
+  - "TÜİK’in Ocak 2005-Haziran 2026 motorlu kara taşıtları serisini inceledim."
+  - "81 il için stok değişimini, araç payını ve medyan büyümeyi hesapladım."
+  - "Aralık 2022 sonrası net araç artışını taşıt türlerine göre ayırdım."
+conclusion: "Motosikletin araç parkındaki payı hızla büyüyor. Yol güvenliği ve ulaşım planlaması bu yeni dağılımı hesaba katmak zorunda."
 tags:
   - "motosiklet"
   - "tuik"
@@ -41,65 +41,68 @@ tags:
   - "ulasim"
 ---
 
-import TurkeyMotorcycleMap from "../../components/mdx/charts/TurkeyMotorcycleMap";
-import MotorcycleGrowthTimeline from "../../components/mdx/charts/MotorcycleGrowthTimeline";
-import MotorcycleProvincesRank from "../../components/mdx/charts/MotorcycleProvincesRank";
+import TurkeyMotorcycleMap from "@/components/mdx/charts/motorcycles/TurkeyMotorcycleMap";
+import MotorcycleGrowthTimeline from "@/components/mdx/charts/motorcycles/MotorcycleGrowthTimeline";
+import MotorcycleProvincesRank from "@/components/mdx/charts/motorcycles/MotorcycleProvincesRank";
 
-Türkiye yollarında eşi benzeri görülmemiş bir araç dönüşümü yaşanıyor. 
+Türkiye’nin araç parkı hızla değişiyor.
 
-Aralık 2019'da **3.331.326** olan kayıtlı motosiklet sayısı, Haziran 2026 itibarıyla **7.435.710** adede yükseldi. Yaklaşık 6,5 yıllık bu dönemde motosiklet stoku **%123,21** artış gösterirken; aynı süreçte toplam motorlu araç stoku **%49,18**, otomobil stoku ise yalnızca **%42,90** oranında büyüyebildi.
+Aralık 2019’da **3.331.326** olan kayıtlı motosiklet sayısı, Haziran 2026’da **7.435.710’a** çıktı. Bu dönemde motosiklet stoku **%123,21**, toplam motorlu araç stoku **%49,18**, otomobil stoku ise **%42,90** büyüdü.
 
-## Tarihsel Dönüm Noktası: 1,2 Milyondan 7,4 Milyona
+## 1,2 milyondan 7,4 milyona
 
-2005 yılında toplam taşıt parkının sadece **%11,91**'ini oluşturan motosikletler, bugün her 5 araçtan 1'ini (**%21,52**) temsil ediyor. 
+2005’te toplam taşıt parkının **%11,91’ini** oluşturan motosikletlerin payı bugün **%21,52**. Artık her beş kayıtlı araçtan biri motosiklet.
 
-Zaman serisi grafiğinde 2005-2026 arasındaki kırılmayı ve net stok değişimlerini inceleyebilirsiniz:
+Grafik, 2005-2026 arasındaki stok değişimini gösteriyor:
 
-<MotorcycleGrowthTimeline client:load />
+<MotorcycleGrowthTimeline client:visible={{ rootMargin: "400px" }} />
 
-### Her 5 Yeni Araçtan 2'si Motosiklet
+### Her beş yeni araçtan ikisi motosiklet
 
-Özellikle Aralık 2022 sonrasında motosiklet talebi ivme kazandı:
+Aralık 2022-Haziran 2026 arasında:
 
-- **Net Araç Artışı (Aralık 2022 - Haziran 2026):** 8.062.285 adet
-- **Net Motosiklet Artışı:** 3.293.796 adet
-- **Motosikletin Net Artıştaki Payı:** **%40,85**
+- **Net araç artışı:** 8.062.285
+- **Net motosiklet artışı:** 3.293.796
+- **Motosikletin payı:** **%40,85**
 
-Bu tablo, son 3.5 yılda Türkiye trafiğine eklenen net taşıt stokunun **beşte ikisinin (%40,85)** motosikletlerden oluştuğunu ortaya koyuyor.
+Başka bir deyişle, son 3,5 yıldaki net araç artışının **beşte ikisi motosikletten** geldi.
 
 ---
 
-## Coğrafi Yayılım: 81 İlin Tamamında Kesintisiz Artış
+## Artış 81 ilin tamamında görüldü
 
-Motosiklet patlaması tüm ülkeye yayıldı. **81 ilin tamamında** (%100 kapsama):
+**81 ilin tamamında** motosiklet stoku şu dönemlerin her birinde arttı:
+
 - Aralık 2019 – Haziran 2026 arasında,
 - 2024 takvim yılında,
 - 2025 takvim yılında ve
 - Haziran 2025 – Haziran 2026 son 12 aylık döneminde motosiklet stoku artış kaydetti.
 
-### 6 İlde Motosiklet Sayısı Otomobilleri Geçti
+### Altı ilde motosiklet sayısı otomobili geçti
 
-Türkiye genelinde tam **6 ilde** kayıtlı motosiklet sayısı otomobil sayısını geride bıraktı: **Kilis, Iğdır, Manisa, Muğla, Aydın ve Şanlıurfa.**
+Kayıtlı motosiklet sayısı **Kilis, Iğdır, Manisa, Muğla, Aydın ve Şanlıurfa’da** otomobil sayısından yüksek.
 
-Haritada modları değiştirerek illerin durumunu inceleyebilirsiniz:
+Harita, stok ve araç payını il bazında karşılaştırıyor:
 
-<TurkeyMotorcycleMap client:load />
+<TurkeyMotorcycleMap client:visible={{ rootMargin: "400px" }} />
 
 ---
 
-## Sıralamalar ve Medyan Büyüme Hızları
+## Stok, pay ve medyan büyüme
 
-Kentsel ölçekte en büyük motosiklet stoku **950.464 adet** ile İstanbul'da bulunuyor. İstanbul'u **555.100 adet** ile Antalya ve **539.524 adet** ile İzmir izliyor.
+En büyük motosiklet stoku **950.464** ile İstanbul’da. Antalya **555.100**, İzmir **539.524** motosikletle onu izliyor.
 
-Buna karşın toplam araçlar içindeki motosiklet payına bakıldığında **%58,00** ile Kilis ilk sırada yer alıyor. Muğla (**%40,79**) ve Manisa (**%39,90**) Kilis'in ardından en yüksek yoğunluğa sahip iller olarak öne çıkıyor.
+Toplam araç içindeki payda ise **%58,00** ile Kilis ilk sırada. Muğla **%40,79**, Manisa **%39,90**.
 
-<MotorcycleProvincesRank client:load />
+<MotorcycleProvincesRank client:visible={{ rootMargin: "400px" }} />
 
-### Medyan İstatistikler
+### Medyan il artışları
 
-- **2019–2026 Medyan İl Artışı:** **%160,0**
-- **2024 Yılı Medyan İl Artışı:** **%30,87**
-- **2025 Yılı Medyan İl Artışı:** **%19,20**
-- **Son 12 Ay (Haziran 2025 - Haziran 2026) Medyan İl Artışı:** **%16,50**
+- **2019-2026:** **%160,0**
+- **2024:** **%30,87**
+- **2025:** **%19,20**
+- **Haziran 2025-Haziran 2026:** **%16,50**
 
-Bu veriler, Türkiye'de metropollerde kurye ve lojistik odaklı, Anadolu illerinde ise bireysel ulaşım odaklı kalıcı bir motosiklet dönüşümünün yaşandığını kanıtlıyor.
+Veri, motosiklet artışının birkaç büyük şehirle sınırlı olmadığını gösteriyor. Nedenleri açıklamak için satış, kullanım amacı ve hane verileriyle ayrı bir çalışma gerekir.
+
+_Kaynak: TÜİK Motorlu Kara Taşıtları istatistikleri, Haziran 2026._

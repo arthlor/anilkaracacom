@@ -2,9 +2,16 @@ import { execFileSync } from "node:child_process";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const root = process.cwd();
-const csvPath = resolve(root, "add93bea-aa93-4f95-8e0f-2428efea5196.csv");
-const outputPath = resolve(root, "public/data/izmir-kat/integrity_audit.json");
+import {
+  izmirKatPublicDirectory,
+  izmirKatSourceDirectory,
+} from "./lib/izmir-kat-paths.mjs";
+
+const csvPath = resolve(
+  izmirKatSourceDirectory,
+  "add93bea-aa93-4f95-8e0f-2428efea5196.csv",
+);
+const outputPath = resolve(izmirKatPublicDirectory, "integrity_audit.json");
 const service =
   "https://kentrehberi.izmir.bel.tr/arcgis/rest/services/Rehber/CbsRehberGeo/MapServer";
 

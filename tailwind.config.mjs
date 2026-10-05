@@ -60,9 +60,11 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        display: ["Space Grotesk", "sans-serif"],
-        body: ["Inter", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        display: ["Inter Variable", "-apple-system", "sans-serif"],
+        body: ["Inter Variable", "-apple-system", "sans-serif"],
+        sans: ["Inter Variable", "-apple-system", "sans-serif"],
+        serif: ["Newsreader Variable", "Georgia", "serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       animation: {
         "fade-in": "fadeIn 0.6s ease-out",
@@ -128,6 +130,10 @@ export default {
         "bounce-in": "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
     },
+  },
+  corePlugins: {
+    // The site defines its own .container in global.css.
+    container: false,
   },
   plugins: [],
 };

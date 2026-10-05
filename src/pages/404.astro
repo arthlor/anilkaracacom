@@ -1,48 +1,26 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import Icon from "../components/Icon.astro";
 ---
 
-<MainLayout
-  title="Page Not Found"
-  description="The page may have moved or no longer exists."
->
-  <section
-    class="relative flex min-h-[80vh] items-center justify-center overflow-hidden px-4"
-  >
-    <div class="relative z-10 text-center px-4">
-      <div class="page-frame p-8 md:p-12">
-        <div class="mb-8 relative inline-block">
-          <span
-            class="text-[clamp(4.5rem,16vw,9rem)] font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary/20 to-[#f2dd98]/20 select-none"
-          >
-            404
-          </span>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <Icon
-              name="alert-triangle"
-              size={64}
-              class="text-primary animate-pulse"
-            />
-          </div>
-        </div>
-
-        <h1 class="text-3xl md:text-4xl font-display font-bold mb-4">
-          That page isn’t here.
-        </h1>
-
-        <p class="text-xl text-muted-foreground max-w-md mx-auto mb-10">
-          The link may be out of date, or the page may have moved. You can head
-          back to the homepage from here.
-        </p>
-
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="/" class="page-button">
-            <Icon name="arrow-left" size={20} class="transition-transform" />
-            Go to homepage
-          </a>
-        </div>
-      </div>
-    </div>
+<MainLayout title="Page not found" description="This page could not be found." noindex>
+  <section class="page-head container not-found">
+    <h1 class="t-display">Page not found.</h1>
+    <p class="t-lede">The link may be old, or the page has moved.</p>
+    <p class="not-found__links">
+      <a class="more" href="/">Home</a>
+      <a class="more" href="/articles">Articles</a>
+    </p>
   </section>
 </MainLayout>
+
+<style>
+  .not-found {
+    min-height: 60vh;
+  }
+
+  .not-found__links {
+    display: flex;
+    gap: 28px;
+    margin-top: 28px;
+  }
+</style>

@@ -1,6 +1,6 @@
 ---
-title: "İstanbul İtfaiyesi'nin pati mesaisi"
-description: "İBB veri setleriyle analiz: İtfaiye ekiplerinin yangın dışı acil durum müdahalelerindeki rolü."
+title: "Yangınların ötesinde: İstanbul İtfaiyesi’nin 296 bin görevi"
+description: "İBB kayıtları, 2021-2025 arasında hayvan kurtarmadan su tahliyesine uzanan yangın dışı itfaiye mesaisini gösteriyor."
 pubDate: 2026-06-03
 heroImage: "../../assets/images/articles/beyond-firefighting-hero.webp"
 tags: ["itfaiye", "veri-gazeteciligi", "belediye", "react"]
@@ -19,27 +19,27 @@ techStack:
     "Astro CaseStudyLayout",
   ]
 metrics:
-  - label: "İncelenen Vaka"
+  - label: "İncelenen kayıt"
     value: "296K+"
-    detail: "2021-2025 yılları arasındaki 60 aylık yangın dışı tüm itfaiye görevlendirmeleri analiz edildi."
-  - label: "Yaz Dönemi Artışı"
-    value: "4,2 Kat"
-    detail: "İstanbul sokaklarının neşesi patili dostlarımızı kurtarma vakaları, kış ortalamalarına kıyasla Haziran ayında zirve yapmaktadır."
-  - label: "Boş İhbar Artışı"
+    detail: "2021-2025 arasındaki 60 aylık yangın dışı görevlendirme."
+  - label: "Haziran yoğunluğu"
+    value: "4,2 kat"
+    detail: "Hayvan kurtarma kayıtlarının ocak ortalamasına göre haziran oranı."
+  - label: "Müdahalesiz sevk artışı"
     value: "%98"
-    detail: "Her ihbara yönlendirilen İtfaiye ekiplerinin işlem gerçekleştiremediği boş sevkler 5 yılda iki katına ulaştı."
-executiveSummary: "Bu veri kümesi 2021-2025 yılları İstanbul İtfaiyesi ekiplerinin müdahale ettiği yangın olmayan diğer itfai olayları içermektedir. Cesur itfaiyecilerimizi hep alevlerle savaşırken hayal ederiz; oysa veriler, onların aynı zamanda sevimli kedi dostlarımızın en büyük koruyucusu olduğunu gösteriyor: Teşkilatın en şefkatli mesaisi kedi kurtarma seferberliği!"
-context: "İtfaiye sireni duyduğumuzda aklımıza hemen dumanlar gelir. Oysa bu ses, çoğu zaman havalandırmada veya motor boşluğunda sıkışan meraklı bir yavrunun imdadına yetişen şefkatli ellerin habercisidir. İBB'nin açık verileriyle bu sevimli kahramanlık hikayesini inceledik."
+    detail: "‘Faaliyet yapılmadı’ kayıtları 2021 ile 2025 arasında yaklaşık iki katına çıktı."
+executiveSummary: "İstanbul İtfaiyesi’nin 2021-2025 arasındaki 296 binden fazla yangın dışı görevi, hayvan kurtarma ve müdahale gerektirmeyen sevklerin toplam yükteki yerini gösteriyor."
+context: "İtfaiye yalnızca yangınlara gitmiyor. İBB’nin açık verisi; hayvan kurtarma, su tahliyesi, tehlike bertarafı ve olay yerinde işlem yapılmayan sevkleri aynı kayıtta topluyor."
 methodology:
-  - "2021-2025 yıllarını kapsayan 5 yıllık resmi itfaiye kayıtları tek tek incelendi."
-  - "Gereksiz detaylar ayıklanarak ekiplerin asıl zaman ayırdığı 8 ana görev grubu belirlendi."
-  - "Hangi olayların hangi aylarda yoğunlaştığını görmek için mevsimsel dalgalanmalar modellendi."
-  - "Hikayeyi sizin için canlandıracak, fare hareketlerinizle etkileşime giren özel SVG grafikleri oluşturuldu."
-challenge: "Kategoriler arasındaki hacim farkları çok büyüktü; örneğin dekontaminasyon vakaları sadece onlarca iken, hayvan kurtarma ve boş ihbarlar on binleri buluyordu. Bu farkı tek bir grafikte göstermek ve küçük ama kritik mevsimsel hareketlilikleri (örneğin su tahliyeleri) ezmemek için kategori düzeyinde normalize edilmiş ölçeklendirme teknikleri kullanıldı."
-codeProof: "Özel React bileşenleri, D3 kütüphaneleri ve Framer Motion ile tamamen sıfırdan yazıldı. Ağır harici kütüphaneler yerine, kullanıcının fare hareketleriyle eş zamanlı güncellenen hafif, koyu tema uyumlu SVG adacıkları tercih edildi."
-conclusion: "İtfaiye verilerinin analizi, kamu hizmeti planlamasının reaktif olmaktan çıkarılıp proaktif hale getirilebileceğini kanıtlamaktadır. Yaz aylarındaki hayvan kurtarma patlamaları ve kışın yaşanan su taşkınları gibi mevsimsel döngülerin bilinmesi, belediyelerin personel ve kaynak yönetimini optimize etmesine olanak tanır."
+  - "2021-2025 arasındaki resmi kayıtları sekiz ana görev grubunda topladım."
+  - "Yıllık değişimi ve her kategorinin aylık ortalamasını hesapladım."
+  - "Mutlak hacim ile kategori içi mevsimselliği ayrı ölçeklerde karşılaştırdım."
+  - "Sonuçları erişilebilir React ve SVG grafiklerle yayınladım."
+challenge: "Kategorilerin hacmi çok farklıydı: bazıları onlarca, bazıları on binlerce kayıt içeriyordu. Mutlak ölçek toplam yükü, göreli ölçek ise küçük kategorilerdeki mevsimsel değişimi gösteriyor."
+codeProof: "React, D3 ve Framer Motion ile hazırlanan SVG grafikler yerel veri dosyalarını okuyor; seçimler klavye ve dokunmatik kontrollerle de yapılabiliyor."
+conclusion: "Kayıtlar iki planlama sinyali veriyor: hayvan kurtarma görevi haziranda yükseliyor, su tahliyeleri ise belirli yağış dönemlerinde sıçrıyor. Veri nedenleri açıklamasa da kaynak planlaması için hangi dönemlerin izlenmesi gerektiğini gösteriyor."
 role: "Veri temizleme, istatistiksel analiz, etkileşimli grafik geliştirme, editoryal tasarım"
-impact: "Kentsel acil durumların gerçek yapısını aydınlatarak kamuoyunun ve yerel yönetimlerin itfaiye algısını statik yangın müdahalesinden dinamik, mevsimsel ve toplumsal koruma odağına kaydırır."
+impact: "Yangın dışı görevlendirmelerin hacmini ve mevsimsel dağılımını tek, okunur bir analizde topluyor."
 relatedContent:
   - collection: "articles"
     slug: "izmir-trafik-kazasi-raporu"
@@ -48,25 +48,25 @@ relatedContent:
 storySteps:
   - id: itfaiye-growth
     label: Adım 1
-    title: Genişleyen Görev Haritası
-    summary: 2021-2025 yılları arasında ekiplerin müdahale ettiği yangın dışı olayların sayısı düzenli bir artış gösterdi. 'Faaliyet Eğilimleri' grafiğinde görüleceği üzere, İtfaiye ekipleri insan hayatını kurtarma ve kentsel tehlikeleri bertaraf etme görevlerinin yanı sıra, adrese gidildiğinde müdahale gerektirmeyen boş ihbarlara da aynı sorumluluk bilinciyle sevk ediliyor.
+    title: Beş yıllık görev dağılımı
+    summary: Yangın dışı görevlendirmeler artarken, “faaliyet yapılmadı” ve hayvan kurtarma en büyük iki kategori oldu.
   - id: itfaiye-seasonality
     label: Adım 2
-    title: Mevsimsel Dağılım Matrisi
-    summary: Görev türlerini zirve yaptıkları aylara göre analiz ettiğimizde, iklim koşulları ve çevre dinamiklerinin doğrudan etkisini görüyoruz. Kış aylarında yağışlara bağlı su tahliyeleri yoğunlaşırken, yaz aylarında sıcaklık artışıyla birlikte sokak hayvanlarına yönelik kurtarma operasyonları belirgin şekilde artış gösteriyor.
+    title: Aylara göre görev yoğunluğu
+    summary: Su tahliyesi kış aylarında, hayvan kurtarma ise haziranda belirginleşiyor.
   - id: itfaiye-animal-rescue
     label: Adım 3
-    title: Haziran Ayındaki Hayvan Kurtarma Dalgalanması
-    summary: Hayvan kurtarma vakaları her yıl Haziran ayında zirve noktasına ulaşarak aylık 3.000 sınırını aşmaktadır. Bu durum, ilkbaharda doğan meraklı yavruların motor boşlukları veya havalandırma kanalları gibi dar alanlarda sıkışmasıyla ilişkili mevsimsel bir örüntüdür. İtfaiye ekipleri, her yıl bu dönemde gelen acil çağrılara koordineli bir şekilde müdahale etmektedir.
+    title: Haziran hayvan kurtarma zirvesi
+    summary: Hayvan kurtarma kayıtları her yıl haziranda 3 binin üzerine çıkıyor; veri, artışın nedenini belirtmiyor.
 ---
 
 import StickyScrollytelling from "@/components/case-study/StickyScrollytelling.astro";
 import StickyStep from "@/components/case-study/StickyStep.astro";
-import IstanbulFirefightersStoryVisual from "@/components/mdx/charts/IstanbulFirefightersStoryVisual.tsx";
+import IstanbulFirefightersStoryVisual from "@/components/mdx/charts/fire-service/IstanbulFirefightersStoryVisual.tsx";
 
-İtfaiye dendiğinde akla ilk olarak alevlerle savaşan ekipler gelse de, İstanbul İtfaiyesi'nin günlük mesaisi yangınların çok daha ötesine uzanıyor. İBB Açık Veri Portalı'nda yayınlanan ve **yangın dışındaki acil durum müdahalelerini** içeren veri kümesi, İtfaiye ekiplerinin kent hayatındaki görünmeyen ama kritik rolünü gözler önüne seriyor. Bu veriler, özellikle sokak hayvanlarının kurtarılması ve kentsel güvenlik gibi alanlarda ekiplerin ne denli yoğun bir mesai harcadığını kanıtlıyor.
+İBB Açık Veri Portalı’ndaki kayıtlar, İstanbul İtfaiyesi’nin 2021-2025 arasında **296 binden fazla yangın dışı göreve** sevk edildiğini gösteriyor. En büyük iki grup, hayvan kurtarma ile olay yerinde işlem yapılmayan “faaliyet yapılmadı” kayıtları.
 
-Gelin, yaklaşık 300 bin vakanın yer aldığı bu acil durum veritabanının fısıldadığı mevsimsel örüntülere birlikte göz atalım. Aşağıdaki etkileşimli görsel akış, size bu görev dağılımlarının hikayesini anlatacak.
+Aşağıdaki üç görünüm yıllık değişimi, aylık dağılımı ve hazirandaki hayvan kurtarma yoğunluğunu ayrı ayrı gösteriyor.
 
 <StickyScrollytelling mode="immersive">
   <Fragment slot="visual">
@@ -76,54 +76,48 @@ Gelin, yaklaşık 300 bin vakanın yer aldığı bu acil durum veritabanının f
 <StickyStep
   id="itfaiye-growth"
   label="Adım 1"
-  title="Genişleyen Görev Haritası"
-  summary="2021-2025 yılları arasında ekiplerin müdahale ettiği yangın dışı olayların sayısı düzenli bir artış gösterdi. 'Faaliyet Eğilimleri' grafiğinde görüleceği üzere, İtfaiye ekipleri insan hayatını kurtarma ve kentsel tehlikeleri bertaraf etme görevlerinin yanı sıra, adrese gidildiğinde müdahale gerektirmeyen boş ihbarlara da aynı sorumluluk bilinciyle sevk ediliyor."
+  title="Beş yıllık görev dağılımı"
+  summary="Yangın dışı görevlendirmeler artarken, ‘faaliyet yapılmadı’ ve hayvan kurtarma en büyük iki kategori oldu."
 >
-  İtfaiye ekiplerinin yangın dışı acil durum görevleri son 5 yılda düzenli bir
-  yükseliş trendi sergilemiştir. En dikkat çekici unsur ise, ekiplerin ihbara
-  gidip işlem gerçekleştiremediği boş sevklerin (Faaliyet Yapılmadı) tüm
-  görevlerin yarısından fazlasını oluşturacak şekilde iki katına çıkmasıdır. Bu
-  durum, kamu kaynaklarının etkin kullanımı ve ihbar kalitesinin artırılması
-  gerekliliğine işaret ediyor.
+  Yangın dışı görev kayıtları beş yılda yükseldi. “Faaliyet yapılmadı” en büyük
+  tek kategori; ancak kayıt adı bunun yanlış ihbar olduğu anlamına gelmiyor.
+  Yalnızca olay yerinde işlem kaydı bulunmadığını gösteriyor.
 </StickyStep>
 
 <StickyStep
   id="itfaiye-seasonality"
   label="Adım 2"
-  title="Mevsimsel Dağılım Matrisi"
-  summary="Görev türlerini zirve yaptıkları aylara göre analiz ettiğimizde, iklim koşulları ve çevre dinamiklerinin doğrudan etkisini görüyoruz. Kış aylarında yağışlara bağlı su tahliyeleri yoğunlaşırken, yaz aylarında sıcaklık artışıyla birlikte sokak hayvanlarına yönelik kurtarma operasyonları belirgin şekilde artış gösteriyor."
+  title="Aylara göre görev yoğunluğu"
+  summary="Su tahliyesi kış aylarında, hayvan kurtarma ise haziranda belirginleşiyor."
 >
-  Isı haritası, acil durum görevlerinin mevsime ve iklim koşullarına ne kadar
-  duyarlı olduğunu göstermektedir. Örneğin, kış aylarındaki yağışlar su
-  tahliyesi görevlerini tetiklerken, yaz aylarında sokak hayvanlarının su ve
-  mama arayışı esnasında mahsur kalması kurtarma vakalarını dramatik şekilde
-  artırıyor. Ekiplerin operasyonel takvimi bu mevsimsel salınımlara göre
-  planlanmaktadır.
+  Isı haritası iki düzenli örüntüyü ayırıyor: su tahliyesi kış döneminde, hayvan
+  kurtarma ise haziranda yoğunlaşıyor. Kayıtlar zamanlamayı gösteriyor;
+  nedenleri açıklamıyor.
 </StickyStep>
 
   <StickyStep
     id="itfaiye-animal-rescue"
     label="Adım 3"
-    title="Haziran Ayındaki Hayvan Kurtarma Dalgalanması"
-    summary="Hayvan kurtarma vakaları her yıl Haziran ayında zirve noktasına ulaşarak aylık 3.000 sınırını aşmaktadır. Bu durum, ilkbaharda doğan meraklı yavruların motor boşlukları veya havalandırma kanalları gibi dar alanlarda sıkışmasıyla ilişkili mevsimsel bir örüntüdür. İtfaiye ekipleri, her yıl bu dönemde gelen acil çağrılara koordineli bir şekilde müdahale etmektedir."
+    title="Haziran hayvan kurtarma zirvesi"
+    summary="Hayvan kurtarma kayıtları her yıl haziranda 3 binin üzerine çıkıyor; veri, artışın nedenini belirtmiyor."
   >
-    Haziran ayındaki hayvan kurtarma patlaması her yıl son derece istikrarlı bir şekilde tekrarlanmaktadır. İlkbahar aylarında doğan sokak kedisi yavruları, meraklı yapıları gereği motor blokları, havalandırma boşlukları veya derin kuyulara girmekte ve buralarda sıkışmaktadır. Bu durum, her Haziran ayında itfaiye teşkilatının şefkatli bir kurtarma seferberliği yürütmesine yol açar.
+    Haziran, beş yılın tamamında hayvan kurtarma kayıtlarının en yüksek olduğu ay. Aylık toplam her yıl 3 binin üzerine çıkıyor. Veri setinde hayvan türü veya olay nedeni bulunmadığı için bu artışın kaynağı ayrıca araştırılmalı.
   </StickyStep>
 </StickyScrollytelling>
 
-## Verilerin Arkasındaki Hikayeler
+## Kayıtların söylediği üç şey
 
-### 1. Yangın Dışı Müdahalelerde Hayvan Kurtarma Ağırlığı
+### 1. Hayvan kurtarma toplam yükün büyük bir parçası
 
-İstanbul İtfaiyesi'nin yangın dışı görev kayıtları incelendiğinde, en büyük hacmi hayvan kurtarma operasyonlarının oluşturduğu görülüyor. Son 5 yılda İtfaiye ekipleri tam **99.033 hayvan kurtarma** görevi gerçekleştirdi. Bu sayı, aynı dönemdeki insan kurtarma ve tahliye operasyonlarının (35.430 vaka) neredeyse üç katına denk geliyor. İtfaiye ekipleri, kentsel alanda mahsur kalan sokak hayvanlarının kurtarılmasını asli bir kamu hizmeti sorumluluğu olarak yerine getiriyor.
+Beş yılda **99.033 hayvan kurtarma** kaydı var. Bu sayı, aynı dönemdeki arama-kurtarma ve tahliye kayıtlarının (35.430) yaklaşık 2,8 katı.
 
-### 2. İhtiyatlı Sevkler ve Müdahalesiz Sonuçlanan Çağrılar
+### 2. Her sevk müdahaleyle sonuçlanmıyor
 
-İtfaiye ekiplerinin görev yoğunluğunu etkileyen bir diğer önemli kalem ise, olay yerine gidildiği halde müdahale gerektirmeyen durumları ifade eden **"Faaliyet Yapılmadı"** kayıtlarıdır. 5 yılda toplam **104.138 sevk** bu sınıfta yer almıştır. 2021'den 2025'e neredeyse iki katına (%98) çıkan bu durum, ekiplerin gelen ihbarlar karşısında can güvenliğini riske atmamak adına ne kadar ihtiyatlı davrandığını ve her ihbarı aynı hassasiyetle değerlendirerek hızla olay yerine intikal ettiğini gösteriyor.
+**“Faaliyet yapılmadı”** kategorisi beş yılda **104.138 sevk** içeriyor ve 2021’den 2025’e %98 artıyor. Kayıt, olay yerinde işlem yapılmadığını söylüyor; ihbarın yanlış ya da gereksiz olduğunu tek başına kanıtlamıyor.
 
-### 3. İklim Anomalileri ve Acil Müdahale Gücü
+### 3. Tek bir hava olayı aylık tabloyu değiştirebiliyor
 
-Doğal afetler ve ani hava muhalefetlerinde itfaiye ekiplerinin operasyonel gücü net bir şekilde ortaya çıkmaktadır. Örneğin, normal şartlarda yaz aylarında su tahliyesi görevleri aylık bazda 10-15 civarındayken, **Temmuz 2022'de** yaşanan ani sel felaketinde İtfaiye ekipleri tam **597 adrese** su tahliyesi ve kurtarma desteği sağlamıştır. Benzer şekilde, Kasım 2021'deki fırtına sırasında yaşanan çatı uçmaları ve ağaç devrilmeleri gibi kentsel risklerin bertaraf edilmesinde (1.067 vaka) İtfaiye ekiplerinin gösterdiği hızlı refleks, kent güvenliğinin sağlanmasındaki kritik önemlerini bir kez daha teyit ediyor.
+Yaz aylarında su tahliyesi çoğunlukla 10-15 kayıt düzeyindeyken **Temmuz 2022’de 597’ye** çıkıyor. Kasım 2021’de tehlike bertarafı kayıtları da 1.067’ye ulaşıyor. Bu sıçramalar, olağan aylık ortalamanın acil durum dönemlerinde ne kadar hızlı değişebildiğini gösteriyor.
 
 ---
 

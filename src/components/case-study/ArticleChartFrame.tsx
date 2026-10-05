@@ -3,6 +3,7 @@ import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type ArticleChartFrameProps = {
+  /** Accepted for older charts; the frame no longer renders labels above titles. */
   eyebrow?: string;
   title: string;
   description?: string;
@@ -26,7 +27,6 @@ type ArticleChartFrameProps = {
 };
 
 export default function ArticleChartFrame({
-  eyebrow,
   title,
   description,
   takeaway,
@@ -46,7 +46,7 @@ export default function ArticleChartFrame({
   return (
     <section
       className={cn(
-        "article-visual-frame isolate my-10 box-border w-full max-w-full min-w-0 overflow-hidden rounded-lg border border-border bg-card/80 shadow-[0_18px_70px_hsl(var(--foreground)/0.1)]",
+        "article-visual-frame isolate my-12 box-border w-full max-w-full min-w-0 overflow-hidden rounded-[18px] border border-border bg-card",
         aside && "max-lg:pb-2",
         className,
       )}
@@ -54,12 +54,7 @@ export default function ArticleChartFrame({
       <header className="border-b border-border px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-4xl">
-            {eyebrow && (
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary/75">
-                {eyebrow}
-              </p>
-            )}
-            <h3 className="mt-2 font-display text-2xl font-semibold leading-tight text-foreground sm:text-[1.7rem]">
+            <h3 className="font-display text-[1.375rem] font-semibold leading-tight tracking-[-0.02em] text-foreground sm:text-[1.625rem]">
               {title}
             </h3>
             {description && (
@@ -94,8 +89,8 @@ export default function ArticleChartFrame({
                   </div>
                 )}
                 {primaryMetric && (
-                  <div className="inline-flex min-h-8 max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 rounded-2xl border border-primary/15 bg-primary/[0.045] px-3 py-1.5 sm:rounded-full">
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/80 shrink-0">
+                  <div className="inline-flex min-h-8 max-w-full flex-wrap items-center gap-x-2.5 gap-y-1 rounded-2xl bg-muted px-3 py-1.5 sm:rounded-full">
+                    <span className="font-mono text-[11px] text-muted-foreground shrink-0">
                       {primaryMetric.label}
                     </span>
                     <strong className="font-display text-base leading-none text-foreground shrink-0">
@@ -144,7 +139,7 @@ export default function ArticleChartFrame({
 
       {aside && (
         <div
-          className="article-chart-mobile-readout sticky bottom-0 z-20 border-t border-border bg-background/95 shadow-[0_-16px_48px_hsl(var(--foreground)/0.12)] backdrop-blur-xl xl:hidden"
+          className="article-chart-mobile-readout sticky bottom-0 z-20 border-t border-border bg-background/95 backdrop-blur-xl xl:hidden"
           aria-live="polite"
         >
           <button
@@ -156,7 +151,7 @@ export default function ArticleChartFrame({
             <div className="min-w-0">
               {primaryMetric ? (
                 <>
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/80">
+                  <p className="font-mono text-[11px] text-muted-foreground">
                     {primaryMetric.label}
                   </p>
                   <p className="truncate font-display text-base font-semibold text-foreground">
@@ -176,7 +171,7 @@ export default function ArticleChartFrame({
             </div>
             <span
               className={cn(
-                "shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-primary transition-transform duration-200",
+                "shrink-0 text-xs text-muted-foreground transition-transform duration-200",
                 mobileReadoutOpen && "rotate-180",
               )}
               aria-hidden="true"

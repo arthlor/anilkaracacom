@@ -1,0 +1,115 @@
+---
+import {
+  formatEntryDate,
+  getArticleHref,
+  isExternalArticle,
+  type ArticleEntry,
+} from "../lib/content";
+
+interface Props {
+  entry: ArticleEntry;
+}
+
+const { entry } = Astro.props;
+
+const href = getArticleHref(entry);
+const external = isExternalArticle(entry);
+const { title, language, pubDate } = entry.data;
+---
+
+<article class="row">
+  <time class="t-meta row__date" datetime={pubDate.toISOString()}>
+    {formatEntryDate(pubDate, "en")}
+  </time>
+  <h3 class="row__title" lang={language}>
+    <!-- The link stretches over the row, so its accessible name stays just the title. -->
+    <a
+      href={href}
+      data-track-event={external ? "open_report" : undefined}
+      data-track-label={external ? title : undefined}>{title}</a
+    >
+  </h3>
+  <span class="row__arrow" aria-hidden="true">{external ? "↗" : "→"}</span>
+</article>
+
+<style>
+  .row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr) 1.25rem;
+    align-items: baseline;
+    gap: 4px 24px;
+    padding-block: 20px;
+  }
+
+  .row__date {
+    white-space: nowrap;
+  }
+
+  .row__title {
+    font-size: 1.1875rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.018em;
+    text-wrap: pretty;
+  }
+
+  .row__title a {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 200ms ease;
+  }
+
+  .row__title a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .row__title a:focus-visible {
+    outline: none;
+  }
+
+  .row__title a:focus-visible::after {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  .row__arrow {
+    justify-self: end;
+    color: hsl(var(--muted-foreground) / 0.7);
+    transition:
+      transform 300ms var(--ease),
+      color 200ms ease;
+  }
+
+  .row:hover .row__title a {
+    text-decoration-color: hsl(var(--foreground) / 0.4);
+  }
+
+  .row:hover .row__arrow {
+    color: hsl(var(--foreground));
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 599px) {
+    .row {
+      grid-template-columns: minmax(0, 1fr) 1.25rem;
+      padding-block: 16px;
+    }
+
+    .row__title {
+      grid-row: 2;
+      grid-column: 1;
+      font-size: 1.0625rem;
+    }
+
+    .row__arrow {
+      grid-row: 2;
+      grid-column: 2;
+    }
+  }
+</style>

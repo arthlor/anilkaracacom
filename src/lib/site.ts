@@ -15,9 +15,11 @@ export const siteConfig = {
   name: PUBLIC_SITE_NAME,
   title: "Anil Karaca",
   personName: "Anil Karaca",
-  role: "Product Specialist, Data Journalist & Communications Specialist",
+  displayName: "Anıl Karaca",
+  role: "Data journalist and developer",
+  location: "İzmir, Türkiye",
   description:
-    "Anil Karaca's portfolio of mobile products, data journalism, and communications work.",
+    "Data journalism, apps, and games by Anıl Karaca, based in İzmir.",
   url: PUBLIC_SITE_URL,
   contactEmail: PUBLIC_CONTACT_EMAIL,
   twitterHandle: PUBLIC_TWITTER_HANDLE,
@@ -45,53 +47,52 @@ export const pillarConfig: Record<
 > = {
   "data-journalism-civic-tech": {
     title: "Data Journalism & Civic Technology",
-    shortTitle: "Civic Stories",
+    shortTitle: "Public-interest reporting",
     description:
-      "Decoding complex public datasets and institutional records into readable, high-impact investigations.",
+      "Reporting and tools that make public data and institutions easier to understand.",
     icon: "data-journalism",
     accentClass: "text-primary",
   },
   "scientific-environmental-modeling": {
-    title: "Scientific & Environmental Modeling",
-    shortTitle: "Systems Modeling",
+    title: "Systems & Environmental Data",
+    shortTitle: "Systems & data",
     description:
-      "Quantitative work focused on complex systems, temporal analysis, and evidence-driven explanation of societal or environmental change.",
+      "Data work that explains how complex systems change over time.",
     icon: "beaker",
     accentClass: "text-secondary",
   },
   "geopolitical-network-analysis": {
-    title: "Geopolitical Intelligence & Network Analysis",
-    shortTitle: "Political Analysis",
+    title: "Politics, Institutions & Networks",
+    shortTitle: "Politics & institutions",
     description:
-      "Political, institutional, and network-heavy analysis that makes power structures, behavior, and change legible.",
+      "Reporting and analysis that traces institutions, power, and political change.",
     icon: "globe",
     accentClass: "text-accent",
   },
   "software-systems-architecture": {
-    title: "Software Systems & Architecture",
-    shortTitle: "Product Engineering",
+    title: "Products & Software",
+    shortTitle: "Product & software",
     description:
-      "Architecting resilient mobile apps and editorial products that prove technical judgment through shipped code.",
+      "Mobile apps and editorial tools built for real users and shipped to production.",
     icon: "code",
     accentClass: "text-primary",
   },
 };
 
 export const navigationLinks = [
-  { href: "/", label: "Home" },
-  { href: "/projects", label: "Projects" },
   { href: "/articles", label: "Articles" },
+  { href: "/projects", label: "Projects" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
+  { href: "/cv", label: "CV" },
 ] as const;
 
 export const socialLinks = [
-  { href: PUBLIC_LINKEDIN_URL, label: "LinkedIn", icon: "linkedin" },
+  { href: PUBLIC_LINKEDIN_URL, label: "LinkedIn", handle: "anil-karaca" },
+  { href: PUBLIC_GITHUB_URL, label: "GitHub", handle: "arthlor" },
   {
     href: `https://x.com/${PUBLIC_TWITTER_HANDLE.replace(/^@/, "")}`,
-    label: "X (Twitter)",
-    icon: "twitter",
+    label: "X",
+    handle: PUBLIC_TWITTER_HANDLE,
   },
-  { href: PUBLIC_YOUTUBE_URL, label: "YouTube", icon: "youtube" },
-  { href: PUBLIC_GITHUB_URL, label: "GitHub", icon: "github" },
+  { href: PUBLIC_YOUTUBE_URL, label: "YouTube", handle: "@anil.karaca" },
 ] as const;

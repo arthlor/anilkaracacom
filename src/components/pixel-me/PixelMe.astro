@@ -1,0 +1,434 @@
+---
+import { getCollection } from "astro:content";
+
+import {
+  getArticleHref,
+  isPublicEntryData,
+  sortEntriesByDateDesc,
+} from "@/lib/content";
+import { socialLinks } from "@/lib/site";
+import { STAGE_H, STAGE_W, scenes, type CaptionLink } from "./scenes";
+
+interface Props {
+  class?: string | undefined;
+}
+
+const { class: className } = Astro.props;
+const first = scenes[0]!;
+
+const [articles, projects] = await Promise.all([
+  getCollection("articles", ({ data }) => isPublicEntryData(data)),
+  getCollection("projects", ({ data }) => isPublicEntryData(data)),
+]);
+const latest = sortEntriesByDateDesc(articles)[0];
+const nevaland = projects.find((entry) => entry.id === "nevaland");
+const github = socialLinks.find((link) => link.label === "GitHub");
+
+// Captions that joke about real work link to it.
+const links: Partial<Record<CaptionLink, string>> = {
+  articles: "/articles",
+  projects: "/projects",
+  ...(latest && { article: getArticleHref(latest) }),
+  ...(nevaland && { nevaland: nevaland.data.url }),
+  ...(github && { github: github.href }),
+};
+const [firstBeat, , firstLink] = first.lines[0]!;
+const firstHref = firstLink && links[firstLink];
+---
+
+<figure
+  class:list={["pixel-me", className]}
+  data-pixel-me
+  data-links={JSON.stringify(links)}
+>
+  <button
+    type="button"
+    class="pixel-me__stage"
+    aria-label="Pixel-art Anıl. Click to see what he gets up to next"
+  >
+    <canvas width={STAGE_W} height={STAGE_H}></canvas>
+  </button>
+  <figcaption class="pixel-me__status">
+    <span class="pixel-me__prefix">Me in a nutshell:</span>
+    <span class="pixel-me__dot" aria-hidden="true"></span>
+    <a class="pixel-me__label" href={firstHref} data-pixel-me-label>{firstBeat}</a>
+  </figcaption>
+</figure>
+
+<style>
+  .pixel-me {
+    /* One sprite pixel, in CSS pixels. Whole numbers keep edges crisp. */
+    --pm-px: 6;
+
+    --pm-hair: #2b211c;
+    --pm-hair-shine: #5a4334;
+    --pm-skin: #f1c3a0;
+    --pm-skin-shade: #d59c7c;
+    --pm-teeth: #fbf8f2;
+    --pm-tee: #1f1e1f;
+    --pm-chain: #c3c7cc;
+    --pm-flannel: #3a3534;
+    --pm-flannel-check: #544c49;
+    --pm-accent: #2b84ea;
+    --pm-jeans: #3f4b66;
+    --pm-jeans-far: #2e374c;
+    --pm-ink: #3a3936;
+    --pm-ink-soft: #c9c4bb;
+    --pm-light: #a9c9f5;
+
+    /* From the bottom of the figure up to the floor the character stands on. */
+    --pm-below-floor: calc(var(--pm-px) * 3px + 10px + 18px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+  }
+
+  :global(html.dark) .pixel-me {
+    --pm-hair: #4a3a31;
+    --pm-hair-shine: #6e5545;
+    --pm-tee: #3a393b;
+    --pm-chain: #d9dde2;
+    --pm-flannel: #57504e;
+    --pm-flannel-check: #6f6764;
+    --pm-accent: #4aa3ff;
+    --pm-jeans: #55648a;
+    --pm-jeans-far: #404b68;
+    --pm-ink: #d6d2ca;
+    --pm-ink-soft: #4a4844;
+    --pm-light: #4f6f9c;
+  }
+
+  .pixel-me__stage {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pixel-me__stage:focus-visible {
+    outline-offset: 6px;
+  }
+
+  canvas {
+    display: block;
+    width: calc(var(--pm-px) * 64px);
+    height: calc(var(--pm-px) * 36px);
+    image-rendering: pixelated;
+    /* Scenery drifts in and out at the edges. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+    transition: opacity 220ms ease;
+  }
+
+  .pixel-me[data-switching] canvas {
+    opacity: 0;
+  }
+
+  .pixel-me__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .pixel-me__prefix {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  /* The rotating line is the content; the fixed prefix stays quiet. */
+  .pixel-me__label {
+    min-width: 0;
+    color: hsl(var(--foreground) / 0.78);
+    text-wrap: balance;
+  }
+
+  .pixel-me__label[href] {
+    color: hsl(var(--foreground));
+    text-underline-offset: 0.25em;
+  }
+
+  .pixel-me__label[href]:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .pixel-me__label[href]:not([data-typing])::after {
+    content: " →";
+  }
+
+  .pixel-me__label[target]:not([data-typing])::after {
+    content: " ↗";
+  }
+
+  .pixel-me__dot {
+    flex: none;
+    width: 6px;
+    height: 6px;
+    background: var(--pm-accent);
+    animation: pixel-me-pulse 1.6s steps(2, jump-none) infinite;
+  }
+
+  @keyframes pixel-me-pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .pixel-me {
+      --pm-px: 8;
+    }
+  }
+
+  @media (max-width: 599px) {
+    .pixel-me {
+      --pm-px: 5;
+    }
+
+    /* Keeps the longest caption on one line at phone width. */
+    .pixel-me__status {
+      font-size: 0.6875rem;
+      letter-spacing: 0;
+    }
+  }
+
+  @media (max-width: 359px) {
+    .pixel-me {
+      --pm-px: 4;
+    }
+  }
+</style>
+
+<script>
+  import { PALETTE_KEYS, type Key } from "./sprites";
+  import { STAGE_H, STAGE_W, scenes } from "./scenes";
+
+  const TOKENS: Record<Key, string> = {
+    H: "--pm-hair",
+    h: "--pm-hair-shine",
+    S: "--pm-skin",
+    s: "--pm-skin-shade",
+    W: "--pm-teeth",
+    T: "--pm-tee",
+    C: "--pm-chain",
+    F: "--pm-flannel",
+    f: "--pm-flannel-check",
+    O: "--pm-accent",
+    J: "--pm-jeans",
+    j: "--pm-jeans-far",
+    P: "--pm-ink",
+    p: "--pm-ink-soft",
+    L: "--pm-light",
+  };
+
+  const FADE_MS = 220;
+
+  const mount = (root: HTMLElement) => {
+    const canvas = root.querySelector("canvas");
+    const ctx = canvas?.getContext("2d");
+    const label = root.querySelector<HTMLAnchorElement>("[data-pixel-me-label]");
+    const button = root.querySelector("button");
+    if (!ctx || !label || !button) return;
+    const links: Record<string, string> = JSON.parse(root.dataset.links ?? "{}");
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let colors = {} as Record<Key, string>;
+    let index = 0;
+    let tick = 0;
+    let elapsed = 0;
+    let last = 0;
+    let frame = 0;
+    let switching = false;
+    let onScreen = false;
+    // Start somewhere random so a reload doesn't tell the same jokes.
+    let visit = Math.floor(Math.random() * 4);
+    let shown = label.textContent ?? "";
+    let typing = 0;
+    // Hovering or focusing a linked caption holds the scene so the link stays put.
+    let held = false;
+
+    const readColors = () => {
+      const style = getComputedStyle(root);
+      for (const key of PALETTE_KEYS) {
+        colors[key] = style.getPropertyValue(TOKENS[key]).trim();
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, STAGE_W, STAGE_H);
+      for (const op of scenes[index]!.frame(tick, visit)) {
+        if ("k" in op) {
+          ctx.fillStyle = colors[op.k];
+          ctx.fillRect(op.x, op.y, op.w, op.h);
+          continue;
+        }
+        op.s.rows.forEach((row, y) => {
+          for (let x = 0; x < row.length; x += 1) {
+            const key = row[x] as Key | ".";
+            if (key === ".") continue;
+            ctx.fillStyle = colors[key];
+            ctx.fillRect(op.x + x, op.y + y, 1, 1);
+          }
+        });
+      }
+    };
+
+    const caption = () => {
+      const scene = scenes[index]!;
+      const [beat, payoff, link] = scene.lines[visit % scene.lines.length]!;
+      const landed = scene.payoffAt !== undefined && tick >= scene.payoffAt;
+      return {
+        text: landed && payoff ? payoff : beat,
+        href: link && links[link],
+      };
+    };
+
+    const setLink = (href: string | undefined, text: string) => {
+      if (!href) {
+        for (const name of ["href", "target", "rel", "data-track-event"]) {
+          label.removeAttribute(name);
+        }
+        return;
+      }
+      label.href = href;
+      label.dataset.trackEvent = "hero_caption";
+      label.dataset.trackLabel = text;
+      if (/^https?:/.test(href)) {
+        label.target = "_blank";
+        label.rel = "noopener noreferrer";
+      } else {
+        label.removeAttribute("target");
+        label.removeAttribute("rel");
+      }
+    };
+
+    // Type captions out like a terminal.
+    const setCaption = ({ text, href }: ReturnType<typeof caption>) => {
+      if (text === shown) return;
+      shown = text;
+      window.clearInterval(typing);
+      setLink(href, text);
+      if (reduced.matches) {
+        label.textContent = text;
+        return;
+      }
+      let length = 0;
+      label.dataset.typing = "";
+      typing = window.setInterval(() => {
+        length += 1;
+        label.textContent = text.slice(0, length);
+        if (length >= text.length) {
+          window.clearInterval(typing);
+          delete label.dataset.typing;
+        }
+      }, 32);
+    };
+
+    const show = (next: number) => {
+      if (next >= scenes.length) visit += 1;
+      index = next % scenes.length;
+      const scene = scenes[index]!;
+      tick = reduced.matches ? scene.poster : 0;
+      elapsed = 0;
+      setCaption(caption());
+      draw();
+    };
+
+    const advance = () => {
+      if (switching) return;
+      if (reduced.matches) {
+        show(index + 1);
+        return;
+      }
+      switching = true;
+      root.dataset.switching = "";
+      window.setTimeout(() => {
+        show(index + 1);
+        delete root.dataset.switching;
+        switching = false;
+      }, FADE_MS);
+    };
+
+    const loop = (now: number) => {
+      frame = requestAnimationFrame(loop);
+      // A long gap (tab in background) shouldn't fast-forward the scene.
+      elapsed += Math.min(now - last, 250);
+      last = now;
+      if (switching) return;
+
+      const scene = scenes[index]!;
+      const step = 1000 / scene.fps;
+      if (elapsed < step) return;
+      tick += Math.floor(elapsed / step);
+      elapsed %= step;
+
+      if (tick >= scene.ticks) {
+        tick = scene.ticks - 1;
+        if (!held) advance();
+        return;
+      }
+      setCaption(caption());
+      draw();
+    };
+
+    const start = () => {
+      if (frame || reduced.matches || !onScreen) return;
+      last = performance.now();
+      frame = requestAnimationFrame(loop);
+    };
+
+    const stop = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    readColors();
+    show(0);
+
+    button.addEventListener("click", advance);
+
+    const hold = () => {
+      held = label.hasAttribute("href");
+    };
+    const release = () => {
+      held = false;
+    };
+    label.addEventListener("pointerenter", hold);
+    label.addEventListener("pointerleave", release);
+    label.addEventListener("focus", hold);
+    label.addEventListener("blur", release);
+
+    new IntersectionObserver(([entry]) => {
+      onScreen = Boolean(entry?.isIntersecting);
+      if (onScreen) start();
+      else stop();
+    }).observe(root);
+
+    reduced.addEventListener("change", () => {
+      stop();
+      show(index);
+      start();
+    });
+
+    // Repaint with the other palette when the theme flips.
+    new MutationObserver(() => {
+      readColors();
+      draw();
+    }).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>("[data-pixel-me]").forEach(mount);
+</script>

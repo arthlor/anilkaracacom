@@ -1,379 +1,136 @@
 ---
 import { getCollection } from "astro:content";
 
-import OptimizedImage from "../../components/OptimizedImage.astro";
+import ArticleCard from "../../components/ArticleCard.astro";
+import JsonLd from "../../components/JsonLd.astro";
 import {
   getArticleHref,
-  getEntrySummary,
-  groupEntriesByPillar,
   isPublicEntryData,
-  sortEntriesByFeatureAndDate,
+  sortEntriesByDateDesc,
 } from "../../lib/content";
 import MainLayout from "../../layouts/MainLayout.astro";
+import { buildArticleListSchema } from "../../lib/seo";
 
-const articles = sortEntriesByFeatureAndDate(
+const articles = sortEntriesByDateDesc(
   await getCollection("articles", ({ data }) => isPublicEntryData(data)),
 );
-const grouped = groupEntriesByPillar(articles).filter(
-  (section) => section.entries.length > 0,
-);
+const [lead, ...rest] = articles;
+// Rows of three, led by enough rows of two that none is left short.
+const pairs = [0, 4, 2][rest.length % 3] ?? 0;
 
-const formatDate = (date: Date) =>
-  date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+const collection = {
+  "@type": "CollectionPage",
+  name: "Articles",
+  mainEntity: buildArticleListSchema(
+    articles.map((entry) => ({
+      href: entry.data.externalUrl ? getArticleHref(entry) : `${getArticleHref(entry)}/`,
+      title: entry.data.title,
+    })),
+  ),
+};
 ---
 
 <MainLayout
   title="Articles"
-  description="Published article archive for Anil Karaca in English and Turkish, grouped by data journalism, systems analysis, and political reporting."
+  description="Data journalism by Anıl Karaca, in English and Turkish."
 >
-  <section class="articles-archive">
-    <div class="articles-archive__shell">
-      <header class="articles-archive__hero">
-        <div class="articles-archive__hero-copy">
-          <p class="articles-archive__eyebrow">Published archive</p>
-          <h1>Articles</h1>
-          <p class="articles-archive__subtitle">
-            Data journalism, civic analysis, and political reporting in English
-            and Turkish, grouped by topic and reading depth.
-          </p>
+  <JsonLd schema={collection} />
+  <header class="page-head container">
+    <h1 class="t-display">Articles</h1>
+  </header>
+
+  <div class="container articles">
+    {
+      lead && (
+        <div class="articles__lead">
+          <ArticleCard
+            entry={lead}
+            variant="feature"
+            headingLevel="h2"
+            loading="eager"
+          />
         </div>
-      </header>
+      )
+    }
 
-
-      <div class="articles-archive__content">
-        <div class="articles-archive__sections">
-          {
-            grouped.map((section) => (
-              <section
-                class="articles-section"
-                id={section.pillar}
-              >
-                <div class="articles-section__head">
-                  <h2>{section.title}</h2>
-                  <span class="articles-section__count">
-                    {section.entries.length} published
-                  </span>
-                </div>
-
-                <div class="articles-section__grid">
-                  {section.entries.map((entry) => {
-                    const primaryMetric = entry.data.metrics[0];
-
-                    return (
-                      <article class="article-card">
-                        <a
-                          class="article-card__media"
-                          href={getArticleHref(entry)}
-                          aria-label={`Read ${entry.data.title}`}
-                        >
-                          {entry.data.heroImage ? (
-                            <OptimizedImage
-                              src={entry.data.heroImage}
-                              alt={entry.data.title}
-                              class="article-card__img"
-                              width={600}
-                              height={375}
-                            />
-                          ) : (
-                            <div class="article-card__img-placeholder" />
-                          )}
-                        </a>
-
-                        <div class="article-card__body">
-                          <div class="article-card__meta">
-                            <time datetime={entry.data.pubDate.toISOString()}>
-                              {formatDate(entry.data.pubDate)}
-                            </time>
-                            <span class="article-card__bullet">•</span>
-                            <span class="article-card__category">
-                              {section.shortTitle}
-                            </span>
-                          </div>
-
-                          <h3 class="article-card__title">
-                            <a href={getArticleHref(entry)}>
-                              {entry.data.title}
-                            </a>
-                          </h3>
-
-                          <p class="article-card__description">
-                            {getEntrySummary(entry)}
-                          </p>
-
-                          {primaryMetric && (
-                            <div class="article-card__metric">
-                              <span class="article-card__metric-label">
-                                {primaryMetric.label}
-                              </span>
-                              <strong class="article-card__metric-value">
-                                {primaryMetric.value}
-                              </strong>
-                            </div>
-                          )}
-                        </div>
-                      </article>
-                    );
-                  })}
-                </div>
-              </section>
-            ))
-          }
-        </div>
-      </div>
-    </div>
-  </section>
+    <ul class="articles__grid" role="list">
+      {
+        rest.map((entry, index) => (
+          <li
+            class:list={[
+              index < pairs && "articles__pair",
+              rest.length % 2 === 1 &&
+                index === rest.length - 1 &&
+                "articles__last-odd",
+            ]}
+          >
+            <ArticleCard
+              entry={entry}
+              headingLevel="h2"
+              sizes={
+                index < pairs
+                  ? "(min-width: 900px) 560px, (min-width: 600px) 50vw, 100vw"
+                  : undefined
+              }
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </MainLayout>
 
-
-
 <style>
-  .articles-archive {
-    padding: 7.5rem 0 6rem;
+  .articles {
+    padding-bottom: clamp(80px, 10vw, 128px);
   }
 
-  .articles-archive__shell {
-    width: min(100% - 2rem, 1200px);
-    margin-inline: auto;
-  }
-
-  .articles-archive__hero {
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
-  }
-
-  .articles-archive__eyebrow {
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--premium-accent);
-  }
-
-  .articles-archive__hero h1 {
-    margin-top: 0.6rem;
-    font-size: 4.8rem;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-family: var(--font-display);
-    font-weight: 800;
-    color: hsl(var(--foreground));
-  }
-
-  .articles-archive__subtitle {
-    max-width: 38rem;
-    margin-top: 1.2rem;
-    font-size: 1.05rem;
-    line-height: 1.75;
-    color: hsl(var(--muted-foreground));
-  }
-
-
-  .articles-archive__content {
-    margin-top: 3.5rem;
-  }
-
-  .articles-archive__sections {
-    display: grid;
-    gap: 4.5rem;
-    min-width: 0;
-  }
-
-
-  .articles-section__head {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 1.6rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid hsl(var(--foreground) / 0.08);
-  }
-
-  .articles-section__head h2 {
-    font-size: 1.8rem;
-    line-height: 1.1;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: hsl(var(--foreground));
-  }
-
-  .articles-section__count {
-    font-size: 0.76rem;
-    color: hsl(var(--muted-foreground));
-    font-weight: 500;
-  }
-
-  .articles-section__grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.5rem;
-  }
-
-  .article-card {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    overflow: hidden;
-    border: 1px solid hsl(var(--border));
-    border-radius: 12px;
-    background: hsl(var(--card));
-    transition:
-      border-color 200ms ease,
-      background 200ms ease,
-      transform 200ms ease,
-      box-shadow 200ms ease;
-  }
-
-  .article-card:hover {
-    transform: translateY(-2px);
-    border-color: rgba(122, 242, 152, 0.2);
-    background: hsl(var(--muted) / 0.62);
-    box-shadow: 0 16px 36px hsl(var(--foreground) / 0.1);
-  }
-
-  .article-card__media {
-    position: relative;
-    display: block;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    background: hsl(var(--muted));
+  .articles__lead {
+    padding-bottom: clamp(40px, 6vw, 64px);
+    margin-bottom: clamp(40px, 6vw, 64px);
     border-bottom: 1px solid hsl(var(--border));
   }
 
-  .article-card__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: grayscale(100%);
-    transition:
-      transform 400ms ease,
-      filter 400ms ease;
+  .articles__grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 56px 24px;
   }
 
-  .article-card:hover .article-card__img {
-    transform: scale(1.03);
-    filter: grayscale(90%);
+  .articles__grid > li {
+    grid-column: span 2;
   }
 
-  .article-card__img-placeholder {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-      135deg,
-      hsl(var(--foreground) / 0.04),
-      hsl(var(--foreground) / 0.01)
-    );
+  .articles__grid > .articles__pair {
+    grid-column: span 3;
   }
 
-  .article-card__body {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding: 1.25rem;
-  }
-
-  .article-card__meta {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-    margin-bottom: 0.6rem;
-  }
-
-  .article-card__bullet {
-    opacity: 0.5;
-  }
-
-  .article-card__title {
-    font-size: 1.25rem;
-    line-height: 1.3;
-    font-family: var(--font-display);
-    font-weight: 700;
-    margin-bottom: 0.6rem;
-  }
-
-  .article-card__title a {
-    color: hsl(var(--foreground));
-    text-decoration: none;
-    transition: color 150ms ease;
-  }
-
-  .article-card__title a:hover {
-    color: var(--premium-accent);
-  }
-
-  .article-card__description {
-    color: hsl(var(--muted-foreground));
-    font-size: 0.86rem;
-    line-height: 1.6;
-    margin-bottom: 1.25rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .article-card__metric {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    margin-top: auto;
-    padding-top: 0.75rem;
-    border-top: 1px solid hsl(var(--foreground) / 0.08);
-    font-size: 0.76rem;
-  }
-
-  .article-card__metric-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .article-card__metric-value {
-    color: var(--premium-accent);
-    font-weight: 600;
-  }
-
-  @media (max-width: 1024px) {
-    .articles-section__grid {
+  @media (max-width: 899px) {
+    .articles__grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .articles-archive__hero h1 {
-      font-size: 3.8rem;
+    .articles__grid > li,
+    .articles__grid > .articles__pair {
+      grid-column: auto;
     }
   }
 
-  @media (max-width: 640px) {
-    .articles-archive {
-      padding-top: 6.5rem;
+  /* A card left alone on the last row of two spans it instead. */
+  @media (min-width: 600px) and (max-width: 899px) {
+    .articles__grid > .articles__last-odd {
+      grid-column: 1 / -1;
     }
 
-    .articles-archive__hero h1 {
-      font-size: 2.8rem;
+    .articles__last-odd :global(.card__media img) {
+      aspect-ratio: 2 / 1;
     }
+  }
 
-    .articles-section__grid {
-      grid-template-columns: 1fr;
-      gap: 1.25rem;
-    }
-
-    .articles-archive__controls {
-      position: static;
-    }
-
-    .articles-section__head h2 {
-      font-size: 1.4rem;
+  @media (max-width: 599px) {
+    .articles__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 40px;
     }
   }
 </style>

@@ -25,5 +25,17 @@ npm-debug.log*
 .astro/
 
 # Python
+.venv/
 __pycache__/
 *.pyc
+
+# Local browser QA artifacts
+.playwright-mcp/
+output/
+
+# img2threejs authoring artifacts (specs, crops, comparison sheets)
+.img2threejs-izmir/
+
+# Browser automation logs
+.playwright-cli/
+.playwright-mcp/

@@ -1,0 +1,164 @@
+---
+import { Image } from "astro:assets";
+
+import {
+  formatEntryDate,
+  getArticleHref,
+  getLanguageLabel,
+  isExternalArticle,
+  type ArticleEntry,
+} from "../lib/content";
+
+interface Props {
+  entry: ArticleEntry;
+  /** "feature" lays the card out side by side and shows the description. */
+  variant?: "default" | "feature";
+  headingLevel?: "h2" | "h3";
+  loading?: "eager" | "lazy";
+  /** Overrides the image sizes hint when the grid gives the card more room. */
+  sizes?: string | undefined;
+}
+
+const {
+  entry,
+  variant = "default",
+  headingLevel: Heading = "h3",
+  loading = "lazy",
+  sizes,
+} = Astro.props;
+
+const href = getArticleHref(entry);
+const external = isExternalArticle(entry);
+const { title, description, heroImage, language, pubDate } = entry.data;
+const isFeature = variant === "feature";
+---
+
+<a
+  href={href}
+  class:list={["card", isFeature && "card--feature"]}
+  data-track-event={external ? "open_report" : undefined}
+  data-track-label={external ? title : undefined}
+>
+  {
+    heroImage && (
+      <div class="card__media">
+        <Image
+          src={heroImage}
+          alt=""
+          widths={isFeature ? [640, 960, 1280] : [400, 640, 800, 1120]}
+          sizes={
+            sizes ??
+            (isFeature
+              ? "(min-width: 900px) 640px, 100vw"
+              : "(min-width: 900px) 360px, (min-width: 600px) 50vw, 100vw")
+          }
+          loading={loading}
+        />
+      </div>
+    )
+  }
+  <div class="card__body">
+    <Heading class="card__title" lang={language}>{title}</Heading>
+    {isFeature && <p class="card__dek" lang={language}>{description}</p>}
+    <p class="t-meta card__meta">
+      <time datetime={pubDate.toISOString()}>
+        {formatEntryDate(pubDate, "en")}
+      </time>
+      <span aria-hidden="true">·</span>
+      <span>{getLanguageLabel(language)}</span>
+      {
+        external && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>Report ↗</span>
+          </>
+        )
+      }
+    </p>
+  </div>
+</a>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .card__media {
+    overflow: hidden;
+    border-radius: 14px;
+    background: hsl(var(--muted));
+  }
+
+  .card__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    transition: transform 600ms var(--ease);
+  }
+
+  .card:hover .card__media img {
+    transform: scale(1.025);
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .card__title {
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .card:hover .card__title {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  .card__dek {
+    font-size: 1.0625rem;
+    line-height: 1.45;
+    color: hsl(var(--muted-foreground));
+    text-wrap: pretty;
+  }
+
+  .card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 6px;
+  }
+
+  @media (min-width: 900px) {
+    .card--feature {
+      display: grid;
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: center;
+      gap: 48px;
+    }
+
+    .card--feature .card__media {
+      border-radius: 18px;
+    }
+
+    .card--feature .card__title {
+      font-size: clamp(1.75rem, 2.8vw, 2.25rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .card--feature .card__body {
+      gap: 14px;
+    }
+  }
+</style>

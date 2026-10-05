@@ -1,47 +1,31 @@
-import type { CollectionEntry, CollectionKey } from "astro:content";
-import { pillarConfig, type PillarKey } from "./site";
+import type { CollectionEntry } from "astro:content";
 
-export type CaseStudyEntry =
-  | CollectionEntry<"articles">
-  | CollectionEntry<"projects">;
+export type ArticleEntry = CollectionEntry<"articles">;
+export type ProjectEntry = CollectionEntry<"projects">;
 
-type EntryWithDate = {
-  id: string;
-  collection: string;
-  data: {
-    pubDate: Date;
-    published?: boolean | undefined;
-    draft?: boolean | undefined;
-    tags?: string[] | undefined;
-    track?: "data-journalism" | "developer" | "supporting" | undefined;
-    pillar?: PillarKey | undefined;
-    summaryEn?: string | undefined;
-    description: string;
-    role?: string | undefined;
-    impact?: string | undefined;
-    techStack?: string[] | undefined;
-    technologies?: string[] | undefined;
-  };
+type PublicEntryData = {
+  published?: boolean | undefined;
+  draft?: boolean | undefined;
 };
 
-export function pickEntriesBySlug<T extends CollectionKey>(
-  entries: CollectionEntry<T>[],
-  slugs: readonly string[],
-) {
-  const bySlug = new Map(entries.map((entry) => [entry.id, entry] as const));
-  return slugs
-    .map((slug) => bySlug.get(slug))
-    .filter((entry): entry is CollectionEntry<T> => Boolean(entry));
+export function isPublicEntry<T extends { data: PublicEntryData }>(entry: T) {
+  return isPublicEntryData(entry.data);
 }
 
-export function sortEntriesByDateDesc<T extends EntryWithDate>(entries: T[]) {
+export function isPublicEntryData(data: PublicEntryData) {
+  return data.published === true && data.draft !== true;
+}
+
+export function sortEntriesByDateDesc<T extends { data: { pubDate: Date } }>(
+  entries: T[],
+) {
   return [...entries].sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
 }
 
 export function sortEntriesByFeatureAndDate<
-  T extends EntryWithDate & { data: { featured: boolean } },
+  T extends { data: { pubDate: Date; featured: boolean } },
 >(entries: T[]) {
   return [...entries].sort((a, b) => {
     if (a.data.featured !== b.data.featured) {
@@ -52,91 +36,66 @@ export function sortEntriesByFeatureAndDate<
   });
 }
 
-type PublicEntryData = {
-  published?: boolean | undefined;
-  draft?: boolean | undefined;
-};
-
-export function isPublicEntry<T extends { data: PublicEntryData }>(entry: T) {
-  return entry.data.published === true && entry.data.draft !== true;
+export function sortProjects(entries: ProjectEntry[]) {
+  return [...entries].sort((a, b) => a.data.order - b.data.order);
 }
 
-export function isPublicEntryData(data: PublicEntryData) {
-  return data.published === true && data.draft !== true;
-}
-
-/** @deprecated Use isPublicEntry or isPublicEntryData */
-export function isPublished<T extends EntryWithDate>(entry: T) {
-  return isPublicEntry(entry);
-}
-
-export function filterEntriesByTrack<T extends EntryWithDate>(
-  entries: T[],
-  track: "data-journalism" | "developer",
-) {
-  return entries.filter(
-    (entry) => entry.data.track === track || entry.data.track === "supporting",
-  );
-}
-
-export function groupEntriesByPillar<T extends EntryWithDate>(entries: T[]) {
-  return Object.entries(pillarConfig).map(([pillar, config]) => ({
-    pillar: pillar as PillarKey,
-    ...config,
-    entries: entries.filter((entry) => entry.data.pillar === pillar),
+/**
+ * Products in grid order: key art first, then store screenshots, then the
+ * rest. Covers run full width, and so does a compact card left alone on its row.
+ */
+export function arrangeProducts(entries: ProjectEntry[]) {
+  const tier = (entry: ProjectEntry) =>
+    entry.data.cover ? 0 : entry.data.screens?.length ? 1 : 2;
+  const products = sortProjects(entries)
+    .filter((entry) => entry.data.kind !== "film")
+    .sort((a, b) => tier(a) - tier(b));
+  const compact = products.filter((entry) => tier(entry) === 2);
+  return products.map((entry) => ({
+    entry,
+    wide:
+      tier(entry) === 0 ||
+      (compact.length % 2 === 1 && entry === compact.at(-1)),
   }));
 }
 
-export function getEntrySummary<T extends EntryWithDate>(entry: T) {
-  return entry.data.summaryEn || entry.data.description;
+/** Articles hosted outside the article template open their own page. */
+export function isExternalArticle(entry: ArticleEntry) {
+  return Boolean(entry.data.externalUrl);
 }
 
-export function getEntryTopics<T extends EntryWithDate>(entry: T) {
-  if (entry.collection === "articles") {
-    return entry.data.tags ?? [];
-  }
-
-  return entry.data.techStack ?? entry.data.technologies ?? [];
+export function getArticleHref(entry: ArticleEntry) {
+  return entry.data.externalUrl ?? `/articles/${entry.id}`;
 }
 
-export function getEntryTags<T extends EntryWithDate>(entry: T) {
-  return getEntryTopics(entry);
-}
-
-export function getEntryTechStack<T extends EntryWithDate>(entry: T) {
-  return entry.data.techStack ?? entry.data.technologies ?? [];
-}
-
-export function getProjectHref(entry: CollectionEntry<"projects">) {
-  return `/projects/${entry.id}`;
-}
-
-export function getArticleHref(entry: CollectionEntry<"articles">) {
-  return `/articles/${entry.id}`;
-}
-
-export function getEntryHref(entry: CaseStudyEntry) {
-  if (entry.collection === "projects" && entry.id === "attack-on-ozgur-ozel") {
-    return "/ozgur-ozele-saldiri";
-  }
-  return entry.collection === "articles"
-    ? getArticleHref(entry)
-    : getProjectHref(entry);
-}
-
-export function getEntryTypeLabel(
-  entry: CaseStudyEntry,
-  language: "en" | "tr" = "en",
+export function formatEntryDate(
+  date: Date,
+  language: "en" | "tr",
+  month: "short" | "long" = "short",
 ) {
-  if (entry.collection === "projects") {
-    return language === "tr" ? "Proje vaka çalışması" : "Project case study";
-  }
+  return date.toLocaleDateString(language === "tr" ? "tr-TR" : "en-US", {
+    year: "numeric",
+    month,
+    day: "numeric",
+  });
+}
 
-  return language === "tr"
-    ? entry.data.language === "tr"
-      ? "Türkçe makale"
-      : "İngilizce makale"
-    : entry.data.language === "tr"
-      ? "Article in Turkish"
-      : "Article in English";
+export function getLanguageLabel(language: "en" | "tr") {
+  return language === "tr" ? "Türkçe" : "English";
+}
+
+const projectKinds = {
+  app: { platform: "iOS app", action: "App Store" },
+  extension: { platform: "Chrome extension", action: "Chrome Web Store" },
+  game: { platform: "Game", action: "Website" },
+  film: { platform: "Documentary", action: "YouTube" },
+} as const;
+
+/** Platform line ("Game · In development") and the label for the outbound link. */
+export function getProjectMeta(entry: ProjectEntry) {
+  const kind = projectKinds[entry.data.kind];
+  return {
+    platform: [kind.platform, entry.data.status].filter(Boolean).join(" · "),
+    action: kind.action,
+  };
 }

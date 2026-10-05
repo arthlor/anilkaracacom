@@ -1,0 +1,84 @@
+---
+/* The hero character's head as a small, static SVG mark. */
+import { headFront, type Key } from "./sprites";
+
+interface Props {
+  size?: number;
+  class?: string | undefined;
+}
+
+const { size = 20, class: className } = Astro.props;
+
+const ROLES: Partial<Record<Key, string>> = {
+  H: "hair",
+  h: "shine",
+  S: "skin",
+  s: "shade",
+  W: "teeth",
+};
+
+// One rect per horizontal run of the same colour.
+const runs = headFront.rows.flatMap((row, y) => {
+  const out: { x: number; y: number; w: number; role: string }[] = [];
+  let x = 0;
+  while (x < row.length) {
+    const key = row[x] as Key | ".";
+    let w = 1;
+    while (row[x + w] === key) w += 1;
+    const role = key === "." ? undefined : ROLES[key];
+    if (role) out.push({ x, y, w, role });
+    x += w;
+  }
+  return out;
+});
+---
+
+<svg
+  class:list={["pixel-head", className]}
+  viewBox={`0 0 ${headFront.w} ${headFront.h}`}
+  width={size}
+  height={size}
+  shape-rendering="crispEdges"
+  aria-hidden="true"
+>
+  {
+    runs.map((run) => (
+      <rect x={run.x} y={run.y} width={run.w} height="1" class={run.role} />
+    ))
+  }
+</svg>
+
+<style>
+  .pixel-head {
+    display: block;
+    flex: none;
+  }
+
+  .hair {
+    fill: #2b211c;
+  }
+
+  .shine {
+    fill: #5a4334;
+  }
+
+  .skin {
+    fill: #f1c3a0;
+  }
+
+  .shade {
+    fill: #d59c7c;
+  }
+
+  .teeth {
+    fill: #fbf8f2;
+  }
+
+  :global(html.dark) .hair {
+    fill: #5a473c;
+  }
+
+  :global(html.dark) .shine {
+    fill: #7a6150;
+  }
+</style>

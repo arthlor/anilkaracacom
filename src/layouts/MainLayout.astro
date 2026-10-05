@@ -2,12 +2,13 @@
 import BaseLayout from "./BaseLayout.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import BackToTop from "../components/BackToTop.astro";
 
 interface Props {
   title: string;
+  exactTitle?: boolean | undefined;
   description?: string | undefined;
   image?: string | undefined;
+  imageAlt?: string | undefined;
   noindex?: boolean | undefined;
   article?: boolean | undefined;
   lang?: string | undefined;
@@ -19,8 +20,10 @@ interface Props {
 
 const {
   title,
+  exactTitle,
   description,
   image,
+  imageAlt,
   noindex,
   article = false,
   lang = "en",
@@ -33,8 +36,10 @@ const {
 
 <BaseLayout
   title={title}
+  exactTitle={exactTitle}
   description={description}
   image={image}
+  imageAlt={imageAlt}
   noindex={noindex}
   article={article}
   lang={lang}
@@ -43,61 +48,42 @@ const {
   articleAuthor={articleAuthor}
   articleSection={articleSection}
 >
-  <div class="portfolio-shell">
-    <div class="portfolio-shell__texture" aria-hidden="true"></div>
+  <a class="skip-link" href="#main-content">Skip to content</a>
+  <div class="shell">
     <Header />
-    <main id="main-content" class="portfolio-shell__main">
+    <main id="main-content" class="shell__main">
       <slot />
     </main>
     <Footer />
-    <BackToTop />
   </div>
 </BaseLayout>
 
 <style>
-  .portfolio-shell {
-    position: relative;
-    min-height: 100vh;
+  .shell {
     display: flex;
     flex-direction: column;
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    isolation: isolate;
-    transition:
-      background-color var(--transition-normal),
-      color var(--transition-normal);
+    min-height: 100vh;
+    min-height: 100svh;
   }
 
-  .portfolio-shell__texture {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      repeating-linear-gradient(
-        90deg,
-        var(--shell-texture-grid) 0,
-        var(--shell-texture-grid) 1px,
-        transparent 1px,
-        transparent 64px
-      ),
-      var(--shell-texture-grad);
-  }
-
-  .portfolio-shell__main {
-    position: relative;
+  .shell__main {
     flex: 1;
   }
 
-  /* Global Container Standard (Match Homepage) */
-  :global(.container-standard) {
-    width: min(100% - 80px, 1320px);
-    margin-inline: auto;
+  .skip-link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 200;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    font-size: 0.875rem;
+    transform: translateY(-200%);
   }
 
-  @media (max-width: 720px) {
-    :global(.container-standard) {
-      width: min(100% - 40px, 1320px);
-    }
+  .skip-link:focus {
+    transform: none;
   }
 </style>

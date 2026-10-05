@@ -1,0 +1,161 @@
+---
+const rows = [
+  { label: "1–2 kat", count: "577.297", share: "64,18", width: 64.18 },
+  { label: "3–5 kat", count: "276.240", share: "30,71", width: 30.71 },
+  { label: "6–9 kat", count: "40.993", share: "4,56", width: 4.56 },
+  { label: "10–19 kat", count: "4.730", share: "0,53", width: 0.53 },
+  { label: "20+ kat", count: "176", share: "0,02", width: 0.02 },
+];
+---
+
+<figure class="floor-graphic" aria-labelledby="floor-graphic-title">
+  <header class="floor-graphic__header">
+    <h3 id="floor-graphic-title">Kat aralığına göre kayıtlar</h3>
+    <p class="floor-graphic__stat">
+      <strong>%94,90</strong>
+      <span>1–5 kat aralığında</span>
+    </p>
+  </header>
+
+  <ol class="floor-graphic__rows" aria-label="İzmir bina kat aralığı dağılımı">
+    {
+      rows.map((row, index) => (
+        <li class="floor-graphic__row">
+          <span class="floor-graphic__label">{row.label}</span>
+          <span class="floor-graphic__track" aria-hidden="true">
+            <span
+              class="floor-graphic__bar"
+              style={`--share: ${row.width}%; --fill: var(--tier-${index + 1})`}
+            />
+          </span>
+          <span class="floor-graphic__value">
+            %{row.share}
+            <span>{row.count}</span>
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <figcaption>
+    Her satır, kat aralığındaki bina kaydı sayısını gösterir. 20+ kat satırı,
+    doğrulanmış bir bina türü sayısı değildir.
+  </figcaption>
+</figure>
+
+<style>
+  .floor-graphic {
+    margin: 3rem auto;
+    max-width: 52rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid hsl(var(--border));
+    border-radius: 18px;
+    background: hsl(var(--card));
+  }
+
+  .floor-graphic__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  h3 {
+    margin: 0;
+    font-size: clamp(1.375rem, 2.6vw, 1.625rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__stat {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .floor-graphic__stat strong {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__stat span {
+    font-size: 0.8125rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .floor-graphic__rows {
+    display: grid;
+    gap: 0.9rem;
+    margin: 0;
+    padding: 1.4rem 0 1.25rem;
+    list-style: none;
+  }
+
+  .floor-graphic__row {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr) 6.5rem;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .floor-graphic__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__track {
+    height: 0.5rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: hsl(var(--muted));
+  }
+
+  .floor-graphic__bar {
+    display: block;
+    width: max(2px, var(--share));
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    background: var(--fill);
+  }
+
+  .floor-graphic__value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.3;
+    color: hsl(var(--foreground));
+  }
+
+  .floor-graphic__value span {
+    font-size: 0.6875rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  figcaption {
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid hsl(var(--border));
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: hsl(var(--muted-foreground));
+  }
+
+  @media (max-width: 520px) {
+    .floor-graphic__row {
+      grid-template-columns: 4.6rem minmax(0, 1fr) 5rem;
+      gap: 0.65rem;
+    }
+  }
+</style>

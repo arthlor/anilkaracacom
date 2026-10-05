@@ -8,14 +8,16 @@ export const chartPalette = {
   accent: "hsl(var(--primary))",
   accentSoft: "hsl(var(--primary) / 0.14)",
   accentWarm: "hsl(var(--accent))",
-  rose: "#f43f5e",
-  cyan: "#0ea5e9",
-  violet: "#8b5cf6",
-  amber: "#f59e0b",
-  slate: "#64748b",
-  success: "#10b981",
-  warning: "#f59e0b",
-  danger: "#ef4444",
+  // Validated palette steps (see global.css --viz-*). rose/cyan form the
+  // diverging pair; status colours are reserved for good/bad meaning.
+  rose: "#e34948",
+  cyan: "#2a78d6",
+  violet: "#4a3aa7",
+  amber: "#eda100",
+  slate: "#6a6862",
+  success: "#0ca30c",
+  warning: "#fab219",
+  danger: "#d03b3b",
 } as const;
 
 export function formatCompactNumber(value: number, locale = "tr-TR") {

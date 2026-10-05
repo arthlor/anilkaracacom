@@ -28,15 +28,15 @@ description: How to create a new data story or visualization project
    ```
 
 3. **Add data files**
-   Place your data in `public/data/project-name/`:
-   - JSON for structured data
-   - CSV/TSV for tabular data
-   - GeoJSON for map data
+   Place original research inputs in `data/sources/project-name/`. Put files
+   imported into the application bundle in `src/data/project-name/`, or use
+   `public/data/project-name/` only when the browser fetches them by URL.
 
 4. **Create visualization components** (if custom)
 
    ```bash
-   touch src/components/projects/MyVisualization.tsx
+   mkdir -p src/components/mdx/charts/project-name
+   touch src/components/mdx/charts/project-name/MyVisualization.tsx
    ```
 
 5. **Build the interactive component**
@@ -63,7 +63,7 @@ description: How to create a new data story or visualization project
 6. **Embed in MDX**
 
    ```mdx
-   import MyVisualization from "../../components/projects/MyVisualization.tsx";
+   import MyVisualization from "@/components/mdx/charts/project-name/MyVisualization.tsx";
 
    # Analysis
 
@@ -75,7 +75,7 @@ description: How to create a new data story or visualization project
 // turbo 7. **Test locally**
 
 ```bash
-npm run dev
+npm run build
 ```
 
 8. **Deploy**

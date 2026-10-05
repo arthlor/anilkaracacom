@@ -1,8 +1,9 @@
 ---
-import { getCollection, render } from "astro:content";
+import { getCollection } from "astro:content";
 
-import CaseStudyLayout from "../../layouts/CaseStudyLayout.astro";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
 import { isPublicEntryData } from "../../lib/content";
+import { resolveRelatedArticles } from "../../lib/relatedContent";
 import { validatePortfolioContent } from "../../lib/validateContent";
 
 export async function getStaticPaths() {
@@ -11,14 +12,19 @@ export async function getStaticPaths() {
   const articles = await getCollection("articles", ({ data }) =>
     isPublicEntryData(data),
   );
-  return articles.map((article) => ({
-    params: { slug: article.id },
-    props: { entry: article },
-  }));
+
+  return articles
+    .filter((article) => !article.data.externalUrl)
+    .map((article) => ({
+      params: { slug: article.id },
+      props: {
+        entry: article,
+        related: resolveRelatedArticles({ articles, current: article }),
+      },
+    }));
 }
 
-const { entry } = Astro.props;
-const { Content } = await render(entry);
+const { entry, related } = Astro.props;
 ---
 
-<CaseStudyLayout entry={entry} collection="articles" Content={Content} />
+<ArticleLayout entry={entry} related={related} />

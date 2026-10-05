@@ -1,0 +1,347 @@
+---
+import { Image } from "astro:assets";
+
+import ProjectIcon from "./ProjectIcon.astro";
+import { getProjectMeta, type ProjectEntry } from "../lib/content";
+
+interface Props {
+  entry: ProjectEntry;
+}
+
+const { entry } = Astro.props;
+const { title, description, url, heroImage, cover, screens = [], tint } =
+  entry.data;
+const meta = getProjectMeta(entry);
+// Key art fills a wide card; store screenshots make a feature card.
+const variant = cover ? "cover" : screens.length > 0 ? "feature" : "compact";
+const feature = variant === "feature";
+---
+
+<a
+  class:list={["product", `product--${variant}`]}
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  data-track-event="open_project"
+  data-track-label={title}
+  style={tint ? `--tint: ${tint}` : undefined}
+>
+  {
+    cover && (
+      <Image
+        class="product__cover"
+        src={cover}
+        alt=""
+        widths={[640, 1120, 1680, 2240]}
+        sizes="(min-width: 1180px) 1120px, calc(100vw - 40px)"
+        loading="eager"
+      />
+    )
+  }
+
+  <div class="product__info">
+    {
+      (variant !== "cover" || heroImage) && (
+        <ProjectIcon
+          entry={entry}
+          size={variant === "compact" ? 64 : 80}
+          class="product__icon"
+        />
+      )
+    }
+    <div class="product__text">
+      <h3 class="product__name">{title}</h3>
+      <p class="product__desc">{description}</p>
+      <p class="product__meta">
+        <span class="t-meta">{meta.platform}</span>
+        <span class="product__cta">{meta.action} ↗</span>
+      </p>
+    </div>
+  </div>
+
+  {
+    feature && (
+      <div class="product__screens" aria-hidden="true">
+        {screens.map((screen) => (
+          <Image
+            src={screen}
+            alt=""
+            widths={[180, 360]}
+            sizes="(min-width: 900px) 168px, 30vw"
+            loading="lazy"
+          />
+        ))}
+      </div>
+    )
+  }
+</a>
+
+<style>
+  .product {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 28px;
+    background: hsl(var(--muted));
+    isolation: isolate;
+  }
+
+  /* A wash of the app's own colour, kept quiet in both themes. */
+  .product--feature {
+    padding: 32px 32px 0;
+    background: color-mix(in oklab, var(--tint) 22%, hsl(var(--background)));
+  }
+
+  :global(html.dark) .product--feature {
+    background: color-mix(in oklab, var(--tint) 15%, hsl(var(--card)));
+  }
+
+  /* Key art edge to edge, with the copy over a soft shade at the bottom. */
+  .product--cover {
+    justify-content: flex-end;
+    min-height: clamp(400px, 44vw, 540px);
+    padding: 40px;
+    background: #39462f;
+    color: #fff;
+  }
+
+  .product__cover {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 55%;
+    transition: transform 1400ms var(--ease);
+  }
+
+  .product--cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      to top,
+      rgb(14 18 10 / 0.78),
+      rgb(14 18 10 / 0.32) 40%,
+      transparent 68%
+    );
+  }
+
+  .product--cover:hover .product__cover {
+    transform: scale(1.03);
+  }
+
+  .product--cover .product__text {
+    max-width: 34rem;
+  }
+
+  .product--cover .product__name {
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    letter-spacing: -0.035em;
+    text-shadow: 0 1px 12px rgb(0 0 0 / 0.25);
+  }
+
+  .product--cover .product__desc {
+    font-size: 1.0625rem;
+    color: rgb(255 255 255 / 0.84);
+  }
+
+  .product--cover .t-meta {
+    color: rgb(255 255 255 / 0.72);
+  }
+
+  .product--cover .product__cta {
+    background: rgb(255 255 255 / 0.18);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .product--cover:hover .product__cta {
+    background: #fff;
+    color: #141414;
+  }
+
+  .product--compact {
+    justify-content: center;
+    padding: 24px 28px;
+    transition: background-color 250ms ease;
+  }
+
+  .product--compact:hover {
+    background: hsl(var(--foreground) / 0.07);
+  }
+
+  .product__info {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .product :global(.product__icon) {
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--foreground) / 0.06),
+      0 12px 24px -14px hsl(0 0% 0% / 0.45);
+  }
+
+  .product__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .product__name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.028em;
+  }
+
+  .product--compact .product__name {
+    font-size: 1.1875rem;
+    letter-spacing: -0.02em;
+  }
+
+  .product__desc {
+    margin-top: 6px;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: hsl(var(--foreground) / 0.66);
+    text-wrap: pretty;
+  }
+
+  .product--compact .product__desc {
+    font-size: 0.9375rem;
+  }
+
+  .product__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    margin-top: 14px;
+  }
+
+  .product__cta {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: hsl(var(--foreground) / 0.08);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition:
+      background-color 250ms ease,
+      color 250ms ease;
+  }
+
+  .product:hover .product__cta {
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+  }
+
+  /* Store screenshots rise out of the card's bottom edge. */
+  .product__screens {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    height: 300px;
+    margin-top: auto;
+    padding-top: 40px;
+  }
+
+  .product__screens img {
+    flex: none;
+    align-self: flex-start;
+    width: min(31%, 168px);
+    height: auto;
+    border-radius: 18px;
+    background: hsl(var(--foreground) / 0.05);
+    box-shadow:
+      0 0 0 1px hsl(0 0% 0% / 0.04),
+      0 22px 40px -22px hsl(0 0% 0% / 0.45);
+    transform: translateY(var(--rise, 28px));
+    transition: transform 600ms var(--ease);
+  }
+
+  .product__screens img:nth-child(2) {
+    --rise: 0px;
+  }
+
+  .product:hover .product__screens img {
+    transform: translateY(calc(var(--rise, 28px) - 12px));
+  }
+
+  .product:hover .product__screens img:nth-child(2) {
+    transition-delay: 40ms;
+  }
+
+  .product:hover .product__screens img:nth-child(3) {
+    transition-delay: 80ms;
+  }
+
+  @media (max-width: 599px) {
+    .product--cover {
+      min-height: 420px;
+      padding: 24px 22px;
+      border-radius: 24px;
+    }
+
+    .product__cover {
+      object-position: 32% 50%;
+    }
+
+    .product--feature {
+      padding: 24px 22px 0;
+      border-radius: 24px;
+    }
+
+    .product--compact {
+      padding: 20px;
+      border-radius: 24px;
+    }
+
+    .product__info {
+      gap: 16px;
+    }
+
+    .product :global(.product__icon) {
+      width: 64px;
+      height: 64px;
+    }
+
+    .product--compact :global(.product__icon) {
+      width: 56px;
+      height: 56px;
+    }
+
+    .product__name {
+      font-size: 1.3125rem;
+    }
+
+    .product__screens {
+      gap: 12px;
+      height: 250px;
+      padding-top: 28px;
+    }
+
+    /* Two larger screens read better than three tiny ones. */
+    .product__screens img {
+      width: 42%;
+      border-radius: 16px;
+    }
+
+    .product__screens img:nth-child(1) {
+      --rise: 0px;
+    }
+
+    .product__screens img:nth-child(2) {
+      --rise: 28px;
+    }
+
+    .product__screens img:nth-child(3) {
+      display: none;
+    }
+  }
+</style>

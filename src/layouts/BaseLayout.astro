@@ -3,14 +3,18 @@ import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import { PUBLIC_GA_MEASUREMENT_ID } from "astro:env/client";
 import { siteConfig, themeStorageKey } from "../lib/site";
+// Same hashed file the CSS asks for; preloading it lets text paint sooner.
+import interLatin from "@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2?url";
 
 const gaMeasurementId = PUBLIC_GA_MEASUREMENT_ID;
 const defaultTheme = siteConfig.defaultTheme;
 
 interface Props {
   title: string;
+  exactTitle?: boolean | undefined;
   description?: string | undefined;
   image?: string | undefined;
+  imageAlt?: string | undefined;
   article?: boolean | undefined;
   noindex?: boolean | undefined;
   lang?: string | undefined;
@@ -22,8 +26,10 @@ interface Props {
 
 const {
   title,
+  exactTitle,
   description,
   image,
+  imageAlt,
   article,
   noindex = false,
   lang = "en",
@@ -44,11 +50,21 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link
+      rel="preload"
+      href={interLatin}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <meta name="generator" content={Astro.generator} />
 
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#121212" />
+    <meta name="theme-color" content="#fbfaf9" />
     <script is:inline>
       (() => {
         const root = document.documentElement;
@@ -89,16 +105,12 @@ const {
           root.classList.toggle("dark", isDark);
           root.dataset.theme = theme;
 
-          const colorSchemeMeta = document.querySelector(
-            'meta[name="color-scheme"]',
-          );
           const themeColorMeta = document.querySelector(
             'meta[name="theme-color"]',
           );
 
-          if (colorSchemeMeta) colorSchemeMeta.content = theme;
           if (themeColorMeta) {
-            themeColorMeta.content = isDark ? "#121212" : "#fafafa";
+            themeColorMeta.content = isDark ? "#111110" : "#fbfaf9";
           }
         };
 
@@ -116,12 +128,35 @@ const {
       })();
     </script>
 
+    <script is:inline>
+      // After a deploy, a page loaded earlier (open tab, back button, hover
+      // prefetch) can ask for chart code that no longer exists. Astro retries
+      // once and then reports it; reload one time to pick up the current build
+      // instead of leaving a dead graphic.
+      addEventListener("astro:hydration-error", (event) => {
+        const message = String(event.detail?.error?.message ?? "");
+        if (!/dynamically imported module|Importing a module script failed/i.test(message)) return;
+        try {
+          const key = "stale-build-reload";
+          if (sessionStorage.getItem(key) === location.pathname) return;
+          sessionStorage.setItem(key, location.pathname);
+        } catch {
+          return;
+        }
+        event.preventDefault();
+        location.reload();
+      });
+    </script>
+
     <SEO
       title={title}
+      exactTitle={exactTitle}
       description={description}
       image={image}
+      imageAlt={imageAlt}
       article={article}
       noindex={noindex}
+      lang={lang}
       articlePublishedTime={articlePublishedTime}
       articleModifiedTime={articleModifiedTime}
       articleAuthor={articleAuthor}
@@ -130,22 +165,29 @@ const {
 
     {
       gaMeasurementId && (
-        <>
-          <script
-            is:inline
-            async
-            src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-          />
-          <script
-            is:inline
-            set:html={`
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${gaMeasurementId}');
-      `}
-          />
-        </>
+        <script is:inline define:vars={{ gaMeasurementId }}>
+          // Commands queue in dataLayer straight away; the 150 KB library
+          // itself loads once the page is idle, off the critical path.
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function gtag() {
+            window.dataLayer.push(arguments);
+          };
+          window.gtag("js", new Date());
+          window.gtag("config", gaMeasurementId);
+
+          const loadAnalytics = () => {
+            const script = document.createElement("script");
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+            document.head.append(script);
+          };
+          const whenIdle = () =>
+            "requestIdleCallback" in window
+              ? requestIdleCallback(loadAnalytics, { timeout: 4000 })
+              : setTimeout(loadAnalytics, 2000);
+          if (document.readyState === "complete") whenIdle();
+          else addEventListener("load", whenIdle, { once: true });
+        </script>
       )
     }
 
@@ -175,7 +217,7 @@ const {
       );
     </script>
   </head>
-  <body class="min-h-screen flex flex-col">
+  <body>
     <slot />
   </body>
 </html>

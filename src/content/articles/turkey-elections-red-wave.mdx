@@ -1,6 +1,6 @@
 ---
-title: "Turkey's local elections: how the opposition redrew the map"
-description: "An analysis of the 2024 local elections in Turkey, showing how the opposition expanded across the country and where control actually changed hands."
+title: "Turkey’s 2024 local elections redrew the map"
+description: "Vote shares, province results, and control changes show where the opposition expanded—and where it did not."
 pubDate: 2024-04-01
 heroImage: "../../assets/images/articles/turkey-elections-2025.webp"
 tags: ["turkey", "elections", "data-analysis", "politics"]
@@ -24,47 +24,47 @@ metrics:
     detail: "Local-election shifts are measured across two cycles."
   - label: "Interactive views"
     value: "3"
-    detail: "Bar results, province map, and net change view are presented together."
+    detail: "Vote share, province winners, and control changes."
   - label: "Geographic scope"
     value: "81 provinces"
     detail: "Nationwide changes are mapped at province level."
-summaryEn: "An English-language election analysis that maps the opposition's 2024 gains across Turkey."
+summaryEn: "Vote shares, province results, and control changes from Turkey’s 2024 local elections."
 role: "Election analysis, geographic storytelling, interaction design"
 impact: "Explains a major political shift with maps, charts, and contextual reporting."
-executiveSummary: "An English-language election explainer that turns a major Turkish political shift into a navigable, visual story using national results, province maps, and comparative party gains."
-context: "Turkey's 2024 local elections produced a national realignment that could not be explained by headline vote shares alone. Readers needed a structure that showed how the shift looked by party, by province, and by change versus the previous cycle."
+executiveSummary: "Three views show Turkey’s 2024 local-election shift by vote share, province, and administrative control."
+context: "Headline vote shares do not show where control changed. The result needs to be read by party, province, and administrative level."
 methodology:
   - "Combined result summaries with a province-level map and party-change comparison."
-  - "Rebuilt the visuals as custom React views so national share, geographic spread, and net control shifts could be read in sequence without external embeds."
-  - "Framed the narrative for an international audience unfamiliar with Turkish local-government structure."
-challenge: "Election stories often collapse into one headline chart. The challenge here was to sequence three views that each answered a different question: who won the vote share, where the territorial shift spread, and how administrative control actually changed."
-codeProof: "The page uses custom comparative chart components and a fixed-reading province map so readers can move from national vote share to territorial control without losing context."
-conclusion: "The story clarifies not only that a shift happened, but where it happened and why the territorial spread matters. That makes the analysis useful for readers outside the immediate Turkish political news cycle."
+  - "Built custom React views for national share, province winners, and net control changes."
+  - "Explained Turkey’s local-government levels for readers outside the country."
+challenge: "Each view had to answer a different question without repeating the same election headline."
+codeProof: "Custom React charts move from national vote share to province winners and administrative control."
+conclusion: "The opposition’s gain was national in reach, but the size and type of change varied by place and administrative level."
 relatedContent:
-  - collection: "projects"
-    slug: "crackdown-on-chp"
-  - collection: "projects"
-    slug: "parliament-analysis"
+  - collection: "articles"
+    slug: "deniz-goktas-olu-deniz"
+  - collection: "articles"
+    slug: "turkiye-dogum-istatistikleri"
 storySteps:
   - id: election-overall
     label: Step 1
-    title: The aggregate picture
-    summary: The first chart anchors the story in 2024 vote share, while preserving the 2019 delta so momentum is visible next to size.
+    title: National vote share
+    summary: The first view compares 2024 vote share with each party’s change since 2019.
   - id: election-map
     label: Step 2
-    title: Where the shift spread
-    summary: The province map matters because it shows the opposition move extending beyond the usual western urban strongholds.
+    title: Province winners
+    summary: The map shows the opposition expanding beyond its usual western and metropolitan base.
   - id: election-change
     label: Step 3
-    title: How party control changed
-    summary: The final comparison separates headline vote share from actual municipal control across administrative levels.
+    title: Control by administrative level
+    summary: The final view separates vote share from the number of municipalities each party controls.
 ---
 
 import StickyScrollytelling from "@/components/case-study/StickyScrollytelling.astro";
 import StickyStep from "@/components/case-study/StickyStep.astro";
-import TurkeyElectionsStoryVisual from "../../components/mdx/charts/TurkeyElectionsStoryVisual.tsx";
+import TurkeyElectionsStoryVisual from "@/components/mdx/charts/elections/TurkeyElectionsStoryVisual.tsx";
 
-Turkey's 2024 local elections produced a territorial realignment. The sequence below starts with national vote share, moves to the province map, then separates vote momentum from actual municipal control.
+Turkey’s 2024 local elections changed both the national vote ranking and the map of local control. The sequence moves from vote share to province winners, then to administrative control.
 
 <StickyScrollytelling mode="immersive">
   <Fragment slot="visual">
@@ -74,38 +74,37 @@ Turkey's 2024 local elections produced a territorial realignment. The sequence b
   <StickyStep
     id="election-overall"
     label="Step 1"
-    title="The aggregate picture"
-    summary="The first chart anchors the story in 2024 vote share, while preserving the 2019 delta so momentum is visible next to size."
+    title="National vote share"
+    summary="The first view compares 2024 vote share with each party’s change since 2019."
   >
-    CHP led the national municipal vote while also gaining momentum against 2019. This aggregate visualization highlights the national realignments by showing how opposition parties drew major gains.
+    CHP led the national municipal vote and improved on its 2019 result. Reading share and change together separates party size from momentum.
   </StickyStep>
 
 <StickyStep
   id="election-map"
   label="Step 2"
-  title="Where the shift spread"
-  summary="The province map matters because it shows the opposition move extending beyond the usual western urban strongholds."
+  title="Province winners"
+  summary="The map shows the opposition expanding beyond its usual western and metropolitan base."
 >
-  The province map shows why the result felt broader than a coastal or
-  metropolitan win. The opposition spread into previously conservative Anatolian
-  strongholds, showing territorial shifts at a granular geographic scale.
+  The result extended beyond coastal and metropolitan provinces. Several
+  Anatolian provinces changed hands, widening the opposition’s geographic base.
 </StickyStep>
 
   <StickyStep
     id="election-change"
     label="Step 3"
-    title="How party control changed"
-    summary="The final comparison separates headline vote share from actual municipal control across administrative levels."
+    title="Control by administrative level"
+    summary="The final view separates vote share from the number of municipalities each party controls."
   >
-    The control-shift chart adds nuance: headline loss and remaining local footprint can be true at the same time. While some parties lost significant city control, they preserved footprint in lower administrative tiers.
+    A party can lose major cities while retaining control in smaller municipalities. The final chart shows both changes at once.
   </StickyStep>
 </StickyScrollytelling>
 
 ## What to notice
 
-- CHP led the national municipal vote while also gaining momentum against 2019.
-- The province map shows why the result felt broader than a coastal or metropolitan win.
-- The control-shift chart adds nuance: headline loss and remaining local footprint can be true at the same time.
+- CHP led the national municipal vote and improved on 2019.
+- Opposition gains extended beyond coastal and metropolitan provinces.
+- Vote share and municipal control did not move in exactly the same way.
 
 ---
 

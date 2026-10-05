@@ -1,6 +1,6 @@
 ---
-title: "İzmir'in kat haritası"
-description: "Yaklaşık 1 milyon binaya sahip İzmir'in dikey yapı stoku analizi. Hangi ilçede binalar kaç katlı?"
+title: "İzmir’in kat haritası: 899 bin kayıt ne söylüyor?"
+description: "İzmir’in 30 ilçesindeki 899.436 bina kaydı, kentin ağırlıklı olarak 1-5 katlı yapılardan oluştuğunu gösteriyor."
 pubDate: 2026-08-04
 heroImage: "../../assets/images/articles/izmir-skyline-hero.jpg"
 featured: true
@@ -27,52 +27,52 @@ techStack:
     "React 19 & Astro Anlatı Yüzeyi",
   ]
 metrics:
-  - label: "İncelenen Bina Sayısı"
+  - label: "İncelenen kayıt"
     value: "899.436 kayıt"
     detail: "On teknik satırdaki 11 bina kaydı ayrıldıktan sonraki editoryal analiz toplamı."
-  - label: "1–2 Kat Kaydı"
+  - label: "1-2 kat"
     value: "%64,18"
     detail: "577.297 kayıt; veri setindeki en büyük kat aralığı."
-  - label: "20+ Kat Kaydı"
+  - label: "20+ kat"
     value: "176 kayıt"
     detail: "Editoryal analizde 20 kat ve üzeri olarak sınıflanan kayıt; bina türü doğrulaması değildir."
-  - label: "Görselleştirme Üst Sınırı"
-    value: "58 Kat"
+  - label: "3D üst sınırı"
+    value: "58 kat"
     detail: "3D sahne yüksekliği için kullanılan normalize edilmiş üst değer; ham verideki en yüksek kayıt 88 kattır."
-executiveSummary: "İzmir deyince gözümüzün önüne ilk olarak Körfez boyunca uzanan kuleler geliyor olabilir. Ancak bu veri setinin gösterdiği İzmir, yaklaşık 1 milyon bina kaydıyla ağırlıklı olarak alçak katlı bir şehir."
-context: "İzmir deyince birçoğumuzun zihninde ilk beliren görsellerden biri, Körfez kıyısında veya kentin yeni gelişen akslarında yükselen modern yapılar oluyor. Ancak açık veri portalındaki kayıtlar, algımız ile istatistikler arasında tatlı bir çelişki olduğunu gösteriyor."
+executiveSummary: "899.436 editoryal kaydın %94,90’ı 1-5 kat aralığında. 20 kat ve üzerindeki kayıtların %90,91’i dört ilçede toplanıyor."
+context: "Körfez çevresindeki kuleler görünür olsa da açık veri kayıtları kentin genel yapı dokusunun alçak katlı olduğunu gösteriyor."
 methodology:
   - "İzmir Büyükşehir Belediyesi Açık Veri Portalı’ndaki 472 satırlık ilçe–kat tablosunu indirdim; 30 ilçe ve 899.447 ham kayıtla yeniden kontrol ettim."
   - "Veri bütünlüğü açısından teknik inceleme gerektiren 10 satırdaki 11 bina kaydını analiz hesabının dışında tuttum; orijinal ham dosyaya müdahale etmedim."
   - "Haritadaki mimari tipolojiler kat aralıklarını temsil ediyor; 3D yükseklik yalnızca sahnenin okunabilirliği için normalize ediliyor."
-conclusion: "İzmir, mimari vitrininde yer alan modern kuleleriyle dinamik bir finans ve yaşam merkezi sunarken; özünde mahalle ölçeğinin ve yatay mimarinin hâkim olduğu bir şehir olma özelliğini koruyor."
+conclusion: "Yüksek katlı kayıtlar birkaç merkezde toplanıyor; İzmir’in genel yapı stoku ise belirgin biçimde 1-5 kat aralığında."
 summaryEn: "A 3D WebGL data story analyzing the floor distribution of 899,436 editorially reviewed building records across İzmir's 30 districts using Three.js and D3."
 role: "3D Veri Görselleştirme, Açık Veri Gazeteciliği, Etkileşim Tasarımı"
-impact: "Kamuoyunun yüksek yapı tartışmalarını sayısal gerçekliklerle buluşturan interaktif 3D veri gazeteciliği anlatısı."
+impact: "Yüksek yapı tartışmasını ilçe ve kat aralığı verileriyle somutlaştırıyor."
 ---
 
-import IzmirSkyline3D from "../../components/articles/IzmirSkyline3D.tsx";
-import FloorDistributionChart from "../../components/articles/FloorDistributionChart.tsx";
-import DataDisclaimerModal from "../../components/articles/DataDisclaimerModal.tsx";
-import FloorDistributionGraphic from "../../components/articles/FloorDistributionGraphic.astro";
+import IzmirSkyline3D from "@/components/articles/izmir-skyline/IzmirSkyline3D.tsx";
+import FloorDistributionChart from "@/components/articles/izmir-skyline/FloorDistributionChart.tsx";
+import DataDisclaimerModal from "@/components/articles/izmir-skyline/DataDisclaimerModal.tsx";
+import FloorDistributionGraphic from "@/components/articles/izmir-skyline/FloorDistributionGraphic.astro";
 
 ## İzmir’in kat haritası
 
-İzmir Büyükşehir Belediyesi’nin paylaştığı _İlçelere Ait Bina Kat Sayıları_ veri setindeki 899.447 ham kaydı tek tek inceledim. Veri bütünlüğü açısından teknik inceleme gerektiren 10 satırdaki 11 bina kaydını analiz dışında bıraktığımda geriye kalan **899.436 bina kaydının** sunduğu tablo net: İzmir, kuleleriyle öne çıkan değil, mahalle ölçeğini koruyan alçak katlı bir şehir.
+İzmir Büyükşehir Belediyesi’nin _İlçelere Ait Bina Kat Sayıları_ veri setinde 899.447 ham kayıt var. Teknik inceleme gerektiren 10 satırdaki 11 kaydı analiz dışında bıraktım. Kalan **899.436 kaydın** gösterdiği tablo net: İzmir’in yapı stoku ağırlıklı olarak alçak katlı.
 
-Gündelik tartışmalarda dikey mimariyi ve yükselen binaları sıkça konuşsak da rakamlar İzmir’in asıl karakterinin yatayda biçimlendiğini söylüyor.
+Körfez çevresindeki kuleler görünür; ancak kent genelindeki dağılımı temsil etmiyor.
 
 <IzmirSkyline3D client:visible={{ rootMargin: "300px" }} />
 
 ---
 
-## Analizde öne çıkan bulgular
+## Üç temel bulgu
 
-**Ezici çoğunluk alçak katlı:** Kentteki kayıtlı binaların **%94,90’ı (853.537 kayıt)** yalnızca **1 ila 5 kat** arasında.
+**Kayıtların %94,90’ı 1-5 kat aralığında:** Toplam **853.537 kayıt**.
 
-**Üçte ikisi bir veya iki katlı:** Şehirdeki bina kayıtlarının **%64,18’i (577.297 kayıt)** 1 veya 2 katlı yapılardan oluşuyor.
+**%64,18’i 1 veya 2 katlı:** Toplam **577.297 kayıt**.
 
-**20+ katlı yapılar yalnızca bir detay:** 20 kat ve üzerindeki bina kayıtları, editoryal görünümde toplamın yalnızca **%0,02’sini (176 kayıt)** oluşturuyor.
+**20+ kat kayıtları toplamın %0,02’si:** Editoryal analizde **176 kayıt**.
 
 <FloorDistributionGraphic />
 
@@ -80,16 +80,16 @@ Gündelik tartışmalarda dikey mimariyi ve yükselen binaları sıkça konuşsa
 
 ## Yüksek yapılar nerede toplanıyor?
 
-İzmir’de 20 kat ve üzerindeki 176 editoryal kaydın **160’ı dört ana ilçede kümeleniyor**. Başka bir deyişle yüksek katlı kayıtların **%90,91’i** şu merkezlerde:
+20 kat ve üzerindeki 176 editoryal kaydın **160’ı dört ilçede**. Yani bu grubun **%90,91’i** şu merkezlerde:
 
 - **Konak (62 kayıt):** Ticaret ve finansın tarihsel kalbi.
 - **Karşıyaka (46 kayıt):** Yoğun konut dokusu ve sahil şeridi.
 - **Bayraklı (29 kayıt):** Yeni Kent Merkezi aksı.
 - **Bornova (23 kayıt):** Üniversite çevresi ve yeni konut projeleri.
 
-Buna karşılık **Foça, Kınık, Kiraz, Beydağ, Güzelbahçe ve Karaburun** ilçelerinde 10 katın üzerinde tek bir bina kaydı bile bulunmuyor. Bu durum, İzmir’in bir yandan modern finans merkezleriyle dikeyde büyürken diğer yandan kırsal ve sahil ilçelerinde yatay dokuyu koruduğunu gösteriyor.
+**Foça, Kınık, Kiraz, Beydağ, Güzelbahçe ve Karaburun’da** ise 10 katın üzerinde kayıt yok. Veri, yüksek katlı yapıların kent geneline değil belirli merkezlere yayıldığını gösteriyor.
 
-<FloorDistributionChart client:load />
+<FloorDistributionChart client:visible={{ rootMargin: "400px" }} />
 
 <DataDisclaimerModal client:load />
 

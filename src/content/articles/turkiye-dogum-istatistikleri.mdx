@@ -1,6 +1,6 @@
 ---
-title: 'Turkey''s birth rhythm: why the "three children" slogan did not land'
-description: "An interactive analysis of Turkey's birth rhythm between 2001 and 2020 through crude birth rate, total fertility, and maternal age."
+title: "Turkey’s birth rate fell for two decades"
+description: "Three linked indicators show falling birth rates and fertility alongside a steady rise in maternal age from 2001 to 2020."
 pubDate: 2024-05-15
 heroImage: "../../assets/images/articles/turkiye-dogum-istatistikleri-2025.webp"
 tags: ["turkey", "demographics", "data-analysis", "tuik"]
@@ -24,17 +24,17 @@ metrics:
     detail: "Birth indicators were analyzed across a twenty-year window."
   - label: "Core indicators"
     value: "3 series"
-    detail: "Crude birth rate, total fertility, and maternal age are read on the same timeline."
-executiveSummary: "This twenty-year view of Turkey's birth data brings declining birth intensity, fertility below replacement level, and rising maternal age into one demographic story."
-context: "Birth statistics are often discussed through political slogans. This work brings TUIK's core indicators into one narrative so the numbers can be read on their own terms."
+    detail: "Crude birth rate, total fertility, and maternal age on one timeline."
+executiveSummary: "From 2001 to 2020, Turkey’s crude birth rate and total fertility declined while average maternal age rose."
+context: "Birth figures are often reduced to one headline number. Reading three indicators together shows both how many births occur and how the timing and expected family size changed."
 methodology:
-  - "TUIK's annual birth indicators were converted into one time-series dataset."
-  - "Three linked compact views were built instead of repeating the raw table; the scrubber locks the same year across every panel."
-  - "Narrative notes were placed to separate short-lived rebounds from the longer structural break."
-challenge: "Showing birth counts alone would miss the transformation. Birth intensity, family-size behavior, and maternal age needed to meet on one surface without turning the chart into a dense dashboard."
-codeProof: "The old embedded HTML graphic was replaced by three synchronized React time series backed by a local data module. Readers can inspect both the long trend and the selected year's values in one surface."
-conclusion: "The study shows that Turkey's demographic dynamics are more complex than political slogans suggest. The data clearly exposes both falling fertility and rising maternal age."
-summaryEn: "A long-range birth statistics explainer showing how Turkey's fertility and maternal-age trends changed over two decades."
+  - "Converted TÜİK’s annual indicators into one time series."
+  - "Linked three compact charts to the same year selector."
+  - "Marked the short rebound in the mid-2010s without losing the long trend."
+challenge: "Birth counts alone miss the change. The chart had to keep birth intensity, fertility, and maternal age together without becoming a dashboard."
+codeProof: "Three React time series share one local dataset and one selected year."
+conclusion: "The long trend is consistent: birth intensity and fertility fall while the average age of mothers rises."
+summaryEn: "Three linked indicators track Turkey’s birth rate, fertility, and maternal age from 2001 to 2020."
 role: "Data validation, demographic interpretation, interaction design"
 impact: "Moves demographic data beyond political debate by making the long-term trend visible."
 relatedContent:
@@ -44,16 +44,16 @@ relatedContent:
     slug: "turkey-elections-red-wave"
 ---
 
-import BirthMetricsTimeline from "../../components/mdx/charts/BirthMetricsTimeline";
+import BirthMetricsTimeline from "@/components/mdx/charts/births/BirthMetricsTimeline";
 
-Turkey's birth data is clearer when birth intensity, fertility, and maternal age move on the same timeline. The selector below locks all three indicators to one year so the long-term break is easier to see.
+Turkey’s birth data is easier to read when birth intensity, fertility, and maternal age share one timeline. Select a year to compare all three at once.
 
-<BirthMetricsTimeline client:load />
+<BirthMetricsTimeline client:visible={{ rootMargin: "400px" }} />
 
-## What to notice
+## What changed
 
-- Crude birth rate follows an almost uninterrupted downward line.
-- Total fertility rate settles below replacement level despite a brief pause in the mid-2010s.
-- Average maternal age rises steadily, showing that the timing of birth is changing.
+- Crude birth rate declines almost continuously.
+- Total fertility falls below replacement level after a brief mid-2010s pause.
+- Average maternal age rises steadily.
 
-Source: [**TUIK**](https://www.tuik.gov.tr/)
+Source: [**TÜİK**](https://www.tuik.gov.tr/)
