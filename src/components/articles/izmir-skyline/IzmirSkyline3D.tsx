@@ -22,6 +22,12 @@ import {
   type PlacedTree,
   type TierKey,
 } from "./architecture";
+import {
+  debug3dEnabled,
+  debugLog,
+  installDebugHooks,
+  subscribeDebug,
+} from "./debug3d";
 import { loadJson } from "./loadJson";
 import { TIER_DARK_HEX } from "./tierPalette";
 import { withChartBoundary } from "../../case-study/ChartBoundary";
@@ -171,6 +177,7 @@ function IzmirSkyline3D() {
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 767px)");
+    installDebugHooks();
     const updateMobile = () => setIsMobile(media.matches);
     updateMobile();
     media.addEventListener("change", updateMobile);
@@ -187,6 +194,7 @@ function IzmirSkyline3D() {
     ])
       .then(([summary, shapes]) => {
         if (!active) return;
+        debugLog(`data ${summary.length} districts, ${shapes.length} shapes`);
         setDistrictData(summary);
         setDistrictShapes(shapes);
       })
@@ -269,6 +277,18 @@ function IzmirSkyline3D() {
       return;
     }
 
+    debugLog(
+      `build mobile=${mobileDevice} lowPower=${lowPower} ${width}x${height} dpr=${pixelRatio}` +
+        ` lost=${renderer.getContext().isContextLost()} maxTex=${renderer.capabilities.maxTextureSize}`,
+    );
+    renderer.debug.onShaderError = (gl, program, vertex, fragment) => {
+      const detail =
+        gl.getProgramInfoLog(program) ||
+        gl.getShaderInfoLog(fragment) ||
+        gl.getShaderInfoLog(vertex) ||
+        "no log";
+      debugLog(`shader error ${detail.slice(0, 220)}`);
+    };
     // iOS can hand back a context that is already lost after earlier losses;
     // say so instead of leaving a black canvas.
     if (renderer.getContext().isContextLost()) {
@@ -469,6 +489,9 @@ function IzmirSkyline3D() {
       density: lowPower ? 4200 : 1700,
       treeDensity: lowPower ? 0.14 : 0.55,
     });
+    debugLog(
+      `city ${city.buildings.length} buildings, ${city.trees.length} trees, shadow ${shadowSize}`,
+    );
 
     const matrix = new THREE.Matrix4();
     const quaternion = new THREE.Quaternion();
@@ -630,9 +653,34 @@ function IzmirSkyline3D() {
       treeGroups.push({ items, state });
     });
 
+    let frames = 0;
+    const debugging = debug3dEnabled();
     const render = () => {
       fitShadow();
       renderer.render(scene, camera);
+      frames += 1;
+      if (debugging && (frames <= 2 || frames === 30 || frames % 300 === 0)) {
+        // Read back right after drawing: tells "nothing drawn" apart from
+        // "drawn but not shown".
+        const gl = renderer.getContext();
+        const center = new Uint8Array(4);
+        const corner = new Uint8Array(4);
+        gl.readPixels(
+          Math.floor(gl.drawingBufferWidth / 2),
+          Math.floor(gl.drawingBufferHeight / 2),
+          1,
+          1,
+          gl.RGBA,
+          gl.UNSIGNED_BYTE,
+          center,
+        );
+        gl.readPixels(2, gl.drawingBufferHeight - 3, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, corner);
+        debugLog(
+          `frame ${frames} calls ${renderer.info.render.calls} tris ${renderer.info.render.triangles}` +
+            ` center ${[...center].join(",")} corner ${[...corner].join(",")} glErr ${gl.getError()}` +
+            ` lost ${gl.isContextLost()}`,
+        );
+      }
       container.dataset.drawCalls = String(renderer.info.render.calls);
       container.dataset.triangles = String(renderer.info.render.triangles);
       container.dataset.geometries = String(renderer.info.memory.geometries);
@@ -882,6 +930,7 @@ function IzmirSkyline3D() {
     let rebuildTimer = 0;
     const handleContextLost = (event: Event) => {
       event.preventDefault();
+      debugLog(`context lost after ${frames} frames`);
       setSceneError("3D harita yeniden başlatılıyor…");
       window.clearTimeout(rebuildTimer);
       rebuildTimer = window.setTimeout(() => {
@@ -890,6 +939,7 @@ function IzmirSkyline3D() {
       }, 1800);
     };
     const handleContextRestored = () => {
+      debugLog("context restored");
       window.clearTimeout(rebuildTimer);
       setSceneError(null);
       render();
@@ -919,6 +969,7 @@ function IzmirSkyline3D() {
     controls.update();
     setHighlight(selectedDistrictRef.current);
     container.dataset.setupMs = String(Math.round(performance.now() - setupStarted));
+    debugLog(`setup ${container.dataset.setupMs} ms`);
     if (!reducedMotion) animateCamera(initialCamera, initialTarget, 900);
 
     return () => {
@@ -1028,6 +1079,8 @@ function IzmirSkyline3D() {
       aria-describedby="izmir-map-description"
       className="group relative my-12 h-[68svh] max-h-[620px] min-h-[500px] w-full min-w-0 max-w-full overflow-hidden rounded-[18px] border border-border bg-[#111413] text-white md:h-[min(78svh,760px)] md:max-h-[760px] md:min-h-[620px]"
     >
+      <DebugPanel />
+
       <p id="izmir-map-description" className="sr-only">
         Harita, İzmir’in 30 ilçesindeki 899.436 bina kaydını temsili bir kent
         modeliyle gösterir: her model bina yüzlerce gerçek binayı temsil eder,
@@ -1222,6 +1275,23 @@ function IzmirSkyline3D() {
           : "İlçe seçimi yok."}
       </p>
     </section>
+  );
+}
+
+/** Prints the ?debug3d log over the map; renders nothing otherwise. */
+function DebugPanel() {
+  const [lines, setLines] = useState<string[]>([]);
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    if (!debug3dEnabled()) return;
+    setEnabled(true);
+    return subscribeDebug(setLines);
+  }, []);
+  if (!enabled) return null;
+  return (
+    <pre className="pointer-events-none absolute inset-x-2 top-14 z-50 m-0 max-h-[70%] overflow-hidden whitespace-pre-wrap break-words rounded-lg bg-black/85 p-2 font-mono text-[9px] leading-[1.35] text-lime-300">
+      {lines.join("\n")}
+    </pre>
   );
 }
 
