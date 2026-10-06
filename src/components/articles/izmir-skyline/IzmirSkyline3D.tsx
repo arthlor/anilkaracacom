@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { Sky } from "three/examples/jsm/objects/Sky.js";
 import {
   LOT,
   TIER_META,
@@ -126,14 +125,46 @@ function makeWaterTexture() {
   return texture;
 }
 
-function setSky(sky: Sky) {
-  const uniforms = sky.material.uniforms;
-  uniforms.turbidity!.value = 7.5;
-  uniforms.rayleigh!.value = 1.6;
-  uniforms.mieCoefficient!.value = 0.006;
-  uniforms.mieDirectionalG!.value = 0.84;
-  uniforms.sunPosition!.value.copy(SUN_DIRECTION);
-  sky.scale.setScalar(10000);
+/**
+ * The sky the materials reflect: a dome from warm horizon to blue zenith,
+ * with a soft glow toward the sun.
+ *
+ * Every value stays far inside half-float range. three's Sky shader writes
+ * its sun disk at ~4e5, which iOS stores as Infinity in the PMREM's
+ * half-float targets; the blur then spreads Inf and NaN into every
+ * reflection and every lit surface renders black on iPhones.
+ */
+function makeEnvironmentScene() {
+  const scene = new THREE.Scene();
+  const dome = new THREE.SphereGeometry(100, 48, 24);
+  const position = dome.getAttribute("position");
+  const zenith = new THREE.Color(0x7aa2d0);
+  const horizon = new THREE.Color(0xdde3e6);
+  const ground = new THREE.Color(0x343a38);
+  const colors: number[] = [];
+  const color = new THREE.Color();
+  for (let index = 0; index < position.count; index += 1) {
+    const y = position.getY(index) / 100;
+    if (y >= 0) color.copy(horizon).lerp(zenith, Math.pow(y, 0.55));
+    else color.copy(horizon).lerp(ground, Math.pow(-y, 0.35));
+    colors.push(color.r, color.g, color.b);
+  }
+  dome.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+  scene.add(
+    new THREE.Mesh(
+      dome,
+      new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide }),
+    ),
+  );
+  const glow = new THREE.Mesh(
+    new THREE.SphereGeometry(9, 24, 12),
+    new THREE.MeshBasicMaterial({
+      color: new THREE.Color(0xffd6a6).multiplyScalar(14),
+    }),
+  );
+  glow.position.copy(SUN_DIRECTION).multiplyScalar(88);
+  scene.add(glow);
+  return scene;
 }
 
 function IzmirSkyline3D() {
@@ -332,18 +363,10 @@ function IzmirSkyline3D() {
 
     const pmrem = new THREE.PMREMGenerator(renderer);
     pmrem.compileEquirectangularShader();
-    const environmentScene = new THREE.Scene();
-    const environmentSky = new Sky();
-    setSky(environmentSky);
-    environmentScene.add(environmentSky);
-    const environmentTarget = pmrem.fromScene(
-      environmentScene,
-      0.04,
-      0.1,
-      20000,
-    );
+    const environmentScene = makeEnvironmentScene();
+    const environmentTarget = pmrem.fromScene(environmentScene, 0.04, 0.1, 400);
     scene.environment = environmentTarget.texture;
-    scene.environmentIntensity = 0.42;
+    scene.environmentIntensity = 1.05;
 
     scene.add(new THREE.HemisphereLight(0xc9d6e4, 0x2e2b22, 0.55));
     const sunLight = new THREE.DirectionalLight(0xffc68c, 2.7);
@@ -1034,8 +1057,12 @@ function IzmirSkyline3D() {
       waterTexture.dispose();
       if (mobileDevice) borderMaterial.dispose();
       environmentTarget.dispose();
-      environmentSky.geometry.dispose();
-      environmentSky.material.dispose();
+      environmentScene.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.geometry.dispose();
+          (object.material as THREE.Material).dispose();
+        }
+      });
       pmrem.dispose();
       renderer.renderLists.dispose();
       // Free the GPU context now rather than whenever GC gets to it; browsers
