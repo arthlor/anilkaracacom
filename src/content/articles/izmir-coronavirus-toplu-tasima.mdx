@@ -1,15 +1,15 @@
 ---
-title: "How İzmir’s Transit Network Recovered After the Pandemic"
-description: "Four years of ridership data show how İzmir’s buses, rail, trams, ferries, and passenger groups returned at different speeds."
+title: "How İzmir’s Transit Network Rebounded After the Pandemic"
+description: "Three years of İzmirim Kart boardings show how İzmir’s buses, rail, trams and ferries came back at different speeds, and how the people riding them changed."
 pubDate: 2024-03-25
-heroImage: "../../assets/images/articles/izmir-coronavirus-transport-2025.jpg"
+heroImage: "../../assets/images/articles/izmir-transit-network-hero.jpg"
 tags:
   [
     "izmir",
     "covid-19",
     "public-transport",
     "data-analysis",
-    "three-js",
+    "maps",
     "interactive",
   ]
 category: "data-journalism"
@@ -21,36 +21,35 @@ language: "en"
 pillar: "scientific-environmental-modeling"
 techStack:
   [
-    "Municipal ridership records",
-    "Monthly recovery modeling",
-    "Three.js particle simulation",
-    "React interaction layer",
-    "Astro editorial workflow",
+    "İzmirim Kart open data",
+    "Per-day normalisation and indexing",
+    "d3-geo projection of district boundaries",
+    "Canvas dot animation",
+    "React and Astro",
   ]
 metrics:
-  - label: "Records analyzed"
+  - label: "Records analysed"
     value: "19K+"
-    detail: "Daily public transport records aggregated across İzmir’s major transit modes."
-  - label: "Time window"
-    value: "2021-2024"
-    detail: "Four years of recovery after the pandemic disruption."
-  - label: "Interactive views"
-    value: "2"
-    detail: "Mode recovery and passenger mix on one monthly timeline."
-executiveSummary: "İzmir’s transit network recovered unevenly: buses carried most trips, while rail modes rebounded faster against their January 2021 baseline."
-context: "A total ridership line hides what changed inside the network. Four years of records show how modes and passenger groups returned at different rates."
+    detail: "Daily boardings per operator and fare type, from 1 January 2021 to 22 March 2024."
+  - label: "Boardings"
+    value: "1.65B"
+    detail: "Card validations across buses, Metro, İZBAN, trams and ferries."
+  - label: "Rebound"
+    value: "3.6×"
+    detail: "Daily boardings in February 2024 against January 2021."
+executiveSummary: "İzmir’s network came back unevenly. Daily boardings rose 3.6× from January 2021; trams rebounded most, buses kept six in ten boardings, and students overtook full-fare riders."
+context: "A single ridership line hides what changed inside the network. Daily records by operator and fare type show which modes and which riders came back, and how fast."
 methodology:
-  - "Collected open municipal transport records and normalized daily totals by transport mode and fare group."
-  - "Aggregated daily records into monthly series to reduce noise."
-  - "Indexed each mode to January 2021 so recovery speed can be read beside total volume."
-  - "Mapped volume to particle count and indexed recovery to particle speed."
-  - "Placed the network against İzmir’s coastline, stations, ferry routes, and rail corridors."
-challenge: "The 3D map had to support comparison, not decoration. Each visual signal therefore answers one question: how much travel returned, how quickly, and in which part of the network?"
-codeProof: "A React and Three.js scene links month selection, mode filters, indexed recovery, trip volume, passenger mix, and local transit geometry."
-conclusion: "The network did not recover as one system. Buses remained the volume backbone, rail modes rose faster against their baseline, and passenger groups returned on different timelines."
-summaryEn: "Four years of İzmir ridership data compared by mode, recovery index, passenger group, and location."
-role: "Data analysis, systems framing, Three.js visualization, interaction design, editorial narrative"
-impact: "Turns a large municipal dataset into an explorable public-interest story about how an urban transport system recovered after disruption."
+  - "Aggregated 19,103 daily İzmirim Kart records by mode and fare group, and checked the totals against the published monthly series."
+  - "Divided each month by the days on record, so 28-day Februaries and the partial March 2024 (22 days) compare fairly."
+  - "Expressed each mode as a multiple of its own January 2021 daily average."
+  - "Drew the network on İzmir’s district boundaries, with station positions from OpenStreetMap. One dot stands for 4,000 daily boardings; dot speed follows the multiple."
+challenge: "The map had to work as a comparison, not decoration. Each visual channel answers one question: dot count shows how many people boarded, dot speed shows how far each mode has rebounded, and the line shows where."
+codeProof: "A React island projects district boundaries and station coordinates with d3-geo, animates the dots on canvas, and links the month slider, mode filter, fare mix and data table. A build script re-derives its inputs from the raw CSV and stops if they drift from the published series."
+conclusion: "The network did not come back as one system. Trams rebounded most, Metro and İZBAN least, and buses carried six in ten boardings throughout. By the end of the period, students outnumbered full-fare riders."
+summaryEn: "Three years of İzmirim Kart boardings mapped by mode, rebound and fare group."
+role: "Data analysis, cartography, interaction design, editorial narrative"
+impact: "Turns a large municipal dataset into an explorable public-interest story about how a city’s transport system came back after disruption."
 relatedContent:
   - collection: "articles"
     slug: "izmir-trafik-kazasi-raporu"
@@ -58,35 +57,37 @@ relatedContent:
     slug: "turkiye-motosiklet-patlamasi"
 ---
 
-import IzmirTransit3DStory from "@/components/mdx/charts/transit/IzmirTransit3DStory";
+import IzmirTransitRecoveryMap from "@/components/mdx/charts/transit/IzmirTransitRecoveryMap";
 
-The headline measure is simple: ridership went up. The useful question is what changed underneath that total.
+Ridership in İzmir went up after the pandemic. The more useful question is what changed underneath that total.
 
-After the pandemic, İzmir’s transport modes returned at different speeds. Buses carried the most trips, while some rail modes climbed faster against their January 2021 baseline. Passenger groups also returned on different timelines.
+In January 2021, with weekend curfews in force and schools teaching remotely, İzmirim Kart recorded 484,000 boardings a day. By February 2024 the figure was 1.74 million. Every mode grew, but not at the same pace, and the people boarding changed too.
 
-The 3D map connects municipal ridership data to the network’s geography. It compares volume, recovery pace, and passenger mix on the same monthly timeline.
+The map places the city’s own records on its own geography: the gulf, the district boundaries and the lines that cross them.
 
-<IzmirTransit3DStory client:visible={{ rootMargin: "400px" }} />
+<IzmirTransitRecoveryMap client:visible={{ rootMargin: "400px" }} />
 
 ## How to read the map
 
-The scene uses three visual signals:
-
-- **Density:** Particle count represents monthly trips.
-- **Speed:** Particle speed represents recovery against January 2021 (100).
-- **Color:** Each transport mode keeps one color; the panel on the right lists riders by fare group.
+- **Dots are boardings.** Each dot stands for about 4,000 boardings a day (6,000 on a phone), so a busier month draws a denser map.
+- **Speed is rebound.** A mode’s dots move at its multiple of January 2021. A mode at 4× moves four times as fast as it did then.
+- **Each line has its own colour and style.** İZBAN is hollow, Metro thick, trams thin, ferries dashed and bus corridors dotted, so the lines can be told apart without colour.
 
 ## What stands out
 
-1. **Volume and pace are different measures.** Buses carry the most trips, while Metro and İZBAN rise more sharply against their own baseline.
-2. **Student travel is seasonal.** The passenger mix changes in clear steps rather than one uniform return.
+1. **Trams rebounded most; Metro and İZBAN least.** From January 2021 to February 2024, daily tram boardings grew 4.1×, buses 3.8×, ferries 3.4×, Metro 3.2× and İZBAN 3.1×. Rail carried more people than ever, but its share of boardings fell from 39% to 35%.
+2. **Buses are the backbone.** In every month, buses carried between 57% and 62% of boardings: six in ten of the 1.65 billion recorded over the period.
+3. **The rebound came in steps.** Boardings hit their lowest in the May 2021 lockdown (441,000 a day). They nearly doubled when restrictions eased in June and rose again when schools reopened in September. Summers dip. So did February 2023, when schools stayed closed until 20 February after the earthquakes.
+4. **Students overtook full fare.** Students made up 16% of boardings in January 2021. In October 2023, at 38%, they outnumbered full-fare riders for the first time, and they stayed ahead in every month since except the January–February semester break. Full fare fell from 69% to 35%, and free passes rose from 8% to 19%.
 
-## Why use a map?
+## A note on the baseline
 
-İzmir’s bay shapes the network: ferries cross it, rail runs along a north-south spine, trams follow the coast, and buses connect the wider districts.
+January 2021 is the first month in the data, and it was not a normal month. A multiple of 3.6× means 3.6 times a restricted winter month, not 3.6 times pre-pandemic ridership. A mode that slumped deeper in January 2021 also shows a bigger multiple later. The map measures rebound from that point, not recovery to 2019 levels.
 
-Projecting the routes into a local Three.js scene keeps that geography visible while the timeline changes.
+## Why a map?
+
+İzmir’s network is shaped by its gulf. Ferries cross it. İZBAN and the Karşıyaka tram follow the northern shore, while Metro and the Konak tram follow the southern one. Buses reach the districts the rail lines do not. Placing the numbers on that geography shows where the growth happened, not just how much.
 
 ---
 
-_Data Source: [İzmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/)_
+_Data: [İzmir Metropolitan Municipality Open Data Portal](https://acikveri.bizizmir.com/), İzmirim Kart daily boardings by operator and fare type. Station positions © OpenStreetMap contributors._
